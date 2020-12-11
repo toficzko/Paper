@@ -1,0 +1,19 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Kyle Wood <demonwav@gmail.com>
+Date: Thu, 10 Dec 2020 22:37:28 -0800
+Subject: [PATCH] Fix remap
+
+
+diff --git a/src/main/java/net/minecraft/world/entity/monster/Phantom.java b/src/main/java/net/minecraft/world/entity/monster/Phantom.java
+index 8b04be948a11c5ab2160d61fbac1469d4f2209c7..974944e5eee0b982a12d0359f8421076b0364e00 100644
+--- a/src/main/java/net/minecraft/world/entity/monster/Phantom.java
++++ b/src/main/java/net/minecraft/world/entity/monster/Phantom.java
+@@ -236,7 +236,7 @@ public class Phantom extends FlyingMob implements Enemy {
+                 List<Player> list = Phantom.this.level.getNearbyPlayers(this.attackTargeting, (LivingEntity) Phantom.this, Phantom.this.getBoundingBox().inflate(16.0D, 64.0D, 16.0D));
+ 
+                 if (!list.isEmpty()) {
+-                    list.sort(Comparator.comparing(Entity::getY).reversed());
++                    list.sort(Comparator.<Player, Double>comparing(Entity::getY).reversed()); // Paper remap fix
+                     Iterator iterator = list.iterator();
+ 
+                     while (iterator.hasNext()) {
