@@ -1,0 +1,202 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Aikar <aikar@aikar.co>
+Date: Wed, 30 Mar 2016 19:36:20 -0400
+Subject: [PATCH] MC Dev fixes
+
+
+diff --git a/src/main/java/net/minecraft/Util.java b/src/main/java/net/minecraft/Util.java
+index 65aea563eb423acafdda06361ce431639a1be9e6..09d2da539b07c9b36af05d12845e91e3c80d83af 100644
+--- a/src/main/java/net/minecraft/Util.java
++++ b/src/main/java/net/minecraft/Util.java
+@@ -262,7 +262,7 @@ public class Util {
+     }
+ 
+     public static <K> Strategy<K> identityStrategy() {
+-        return Util.IdentityStrategy.INSTANCE;
++        return (Strategy<K>) Util.IdentityStrategy.INSTANCE; // Paper - decompile fix
+     }
+ 
+     public static <V> CompletableFuture<List<V>> sequence(List<? extends CompletableFuture<? extends V>> futures) {
+diff --git a/src/main/java/net/minecraft/nbt/NbtIo.java b/src/main/java/net/minecraft/nbt/NbtIo.java
+index 6602b4ac1e19c844b2a439262081f07f0a465fd6..c2777866495498e65cbb8e4e23210effd55f349c 100644
+--- a/src/main/java/net/minecraft/nbt/NbtIo.java
++++ b/src/main/java/net/minecraft/nbt/NbtIo.java
+@@ -17,6 +17,7 @@ import java.util.zip.GZIPOutputStream;
+ import net.minecraft.CrashReport;
+ import net.minecraft.CrashReportCategory;
+ import net.minecraft.ReportedException;
++import io.netty.buffer.ByteBufInputStream; // Paper
+ 
+ public class NbtIo {
+ 
+@@ -136,7 +137,7 @@ public class NbtIo {
+ 
+     public static CompoundTag read(DataInput input, NbtAccounter tracker) throws IOException {
+         // Spigot start
+-        if ( input instanceof io.netty.buffer.ByteBufInputStream )
++        if ( input instanceof ByteBufInputStream) // Paper
+         {
+             input = new DataInputStream(new org.spigotmc.LimitStream((InputStream) input, tracker));
+         }
+diff --git a/src/main/java/net/minecraft/nbt/Tag.java b/src/main/java/net/minecraft/nbt/Tag.java
+index d6be8b0e4c7b173b08584cba10a1f930583e9d51..b705038a866670a77e5ad26d9131e46091cd4ad3 100644
+--- a/src/main/java/net/minecraft/nbt/Tag.java
++++ b/src/main/java/net/minecraft/nbt/Tag.java
+@@ -19,7 +19,7 @@ public interface Tag {
+ 
+     TagType<?> getType();
+ 
+-    Tag copy();
++    public Tag copy(); // Paper - decompile fix
+ 
+     default String getAsString() {
+         return this.toString();
+diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
+index 6064cefc339c57f6a862df3c36551720c2aeecd8..a700ff352e092b2b08569b91f749e8f10bb43338 100644
+--- a/src/main/java/net/minecraft/server/MinecraftServer.java
++++ b/src/main/java/net/minecraft/server/MinecraftServer.java
+@@ -97,6 +97,7 @@ import net.minecraft.server.level.progress.ChunkProgressListener;
+ import net.minecraft.server.level.progress.ChunkProgressListenerFactory;
+ import net.minecraft.server.network.ServerConnectionListener;
+ import net.minecraft.server.network.TextFilter;
++import net.minecraft.server.packs.PackResources;
+ import net.minecraft.server.packs.repository.Pack;
+ import net.minecraft.server.packs.repository.PackRepository;
+ import net.minecraft.server.players.GameProfileCache;
+@@ -1659,9 +1660,9 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+             PackRepository resourcepackrepository = this.packRepository;
+ 
+             this.packRepository.getClass();
+-            return stream.map(resourcepackrepository::getPack).filter(Objects::nonNull).map(Pack::open).collect(ImmutableList.toImmutableList()); // CraftBukkit - decompile error
++            return stream.<Pack>map(resourcepackrepository::getPack).filter(Objects::nonNull).map(Pack::open).collect(ImmutableList.toImmutableList()); // CraftBukkit - decompile error // Paper - decompile error
+         }, this).thenCompose((immutablelist) -> {
+-            return ServerResources.loadResources(immutablelist, this.isDedicatedServer() ? Commands.CommandSelection.DEDICATED : Commands.CommandSelection.INTEGRATED, this.getFunctionCompilationLevel(), this.executor, this);
++            return ServerResources.loadResources((List<PackResources>) immutablelist, this.isDedicatedServer() ? Commands.CommandSelection.DEDICATED : Commands.CommandSelection.INTEGRATED, this.getFunctionCompilationLevel(), this.executor, this); // Paper - decompile error
+         }).thenAcceptAsync((datapackresources) -> {
+             this.resources.close();
+             this.resources = datapackresources;
+diff --git a/src/main/java/net/minecraft/server/level/ServerChunkCache.java b/src/main/java/net/minecraft/server/level/ServerChunkCache.java
+index 90bdefb149fb47d60989b01ee6b1900d5a5679de..f3bfced07402b24c3d6ebf4bf8851d3cdb05472f 100644
+--- a/src/main/java/net/minecraft/server/level/ServerChunkCache.java
++++ b/src/main/java/net/minecraft/server/level/ServerChunkCache.java
+@@ -305,7 +305,6 @@ public class ServerChunkCache extends ChunkSource {
+         return this.checkChunkFuture(i, (Function<ChunkHolder, CompletableFuture<Either<LevelChunk, ChunkHolder.ChunkLoadingFailure>>>) ChunkHolder::getEntityTickingChunkFuture); // CraftBukkit - decompile error
+     }
+ 
+-    public final boolean isEntityTickingChunk(ChunkPos chunkcoordintpair) { return this.isEntityTickingChunk(chunkcoordintpair); } // Paper - OBFHELPER
+     @Override public boolean isEntityTickingChunk(ChunkPos chunkcoordintpair) {
+         return this.checkChunkFuture(chunkcoordintpair.toLong(), (Function<ChunkHolder, CompletableFuture<Either<LevelChunk, ChunkHolder.ChunkLoadingFailure>>>) ChunkHolder::getEntityTickingChunkFuture); // CraftBukkit - decompile error
+     }
+diff --git a/src/main/java/net/minecraft/server/level/ServerLevel.java b/src/main/java/net/minecraft/server/level/ServerLevel.java
+index 8a125d5bf51ace1921dbd9e165f559b895cf7920..589d616e139a4e691493cf8f90fc3ed6b20239ef 100644
+--- a/src/main/java/net/minecraft/server/level/ServerLevel.java
++++ b/src/main/java/net/minecraft/server/level/ServerLevel.java
+@@ -1901,7 +1901,7 @@ public class ServerLevel extends net.minecraft.world.level.Level implements Worl
+             }
+ 
+             // CraftBukkit - decompile error
+-            return (String) object2intopenhashmap.object2IntEntrySet().stream().sorted(Comparator.comparing(it.unimi.dsi.fastutil.objects.Object2IntMap.Entry<ResourceLocation>::getIntValue).reversed()).limit(5L).map((it_unimi_dsi_fastutil_objects_object2intmap_entry) -> {
++            return (String) object2intopenhashmap.object2IntEntrySet().stream().sorted(Comparator.comparing(Object2IntMap.Entry<ResourceLocation>::getIntValue).reversed()).limit(5L).map((it_unimi_dsi_fastutil_objects_object2intmap_entry) -> { // Paper - decompile fix
+                 return it_unimi_dsi_fastutil_objects_object2intmap_entry.getKey() + ":" + it_unimi_dsi_fastutil_objects_object2intmap_entry.getIntValue();
+             }).collect(Collectors.joining(","));
+         } catch (Exception exception) {
+diff --git a/src/main/java/net/minecraft/server/level/Ticket.java b/src/main/java/net/minecraft/server/level/Ticket.java
+index 66d0f92d2492dd25cc5ed13d98abda6ff449598b..8a41ff68ceee77ad9a24ab37e738a3a835bad39d 100644
+--- a/src/main/java/net/minecraft/server/level/Ticket.java
++++ b/src/main/java/net/minecraft/server/level/Ticket.java
+@@ -20,7 +20,7 @@ public final class Ticket<T> implements Comparable<Ticket<?>> {
+             return i;
+         } else {
+             int j = Integer.compare(System.identityHashCode(this.type), System.identityHashCode(ticket.type));
+-            return j != 0 ? j : this.type.getComparator().compare(this.key, ticket.key);
++            return j != 0 ? j : this.type.getComparator().compare(this.key, (T)ticket.key); // Paper - decompile fix
+         }
+     }
+ 
+diff --git a/src/main/java/net/minecraft/stats/ServerStatsCounter.java b/src/main/java/net/minecraft/stats/ServerStatsCounter.java
+index 4db0547c6191533d82eba9aeab26c6df016f510b..eb7d610853c7a3f10f3c9280a1a5ff7c47a340b9 100644
+--- a/src/main/java/net/minecraft/stats/ServerStatsCounter.java
++++ b/src/main/java/net/minecraft/stats/ServerStatsCounter.java
+@@ -202,7 +202,7 @@ public class ServerStatsCounter extends StatsCounter {
+         ObjectIterator objectiterator = this.stats.object2IntEntrySet().iterator();
+ 
+         while (objectiterator.hasNext()) {
+-            it.unimi.dsi.fastutil.objects.Object2IntMap.Entry<Stat<?>> it_unimi_dsi_fastutil_objects_object2intmap_entry = (it.unimi.dsi.fastutil.objects.Object2IntMap.Entry) objectiterator.next();
++            Object2IntMap.Entry<Stat<?>> it_unimi_dsi_fastutil_objects_object2intmap_entry = (Object2IntMap.Entry) objectiterator.next(); // Paper - decompile fix
+             Stat<?> statistic = (Stat) it_unimi_dsi_fastutil_objects_object2intmap_entry.getKey();
+ 
+             ((JsonObject) map.computeIfAbsent(statistic.getType(), (statisticwrapper) -> {
+diff --git a/src/main/java/net/minecraft/util/SortedArraySet.java b/src/main/java/net/minecraft/util/SortedArraySet.java
+index 0965063b049e14ed780747a562229b3a1ee307b0..8f7739ee06f5ca8e4804f2e66ee91ca2b50c6153 100644
+--- a/src/main/java/net/minecraft/util/SortedArraySet.java
++++ b/src/main/java/net/minecraft/util/SortedArraySet.java
+@@ -22,7 +22,7 @@ public class SortedArraySet<T> extends AbstractSet<T> {
+     }
+ 
+     public static <T extends Comparable<T>> SortedArraySet<T> create(int initialCapacity) {
+-        return new SortedArraySet<>(initialCapacity, Comparator.naturalOrder());
++        return new SortedArraySet<>(initialCapacity, (Comparator)Comparator.naturalOrder()); // Paper - decompile fix
+     }
+ 
+     private static <T> T[] castRawArray(Object[] array) {
+diff --git a/src/main/java/net/minecraft/util/thread/ProcessorMailbox.java b/src/main/java/net/minecraft/util/thread/ProcessorMailbox.java
+index a0ac2929ebba243727dd586daacbc79cc1b35b78..790bae3715c27fab4696017209dd82f21199d4c1 100644
+--- a/src/main/java/net/minecraft/util/thread/ProcessorMailbox.java
++++ b/src/main/java/net/minecraft/util/thread/ProcessorMailbox.java
+@@ -97,7 +97,7 @@ public class ProcessorMailbox<T> implements ProcessorHandle<T>, AutoCloseable, R
+ 
+     public void run() {
+         try {
+-            this.pollUntil((i) -> {
++            this.pollUntil((int i) -> { // Paper - decompile fix
+                 return i == 0;
+             });
+         } finally {
+diff --git a/src/main/java/net/minecraft/world/item/crafting/RecipeManager.java b/src/main/java/net/minecraft/world/item/crafting/RecipeManager.java
+index 9733a2aa80c79cf11d2ef7c8c296b50b842b6769..f65743322a7ceff521336c96953d9b5bb869e3df 100644
+--- a/src/main/java/net/minecraft/world/item/crafting/RecipeManager.java
++++ b/src/main/java/net/minecraft/world/item/crafting/RecipeManager.java
+@@ -75,7 +75,7 @@ public class RecipeManager extends SimpleJsonResourceReloadListener {
+         }
+ 
+         this.recipes = (Map) map1.entrySet().stream().collect(ImmutableMap.toImmutableMap(Entry::getKey, (entry1) -> {
+-            return (entry1.getValue()); // CraftBukkit
++            return entry1.getValue(); // CraftBukkit // Paper - decompile fix - *shrugs internally*
+         }));
+         RecipeManager.LOGGER.info("Loaded {} recipes", map1.size());
+     }
+diff --git a/src/main/java/net/minecraft/world/level/TickNextTickData.java b/src/main/java/net/minecraft/world/level/TickNextTickData.java
+index 77f102b67e066c32e2c212626bcd46cc498bfd86..de527ad6c642a91b552656de8906b0055805cb2b 100644
+--- a/src/main/java/net/minecraft/world/level/TickNextTickData.java
++++ b/src/main/java/net/minecraft/world/level/TickNextTickData.java
+@@ -36,13 +36,13 @@ public class TickNextTickData<T> {
+         return this.pos.hashCode();
+     }
+ 
+-    public static <T> Comparator<TickNextTickData<T>> createTimeComparator() {
++    public static <T> Comparator<Object> createTimeComparator() { // Paper - decompile fix
+         return Comparator.comparingLong((tickNextTickData) -> {
+-            return tickNextTickData.triggerTick;
++            return ((TickNextTickData<T>) tickNextTickData).triggerTick; // Paper - decompile fix
+         }).thenComparing((tickNextTickData) -> {
+-            return tickNextTickData.priority;
++            return ((TickNextTickData<T>) tickNextTickData).priority; // Paper - decompile fix
+         }).thenComparingLong((tickNextTickData) -> {
+-            return tickNextTickData.c;
++            return ((TickNextTickData<T>) tickNextTickData).c; // Paper - decompile fix
+         });
+     }
+ 
+diff --git a/src/main/java/net/minecraft/world/level/storage/loot/entries/LootPoolEntryContainer.java b/src/main/java/net/minecraft/world/level/storage/loot/entries/LootPoolEntryContainer.java
+index 4eaab1fcb80534d6de5ceae6b7b450b3bdbf4822..d9fba2b04c32871cfdfe58b7ffa54d50ac6f0765 100644
+--- a/src/main/java/net/minecraft/world/level/storage/loot/entries/LootPoolEntryContainer.java
++++ b/src/main/java/net/minecraft/world/level/storage/loot/entries/LootPoolEntryContainer.java
+@@ -42,7 +42,7 @@ public abstract class LootPoolEntryContainer implements ComposableEntryContainer
+ 
+         // CraftBukkit start
+         @Override
+-        public final void serialize(JsonObject jsonobject, T t0, JsonSerializationContext jsonserializationcontext) {
++        public void serialize(JsonObject jsonobject, T t0, JsonSerializationContext jsonserializationcontext) { // Paper - remove final
+             if (!org.apache.commons.lang3.ArrayUtils.isEmpty(t0.conditions)) {
+                 jsonobject.add("conditions", jsonserializationcontext.serialize(t0.conditions));
+             }

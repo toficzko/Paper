@@ -1,0 +1,79 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Initial <auto@mated.null>
+Date: Sat, 12 Dec 2020 13:57:16 +0100
+Subject: [PATCH] Remap
+
+
+diff --git a/src/main/java/net/minecraft/core/dispenser/DispenseItemBehavior.java b/src/main/java/net/minecraft/core/dispenser/DispenseItemBehavior.java
+index 9f980ae9f1e2d7dd7980e66d3fb5b565d8afcaf6..285e789e69bcbe05b2f595404bee54f77614b367 100644
+--- a/src/main/java/net/minecraft/core/dispenser/DispenseItemBehavior.java
++++ b/src/main/java/net/minecraft/core/dispenser/DispenseItemBehavior.java
+@@ -141,9 +141,9 @@ public interface DispenseItemBehavior {
+         }));
+         DispenserBlock.registerBehavior((ItemLike) Items.EXPERIENCE_BOTTLE, (DispenseItemBehavior) (new AbstractProjectileDispenseBehavior() {
+             @Override
+-            protected Projectile getProjectile(Level world, Position iposition, ItemStack itemstack) {
+-                return (Projectile) Util.make((new ThrownExperienceBottle(world, iposition.x(), iposition.y(), iposition.z())), (entitythrownexpbottle) -> { // CraftBukkit - decompile error
+-                    entitythrownexpbottle.setItem(itemstack);
++            protected Projectile getProjectile(Level world, Position position, ItemStack stack) {
++                return (Projectile) Util.make((new ThrownExperienceBottle(world, position.x(), position.y(), position.z())), (entitythrownexpbottle) -> { // CraftBukkit - decompile error
++                    entitythrownexpbottle.setItem(stack);
+                 });
+             }
+ 
+diff --git a/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
+index c8bf35b836ed63c076f63614a6ffc992fe3f939e..704db8ff2c0089097b8ddaa06be073e25d0fdf8e 100644
+--- a/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
++++ b/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
+@@ -199,7 +199,7 @@ public class ServerLoginPacketListenerImpl implements ServerLoginPacketListener
+                 public void run() {
+                     try {
+                         initUUID();
+-                        new net.minecraft.server.network.ServerLoginPacketListenerImpl.LoginHandler().fireEvents();
++                        new LoginHandler().fireEvents();
+                     } catch (Exception ex) {
+                         disconnect("Failed to verify username!");
+                         server.server.getLogger().log(java.util.logging.Level.WARNING, "Exception verifying " + gameProfile.getName(), ex);
+diff --git a/src/main/java/net/minecraft/world/entity/LivingEntity.java b/src/main/java/net/minecraft/world/entity/LivingEntity.java
+index 0e9b29f6da9b27f58b86e5a9f7ee43b2d40e6d60..33bb85511e2969879841259e0b9e3237da597e87 100644
+--- a/src/main/java/net/minecraft/world/entity/LivingEntity.java
++++ b/src/main/java/net/minecraft/world/entity/LivingEntity.java
+@@ -811,7 +811,7 @@ public abstract class LivingEntity extends Entity {
+         }
+         // CraftBukkit start
+         isTickingEffects = false;
+-        for (net.minecraft.world.entity.LivingEntity.ProcessableEffect e : effectsToProcess) {
++        for (ProcessableEffect e : effectsToProcess) {
+             if (e.effect != null) {
+                 addEffect(e.effect, e.cause);
+             } else {
+@@ -984,7 +984,7 @@ public abstract class LivingEntity extends Entity {
+     public boolean addEffect(MobEffectInstance mobeffect, EntityPotionEffectEvent.Cause cause) {
+         org.spigotmc.AsyncCatcher.catchOp("effect add"); // Spigot
+         if (isTickingEffects) {
+-            effectsToProcess.add(new net.minecraft.world.entity.LivingEntity.ProcessableEffect(mobeffect, cause));
++            effectsToProcess.add(new ProcessableEffect(mobeffect, cause));
+             return true;
+         }
+         // CraftBukkit end
+@@ -1047,7 +1047,7 @@ public abstract class LivingEntity extends Entity {
+     @Nullable
+     public MobEffectInstance c(@Nullable MobEffect mobeffectlist, EntityPotionEffectEvent.Cause cause) {
+         if (isTickingEffects) {
+-            effectsToProcess.add(new net.minecraft.world.entity.LivingEntity.ProcessableEffect(mobeffectlist, cause));
++            effectsToProcess.add(new ProcessableEffect(mobeffectlist, cause));
+             return null;
+         }
+ 
+diff --git a/src/main/java/org/bukkit/craftbukkit/inventory/CraftMetaArmorStand.java b/src/main/java/org/bukkit/craftbukkit/inventory/CraftMetaArmorStand.java
+index 783b9c7283492fb71776b61f9820c21a39868c47..3d599e08e7532d2644fe58325d11222d48e3e3f9 100644
+--- a/src/main/java/org/bukkit/craftbukkit/inventory/CraftMetaArmorStand.java
++++ b/src/main/java/org/bukkit/craftbukkit/inventory/CraftMetaArmorStand.java
+@@ -6,7 +6,6 @@ import net.minecraft.nbt.CompoundTag;
+ import net.minecraft.nbt.Tag;
+ import org.bukkit.Material;
+ import org.bukkit.configuration.serialization.DelegateDeserialization;
+-import org.bukkit.craftbukkit.inventory.CraftMetaItem.ItemMetaKey;
+ 
+ @DelegateDeserialization(CraftMetaItem.SerializableMeta.class)
+ public class CraftMetaArmorStand extends CraftMetaItem {
