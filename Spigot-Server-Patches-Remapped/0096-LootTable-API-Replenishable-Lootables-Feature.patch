@@ -649,21 +649,6 @@ index cafe1e639e32571b6c6bac41f010a94164cfc96a..b22f17b51a42ecbbed045611858a8dd6
              LootContext.Builder loottableinfo_builder = (new LootContext.Builder((ServerLevel) this.level)).withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf((Vec3i) this.worldPosition)).withOptionalRandomSeed(this.lootTableSeed);
  
              if (player != null) {
-diff --git a/src/main/java/net/minecraft/world/level/saveddata/maps/MapItemSavedData.java b/src/main/java/net/minecraft/world/level/saveddata/maps/MapItemSavedData.java
-index 982d7532417ec52f7a547a0ab7977655986fa2ca..85d33e3bc7bf372ac6414a18f2f6fc3062a4897d 100644
---- a/src/main/java/net/minecraft/world/level/saveddata/maps/MapItemSavedData.java
-+++ b/src/main/java/net/minecraft/world/level/saveddata/maps/MapItemSavedData.java
-@@ -64,8 +64,8 @@ public class MapItemSavedData extends SavedData {
-     private UUID uniqueId = null;
-     // CraftBukkit end
- 
--    public MapItemSavedData(String s) {
--        super(s);
-+    public MapItemSavedData(String key) {
-+        super(key);
-         // CraftBukkit start
-         mapView = new CraftMapView(this);
-         server = (CraftServer) org.bukkit.Bukkit.getServer();
 diff --git a/src/main/java/org/bukkit/craftbukkit/block/CraftBlockEntityState.java b/src/main/java/org/bukkit/craftbukkit/block/CraftBlockEntityState.java
 index bded0c180b7d65f6acc99652529df9c66d94602f..3c6b1f8dc5a0aef0b4886a93e49efc4b4db25193 100644
 --- a/src/main/java/org/bukkit/craftbukkit/block/CraftBlockEntityState.java

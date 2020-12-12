@@ -35,7 +35,7 @@ index 056fa0d7329785e8a16962a1c9e18582be1466d4..37b6fa4c7a9c9af17fb410f1e0c0036e
              Connection.LOGGER.debug("Skipping packet due to errors", throwable.getCause());
          } else {
 diff --git a/src/main/java/net/minecraft/network/PacketEncoder.java b/src/main/java/net/minecraft/network/PacketEncoder.java
-index 14fa1371e52b9af5a7550a9aa144fa406b754046..12bc307a9dcc1d58edd095b6cb288442416708c9 100644
+index 14fa1371e52b9af5a7550a9aa144fa406b754046..aedc79fa3a02280f298366fd614367a401fb8bb8 100644
 --- a/src/main/java/net/minecraft/network/PacketEncoder.java
 +++ b/src/main/java/net/minecraft/network/PacketEncoder.java
 @@ -51,7 +51,31 @@ public class PacketEncoder extends MessageToByteEncoder<Packet<?>> {
@@ -46,7 +46,7 @@ index 14fa1371e52b9af5a7550a9aa144fa406b754046..12bc307a9dcc1d58edd095b6cb288442
 +                // Paper start
 +                int packetLength = bytebuf.readableBytes();
 +                if (packetLength > MAX_PACKET_SIZE) {
-+                    throw new net.minecraft.network.PacketEncoder.PacketTooLargeException(packet, packetLength);
++                    throw new PacketTooLargeException(packet, packetLength);
 +                }
 +                // Paper end
              }

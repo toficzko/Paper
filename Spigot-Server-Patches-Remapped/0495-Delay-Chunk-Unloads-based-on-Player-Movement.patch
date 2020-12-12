@@ -193,16 +193,3 @@ index 2444f6f676db543509b14e8c882491dc3f41b264..531ebf1bafec2b295af9f6dfec8f4b64
  
      public static <T> TicketType<T> create(String name, Comparator<T> comparator) {
          return new TicketType<>(name, comparator, 0L);
-diff --git a/src/main/java/net/minecraft/world/level/lighting/DataLayerStorageMap.java b/src/main/java/net/minecraft/world/level/lighting/DataLayerStorageMap.java
-index 3ece61cf7fd4dbe4ce85bdaabb76608f1a5079b8..ed2ed6194670016086be580dc4514d5d3d1b235b 100644
---- a/src/main/java/net/minecraft/world/level/lighting/DataLayerStorageMap.java
-+++ b/src/main/java/net/minecraft/world/level/lighting/DataLayerStorageMap.java
-@@ -14,7 +14,7 @@ public abstract class DataLayerStorageMap<M extends DataLayerStorageMap<M>> {
-     protected final boolean isVisible; // Paper - avoid copying light data
- 
-     // Paper start - faster lookups with less branching, use interface to avoid boxing instead of Function
--    public final net.minecraft.world.level.lighting.DataLayerStorageMap.NibbleArrayAccess lookup;
-+    public final NibbleArrayAccess lookup;
-     public interface NibbleArrayAccess {
-         DataLayer apply(long id);
-     }

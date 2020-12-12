@@ -651,7 +651,7 @@ index d9329a80c3ac4ca0fb6d0ffa3f2bf192dd9050ce..b26961d96829d826a2b23ebbca6af010
  
      public static final class BlockDataLayerStorageMap extends DataLayerStorageMap<BlockLightSectionStorage.BlockDataLayerStorageMap> {
 diff --git a/src/main/java/net/minecraft/world/level/lighting/DataLayerStorageMap.java b/src/main/java/net/minecraft/world/level/lighting/DataLayerStorageMap.java
-index 54cca3b376e5ce02936edc8b9c17e67e17f07147..3ece61cf7fd4dbe4ce85bdaabb76608f1a5079b8 100644
+index 54cca3b376e5ce02936edc8b9c17e67e17f07147..ed2ed6194670016086be580dc4514d5d3d1b235b 100644
 --- a/src/main/java/net/minecraft/world/level/lighting/DataLayerStorageMap.java
 +++ b/src/main/java/net/minecraft/world/level/lighting/DataLayerStorageMap.java
 @@ -7,13 +7,18 @@ import net.minecraft.world.level.chunk.DataLayer;
@@ -668,7 +668,7 @@ index 54cca3b376e5ce02936edc8b9c17e67e17f07147..3ece61cf7fd4dbe4ce85bdaabb76608f
 -    java.util.function.Function<Long, DataLayer> lookup; // Paper - faster branchless lookup
  
 +    // Paper start - faster lookups with less branching, use interface to avoid boxing instead of Function
-+    public final net.minecraft.world.level.lighting.DataLayerStorageMap.NibbleArrayAccess lookup;
++    public final NibbleArrayAccess lookup;
 +    public interface NibbleArrayAccess {
 +        DataLayer apply(long id);
 +    }

@@ -1,200 +1,9 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: Zach Brown <zach.brown@destroystokyo.com>
-Date: Mon, 29 Feb 2016 20:40:33 -0600
-Subject: [PATCH] POM Changes
+From: Initial <auto@mated.null>
+Date: Sat, 12 Dec 2020 13:57:16 +0100
+Subject: [PATCH] Remap
 
 
-diff --git a/pom.xml b/pom.xml
-index 185aa47591ddf92bece217a56078bd74777f749a..7d38039fcba45ee55f35c0291ad66a58ef99c392 100644
---- a/pom.xml
-+++ b/pom.xml
-@@ -1,15 +1,14 @@
- <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-     <modelVersion>4.0.0</modelVersion>
--    <groupId>org.spigotmc</groupId>
--    <artifactId>spigot</artifactId>
-+    <artifactId>paper</artifactId>
-     <packaging>jar</packaging>
-     <version>1.16.4-R0.1-SNAPSHOT</version>
--    <name>Spigot</name>
--    <url>https://www.spigotmc.org/</url>
-+    <name>Paper</name>
-+    <url>https://papermc.io</url>
- 
-     <properties>
--        <skipTests>true</skipTests>
-+        <!-- <skipTests>true</skipTests> Paper - This [was] not going to end well -->
-         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-         <api.version>unknown</api.version>
-         <minecraft.version>1.16.4</minecraft.version>
-@@ -19,21 +18,27 @@
-     </properties>
- 
-     <parent>
--        <groupId>org.spigotmc</groupId>
--        <artifactId>spigot-parent</artifactId>
-+        <groupId>com.destroystokyo.paper</groupId>
-+        <artifactId>paper-parent</artifactId>
-         <version>dev-SNAPSHOT</version>
-         <relativePath>../pom.xml</relativePath>
-     </parent>
- 
-     <dependencies>
-         <dependency>
--            <groupId>org.spigotmc</groupId>
--            <artifactId>spigot-api</artifactId>
-+            <groupId>com.destroystokyo.paper</groupId>
-+            <artifactId>paper-api</artifactId>
-             <version>${project.version}</version>
-             <scope>compile</scope>
-         </dependency>
-         <dependency>
--            <groupId>org.spigotmc</groupId>
-+            <groupId>com.destroystokyo.paper</groupId>
-+            <artifactId>paper-mojangapi</artifactId>
-+            <version>${project.version}</version>
-+            <scope>compile</scope>
-+        </dependency>
-+        <dependency>
-+            <groupId>io.papermc</groupId>
-             <artifactId>minecraft-server</artifactId>
-             <version>${minecraft.version}-SNAPSHOT</version>
-             <scope>compile</scope>
-@@ -56,6 +61,17 @@
-             <version>8.0.1</version>
-             <scope>compile</scope>
-         </dependency>
-+        <dependency>
-+            <!-- wrapper to use either java 8 sun cleaner or java9+ official cleaner -->
-+            <groupId>co.aikar</groupId>
-+            <artifactId>cleaner</artifactId>
-+            <version>1.0-SNAPSHOT</version>
-+        </dependency>
-+        <dependency>
-+            <groupId>io.netty</groupId>
-+            <artifactId>netty-all</artifactId>
-+            <version>4.1.50.Final</version>
-+        </dependency>
-         <!-- deprecated API depend -->
-         <dependency>
-             <groupId>com.googlecode.json-simple</groupId>
-@@ -112,34 +128,22 @@
- 
-     <!-- This builds a completely 'ready to start' jar with all dependencies inside -->
-     <build>
-+        <finalName>paper-${minecraft.version}</finalName>
-+        <defaultGoal>clean install</defaultGoal> <!-- Paper -->
-         <plugins>
-             <plugin>
--                <groupId>net.md-5</groupId>
--                <artifactId>scriptus</artifactId>
--                <version>0.4.1</version>
-+                <groupId>com.lukegb.mojo</groupId>
-+                <artifactId>gitdescribe-maven-plugin</artifactId>
-+                <version>1.3</version>
-+                <configuration>
-+                    <outputPrefix>git-Paper-</outputPrefix>
-+                    <scmDirectory>..</scmDirectory>
-+                </configuration>
-                 <executions>
-                     <execution>
--                        <id>ex-spigot</id>
--                        <configuration>
--                            <format>git-Spigot-%s</format>
--                            <scmDirectory>../</scmDirectory>
--                            <descriptionProperty>spigot.desc</descriptionProperty>
--                        </configuration>
--                        <phase>initialize</phase>
--                        <goals>
--                            <goal>describe</goal>
--                        </goals>
--                    </execution>
--                    <execution>
--                        <id>ex-craftbukkit</id>
--                        <configuration>
--                            <format>-%s</format>
--                            <scmDirectory>../../CraftBukkit</scmDirectory>
--                            <descriptionProperty>craftbukkit.desc</descriptionProperty>
--                        </configuration>
--                        <phase>initialize</phase>
-+                        <phase>compile</phase>
-                         <goals>
--                            <goal>describe</goal>
-+                            <goal>gitdescribe</goal>
-                         </goals>
-                     </execution>
-                 </executions>
-@@ -149,6 +153,7 @@
-                 <artifactId>maven-jar-plugin</artifactId>
-                 <version>3.2.0</version>
-                 <configuration>
-+                    <forceCreation>true</forceCreation> <!-- Required to prevent shading the jar multiple times -->
-                     <archive>
-                         <manifest>
-                             <addDefaultEntries>false</addDefaultEntries>
-@@ -156,8 +161,9 @@
-                         <manifestEntries>
-                             <Main-Class>org.bukkit.craftbukkit.Main</Main-Class>
-                             <Implementation-Title>CraftBukkit</Implementation-Title>
--                            <Implementation-Version>${spigot.desc}${craftbukkit.desc}</Implementation-Version>
--                            <Implementation-Vendor>${project.build.outputTimestamp}</Implementation-Vendor>
-+                            <!--suppress MavenModelInspection -->
-+                            <Implementation-Version>${describe}</Implementation-Version>
-+                            <Implementation-Vendor>${maven.build.timestamp}</Implementation-Vendor>
-                             <Specification-Title>Bukkit</Specification-Title>
-                             <Specification-Version>${api.version}</Specification-Version>
-                             <Specification-Vendor>Bukkit Team</Specification-Vendor>
-@@ -196,6 +202,7 @@
-                             <goal>shade</goal>
-                         </goals>
-                         <configuration>
-+                            <dependencyReducedPomLocation>${project.build.directory}/dependency-reduced-pom.xml</dependencyReducedPomLocation> <!-- Paper -->
-                             <createSourcesJar>${shadeSourcesJar}</createSourcesJar>
-                             <filters>
-                                 <filter>
-@@ -204,6 +211,14 @@
-                                         <exclude>com/google/common/**</exclude>
-                                         <exclude>com/google/gson/**</exclude>
-                                         <exclude>com/google/thirdparty/**</exclude>
-+                                        <!-- paper -->
-+                                        <exclude>io/netty/**</exclude>
-+                                        <exclude>META-INF/native/libnetty*</exclude>
-+                                        <exclude>com/brigadier/**</exclude>
-+                                        <exclude>META-INF/MANIFEST.MF</exclude>
-+                                        <exclude>com.mojang.authlib.yggdrasil.YggdrasilGameProfileRepository</exclude>
-+                                        <exclude>com.mojang.datafixers.util.Either</exclude>
-+                                        <exclude>org.apache.logging.log4j/**</exclude>
-                                     </excludes>
-                                 </filter>
-                             </filters>
-@@ -219,10 +234,11 @@
-                                     <pattern>jline</pattern>
-                                     <shadedPattern>org.bukkit.craftbukkit.libs.jline</shadedPattern>
-                                 </relocation>
--                                <relocation>
--                                    <pattern>it.unimi</pattern>
--                                    <shadedPattern>org.bukkit.craftbukkit.libs.it.unimi</shadedPattern>
--                                </relocation>
-+                                <!-- Paper - Don't relocate fastutil in order to prevent api breakage -->
-+                                <!--<relocation>-->
-+                                    <!--<pattern>it.unimi</pattern>-->
-+                                    <!--<shadedPattern>org.bukkit.craftbukkit.libs.it.unimi</shadedPattern>-->
-+                                <!--</relocation>-->
-                                 <relocation>
-                                     <pattern>org.apache.commons.codec</pattern>
-                                     <shadedPattern>org.bukkit.craftbukkit.libs.org.apache.commons.codec</shadedPattern>
-@@ -264,10 +280,6 @@
-                 <groupId>org.apache.maven.plugins</groupId>
-                 <artifactId>maven-compiler-plugin</artifactId>
-                 <version>3.8.1</version>
--                <configuration>
--                    <!-- we use the Eclipse compiler as it doesn't need a JDK -->
--                    <compilerId>eclipse</compilerId>
--                </configuration>
-                 <dependencies>
-                     <!-- we need our custom version as it fixes some bugs on case sensitive file systems -->
-                     <dependency>
 diff --git a/src/main/java/net/minecraft/core/BlockPos.java b/src/main/java/net/minecraft/core/BlockPos.java
 index fd18f0b835e9c9c5108985a4ba49e45bbb9dd03a..913d7819bda8167a6c66090b735aff4d4426438b 100644
 --- a/src/main/java/net/minecraft/core/BlockPos.java
@@ -255,6 +64,21 @@ index c8bf35b836ed63c076f63614a6ffc992fe3f939e..f4b2c8f4168038f7a69850807d0272a6
                      } else if (ServerLoginPacketListenerImpl.this.server.isSingleplayer()) {
                          ServerLoginPacketListenerImpl.LOGGER.warn("Failed to verify username but will let them in anyway!");
                          ServerLoginPacketListenerImpl.this.gameProfile = ServerLoginPacketListenerImpl.this.createFakeProfile(gameprofile);
+diff --git a/src/main/java/net/minecraft/world/entity/AreaEffectCloud.java b/src/main/java/net/minecraft/world/entity/AreaEffectCloud.java
+index 5eb54dbbcaa909ed9d2a406f2841737531ab326e..842e80b176f66d23e576c8f50f2233f8502bd5dc 100644
+--- a/src/main/java/net/minecraft/world/entity/AreaEffectCloud.java
++++ b/src/main/java/net/minecraft/world/entity/AreaEffectCloud.java
+@@ -58,8 +58,8 @@ public class AreaEffectCloud extends Entity {
+     private net.minecraft.world.entity.LivingEntity owner;
+     private UUID ownerUUID;
+ 
+-    public AreaEffectCloud(EntityType<? extends AreaEffectCloud> entitytypes, Level world) {
+-        super(entitytypes, world);
++    public AreaEffectCloud(EntityType<? extends AreaEffectCloud> type, Level world) {
++        super(type, world);
+         this.potion = Potions.EMPTY;
+         this.effects = Lists.newArrayList();
+         this.victims = Maps.newHashMap();
 diff --git a/src/main/java/net/minecraft/world/entity/ExperienceOrb.java b/src/main/java/net/minecraft/world/entity/ExperienceOrb.java
 index 84b87d24bcb43cf04b214516598f2a9376272471..a4a1e836767d0b2b71c3277a28eb72418fa76210 100644
 --- a/src/main/java/net/minecraft/world/entity/ExperienceOrb.java
@@ -340,6 +164,51 @@ index a53a4a29c818640606effaabad07d2bcb70fec3b..0195d2d0ea5a3ff1656e6be6d33e106d
          this.setResting(true);
      }
  
+diff --git a/src/main/java/net/minecraft/world/entity/animal/AbstractFish.java b/src/main/java/net/minecraft/world/entity/animal/AbstractFish.java
+index 8fc3009b8a48611086ce7a17fd28108174668e12..38590222f2f393e624b3efc9b7719e9d31e79dfe 100644
+--- a/src/main/java/net/minecraft/world/entity/animal/AbstractFish.java
++++ b/src/main/java/net/minecraft/world/entity/animal/AbstractFish.java
+@@ -45,8 +45,8 @@ public abstract class AbstractFish extends WaterAnimal {
+ 
+     private static final EntityDataAccessor<Boolean> FROM_BUCKET = SynchedEntityData.defineId(AbstractFish.class, EntityDataSerializers.BOOLEAN);
+ 
+-    public AbstractFish(EntityType<? extends AbstractFish> entitytypes, Level world) {
+-        super(entitytypes, world);
++    public AbstractFish(EntityType<? extends AbstractFish> type, Level world) {
++        super(type, world);
+         this.moveControl = new AbstractFish.FishMoveControl(this);
+     }
+ 
+diff --git a/src/main/java/net/minecraft/world/entity/animal/Bee.java b/src/main/java/net/minecraft/world/entity/animal/Bee.java
+index b3f3deea547a12bb5e84e76f944eb5b8f1ceca43..d442a23881a26b3b169e71ee9743605eda6c1cb3 100644
+--- a/src/main/java/net/minecraft/world/entity/animal/Bee.java
++++ b/src/main/java/net/minecraft/world/entity/animal/Bee.java
+@@ -109,8 +109,8 @@ public class Bee extends Animal implements NeutralMob, FlyingAnimal {
+     private Bee.BeeGoToKnownFlowerGoal goToKnownFlowerGoal;
+     private int underWaterTicks;
+ 
+-    public Bee(EntityType<? extends Bee> entitytypes, Level world) {
+-        super(entitytypes, world);
++    public Bee(EntityType<? extends Bee> type, Level world) {
++        super(type, world);
+         this.moveControl = new FlyingMoveControl(this, 20, true);
+         this.lookControl = new Bee.BeeLookControl(this);
+         this.setPathfindingMalus(BlockPathTypes.DANGER_FIRE, -1.0F);
+diff --git a/src/main/java/net/minecraft/world/entity/animal/Cat.java b/src/main/java/net/minecraft/world/entity/animal/Cat.java
+index 01e0be563b2ffd39984253f88415bc0a82fd849b..a11a0d65ad3a14a4cb763be24a9c8e1a0f57596a 100644
+--- a/src/main/java/net/minecraft/world/entity/animal/Cat.java
++++ b/src/main/java/net/minecraft/world/entity/animal/Cat.java
+@@ -100,8 +100,8 @@ public class Cat extends TamableAnimal {
+     private float relaxStateOneAmount;
+     private float relaxStateOneAmountO;
+ 
+-    public Cat(EntityType<? extends Cat> entitytypes, Level world) {
+-        super(entitytypes, world);
++    public Cat(EntityType<? extends Cat> type, Level world) {
++        super(type, world);
+     }
+ 
+     public ResourceLocation getResourceLocation() {
 diff --git a/src/main/java/net/minecraft/world/entity/animal/Chicken.java b/src/main/java/net/minecraft/world/entity/animal/Chicken.java
 index c56aeb6d47424086ce95f9b3e09676808f49fb97..818acd5b948317547e6f5f038ecf2fec77e91b05 100644
 --- a/src/main/java/net/minecraft/world/entity/animal/Chicken.java
@@ -385,6 +254,36 @@ index 0f00e39a29014d9b92914d27a7848db2822c5eaa..7699ea74fa67e0a5b9a94d5666d40aa9
          this.moveControl = new Dolphin.DolphinMoveControl(this);
          this.lookControl = new DolphinLookControl(this, 10);
          this.setCanPickUpLoot(true);
+diff --git a/src/main/java/net/minecraft/world/entity/animal/Fox.java b/src/main/java/net/minecraft/world/entity/animal/Fox.java
+index b3bc1c9a2793fc2756bedaeb204edb597fc5d1de..04da16ff61ae1b5ffd77b196c0d2c6a0e112f682 100644
+--- a/src/main/java/net/minecraft/world/entity/animal/Fox.java
++++ b/src/main/java/net/minecraft/world/entity/animal/Fox.java
+@@ -116,8 +116,8 @@ public class Fox extends Animal {
+     private float crouchAmountO;
+     private int ticksSinceEaten;
+ 
+-    public Fox(EntityType<? extends Fox> entitytypes, Level world) {
+-        super(entitytypes, world);
++    public Fox(EntityType<? extends Fox> type, Level world) {
++        super(type, world);
+         this.lookControl = new Fox.FoxLookControl();
+         this.moveControl = new Fox.FoxMoveControl();
+         this.setPathfindingMalus(BlockPathTypes.DANGER_OTHER, 0.0F);
+diff --git a/src/main/java/net/minecraft/world/entity/animal/IronGolem.java b/src/main/java/net/minecraft/world/entity/animal/IronGolem.java
+index d0469a9c02fda5ee304915c195854feecbcab22b..810b50d6f4e6b07dda3b0b2629fea428f624b107 100644
+--- a/src/main/java/net/minecraft/world/entity/animal/IronGolem.java
++++ b/src/main/java/net/minecraft/world/entity/animal/IronGolem.java
+@@ -63,8 +63,8 @@ public class IronGolem extends AbstractGolem implements NeutralMob {
+     private int remainingPersistentAngerTime;
+     private UUID persistentAngerTarget;
+ 
+-    public IronGolem(EntityType<? extends IronGolem> entitytypes, Level world) {
+-        super(entitytypes, world);
++    public IronGolem(EntityType<? extends IronGolem> type, Level world) {
++        super(type, world);
+         this.maxUpStep = 1.0F;
+     }
+ 
 diff --git a/src/main/java/net/minecraft/world/entity/animal/MushroomCow.java b/src/main/java/net/minecraft/world/entity/animal/MushroomCow.java
 index dbd0fd41894b050e0e8e4482070a13b33fe7da10..f88c69dd0f76d6c07868938abf913fd435b3079e 100644
 --- a/src/main/java/net/minecraft/world/entity/animal/MushroomCow.java
@@ -415,6 +314,96 @@ index 07bf2ea0ac2f89f3d8178f4a1c8a8931472092e4..e32a9e7eff13f53d38c64f5fea9ccc4a
          this.reassessTrustingGoals();
      }
  
+diff --git a/src/main/java/net/minecraft/world/entity/animal/Panda.java b/src/main/java/net/minecraft/world/entity/animal/Panda.java
+index a45a6ebbdc59d5aa891da8849ce084158c2b9614..eb61cc122c0a4b9552495613de2f7c83c95cc76f 100644
+--- a/src/main/java/net/minecraft/world/entity/animal/Panda.java
++++ b/src/main/java/net/minecraft/world/entity/animal/Panda.java
+@@ -91,8 +91,8 @@ public class Panda extends Animal {
+         return (item == Blocks.BAMBOO.asItem() || item == Blocks.CAKE.asItem()) && entityitem.isAlive() && !entityitem.hasPickUpDelay();
+     };
+ 
+-    public Panda(EntityType<? extends Panda> entitytypes, Level world) {
+-        super(entitytypes, world);
++    public Panda(EntityType<? extends Panda> type, Level world) {
++        super(type, world);
+         this.moveControl = new Panda.PandaMoveControl(this);
+         if (!this.isBaby()) {
+             this.setCanPickUpLoot(true);
+diff --git a/src/main/java/net/minecraft/world/entity/animal/Parrot.java b/src/main/java/net/minecraft/world/entity/animal/Parrot.java
+index 787da27e4fc08f85359fb88c5f59e03bf19cbc44..e5c844b74fe5e16d6f6bf628a9da858939592c66 100644
+--- a/src/main/java/net/minecraft/world/entity/animal/Parrot.java
++++ b/src/main/java/net/minecraft/world/entity/animal/Parrot.java
+@@ -117,8 +117,8 @@ public class Parrot extends ShoulderRidingEntity implements FlyingAnimal {
+     private boolean partyParrot;
+     private BlockPos jukebox;
+ 
+-    public Parrot(EntityType<? extends Parrot> entitytypes, Level world) {
+-        super(entitytypes, world);
++    public Parrot(EntityType<? extends Parrot> type, Level world) {
++        super(type, world);
+         this.moveControl = new FlyingMoveControl(this, 10, false);
+         this.setPathfindingMalus(BlockPathTypes.DANGER_FIRE, -1.0F);
+         this.setPathfindingMalus(BlockPathTypes.DAMAGE_FIRE, -1.0F);
+diff --git a/src/main/java/net/minecraft/world/entity/animal/Pig.java b/src/main/java/net/minecraft/world/entity/animal/Pig.java
+index 31731e60b600883d1a90bdd7636d90ca1ee2e056..aa16e20acb0f3d7b1a7fc95091bf96d9e862aeeb 100644
+--- a/src/main/java/net/minecraft/world/entity/animal/Pig.java
++++ b/src/main/java/net/minecraft/world/entity/animal/Pig.java
+@@ -60,8 +60,8 @@ public class Pig extends Animal implements ItemSteerable, Saddleable {
+     private static final Ingredient FOOD_ITEMS = Ingredient.of(Items.CARROT, Items.POTATO, Items.BEETROOT);
+     public final ItemBasedSteering steering;
+ 
+-    public Pig(EntityType<? extends Pig> entitytypes, Level world) {
+-        super(entitytypes, world);
++    public Pig(EntityType<? extends Pig> type, Level world) {
++        super(type, world);
+         this.steering = new ItemBasedSteering(this.entityData, Pig.DATA_BOOST_TIME, Pig.DATA_SADDLE_ID);
+     }
+ 
+diff --git a/src/main/java/net/minecraft/world/entity/animal/Pufferfish.java b/src/main/java/net/minecraft/world/entity/animal/Pufferfish.java
+index cc6e146beab58de996a1e87014a8e13bfb9e8489..17df2cf57acc1597938df464dfb757a2f25f4e12 100644
+--- a/src/main/java/net/minecraft/world/entity/animal/Pufferfish.java
++++ b/src/main/java/net/minecraft/world/entity/animal/Pufferfish.java
+@@ -35,8 +35,8 @@ public class Pufferfish extends AbstractFish {
+         return entityliving == null ? false : (entityliving instanceof Player && (entityliving.isSpectator() || ((Player) entityliving).isCreative()) ? false : entityliving.getMobType() != MobType.WATER);
+     };
+ 
+-    public Pufferfish(EntityType<? extends Pufferfish> entitytypes, Level world) {
+-        super(entitytypes, world);
++    public Pufferfish(EntityType<? extends Pufferfish> type, Level world) {
++        super(type, world);
+     }
+ 
+     @Override
+diff --git a/src/main/java/net/minecraft/world/entity/animal/Rabbit.java b/src/main/java/net/minecraft/world/entity/animal/Rabbit.java
+index d320901a61a183ae8affeb5c0b817dc0360ec5be..e842505638a0d20bb1775b4f06c29be3cbc24a3c 100644
+--- a/src/main/java/net/minecraft/world/entity/animal/Rabbit.java
++++ b/src/main/java/net/minecraft/world/entity/animal/Rabbit.java
+@@ -68,8 +68,8 @@ public class Rabbit extends Animal {
+     private int jumpDelayTicks;
+     private int moreCarrotTicks;
+ 
+-    public Rabbit(EntityType<? extends Rabbit> entitytypes, Level world) {
+-        super(entitytypes, world);
++    public Rabbit(EntityType<? extends Rabbit> type, Level world) {
++        super(type, world);
+         this.jumpControl = new Rabbit.RabbitJumpControl(this);
+         this.moveControl = new Rabbit.RabbitMoveControl(this);
+         this.initializePathFinderGoals(); // CraftBukkit - moved code
+diff --git a/src/main/java/net/minecraft/world/entity/animal/SnowGolem.java b/src/main/java/net/minecraft/world/entity/animal/SnowGolem.java
+index e5bce3888d369a0d9c3be3f7adbf8c740a4792b0..1c993a6da1bf4e533519d206eb6db3eb82683c53 100644
+--- a/src/main/java/net/minecraft/world/entity/animal/SnowGolem.java
++++ b/src/main/java/net/minecraft/world/entity/animal/SnowGolem.java
+@@ -45,8 +45,8 @@ public class SnowGolem extends AbstractGolem implements Shearable, RangedAttackM
+ 
+     private static final EntityDataAccessor<Byte> DATA_PUMPKIN_ID = SynchedEntityData.defineId(SnowGolem.class, EntityDataSerializers.BYTE);
+ 
+-    public SnowGolem(EntityType<? extends SnowGolem> entitytypes, Level world) {
+-        super(entitytypes, world);
++    public SnowGolem(EntityType<? extends SnowGolem> type, Level world) {
++        super(type, world);
+     }
+ 
+     @Override
 diff --git a/src/main/java/net/minecraft/world/entity/animal/Squid.java b/src/main/java/net/minecraft/world/entity/animal/Squid.java
 index bd5c9f9a78b798815f62e3af06d8fe59efea7e86..670419fd78a411b494d72c83a5b847240dfd74b0 100644
 --- a/src/main/java/net/minecraft/world/entity/animal/Squid.java
@@ -445,6 +434,51 @@ index 4586f4110a2a8e59362b5ded41aa28e9a08ff20b..d00416a31a4f2ecd64a94dea710959a9
          this.setPathfindingMalus(BlockPathTypes.WATER, 0.0F);
          this.moveControl = new Turtle.TurtleMoveControl(this);
          this.maxUpStep = 1.0F;
+diff --git a/src/main/java/net/minecraft/world/entity/animal/Wolf.java b/src/main/java/net/minecraft/world/entity/animal/Wolf.java
+index a619c829854f3bafb0345bf600c62215c336a619..ba23b7ee7925dc811c7112a4fbe72fd84bedddce 100644
+--- a/src/main/java/net/minecraft/world/entity/animal/Wolf.java
++++ b/src/main/java/net/minecraft/world/entity/animal/Wolf.java
+@@ -85,8 +85,8 @@ public class Wolf extends TamableAnimal implements NeutralMob {
+     private static final IntRange PERSISTENT_ANGER_TIME = TimeUtil.rangeOfSeconds(20, 39);
+     private UUID persistentAngerTarget;
+ 
+-    public Wolf(EntityType<? extends Wolf> entitytypes, Level world) {
+-        super(entitytypes, world);
++    public Wolf(EntityType<? extends Wolf> type, Level world) {
++        super(type, world);
+         this.setTame(false);
+     }
+ 
+diff --git a/src/main/java/net/minecraft/world/entity/animal/horse/AbstractChestedHorse.java b/src/main/java/net/minecraft/world/entity/animal/horse/AbstractChestedHorse.java
+index 19a0c0d3a2e53fa610fc01323615f4eebfd30965..2376a6cc6ef0a8e7cfc4ad1cdb9406d2d40586e5 100644
+--- a/src/main/java/net/minecraft/world/entity/animal/horse/AbstractChestedHorse.java
++++ b/src/main/java/net/minecraft/world/entity/animal/horse/AbstractChestedHorse.java
+@@ -22,8 +22,8 @@ public abstract class AbstractChestedHorse extends AbstractHorse {
+ 
+     private static final EntityDataAccessor<Boolean> DATA_ID_CHEST = SynchedEntityData.defineId(AbstractChestedHorse.class, EntityDataSerializers.BOOLEAN);
+ 
+-    protected AbstractChestedHorse(EntityType<? extends AbstractChestedHorse> entitytypes, Level world) {
+-        super(entitytypes, world);
++    protected AbstractChestedHorse(EntityType<? extends AbstractChestedHorse> type, Level world) {
++        super(type, world);
+         this.canGallop = false;
+     }
+ 
+diff --git a/src/main/java/net/minecraft/world/entity/animal/horse/Llama.java b/src/main/java/net/minecraft/world/entity/animal/horse/Llama.java
+index aeea0fdf549fd0712128cbc4215c00f660b1f3c3..9c7e48190c0d2978d313259031b3226ebfe5d16a 100644
+--- a/src/main/java/net/minecraft/world/entity/animal/horse/Llama.java
++++ b/src/main/java/net/minecraft/world/entity/animal/horse/Llama.java
+@@ -65,8 +65,8 @@ public class Llama extends AbstractChestedHorse implements RangedAttackMob {
+     @Nullable
+     private Llama caravanTail;
+ 
+-    public Llama(EntityType<? extends Llama> entitytypes, Level world) {
+-        super(entitytypes, world);
++    public Llama(EntityType<? extends Llama> type, Level world) {
++        super(type, world);
+     }
+ 
+     public void setStrength(int strength) {
 diff --git a/src/main/java/net/minecraft/world/entity/animal/horse/SkeletonHorse.java b/src/main/java/net/minecraft/world/entity/animal/horse/SkeletonHorse.java
 index ccf62a8f7aa413f5a96849074bd378ec801c94a8..39c6979619530b76a783e727c6c9babc533edfba 100644
 --- a/src/main/java/net/minecraft/world/entity/animal/horse/SkeletonHorse.java
@@ -475,6 +509,21 @@ index ee60d2b2a9b94909336ef684c43c65dd70e164ba..046d88b6ff76579f2db1b27ef39eb6be
      }
  
      @Override
+diff --git a/src/main/java/net/minecraft/world/entity/boss/enderdragon/EndCrystal.java b/src/main/java/net/minecraft/world/entity/boss/enderdragon/EndCrystal.java
+index 488ec4131667e25c3c8e27ea427f24cfdcc9b4fe..6292d04464950ac52fcd6d69345db5125d3127eb 100644
+--- a/src/main/java/net/minecraft/world/entity/boss/enderdragon/EndCrystal.java
++++ b/src/main/java/net/minecraft/world/entity/boss/enderdragon/EndCrystal.java
+@@ -30,8 +30,8 @@ public class EndCrystal extends Entity {
+     private static final EntityDataAccessor<Boolean> DATA_SHOW_BOTTOM = SynchedEntityData.defineId(EndCrystal.class, EntityDataSerializers.BOOLEAN);
+     public int time;
+ 
+-    public EndCrystal(EntityType<? extends EndCrystal> entitytypes, Level world) {
+-        super(entitytypes, world);
++    public EndCrystal(EntityType<? extends EndCrystal> type, Level world) {
++        super(type, world);
+         this.blocksBuilding = true;
+         this.time = this.random.nextInt(100000);
+     }
 diff --git a/src/main/java/net/minecraft/world/entity/boss/enderdragon/EnderDragon.java b/src/main/java/net/minecraft/world/entity/boss/enderdragon/EnderDragon.java
 index 85fde792d2d816722ba2547698c63f536fae395f..dbf86ef45d939382de9b455ff29cd7f75dc69834 100644
 --- a/src/main/java/net/minecraft/world/entity/boss/enderdragon/EnderDragon.java
@@ -533,6 +582,36 @@ index b178c77f2557681f089b378996d028fbe34e370d..3a275ec157c0077d628c251b981916c7
          this.bossEvent = (ServerBossEvent) (new ServerBossEvent(this.getDisplayName(), BossEvent.BossBarColor.PURPLE, BossEvent.BossBarOverlay.PROGRESS)).setDarkenScreen(true);
          this.setHealth(this.getMaxHealth());
          this.getNavigation().setCanFloat(true);
+diff --git a/src/main/java/net/minecraft/world/entity/decoration/ArmorStand.java b/src/main/java/net/minecraft/world/entity/decoration/ArmorStand.java
+index ff8078e686199a7b3e7911a6a56f18dcd1569853..0ec62996bd1119300791bee42fffea7e2d644147 100644
+--- a/src/main/java/net/minecraft/world/entity/decoration/ArmorStand.java
++++ b/src/main/java/net/minecraft/world/entity/decoration/ArmorStand.java
+@@ -75,8 +75,8 @@ public class ArmorStand extends LivingEntity {
+     public Rotations leftLegPose;
+     public Rotations rightLegPose;
+ 
+-    public ArmorStand(EntityType<? extends ArmorStand> entitytypes, Level world) {
+-        super(entitytypes, world);
++    public ArmorStand(EntityType<? extends ArmorStand> type, Level world) {
++        super(type, world);
+         this.handItems = NonNullList.withSize(2, ItemStack.EMPTY);
+         this.armorItems = NonNullList.withSize(4, ItemStack.EMPTY);
+         this.headPose = ArmorStand.DEFAULT_HEAD_POSE;
+diff --git a/src/main/java/net/minecraft/world/entity/decoration/ItemFrame.java b/src/main/java/net/minecraft/world/entity/decoration/ItemFrame.java
+index da46581f7f7d3e89aebc4902fa885d023ce2576b..e16e9d9d733a40c22aa3bc433436a4500266824a 100644
+--- a/src/main/java/net/minecraft/world/entity/decoration/ItemFrame.java
++++ b/src/main/java/net/minecraft/world/entity/decoration/ItemFrame.java
+@@ -43,8 +43,8 @@ public class ItemFrame extends HangingEntity {
+     private float dropChance = 1.0F;
+     public boolean fixed;
+ 
+-    public ItemFrame(EntityType<? extends ItemFrame> entitytypes, Level world) {
+-        super(entitytypes, world);
++    public ItemFrame(EntityType<? extends ItemFrame> type, Level world) {
++        super(type, world);
+     }
+ 
+     public ItemFrame(Level world, BlockPos pos, Direction direction) {
 diff --git a/src/main/java/net/minecraft/world/entity/decoration/LeashFenceKnotEntity.java b/src/main/java/net/minecraft/world/entity/decoration/LeashFenceKnotEntity.java
 index abe99ebd075a05a7d5e47e0a4ec0896ef8aae9d4..3d3e94166b02ddcf2b014d665adbf99b922c8d5b 100644
 --- a/src/main/java/net/minecraft/world/entity/decoration/LeashFenceKnotEntity.java
@@ -578,6 +657,21 @@ index de24b41fdc3d84b7812a1ea98cb26d6e3f044b58..9c448ed19cedb9298228c17c65d6a907
          this.blockState = Blocks.SAND.defaultBlockState();
          this.dropItem = true;
          this.fallDamageMax = 40;
+diff --git a/src/main/java/net/minecraft/world/entity/item/ItemEntity.java b/src/main/java/net/minecraft/world/entity/item/ItemEntity.java
+index 231697bad5ed5c4c67d8d01371fe6aba164d24b8..2a44d5b5047c527b5f20303df1a2c5fe493d890c 100644
+--- a/src/main/java/net/minecraft/world/entity/item/ItemEntity.java
++++ b/src/main/java/net/minecraft/world/entity/item/ItemEntity.java
+@@ -47,8 +47,8 @@ public class ItemEntity extends Entity {
+     public final float bobOffs;
+     private int lastTick = MinecraftServer.currentTick - 1; // CraftBukkit
+ 
+-    public ItemEntity(EntityType<? extends ItemEntity> entitytypes, Level world) {
+-        super(entitytypes, world);
++    public ItemEntity(EntityType<? extends ItemEntity> type, Level world) {
++        super(type, world);
+         this.health = 5;
+         this.bobOffs = (float) (Math.random() * 3.141592653589793D * 2.0D);
+     }
 diff --git a/src/main/java/net/minecraft/world/entity/item/PrimedTnt.java b/src/main/java/net/minecraft/world/entity/item/PrimedTnt.java
 index f34fb031c39ec541c71dc6fd5d8d2fbf2299b8d3..62e7223bf8f1f0e7de561c8319ad496d17d1152e 100644
 --- a/src/main/java/net/minecraft/world/entity/item/PrimedTnt.java
@@ -623,6 +717,21 @@ index e7fe270b7a3c33d0a18b86aaf7285658a8b515bb..c89395cb1ac6480b82da776d47a4945f
      }
  
      public static AttributeSupplier.Builder createCaveSpider() {
+diff --git a/src/main/java/net/minecraft/world/entity/monster/Creeper.java b/src/main/java/net/minecraft/world/entity/monster/Creeper.java
+index e418556c98c6c7c1b9cc2d937c5108252c6a1a1b..ce40a5e730d34b967734417925719cbea9ce5172 100644
+--- a/src/main/java/net/minecraft/world/entity/monster/Creeper.java
++++ b/src/main/java/net/minecraft/world/entity/monster/Creeper.java
+@@ -54,8 +54,8 @@ public class Creeper extends Monster {
+     public int explosionRadius = 3;
+     private int droppedSkulls;
+ 
+-    public Creeper(EntityType<? extends Creeper> entitytypes, Level world) {
+-        super(entitytypes, world);
++    public Creeper(EntityType<? extends Creeper> type, Level world) {
++        super(type, world);
+     }
+ 
+     @Override
 diff --git a/src/main/java/net/minecraft/world/entity/monster/Drowned.java b/src/main/java/net/minecraft/world/entity/monster/Drowned.java
 index 6ec5d15c087fc4f23202da597183f256fa00aa9a..8b9f20f7ff9d0f95b82df63b854f11ded390ee67 100644
 --- a/src/main/java/net/minecraft/world/entity/monster/Drowned.java
@@ -803,21 +912,21 @@ index 529ce76249b7683bd5e6e0d4dbbe090b8bbf232a..78b97b961402be4f6d847e04c3c5b927
      }
  
      @Override
-diff --git a/src/main/java/net/minecraft/world/entity/monster/Spider.java b/src/main/java/net/minecraft/world/entity/monster/Spider.java
-index 36afda406865c1678dd015c939a1c5dc57c4bb16..e6e849afc679e65d7cd9d7744ee07d0cc5f8cf5e 100644
---- a/src/main/java/net/minecraft/world/entity/monster/Spider.java
-+++ b/src/main/java/net/minecraft/world/entity/monster/Spider.java
-@@ -46,8 +46,8 @@ public class Spider extends Monster {
+diff --git a/src/main/java/net/minecraft/world/entity/monster/Slime.java b/src/main/java/net/minecraft/world/entity/monster/Slime.java
+index 0836716999fd997b9875e6dd51afa5e0b7104efb..c7f5e8658bcbd30936cf57f890e1a6feca72eced 100644
+--- a/src/main/java/net/minecraft/world/entity/monster/Slime.java
++++ b/src/main/java/net/minecraft/world/entity/monster/Slime.java
+@@ -60,8 +60,8 @@ public class Slime extends Mob implements Enemy {
+     public float oSquish;
+     private boolean wasOnGround;
  
-     private static final EntityDataAccessor<Byte> DATA_FLAGS_ID = SynchedEntityData.defineId(Spider.class, EntityDataSerializers.BYTE);
- 
--    public Spider(EntityType<? extends Spider> entitytypes, Level world) {
+-    public Slime(EntityType<? extends Slime> entitytypes, Level world) {
 -        super(entitytypes, world);
-+    public Spider(EntityType<? extends Spider> type, Level world) {
++    public Slime(EntityType<? extends Slime> type, Level world) {
 +        super(type, world);
+         this.moveControl = new Slime.SlimeMoveControl(this);
      }
  
-     @Override
 diff --git a/src/main/java/net/minecraft/world/entity/monster/Vindicator.java b/src/main/java/net/minecraft/world/entity/monster/Vindicator.java
 index 0b4b579a17bd49a5a89bf76918cd71ffd07576a3..97ab586de5bc93223aed62216df3fa23ae809f0d 100644
 --- a/src/main/java/net/minecraft/world/entity/monster/Vindicator.java
@@ -863,6 +972,21 @@ index 96b08325f0fea45990ed18a134bd87fbcaf231f1..b79d550527b5bf7506767aeca7e743ca
          this.setPathfindingMalus(BlockPathTypes.LAVA, 8.0F);
      }
  
+diff --git a/src/main/java/net/minecraft/world/entity/monster/ZombifiedPiglin.java b/src/main/java/net/minecraft/world/entity/monster/ZombifiedPiglin.java
+index 9b873f89ff74f1c29a345bb8efc1834ba35f5202..ce820407bf7d38347115090fd9eb905d0e9a5f63 100644
+--- a/src/main/java/net/minecraft/world/entity/monster/ZombifiedPiglin.java
++++ b/src/main/java/net/minecraft/world/entity/monster/ZombifiedPiglin.java
+@@ -50,8 +50,8 @@ public class ZombifiedPiglin extends Zombie implements NeutralMob {
+     private static final IntRange ALERT_INTERVAL = TimeUtil.rangeOfSeconds(4, 6);
+     private int ticksUntilNextAlert;
+ 
+-    public ZombifiedPiglin(EntityType<? extends ZombifiedPiglin> entitytypes, Level world) {
+-        super(entitytypes, world);
++    public ZombifiedPiglin(EntityType<? extends ZombifiedPiglin> type, Level world) {
++        super(type, world);
+         this.setPathfindingMalus(BlockPathTypes.LAVA, 8.0F);
+     }
+ 
 diff --git a/src/main/java/net/minecraft/world/entity/npc/WanderingTrader.java b/src/main/java/net/minecraft/world/entity/npc/WanderingTrader.java
 index 48e7fcc03d0e61463ca448e02fe0a94df4a37c9d..fc9686d52cd86490703f57218a3b09aa70c96be3 100644
 --- a/src/main/java/net/minecraft/world/entity/npc/WanderingTrader.java
@@ -878,6 +1002,21 @@ index 48e7fcc03d0e61463ca448e02fe0a94df4a37c9d..fc9686d52cd86490703f57218a3b09aa
          this.forcedLoading = true;
      }
  
+diff --git a/src/main/java/net/minecraft/world/entity/projectile/Arrow.java b/src/main/java/net/minecraft/world/entity/projectile/Arrow.java
+index ecc6c483cc7c5c446d5ee7828d44a0412350156b..3811c772ef2a7d8a8c36ffffce5959f94820cbe4 100644
+--- a/src/main/java/net/minecraft/world/entity/projectile/Arrow.java
++++ b/src/main/java/net/minecraft/world/entity/projectile/Arrow.java
+@@ -29,8 +29,8 @@ public class Arrow extends AbstractArrow {
+     public final Set<MobEffectInstance> effects;
+     private boolean fixedColor;
+ 
+-    public Arrow(EntityType<? extends Arrow> entitytypes, Level world) {
+-        super(entitytypes, world);
++    public Arrow(EntityType<? extends Arrow> type, Level world) {
++        super(type, world);
+         this.potion = Potions.EMPTY;
+         this.effects = Sets.newHashSet();
+     }
 diff --git a/src/main/java/net/minecraft/world/entity/projectile/DragonFireball.java b/src/main/java/net/minecraft/world/entity/projectile/DragonFireball.java
 index 3953b5ccf41aed1fedfb4ea398a8903bd70f0734..fc33cdd2285d0b9746845e238c604fb00e5b6a48 100644
 --- a/src/main/java/net/minecraft/world/entity/projectile/DragonFireball.java
@@ -893,6 +1032,36 @@ index 3953b5ccf41aed1fedfb4ea398a8903bd70f0734..fc33cdd2285d0b9746845e238c604fb0
      }
  
      public DragonFireball(Level world, LivingEntity owner, double directionX, double directionY, double directionZ) {
+diff --git a/src/main/java/net/minecraft/world/entity/projectile/EvokerFangs.java b/src/main/java/net/minecraft/world/entity/projectile/EvokerFangs.java
+index 2ac123119631f49eea8315eea96a1c3dd9d8e344..20e207b4e2572ad27016a05e3cc1ee9f3d06e186 100644
+--- a/src/main/java/net/minecraft/world/entity/projectile/EvokerFangs.java
++++ b/src/main/java/net/minecraft/world/entity/projectile/EvokerFangs.java
+@@ -24,8 +24,8 @@ public class EvokerFangs extends Entity {
+     private LivingEntity owner;
+     private UUID ownerUUID;
+ 
+-    public EvokerFangs(EntityType<? extends EvokerFangs> entitytypes, Level world) {
+-        super(entitytypes, world);
++    public EvokerFangs(EntityType<? extends EvokerFangs> type, Level world) {
++        super(type, world);
+         this.lifeTicks = 22;
+     }
+ 
+diff --git a/src/main/java/net/minecraft/world/entity/projectile/EyeOfEnder.java b/src/main/java/net/minecraft/world/entity/projectile/EyeOfEnder.java
+index 20b5bac5f08f793e40700f4682059a4862baa3f8..061b68e131b3a005e941e776bb540b2fe6a120c9 100644
+--- a/src/main/java/net/minecraft/world/entity/projectile/EyeOfEnder.java
++++ b/src/main/java/net/minecraft/world/entity/projectile/EyeOfEnder.java
+@@ -28,8 +28,8 @@ public class EyeOfEnder extends Entity {
+     public int life;
+     public boolean surviveAfterDeath;
+ 
+-    public EyeOfEnder(EntityType<? extends EyeOfEnder> entitytypes, Level world) {
+-        super(entitytypes, world);
++    public EyeOfEnder(EntityType<? extends EyeOfEnder> type, Level world) {
++        super(type, world);
+     }
+ 
+     public EyeOfEnder(Level world, double x, double y, double z) {
 diff --git a/src/main/java/net/minecraft/world/entity/projectile/Fireball.java b/src/main/java/net/minecraft/world/entity/projectile/Fireball.java
 index 02d38b081150f02d126870363d65181a825c33c3..1eb4369bb4aa1014bb5e7e6c1953fde141b3ecbc 100644
 --- a/src/main/java/net/minecraft/world/entity/projectile/Fireball.java
@@ -920,6 +1089,21 @@ index 02d38b081150f02d126870363d65181a825c33c3..1eb4369bb4aa1014bb5e7e6c1953fde1
      }
  
      public void setItem(ItemStack stack) {
+diff --git a/src/main/java/net/minecraft/world/entity/projectile/FireworkRocketEntity.java b/src/main/java/net/minecraft/world/entity/projectile/FireworkRocketEntity.java
+index 054200438f9511957e6ca3a45229e29f14e41ba4..def5138c25536c2178b5b6b43578b527193c8a6b 100644
+--- a/src/main/java/net/minecraft/world/entity/projectile/FireworkRocketEntity.java
++++ b/src/main/java/net/minecraft/world/entity/projectile/FireworkRocketEntity.java
+@@ -39,8 +39,8 @@ public class FireworkRocketEntity extends Projectile {
+     public int lifetime;
+     private LivingEntity attachedToEntity;
+ 
+-    public FireworkRocketEntity(EntityType<? extends FireworkRocketEntity> entitytypes, Level world) {
+-        super(entitytypes, world);
++    public FireworkRocketEntity(EntityType<? extends FireworkRocketEntity> type, Level world) {
++        super(type, world);
+     }
+ 
+     public FireworkRocketEntity(Level world, double x, double y, double z, ItemStack stack) {
 diff --git a/src/main/java/net/minecraft/world/entity/projectile/LargeFireball.java b/src/main/java/net/minecraft/world/entity/projectile/LargeFireball.java
 index 787a6323c3fc49972dfebb6f2c8cdb8772604650..edf5b5c304eeef1e01217e1a4272028c60b47840 100644
 --- a/src/main/java/net/minecraft/world/entity/projectile/LargeFireball.java
@@ -933,6 +1117,21 @@ index 787a6323c3fc49972dfebb6f2c8cdb8772604650..edf5b5c304eeef1e01217e1a4272028c
 +    public LargeFireball(EntityType<? extends LargeFireball> type, Level world) {
 +        super(type, world);
          isIncendiary = this.level.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING); // CraftBukkit
+     }
+ 
+diff --git a/src/main/java/net/minecraft/world/entity/projectile/ShulkerBullet.java b/src/main/java/net/minecraft/world/entity/projectile/ShulkerBullet.java
+index c43ac447b49cac4c6f923c4069d37747e2a32947..0cb9db07a6361a9a9311d3e729fbd7b488796abe 100644
+--- a/src/main/java/net/minecraft/world/entity/projectile/ShulkerBullet.java
++++ b/src/main/java/net/minecraft/world/entity/projectile/ShulkerBullet.java
+@@ -41,8 +41,8 @@ public class ShulkerBullet extends Projectile {
+     @Nullable
+     private UUID targetId;
+ 
+-    public ShulkerBullet(EntityType<? extends ShulkerBullet> entitytypes, Level world) {
+-        super(entitytypes, world);
++    public ShulkerBullet(EntityType<? extends ShulkerBullet> type, Level world) {
++        super(type, world);
+         this.noPhysics = true;
      }
  
 diff --git a/src/main/java/net/minecraft/world/entity/projectile/SmallFireball.java b/src/main/java/net/minecraft/world/entity/projectile/SmallFireball.java
@@ -1107,6 +1306,21 @@ index 68decf777dc4203ebaa76fe421ecd652da9dc2fe..24ce789572d3bd625990f2b3cefb0f24
          }
  
          @Override
+diff --git a/src/main/java/net/minecraft/world/item/BoneMealItem.java b/src/main/java/net/minecraft/world/item/BoneMealItem.java
+index 32174eea0403fed1d0f8c5cc630936a65e39ba32..e457e966c89c23fe0264bee25fc9b9257054c46f 100644
+--- a/src/main/java/net/minecraft/world/item/BoneMealItem.java
++++ b/src/main/java/net/minecraft/world/item/BoneMealItem.java
+@@ -22,8 +22,8 @@ import net.minecraft.world.level.block.state.BlockState;
+ 
+ public class BoneMealItem extends Item {
+ 
+-    public BoneMealItem(Item.Properties item_info) {
+-        super(item_info);
++    public BoneMealItem(Item.Properties settings) {
++        super(settings);
+     }
+ 
+     @Override
 diff --git a/src/main/java/net/minecraft/world/item/PotionItem.java b/src/main/java/net/minecraft/world/item/PotionItem.java
 index 517c533492f551129f46cdecfa0c4d69fe63743a..52ae32a30200e7e53d276160dc7b1cbebbf73a4d 100644
 --- a/src/main/java/net/minecraft/world/item/PotionItem.java
@@ -1148,6 +1362,21 @@ index 20e9e4807a66f892b998e62ee4bfeaa8dd6637f4..8c62dbe18b7528e0094754ffdb30453b
 -    public BambooSaplingBlock(BlockBehaviour.Properties blockbase_info) {
 -        super(blockbase_info);
 +    public BambooSaplingBlock(BlockBehaviour.Properties settings) {
++        super(settings);
+     }
+ 
+     @Override
+diff --git a/src/main/java/net/minecraft/world/level/block/BasePressurePlateBlock.java b/src/main/java/net/minecraft/world/level/block/BasePressurePlateBlock.java
+index 8a48346e24e7c7ee8ba2232fb9e5113abf7386c7..a7b2eb16002c20c5a053bbb8dc55437cd2957a44 100644
+--- a/src/main/java/net/minecraft/world/level/block/BasePressurePlateBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/BasePressurePlateBlock.java
+@@ -23,8 +23,8 @@ public abstract class BasePressurePlateBlock extends Block {
+     protected static final VoxelShape AABB = Block.box(1.0D, 0.0D, 1.0D, 15.0D, 1.0D, 15.0D);
+     protected static final AABB TOUCH_AABB = new AABB(0.125D, 0.0D, 0.125D, 0.875D, 0.25D, 0.875D);
+ 
+-    protected BasePressurePlateBlock(BlockBehaviour.Properties blockbase_info) {
+-        super(blockbase_info);
++    protected BasePressurePlateBlock(BlockBehaviour.Properties settings) {
 +        super(settings);
      }
  
@@ -1243,7 +1472,7 @@ index 56c9a9f9908365c5b61d65a523a2506dfb319f80..1a6bbba5b9c089b13759f75b9e663b82
      }
  
 diff --git a/src/main/java/net/minecraft/world/level/block/ChestBlock.java b/src/main/java/net/minecraft/world/level/block/ChestBlock.java
-index 66f89f24f4e520334251aa395184510c2088405b..3447e935469ee95444fb25a1ebc2c805e6229250 100644
+index bfb1a095595e00c70093b8019c2331fb0891599a..3447e935469ee95444fb25a1ebc2c805e6229250 100644
 --- a/src/main/java/net/minecraft/world/level/block/ChestBlock.java
 +++ b/src/main/java/net/minecraft/world/level/block/ChestBlock.java
 @@ -79,7 +79,7 @@ public class ChestBlock extends AbstractChestBlock<ChestBlockEntity> implements
@@ -1255,6 +1484,17 @@ index 66f89f24f4e520334251aa395184510c2088405b..3447e935469ee95444fb25a1ebc2c805
          }
  
          public Optional<MenuProvider> acceptSingle(ChestBlockEntity tileentitychest) {
+@@ -124,8 +124,8 @@ public class ChestBlock extends AbstractChestBlock<ChestBlockEntity> implements
+     };
+     // CraftBukkit end
+ 
+-    protected ChestBlock(BlockBehaviour.Properties blockbase_info, Supplier<BlockEntityType<? extends ChestBlockEntity>> supplier) {
+-        super(blockbase_info, supplier);
++    protected ChestBlock(BlockBehaviour.Properties settings, Supplier<BlockEntityType<? extends ChestBlockEntity>> entityTypeSupplier) {
++        super(settings, entityTypeSupplier);
+         this.registerDefaultState((BlockState) ((BlockState) ((BlockState) ((BlockState) this.stateDefinition.any()).setValue(ChestBlock.FACING, Direction.NORTH)).setValue(ChestBlock.TYPE, ChestType.SINGLE)).setValue(ChestBlock.WATERLOGGED, false));
+     }
+ 
 diff --git a/src/main/java/net/minecraft/world/level/block/CocoaBlock.java b/src/main/java/net/minecraft/world/level/block/CocoaBlock.java
 index 363b3f40c342a42f361de4951dce2c5681199346..c3828b946c9ddfa8799664bb5eda3e3ab7603c23 100644
 --- a/src/main/java/net/minecraft/world/level/block/CocoaBlock.java
@@ -1360,6 +1600,21 @@ index 120a7aa84980be35b07e863444ba3a9a6d866f28..36df9c02af067bbe18497f738ff01de9
      }
  
      @Override
+diff --git a/src/main/java/net/minecraft/world/level/block/DispenserBlock.java b/src/main/java/net/minecraft/world/level/block/DispenserBlock.java
+index acd6d8f7f8d72751d1979cb1efec4ce4065f0b40..5a0d5b150eb3d3ee5b627625de7feb394e40d142 100644
+--- a/src/main/java/net/minecraft/world/level/block/DispenserBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/DispenserBlock.java
+@@ -50,8 +50,8 @@ public class DispenserBlock extends BaseEntityBlock {
+         DispenserBlock.DISPENSER_REGISTRY.put(provider.asItem(), behavior);
+     }
+ 
+-    protected DispenserBlock(BlockBehaviour.Properties blockbase_info) {
+-        super(blockbase_info);
++    protected DispenserBlock(BlockBehaviour.Properties settings) {
++        super(settings);
+         this.registerDefaultState((BlockState) ((BlockState) ((BlockState) this.stateDefinition.any()).setValue(DispenserBlock.FACING, Direction.NORTH)).setValue(DispenserBlock.TRIGGERED, false));
+     }
+ 
 diff --git a/src/main/java/net/minecraft/world/level/block/DoorBlock.java b/src/main/java/net/minecraft/world/level/block/DoorBlock.java
 index bdcdec46a45cc36ce68db65dee1798b37f25301c..ca5b8d2abd033fcb077871e98b6a640753493b6b 100644
 --- a/src/main/java/net/minecraft/world/level/block/DoorBlock.java
@@ -1401,6 +1656,21 @@ index 98f2458dccdc018cecffb0726c68f10c4820b22c..7e9b758a276e39aac1ed65667930f8e3
 -    public DragonEggBlock(BlockBehaviour.Properties blockbase_info) {
 -        super(blockbase_info);
 +    public DragonEggBlock(BlockBehaviour.Properties settings) {
++        super(settings);
+     }
+ 
+     @Override
+diff --git a/src/main/java/net/minecraft/world/level/block/DropperBlock.java b/src/main/java/net/minecraft/world/level/block/DropperBlock.java
+index 37833e545f2264a1f3e00f4fcc2a247265b6de9f..e6848e5099709f49365227ff2639aa37656be854 100644
+--- a/src/main/java/net/minecraft/world/level/block/DropperBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/DropperBlock.java
+@@ -25,8 +25,8 @@ public class DropperBlock extends DispenserBlock {
+ 
+     private static final DispenseItemBehavior DISPENSE_BEHAVIOUR = new DefaultDispenseItemBehavior();
+ 
+-    public DropperBlock(BlockBehaviour.Properties blockbase_info) {
+-        super(blockbase_info);
++    public DropperBlock(BlockBehaviour.Properties settings) {
 +        super(settings);
      }
  
@@ -1491,6 +1761,21 @@ index d69be55692d09b7f9a67e9e90338d27ab5637b07..2a4a5450466bf0b3d8b59f2f6e1369e3
 -    protected GrassPathBlock(BlockBehaviour.Properties blockbase_info) {
 -        super(blockbase_info);
 +    protected GrassPathBlock(BlockBehaviour.Properties settings) {
++        super(settings);
+     }
+ 
+     @Override
+diff --git a/src/main/java/net/minecraft/world/level/block/IceBlock.java b/src/main/java/net/minecraft/world/level/block/IceBlock.java
+index 88b3ac0f944da8d9cf6fd364c1f1dccc416a70fd..5c75ed7f757b29410b48f151c6d62adebf1a5aa8 100644
+--- a/src/main/java/net/minecraft/world/level/block/IceBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/IceBlock.java
+@@ -19,8 +19,8 @@ import net.minecraft.world.level.material.PushReaction;
+ 
+ public class IceBlock extends HalfTransparentBlock {
+ 
+-    public IceBlock(BlockBehaviour.Properties blockbase_info) {
+-        super(blockbase_info);
++    public IceBlock(BlockBehaviour.Properties settings) {
 +        super(settings);
      }
  
@@ -1958,67 +2243,15 @@ index 9dbfe5801620483e8d5c65205b2213dbb5f1a31e..ce96583f186fab185f67c1a59c67da21
      public class LecternInventory implements Container {
  
          public List<HumanEntity> transaction = new ArrayList<>();
-diff --git a/src/main/java/org/bukkit/craftbukkit/Main.java b/src/main/java/org/bukkit/craftbukkit/Main.java
-index 60ede7442b2d9a63fcd765aff29a96c9130aebac..3f52c19b6b797e26b3dcedcec2afd28c478e7091 100644
---- a/src/main/java/org/bukkit/craftbukkit/Main.java
-+++ b/src/main/java/org/bukkit/craftbukkit/Main.java
-@@ -186,7 +186,7 @@ public class Main {
-                 }
- 
-                 if (Main.class.getPackage().getImplementationVendor() != null && System.getProperty("IReallyKnowWhatIAmDoingISwear") == null) {
--                    Date buildDate = new Date(Integer.parseInt(Main.class.getPackage().getImplementationVendor()) * 1000L);
-+                    Date buildDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").parse(Main.class.getPackage().getImplementationVendor()); // Paper
- 
-                     Calendar deadline = Calendar.getInstance();
-                     deadline.add(Calendar.DAY_OF_YEAR, -28);
-diff --git a/src/main/java/org/bukkit/craftbukkit/generator/InternalChunkGenerator.java b/src/main/java/org/bukkit/craftbukkit/generator/InternalChunkGenerator.java
-index c16b17b2f13a49955c1c95d4404a219d90e2fd55..dfd78921ed5fad69a294e6c8652a2276f4839780 100644
---- a/src/main/java/org/bukkit/craftbukkit/generator/InternalChunkGenerator.java
-+++ b/src/main/java/org/bukkit/craftbukkit/generator/InternalChunkGenerator.java
-@@ -6,7 +6,7 @@ import net.minecraft.world.level.levelgen.StructureSettings;
- // Do not implement functions to this class, add to NormalChunkGenerator
- public abstract class InternalChunkGenerator extends net.minecraft.world.level.chunk.ChunkGenerator {
- 
--    public InternalChunkGenerator(BiomeSource worldchunkmanager, StructureSettings structuresettings) {
--        super(worldchunkmanager, structuresettings);
-+    public InternalChunkGenerator(BiomeSource biomeSource, StructureSettings structuresConfig) {
-+        super(biomeSource, structuresConfig);
-     }
- }
-diff --git a/src/main/java/org/bukkit/craftbukkit/inventory/CraftMetaBlockState.java b/src/main/java/org/bukkit/craftbukkit/inventory/CraftMetaBlockState.java
-index f946119b43920cac69b048e8ebf57296bf05bb1c..d6f97597eaf2727d34e12aceabb4e0b20bfeec76 100644
---- a/src/main/java/org/bukkit/craftbukkit/inventory/CraftMetaBlockState.java
-+++ b/src/main/java/org/bukkit/craftbukkit/inventory/CraftMetaBlockState.java
-@@ -68,7 +68,6 @@ import org.bukkit.craftbukkit.block.CraftSign;
- import org.bukkit.craftbukkit.block.CraftSkull;
- import org.bukkit.craftbukkit.block.CraftSmoker;
- import org.bukkit.craftbukkit.block.CraftStructureBlock;
--import org.bukkit.craftbukkit.inventory.CraftMetaItem.ItemMetaKey;
- import org.bukkit.craftbukkit.util.CraftMagicNumbers;
- import org.bukkit.inventory.meta.BlockStateMeta;
- 
-diff --git a/src/main/java/org/bukkit/craftbukkit/inventory/CraftMetaLeatherArmor.java b/src/main/java/org/bukkit/craftbukkit/inventory/CraftMetaLeatherArmor.java
-index 04fa48563ecbbf69289785576d168deaa2777695..60aab1f9bdc2fa14ac804b351fc2741e2b2ff9cd 100644
---- a/src/main/java/org/bukkit/craftbukkit/inventory/CraftMetaLeatherArmor.java
-+++ b/src/main/java/org/bukkit/craftbukkit/inventory/CraftMetaLeatherArmor.java
-@@ -8,7 +8,6 @@ import net.minecraft.nbt.IntTag;
- import org.bukkit.Color;
+diff --git a/src/main/java/org/bukkit/craftbukkit/inventory/CraftMetaArmorStand.java b/src/main/java/org/bukkit/craftbukkit/inventory/CraftMetaArmorStand.java
+index 783b9c7283492fb71776b61f9820c21a39868c47..3d599e08e7532d2644fe58325d11222d48e3e3f9 100644
+--- a/src/main/java/org/bukkit/craftbukkit/inventory/CraftMetaArmorStand.java
++++ b/src/main/java/org/bukkit/craftbukkit/inventory/CraftMetaArmorStand.java
+@@ -6,7 +6,6 @@ import net.minecraft.nbt.CompoundTag;
+ import net.minecraft.nbt.Tag;
  import org.bukkit.Material;
  import org.bukkit.configuration.serialization.DelegateDeserialization;
 -import org.bukkit.craftbukkit.inventory.CraftMetaItem.ItemMetaKey;
- import org.bukkit.craftbukkit.inventory.CraftMetaItem.SerializableMeta;
- import org.bukkit.inventory.meta.LeatherArmorMeta;
  
-diff --git a/src/main/java/org/bukkit/craftbukkit/util/Versioning.java b/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
-index 93046379d0cefd5d3236fc59e698809acdc18f80..674096cab190d62622f9947853b056f57d43a2a5 100644
---- a/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
-+++ b/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
-@@ -11,7 +11,7 @@ public final class Versioning {
-     public static String getBukkitVersion() {
-         String result = "Unknown-Version";
- 
--        InputStream stream = Bukkit.class.getClassLoader().getResourceAsStream("META-INF/maven/org.spigotmc/spigot-api/pom.properties");
-+        InputStream stream = Bukkit.class.getClassLoader().getResourceAsStream("META-INF/maven/com.destroystokyo.paper/paper-api/pom.properties");
-         Properties properties = new Properties();
- 
-         if (stream != null) {
+ @DelegateDeserialization(CraftMetaItem.SerializableMeta.class)
+ public class CraftMetaArmorStand extends CraftMetaItem {

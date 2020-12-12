@@ -5,10 +5,10 @@ Subject: [PATCH] Show 'Paper' in client crashes, server lists, and Mojang
  stats
 
 
-diff --git a/src/main/java/net/minecraft/server/Eula.java b/src/main/java/net/minecraft/server/Eula.java
+diff --git a/src/main/java/net/minecraft/server/EULA.java b/src/main/java/net/minecraft/server/EULA.java
 index 6762f5bd35baf1979431cac1bb6014eb9dfb80fe..e9452d5515c3d564a0104eb09e5c0a6b1bb1beb0 100644
---- a/src/main/java/net/minecraft/server/Eula.java
-+++ b/src/main/java/net/minecraft/server/Eula.java
+--- a/src/main/java/net/minecraft/server/EULA.java
++++ b/src/main/java/net/minecraft/server/EULA.java
 @@ -71,7 +71,7 @@ public class Eula {
                      Properties properties = new Properties();
  
