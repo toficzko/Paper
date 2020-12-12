@@ -1,6 +1,6 @@
 tiny	2	0	spigot	mojang+yarn
 
-# Originally DistanceManager, which also implements DistanceManager, so clashes since the implemented method
+# Originally DistanceManager, which also implements DistanceManager, so clashes since the implemented class
 # is imported and not fully qualified. Easiest fix is to just change the name
 c	net/minecraft/server/PlayerChunkMap$a	net/minecraft/server/level/ChunkMap$ChunkDistanceManager
 
