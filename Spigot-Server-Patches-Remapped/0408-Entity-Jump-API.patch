@@ -1,0 +1,73 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: BillyGalbreath <Blake.Galbreath@GMail.com>
+Date: Sat, 8 Feb 2020 23:26:11 -0600
+Subject: [PATCH] Entity Jump API
+
+
+diff --git a/src/main/java/net/minecraft/util/BitStorage.java b/src/main/java/net/minecraft/util/BitStorage.java
+index 3484fa293515f31d6ed4d7341282cf523c8e6ab5..8597b69bf8ab1f91d2cc556d7fcf092d5f2bc2df 100644
+--- a/src/main/java/net/minecraft/util/BitStorage.java
++++ b/src/main/java/net/minecraft/util/BitStorage.java
+@@ -114,7 +114,7 @@ public class BitStorage {
+     }
+ 
+     // Paper start
+-    public final void forEach(net.minecraft.util.BitStorage.DataBitConsumer consumer) {
++    public final void forEach(DataBitConsumer consumer) {
+         int i = 0;
+         long[] along = this.data;
+         int j = along.length;
+diff --git a/src/main/java/net/minecraft/world/entity/LivingEntity.java b/src/main/java/net/minecraft/world/entity/LivingEntity.java
+index ddf36a037ee36f243405e99e80013f7cb54cafc1..c37df0d6e482499308cf18b141ac0e6cadfea1d9 100644
+--- a/src/main/java/net/minecraft/world/entity/LivingEntity.java
++++ b/src/main/java/net/minecraft/world/entity/LivingEntity.java
+@@ -2855,8 +2855,10 @@ public abstract class LivingEntity extends Entity {
+             } else if (this.isInLava() && (!this.onGround || d7 > d8)) {
+                 this.jumpInLiquid((Tag) FluidTags.LAVA);
+             } else if ((this.onGround || flag && d7 <= d8) && this.noJumpDelay == 0) {
++                if (new com.destroystokyo.paper.event.entity.EntityJumpEvent(getBukkitLivingEntity()).callEvent()) { // Paper
+                 this.jumpFromGround();
+                 this.noJumpDelay = 10;
++                } else { this.setJumping(false); } // Paper - setJumping(false) stops a potential loop
+             }
+         } else {
+             this.noJumpDelay = 0;
+diff --git a/src/main/java/net/minecraft/world/entity/animal/Panda.java b/src/main/java/net/minecraft/world/entity/animal/Panda.java
+index eb61cc122c0a4b9552495613de2f7c83c95cc76f..2bb4458b495be913583a97987d1a6487f9d169c8 100644
+--- a/src/main/java/net/minecraft/world/entity/animal/Panda.java
++++ b/src/main/java/net/minecraft/world/entity/animal/Panda.java
+@@ -489,7 +489,9 @@ public class Panda extends Animal {
+             Panda entitypanda = (Panda) iterator.next();
+ 
+             if (!entitypanda.isBaby() && entitypanda.onGround && !entitypanda.isInWater() && entitypanda.canPerformAction()) {
++                if (new com.destroystokyo.paper.event.entity.EntityJumpEvent(getBukkitLivingEntity()).callEvent()) { // Paper
+                 entitypanda.jumpFromGround();
++                } else { this.setJumping(false); } // Paper - setJumping(false) stops a potential loop
+             }
+         }
+ 
+diff --git a/src/main/java/org/bukkit/craftbukkit/entity/CraftLivingEntity.java b/src/main/java/org/bukkit/craftbukkit/entity/CraftLivingEntity.java
+index 158defa558a0eff545b9dcc33874117a74258cf4..763b98b26dba9eadf6aad7d1d89344a85c8b86a5 100644
+--- a/src/main/java/org/bukkit/craftbukkit/entity/CraftLivingEntity.java
++++ b/src/main/java/org/bukkit/craftbukkit/entity/CraftLivingEntity.java
+@@ -777,5 +777,20 @@ public class CraftLivingEntity extends CraftEntity implements LivingEntity {
+     public boolean isHandRaised() {
+         return getHandle().isUsingItem();
+     }
++
++    @Override
++    public boolean isJumping() {
++        return getHandle().jumping;
++    }
++
++    @Override
++    public void setJumping(boolean jumping) {
++        getHandle().setJumping(jumping);
++        if (jumping && getHandle() instanceof Mob) {
++            // this is needed to actually make a mob jump
++            ((Mob) getHandle()).getJumpControl().jump();
++        }
++    }
++
+     // Paper end
+ }

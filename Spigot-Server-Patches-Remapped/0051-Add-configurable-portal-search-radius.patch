@@ -1,0 +1,48 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Joseph Hirschfeld <joe@ibj.io>
+Date: Thu, 3 Mar 2016 02:46:17 -0600
+Subject: [PATCH] Add configurable portal search radius
+
+
+diff --git a/src/main/java/com/destroystokyo/paper/PaperWorldConfig.java b/src/main/java/com/destroystokyo/paper/PaperWorldConfig.java
+index e2cb804fd40e236337c37d89dfc85a02486c1bf4..cff769a0cffd81501f919fad0c6456e1268bd223 100644
+--- a/src/main/java/com/destroystokyo/paper/PaperWorldConfig.java
++++ b/src/main/java/com/destroystokyo/paper/PaperWorldConfig.java
+@@ -192,4 +192,11 @@ public class PaperWorldConfig {
+     private void allChunksAreSlimeChunks() {
+         allChunksAreSlimeChunks = getBoolean("all-chunks-are-slime-chunks", false);
+     }
++
++    public int portalSearchRadius;
++    public int portalCreateRadius;
++    private void portalSearchRadius() {
++        portalSearchRadius = getInt("portal-search-radius", 128);
++        portalCreateRadius = getInt("portal-create-radius", 16);
++    }
+ }
+diff --git a/src/main/java/net/minecraft/world/entity/Entity.java b/src/main/java/net/minecraft/world/entity/Entity.java
+index f658771836118328668e0739a6e85e1f84e2292c..3e5f7da23e3dfc821c245ad543193f47bd1937c6 100644
+--- a/src/main/java/net/minecraft/world/entity/Entity.java
++++ b/src/main/java/net/minecraft/world/entity/Entity.java
+@@ -2615,7 +2615,7 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
+                 double d4 = DimensionType.getTeleportationScale(this.level.dimensionType(), destination.dimensionType());
+                 BlockPos blockposition = new BlockPos(Mth.clamp(this.getX() * d4, d0, d2), this.getY(), Mth.clamp(this.getZ() * d4, d1, d3));
+                 // CraftBukkit start
+-                CraftPortalEvent event = callPortalEvent(this, destination, blockposition, PlayerTeleportEvent.TeleportCause.NETHER_PORTAL, flag2 ? 16 : 128, 16);
++                CraftPortalEvent event = callPortalEvent(this, destination, blockposition, PlayerTeleportEvent.TeleportCause.NETHER_PORTAL, destination.paperConfig.portalSearchRadius, destination.paperConfig.portalCreateRadius); // Paper start - configurable portal radius
+                 if (event == null) {
+                     return null;
+                 }
+diff --git a/src/main/java/net/minecraft/world/level/portal/PortalForcer.java b/src/main/java/net/minecraft/world/level/portal/PortalForcer.java
+index 58f6aa9fb27b064865fe38c50a361609117d5ec7..610ed6d67d88ecfedc59be7df9c0794b99c560e9 100644
+--- a/src/main/java/net/minecraft/world/level/portal/PortalForcer.java
++++ b/src/main/java/net/minecraft/world/level/portal/PortalForcer.java
+@@ -32,7 +32,7 @@ public class PortalForcer {
+ 
+     public Optional<BlockUtil.FoundRectangle> findPortalAround(BlockPos blockposition, boolean flag) {
+         // CraftBukkit start
+-        return findPortal(blockposition, flag ? 16 : 128); // Search Radius
++        return findPortal(blockposition, flag ? level.paperConfig.portalCreateRadius : level.paperConfig.portalSearchRadius); // Paper - search Radius
+     }
+ 
+     public Optional<BlockUtil.FoundRectangle> findPortal(BlockPos blockposition, int i) {

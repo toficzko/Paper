@@ -1,0 +1,33 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Shane Freeder <theboyetronic@gmail.com>
+Date: Mon, 10 Jun 2019 09:36:40 +0100
+Subject: [PATCH] Catch exceptions from dispenser entity spawns
+
+
+diff --git a/src/main/java/net/minecraft/core/dispenser/DispenseItemBehavior.java b/src/main/java/net/minecraft/core/dispenser/DispenseItemBehavior.java
+index 285e789e69bcbe05b2f595404bee54f77614b367..25d432be97b8e4e99216a52a5ff330c0bb10051a 100644
+--- a/src/main/java/net/minecraft/core/dispenser/DispenseItemBehavior.java
++++ b/src/main/java/net/minecraft/core/dispenser/DispenseItemBehavior.java
+@@ -8,6 +8,7 @@ import net.minecraft.core.BlockPos;
+ import net.minecraft.core.BlockSource;
+ import net.minecraft.core.Direction;
+ import net.minecraft.core.Position;
++import net.minecraft.server.MinecraftServer;
+ import net.minecraft.server.level.ServerLevel;
+ import net.minecraft.server.level.ServerPlayer;
+ import net.minecraft.sounds.SoundEvents;
+@@ -236,7 +237,14 @@ public interface DispenseItemBehavior {
+                     }
+                 }
+ 
++                try { // Paper
+                 entitytypes.spawn(isourceblock.getLevel(), itemstack, (Player) null, isourceblock.getPos().relative(enumdirection), MobSpawnType.DISPENSER, enumdirection != Direction.UP, false);
++                    // Paper start
++                } catch (Exception ex){
++                    MinecraftServer.LOGGER.warn("An exception occurred dispensing entity at {}[{}]", worldserver.getWorld().getName(), isourceblock.getPos(), ex);
++                }
++                // Paper end
++
+                 // itemstack.subtract(1); // Handled during event processing
+                 // CraftBukkit end
+                 return itemstack;

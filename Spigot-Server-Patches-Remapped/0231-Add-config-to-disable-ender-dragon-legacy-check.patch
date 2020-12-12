@@ -1,0 +1,44 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: BillyGalbreath <Blake.Galbreath@GMail.com>
+Date: Fri, 22 Jun 2018 10:38:31 -0500
+Subject: [PATCH] Add config to disable ender dragon legacy check
+
+
+diff --git a/src/main/java/com/destroystokyo/paper/PaperWorldConfig.java b/src/main/java/com/destroystokyo/paper/PaperWorldConfig.java
+index de80d2d874d1787335fd393f3ffed0cd36e3af9e..6e7e00678295b5b714a1be4753626e21ab469fd6 100644
+--- a/src/main/java/com/destroystokyo/paper/PaperWorldConfig.java
++++ b/src/main/java/com/destroystokyo/paper/PaperWorldConfig.java
+@@ -368,4 +368,9 @@ public class PaperWorldConfig {
+     private void shieldBlockingDelay() {
+         shieldBlockingDelay = getInt("game-mechanics.shield-blocking-delay", 5);
+     }
++
++    public boolean scanForLegacyEnderDragon = true;
++    private void scanForLegacyEnderDragon() {
++        scanForLegacyEnderDragon = getBoolean("game-mechanics.scan-for-legacy-ender-dragon", true);
++    }
+ }
+diff --git a/src/main/java/net/minecraft/world/level/dimension/end/EndDragonFight.java b/src/main/java/net/minecraft/world/level/dimension/end/EndDragonFight.java
+index 88c463dcd8bbef31f4fb0e3b8d0b445d956d75af..e310de74490e21c2e70aedcf39ee258c65d06bdd 100644
+--- a/src/main/java/net/minecraft/world/level/dimension/end/EndDragonFight.java
++++ b/src/main/java/net/minecraft/world/level/dimension/end/EndDragonFight.java
+@@ -73,7 +73,7 @@ public class EndDragonFight {
+     private boolean dragonKilled;
+     private boolean previouslyKilled;
+     public UUID dragonUUID;
+-    private boolean needsStateScanning;
++    private boolean needsStateScanning; private void setScanForLegacyFight(boolean scanForLegacyFight) { this.needsStateScanning = scanForLegacyFight; } private boolean scanForLegacyFight() { return this.needsStateScanning; } // Paper - OBFHELPER
+     public BlockPos portalLocation;
+     public DragonRespawnAnimation respawnStage;
+     private int respawnTime;
+@@ -83,6 +83,10 @@ public class EndDragonFight {
+         this.dragonEvent = (ServerBossEvent) (new ServerBossEvent(new TranslatableComponent("entity.minecraft.ender_dragon"), BossEvent.BossBarColor.PINK, BossEvent.BossBarOverlay.PROGRESS)).setPlayBossMusic(true).setCreateWorldFog(true);
+         this.gateways = Lists.newArrayList();
+         this.needsStateScanning = true;
++        // Paper start
++        setScanForLegacyFight(world.paperConfig.scanForLegacyEnderDragon);
++        if (!scanForLegacyFight()) dragonKilled = true;
++        // Paper end
+         this.level = world;
+         if (nbttagcompound.contains("DragonKilled", 99)) {
+             if (nbttagcompound.hasUUID("Dragon")) {

@@ -1,0 +1,75 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: William Blake Galbreath <Blake.Galbreath@GMail.com>
+Date: Wed, 8 Jul 2020 11:24:30 -0500
+Subject: [PATCH] Fix arrows never despawning MC-125757
+
+This forces the despawn counter to start ticking regardless of
+state after the arrow has been alive for 200 ticks (10 seconds)
+instead of getting stuck in a never despawn state (bubble columns,
+etc).
+
+diff --git a/src/main/java/net/minecraft/server/PlayerAdvancements.java b/src/main/java/net/minecraft/server/PlayerAdvancements.java
+index 509cc684624f58d43c06ccc80f62442deed4af90..0647ee19225221e577911ea2620d8a8612a2d46c 100644
+--- a/src/main/java/net/minecraft/server/PlayerAdvancements.java
++++ b/src/main/java/net/minecraft/server/PlayerAdvancements.java
+@@ -458,14 +458,14 @@ public class PlayerAdvancements {
+ 
+     private void ensureVisibility(Advancement advancement) {
+         // Paper start
+-        e(advancement, net.minecraft.server.PlayerAdvancements.IterationEntryPoint.ROOT);
++        e(advancement, IterationEntryPoint.ROOT);
+     }
+     private enum IterationEntryPoint {
+         ROOT,
+         ITERATOR,
+         PARENT_OF_ITERATOR
+     }
+-    private void e(Advancement advancement, net.minecraft.server.PlayerAdvancements.IterationEntryPoint entryPoint) {
++    private void e(Advancement advancement, IterationEntryPoint entryPoint) {
+         // Paper end
+         boolean flag = this.shouldBeVisible(advancement);
+         boolean flag1 = this.visible.contains(advancement);
+@@ -484,12 +484,12 @@ public class PlayerAdvancements {
+         if (flag != flag1 && advancement.getParent() != null) {
+             // Paper start - If we're not coming from an iterator consider this to be a root entry, otherwise
+             // market that we're entering from the parent of an iterator.
+-            this.e(advancement.getParent(), entryPoint == net.minecraft.server.PlayerAdvancements.IterationEntryPoint.ITERATOR ? net.minecraft.server.PlayerAdvancements.IterationEntryPoint.PARENT_OF_ITERATOR : net.minecraft.server.PlayerAdvancements.IterationEntryPoint.ROOT);
++            this.e(advancement.getParent(), entryPoint == IterationEntryPoint.ITERATOR ? IterationEntryPoint.PARENT_OF_ITERATOR : IterationEntryPoint.ROOT);
+         }
+ 
+         // If this is true, we've went through a child iteration, entered the parent, processed the parent
+         // and are about to reprocess the children. Stop processing here to prevent O(N^2) processing.
+-        if (entryPoint == net.minecraft.server.PlayerAdvancements.IterationEntryPoint.PARENT_OF_ITERATOR) {
++        if (entryPoint == IterationEntryPoint.PARENT_OF_ITERATOR) {
+             return;
+         } // Paper end
+ 
+@@ -498,7 +498,7 @@ public class PlayerAdvancements {
+         while (iterator.hasNext()) {
+             Advancement advancement1 = (Advancement) iterator.next();
+ 
+-            this.e(advancement1, net.minecraft.server.PlayerAdvancements.IterationEntryPoint.ITERATOR); // Paper - Mark this call as being from iteration
++            this.e(advancement1, IterationEntryPoint.ITERATOR); // Paper - Mark this call as being from iteration
+         }
+ 
+     }
+diff --git a/src/main/java/net/minecraft/world/entity/projectile/AbstractArrow.java b/src/main/java/net/minecraft/world/entity/projectile/AbstractArrow.java
+index c946c364885a46d9ad0a2c494dd82091cf223bd9..9b4b3dff9ee335c9196c229b0ef1b52ff537b832 100644
+--- a/src/main/java/net/minecraft/world/entity/projectile/AbstractArrow.java
++++ b/src/main/java/net/minecraft/world/entity/projectile/AbstractArrow.java
+@@ -170,6 +170,7 @@ public abstract class AbstractArrow extends Projectile {
+ 
+             ++this.inGroundTime;
+         } else {
++            if (tickCount > 200) this.tickDespawnCounter(); // Paper - tick despawnCounter regardless after 10 seconds
+             this.inGroundTime = 0;
+             Vec3 vec3d2 = this.position();
+ 
+@@ -291,6 +292,7 @@ public abstract class AbstractArrow extends Projectile {
+ 
+     }
+ 
++    protected final void tickDespawnCounter() { this.tickDespawn(); } // Paper - OBFHELPER
+     protected void tickDespawn() {
+         ++this.life;
+         if (this.life >= (pickup == Pickup.CREATIVE_ONLY ? level.paperConfig.creativeArrowDespawnRate : (pickup == Pickup.DISALLOWED ? level.paperConfig.nonPlayerArrowDespawnRate : ((this instanceof ThrownTrident) ? level.spigotConfig.tridentDespawnRate : level.spigotConfig.arrowDespawnRate)))) { // Spigot // Paper - TODO: Extract this to init?

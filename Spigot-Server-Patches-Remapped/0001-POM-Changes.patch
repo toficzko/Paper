@@ -1,0 +1,2024 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Zach Brown <zach.brown@destroystokyo.com>
+Date: Mon, 29 Feb 2016 20:40:33 -0600
+Subject: [PATCH] POM Changes
+
+
+diff --git a/pom.xml b/pom.xml
+index 185aa47591ddf92bece217a56078bd74777f749a..7d38039fcba45ee55f35c0291ad66a58ef99c392 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -1,15 +1,14 @@
+ <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+     <modelVersion>4.0.0</modelVersion>
+-    <groupId>org.spigotmc</groupId>
+-    <artifactId>spigot</artifactId>
++    <artifactId>paper</artifactId>
+     <packaging>jar</packaging>
+     <version>1.16.4-R0.1-SNAPSHOT</version>
+-    <name>Spigot</name>
+-    <url>https://www.spigotmc.org/</url>
++    <name>Paper</name>
++    <url>https://papermc.io</url>
+ 
+     <properties>
+-        <skipTests>true</skipTests>
++        <!-- <skipTests>true</skipTests> Paper - This [was] not going to end well -->
+         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+         <api.version>unknown</api.version>
+         <minecraft.version>1.16.4</minecraft.version>
+@@ -19,21 +18,27 @@
+     </properties>
+ 
+     <parent>
+-        <groupId>org.spigotmc</groupId>
+-        <artifactId>spigot-parent</artifactId>
++        <groupId>com.destroystokyo.paper</groupId>
++        <artifactId>paper-parent</artifactId>
+         <version>dev-SNAPSHOT</version>
+         <relativePath>../pom.xml</relativePath>
+     </parent>
+ 
+     <dependencies>
+         <dependency>
+-            <groupId>org.spigotmc</groupId>
+-            <artifactId>spigot-api</artifactId>
++            <groupId>com.destroystokyo.paper</groupId>
++            <artifactId>paper-api</artifactId>
+             <version>${project.version}</version>
+             <scope>compile</scope>
+         </dependency>
+         <dependency>
+-            <groupId>org.spigotmc</groupId>
++            <groupId>com.destroystokyo.paper</groupId>
++            <artifactId>paper-mojangapi</artifactId>
++            <version>${project.version}</version>
++            <scope>compile</scope>
++        </dependency>
++        <dependency>
++            <groupId>io.papermc</groupId>
+             <artifactId>minecraft-server</artifactId>
+             <version>${minecraft.version}-SNAPSHOT</version>
+             <scope>compile</scope>
+@@ -56,6 +61,17 @@
+             <version>8.0.1</version>
+             <scope>compile</scope>
+         </dependency>
++        <dependency>
++            <!-- wrapper to use either java 8 sun cleaner or java9+ official cleaner -->
++            <groupId>co.aikar</groupId>
++            <artifactId>cleaner</artifactId>
++            <version>1.0-SNAPSHOT</version>
++        </dependency>
++        <dependency>
++            <groupId>io.netty</groupId>
++            <artifactId>netty-all</artifactId>
++            <version>4.1.50.Final</version>
++        </dependency>
+         <!-- deprecated API depend -->
+         <dependency>
+             <groupId>com.googlecode.json-simple</groupId>
+@@ -112,34 +128,22 @@
+ 
+     <!-- This builds a completely 'ready to start' jar with all dependencies inside -->
+     <build>
++        <finalName>paper-${minecraft.version}</finalName>
++        <defaultGoal>clean install</defaultGoal> <!-- Paper -->
+         <plugins>
+             <plugin>
+-                <groupId>net.md-5</groupId>
+-                <artifactId>scriptus</artifactId>
+-                <version>0.4.1</version>
++                <groupId>com.lukegb.mojo</groupId>
++                <artifactId>gitdescribe-maven-plugin</artifactId>
++                <version>1.3</version>
++                <configuration>
++                    <outputPrefix>git-Paper-</outputPrefix>
++                    <scmDirectory>..</scmDirectory>
++                </configuration>
+                 <executions>
+                     <execution>
+-                        <id>ex-spigot</id>
+-                        <configuration>
+-                            <format>git-Spigot-%s</format>
+-                            <scmDirectory>../</scmDirectory>
+-                            <descriptionProperty>spigot.desc</descriptionProperty>
+-                        </configuration>
+-                        <phase>initialize</phase>
+-                        <goals>
+-                            <goal>describe</goal>
+-                        </goals>
+-                    </execution>
+-                    <execution>
+-                        <id>ex-craftbukkit</id>
+-                        <configuration>
+-                            <format>-%s</format>
+-                            <scmDirectory>../../CraftBukkit</scmDirectory>
+-                            <descriptionProperty>craftbukkit.desc</descriptionProperty>
+-                        </configuration>
+-                        <phase>initialize</phase>
++                        <phase>compile</phase>
+                         <goals>
+-                            <goal>describe</goal>
++                            <goal>gitdescribe</goal>
+                         </goals>
+                     </execution>
+                 </executions>
+@@ -149,6 +153,7 @@
+                 <artifactId>maven-jar-plugin</artifactId>
+                 <version>3.2.0</version>
+                 <configuration>
++                    <forceCreation>true</forceCreation> <!-- Required to prevent shading the jar multiple times -->
+                     <archive>
+                         <manifest>
+                             <addDefaultEntries>false</addDefaultEntries>
+@@ -156,8 +161,9 @@
+                         <manifestEntries>
+                             <Main-Class>org.bukkit.craftbukkit.Main</Main-Class>
+                             <Implementation-Title>CraftBukkit</Implementation-Title>
+-                            <Implementation-Version>${spigot.desc}${craftbukkit.desc}</Implementation-Version>
+-                            <Implementation-Vendor>${project.build.outputTimestamp}</Implementation-Vendor>
++                            <!--suppress MavenModelInspection -->
++                            <Implementation-Version>${describe}</Implementation-Version>
++                            <Implementation-Vendor>${maven.build.timestamp}</Implementation-Vendor>
+                             <Specification-Title>Bukkit</Specification-Title>
+                             <Specification-Version>${api.version}</Specification-Version>
+                             <Specification-Vendor>Bukkit Team</Specification-Vendor>
+@@ -196,6 +202,7 @@
+                             <goal>shade</goal>
+                         </goals>
+                         <configuration>
++                            <dependencyReducedPomLocation>${project.build.directory}/dependency-reduced-pom.xml</dependencyReducedPomLocation> <!-- Paper -->
+                             <createSourcesJar>${shadeSourcesJar}</createSourcesJar>
+                             <filters>
+                                 <filter>
+@@ -204,6 +211,14 @@
+                                         <exclude>com/google/common/**</exclude>
+                                         <exclude>com/google/gson/**</exclude>
+                                         <exclude>com/google/thirdparty/**</exclude>
++                                        <!-- paper -->
++                                        <exclude>io/netty/**</exclude>
++                                        <exclude>META-INF/native/libnetty*</exclude>
++                                        <exclude>com/brigadier/**</exclude>
++                                        <exclude>META-INF/MANIFEST.MF</exclude>
++                                        <exclude>com.mojang.authlib.yggdrasil.YggdrasilGameProfileRepository</exclude>
++                                        <exclude>com.mojang.datafixers.util.Either</exclude>
++                                        <exclude>org.apache.logging.log4j/**</exclude>
+                                     </excludes>
+                                 </filter>
+                             </filters>
+@@ -219,10 +234,11 @@
+                                     <pattern>jline</pattern>
+                                     <shadedPattern>org.bukkit.craftbukkit.libs.jline</shadedPattern>
+                                 </relocation>
+-                                <relocation>
+-                                    <pattern>it.unimi</pattern>
+-                                    <shadedPattern>org.bukkit.craftbukkit.libs.it.unimi</shadedPattern>
+-                                </relocation>
++                                <!-- Paper - Don't relocate fastutil in order to prevent api breakage -->
++                                <!--<relocation>-->
++                                    <!--<pattern>it.unimi</pattern>-->
++                                    <!--<shadedPattern>org.bukkit.craftbukkit.libs.it.unimi</shadedPattern>-->
++                                <!--</relocation>-->
+                                 <relocation>
+                                     <pattern>org.apache.commons.codec</pattern>
+                                     <shadedPattern>org.bukkit.craftbukkit.libs.org.apache.commons.codec</shadedPattern>
+@@ -264,10 +280,6 @@
+                 <groupId>org.apache.maven.plugins</groupId>
+                 <artifactId>maven-compiler-plugin</artifactId>
+                 <version>3.8.1</version>
+-                <configuration>
+-                    <!-- we use the Eclipse compiler as it doesn't need a JDK -->
+-                    <compilerId>eclipse</compilerId>
+-                </configuration>
+                 <dependencies>
+                     <!-- we need our custom version as it fixes some bugs on case sensitive file systems -->
+                     <dependency>
+diff --git a/src/main/java/net/minecraft/core/BlockPos.java b/src/main/java/net/minecraft/core/BlockPos.java
+index fd18f0b835e9c9c5108985a4ba49e45bbb9dd03a..913d7819bda8167a6c66090b735aff4d4426438b 100644
+--- a/src/main/java/net/minecraft/core/BlockPos.java
++++ b/src/main/java/net/minecraft/core/BlockPos.java
+@@ -403,12 +403,12 @@ public class BlockPos extends Vec3i {
+             this(0, 0, 0);
+         }
+ 
+-        public MutableBlockPos(int i, int j, int k) {
+-            super(i, j, k);
++        public MutableBlockPos(int x, int y, int z) {
++            super(x, y, z);
+         }
+ 
+-        public MutableBlockPos(double d0, double d1, double d2) {
+-            this(Mth.floor(d0), Mth.floor(d1), Mth.floor(d2));
++        public MutableBlockPos(double x, double y, double z) {
++            this(Mth.floor(x), Mth.floor(y), Mth.floor(z));
+         }
+ 
+         @Override
+diff --git a/src/main/java/net/minecraft/core/dispenser/DispenseItemBehavior.java b/src/main/java/net/minecraft/core/dispenser/DispenseItemBehavior.java
+index 9f980ae9f1e2d7dd7980e66d3fb5b565d8afcaf6..285e789e69bcbe05b2f595404bee54f77614b367 100644
+--- a/src/main/java/net/minecraft/core/dispenser/DispenseItemBehavior.java
++++ b/src/main/java/net/minecraft/core/dispenser/DispenseItemBehavior.java
+@@ -141,9 +141,9 @@ public interface DispenseItemBehavior {
+         }));
+         DispenserBlock.registerBehavior((ItemLike) Items.EXPERIENCE_BOTTLE, (DispenseItemBehavior) (new AbstractProjectileDispenseBehavior() {
+             @Override
+-            protected Projectile getProjectile(Level world, Position iposition, ItemStack itemstack) {
+-                return (Projectile) Util.make((new ThrownExperienceBottle(world, iposition.x(), iposition.y(), iposition.z())), (entitythrownexpbottle) -> { // CraftBukkit - decompile error
+-                    entitythrownexpbottle.setItem(itemstack);
++            protected Projectile getProjectile(Level world, Position position, ItemStack stack) {
++                return (Projectile) Util.make((new ThrownExperienceBottle(world, position.x(), position.y(), position.z())), (entitythrownexpbottle) -> { // CraftBukkit - decompile error
++                    entitythrownexpbottle.setItem(stack);
+                 });
+             }
+ 
+diff --git a/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
+index c8bf35b836ed63c076f63614a6ffc992fe3f939e..f4b2c8f4168038f7a69850807d0272a66373f2b0 100644
+--- a/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
++++ b/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
+@@ -199,7 +199,7 @@ public class ServerLoginPacketListenerImpl implements ServerLoginPacketListener
+                 public void run() {
+                     try {
+                         initUUID();
+-                        new net.minecraft.server.network.ServerLoginPacketListenerImpl.LoginHandler().fireEvents();
++                        new LoginHandler().fireEvents();
+                     } catch (Exception ex) {
+                         disconnect("Failed to verify username!");
+                         server.server.getLogger().log(java.util.logging.Level.WARNING, "Exception verifying " + gameProfile.getName(), ex);
+@@ -246,7 +246,7 @@ public class ServerLoginPacketListenerImpl implements ServerLoginPacketListener
+                             return;
+                         }
+ 
+-                        new net.minecraft.server.network.ServerLoginPacketListenerImpl.LoginHandler().fireEvents();
++                        new LoginHandler().fireEvents();
+                     } else if (ServerLoginPacketListenerImpl.this.server.isSingleplayer()) {
+                         ServerLoginPacketListenerImpl.LOGGER.warn("Failed to verify username but will let them in anyway!");
+                         ServerLoginPacketListenerImpl.this.gameProfile = ServerLoginPacketListenerImpl.this.createFakeProfile(gameprofile);
+diff --git a/src/main/java/net/minecraft/world/entity/ExperienceOrb.java b/src/main/java/net/minecraft/world/entity/ExperienceOrb.java
+index 84b87d24bcb43cf04b214516598f2a9376272471..a4a1e836767d0b2b71c3277a28eb72418fa76210 100644
+--- a/src/main/java/net/minecraft/world/entity/ExperienceOrb.java
++++ b/src/main/java/net/minecraft/world/entity/ExperienceOrb.java
+@@ -39,8 +39,8 @@ public class ExperienceOrb extends Entity {
+         this.value = amount;
+     }
+ 
+-    public ExperienceOrb(EntityType<? extends ExperienceOrb> entitytypes, Level world) {
+-        super(entitytypes, world);
++    public ExperienceOrb(EntityType<? extends ExperienceOrb> type, Level world) {
++        super(type, world);
+         this.health = 5;
+     }
+ 
+diff --git a/src/main/java/net/minecraft/world/entity/LightningBolt.java b/src/main/java/net/minecraft/world/entity/LightningBolt.java
+index b9f7eccd843ddbcb1042c607e7299e7dc7587ea3..ef9569961b35ec70a54e4bd28fafbb0c488caa30 100644
+--- a/src/main/java/net/minecraft/world/entity/LightningBolt.java
++++ b/src/main/java/net/minecraft/world/entity/LightningBolt.java
+@@ -34,8 +34,8 @@ public class LightningBolt extends Entity {
+     private ServerPlayer cause;
+     public boolean isSilent = false; // Spigot
+ 
+-    public LightningBolt(EntityType<? extends LightningBolt> entitytypes, Level world) {
+-        super(entitytypes, world);
++    public LightningBolt(EntityType<? extends LightningBolt> type, Level world) {
++        super(type, world);
+         this.noCulling = true;
+         this.life = 2;
+         this.seed = this.random.nextLong();
+diff --git a/src/main/java/net/minecraft/world/entity/LivingEntity.java b/src/main/java/net/minecraft/world/entity/LivingEntity.java
+index 70f8a76e8df3d62c185493cf884b34eae0e17eea..5510fe4126bd862364e14936fa21ce68934da3f9 100644
+--- a/src/main/java/net/minecraft/world/entity/LivingEntity.java
++++ b/src/main/java/net/minecraft/world/entity/LivingEntity.java
+@@ -760,7 +760,7 @@ public abstract class LivingEntity extends Entity {
+ 
+     // CraftBukkit start
+     private boolean isTickingEffects = false;
+-    private List<net.minecraft.world.entity.LivingEntity.ProcessableEffect> effectsToProcess = Lists.newArrayList();
++    private List<ProcessableEffect> effectsToProcess = Lists.newArrayList();
+ 
+     private static class ProcessableEffect {
+ 
+@@ -811,7 +811,7 @@ public abstract class LivingEntity extends Entity {
+         }
+         // CraftBukkit start
+         isTickingEffects = false;
+-        for (net.minecraft.world.entity.LivingEntity.ProcessableEffect e : effectsToProcess) {
++        for (ProcessableEffect e : effectsToProcess) {
+             if (e.effect != null) {
+                 addEffect(e.effect, e.cause);
+             } else {
+@@ -984,7 +984,7 @@ public abstract class LivingEntity extends Entity {
+     public boolean addEffect(MobEffectInstance mobeffect, EntityPotionEffectEvent.Cause cause) {
+         org.spigotmc.AsyncCatcher.catchOp("effect add"); // Spigot
+         if (isTickingEffects) {
+-            effectsToProcess.add(new net.minecraft.world.entity.LivingEntity.ProcessableEffect(mobeffect, cause));
++            effectsToProcess.add(new ProcessableEffect(mobeffect, cause));
+             return true;
+         }
+         // CraftBukkit end
+@@ -1047,7 +1047,7 @@ public abstract class LivingEntity extends Entity {
+     @Nullable
+     public MobEffectInstance c(@Nullable MobEffect mobeffectlist, EntityPotionEffectEvent.Cause cause) {
+         if (isTickingEffects) {
+-            effectsToProcess.add(new net.minecraft.world.entity.LivingEntity.ProcessableEffect(mobeffectlist, cause));
++            effectsToProcess.add(new ProcessableEffect(mobeffectlist, cause));
+             return null;
+         }
+ 
+diff --git a/src/main/java/net/minecraft/world/entity/ambient/Bat.java b/src/main/java/net/minecraft/world/entity/ambient/Bat.java
+index a53a4a29c818640606effaabad07d2bcb70fec3b..0195d2d0ea5a3ff1656e6be6d33e106daf5a9ffd 100644
+--- a/src/main/java/net/minecraft/world/entity/ambient/Bat.java
++++ b/src/main/java/net/minecraft/world/entity/ambient/Bat.java
+@@ -37,8 +37,8 @@ public class Bat extends AmbientCreature {
+     private static final TargetingConditions BAT_RESTING_TARGETING = (new TargetingConditions()).range(4.0D).allowSameTeam();
+     private BlockPos targetPosition;
+ 
+-    public Bat(EntityType<? extends Bat> entitytypes, Level world) {
+-        super(entitytypes, world);
++    public Bat(EntityType<? extends Bat> type, Level world) {
++        super(type, world);
+         this.setResting(true);
+     }
+ 
+diff --git a/src/main/java/net/minecraft/world/entity/animal/Chicken.java b/src/main/java/net/minecraft/world/entity/animal/Chicken.java
+index c56aeb6d47424086ce95f9b3e09676808f49fb97..818acd5b948317547e6f5f038ecf2fec77e91b05 100644
+--- a/src/main/java/net/minecraft/world/entity/animal/Chicken.java
++++ b/src/main/java/net/minecraft/world/entity/animal/Chicken.java
+@@ -45,8 +45,8 @@ public class Chicken extends Animal {
+     public int eggTime;
+     public boolean isChickenJockey;
+ 
+-    public Chicken(EntityType<? extends Chicken> entitytypes, Level world) {
+-        super(entitytypes, world);
++    public Chicken(EntityType<? extends Chicken> type, Level world) {
++        super(type, world);
+         this.eggTime = this.random.nextInt(6000) + 6000;
+         this.setPathfindingMalus(BlockPathTypes.WATER, 0.0F);
+     }
+diff --git a/src/main/java/net/minecraft/world/entity/animal/Cow.java b/src/main/java/net/minecraft/world/entity/animal/Cow.java
+index a81d57293444b65025573b7e7b8dac1e6dd74599..e2c0280d0589509480bc0874a6330063474251b2 100644
+--- a/src/main/java/net/minecraft/world/entity/animal/Cow.java
++++ b/src/main/java/net/minecraft/world/entity/animal/Cow.java
+@@ -36,8 +36,8 @@ import org.bukkit.craftbukkit.inventory.CraftItemStack;
+ 
+ public class Cow extends Animal {
+ 
+-    public Cow(EntityType<? extends Cow> entitytypes, Level world) {
+-        super(entitytypes, world);
++    public Cow(EntityType<? extends Cow> type, Level world) {
++        super(type, world);
+     }
+ 
+     @Override
+diff --git a/src/main/java/net/minecraft/world/entity/animal/Dolphin.java b/src/main/java/net/minecraft/world/entity/animal/Dolphin.java
+index 0f00e39a29014d9b92914d27a7848db2822c5eaa..7699ea74fa67e0a5b9a94d5666d40aa99d2efda9 100644
+--- a/src/main/java/net/minecraft/world/entity/animal/Dolphin.java
++++ b/src/main/java/net/minecraft/world/entity/animal/Dolphin.java
+@@ -82,8 +82,8 @@ public class Dolphin extends WaterAnimal {
+         return !entityitem.hasPickUpDelay() && entityitem.isAlive() && entityitem.isInWater();
+     };
+ 
+-    public Dolphin(EntityType<? extends Dolphin> entitytypes, Level world) {
+-        super(entitytypes, world);
++    public Dolphin(EntityType<? extends Dolphin> type, Level world) {
++        super(type, world);
+         this.moveControl = new Dolphin.DolphinMoveControl(this);
+         this.lookControl = new DolphinLookControl(this, 10);
+         this.setCanPickUpLoot(true);
+diff --git a/src/main/java/net/minecraft/world/entity/animal/MushroomCow.java b/src/main/java/net/minecraft/world/entity/animal/MushroomCow.java
+index dbd0fd41894b050e0e8e4482070a13b33fe7da10..f88c69dd0f76d6c07868938abf913fd435b3079e 100644
+--- a/src/main/java/net/minecraft/world/entity/animal/MushroomCow.java
++++ b/src/main/java/net/minecraft/world/entity/animal/MushroomCow.java
+@@ -52,8 +52,8 @@ public class MushroomCow extends Cow implements Shearable {
+     private int effectDuration;
+     private UUID lastLightningBoltUUID;
+ 
+-    public MushroomCow(EntityType<? extends MushroomCow> entitytypes, Level world) {
+-        super(entitytypes, world);
++    public MushroomCow(EntityType<? extends MushroomCow> type, Level world) {
++        super(type, world);
+     }
+ 
+     @Override
+diff --git a/src/main/java/net/minecraft/world/entity/animal/Ocelot.java b/src/main/java/net/minecraft/world/entity/animal/Ocelot.java
+index 07bf2ea0ac2f89f3d8178f4a1c8a8931472092e4..e32a9e7eff13f53d38c64f5fea9ccc4a485cb11e 100644
+--- a/src/main/java/net/minecraft/world/entity/animal/Ocelot.java
++++ b/src/main/java/net/minecraft/world/entity/animal/Ocelot.java
+@@ -58,8 +58,8 @@ public class Ocelot extends Animal {
+     private Ocelot.OcelotAvoidEntityGoal<Player> ocelotAvoidPlayersGoal;
+     private Ocelot.OcelotTemptGoal temptGoal;
+ 
+-    public Ocelot(EntityType<? extends Ocelot> entitytypes, Level world) {
+-        super(entitytypes, world);
++    public Ocelot(EntityType<? extends Ocelot> type, Level world) {
++        super(type, world);
+         this.reassessTrustingGoals();
+     }
+ 
+diff --git a/src/main/java/net/minecraft/world/entity/animal/Squid.java b/src/main/java/net/minecraft/world/entity/animal/Squid.java
+index bd5c9f9a78b798815f62e3af06d8fe59efea7e86..670419fd78a411b494d72c83a5b847240dfd74b0 100644
+--- a/src/main/java/net/minecraft/world/entity/animal/Squid.java
++++ b/src/main/java/net/minecraft/world/entity/animal/Squid.java
+@@ -45,8 +45,8 @@ public class Squid extends WaterAnimal {
+     private float ty;
+     private float tz;
+ 
+-    public Squid(EntityType<? extends Squid> entitytypes, Level world) {
+-        super(entitytypes, world);
++    public Squid(EntityType<? extends Squid> type, Level world) {
++        super(type, world);
+         this.random.setSeed((long) this.getId());
+         this.tentacleSpeed = 1.0F / (this.random.nextFloat() + 1.0F) * 0.2F;
+     }
+diff --git a/src/main/java/net/minecraft/world/entity/animal/Turtle.java b/src/main/java/net/minecraft/world/entity/animal/Turtle.java
+index 4586f4110a2a8e59362b5ded41aa28e9a08ff20b..d00416a31a4f2ecd64a94dea710959a9b196a17a 100644
+--- a/src/main/java/net/minecraft/world/entity/animal/Turtle.java
++++ b/src/main/java/net/minecraft/world/entity/animal/Turtle.java
+@@ -82,8 +82,8 @@ public class Turtle extends Animal {
+         return entityliving.isBaby() && !entityliving.isInWater();
+     };
+ 
+-    public Turtle(EntityType<? extends Turtle> entitytypes, Level world) {
+-        super(entitytypes, world);
++    public Turtle(EntityType<? extends Turtle> type, Level world) {
++        super(type, world);
+         this.setPathfindingMalus(BlockPathTypes.WATER, 0.0F);
+         this.moveControl = new Turtle.TurtleMoveControl(this);
+         this.maxUpStep = 1.0F;
+diff --git a/src/main/java/net/minecraft/world/entity/animal/horse/SkeletonHorse.java b/src/main/java/net/minecraft/world/entity/animal/horse/SkeletonHorse.java
+index ccf62a8f7aa413f5a96849074bd378ec801c94a8..39c6979619530b76a783e727c6c9babc533edfba 100644
+--- a/src/main/java/net/minecraft/world/entity/animal/horse/SkeletonHorse.java
++++ b/src/main/java/net/minecraft/world/entity/animal/horse/SkeletonHorse.java
+@@ -28,8 +28,8 @@ public class SkeletonHorse extends AbstractHorse {
+     private boolean isTrap;
+     private int trapTime;
+ 
+-    public SkeletonHorse(EntityType<? extends SkeletonHorse> entitytypes, Level world) {
+-        super(entitytypes, world);
++    public SkeletonHorse(EntityType<? extends SkeletonHorse> type, Level world) {
++        super(type, world);
+     }
+ 
+     public static AttributeSupplier.Builder createAttributes() {
+diff --git a/src/main/java/net/minecraft/world/entity/animal/horse/TraderLlama.java b/src/main/java/net/minecraft/world/entity/animal/horse/TraderLlama.java
+index ee60d2b2a9b94909336ef684c43c65dd70e164ba..046d88b6ff76579f2db1b27ef39eb6be690217f9 100644
+--- a/src/main/java/net/minecraft/world/entity/animal/horse/TraderLlama.java
++++ b/src/main/java/net/minecraft/world/entity/animal/horse/TraderLlama.java
+@@ -23,8 +23,8 @@ public class TraderLlama extends Llama {
+ 
+     private int despawnDelay = 47999;
+ 
+-    public TraderLlama(EntityType<? extends TraderLlama> entitytypes, Level world) {
+-        super(entitytypes, world);
++    public TraderLlama(EntityType<? extends TraderLlama> type, Level world) {
++        super(type, world);
+     }
+ 
+     @Override
+diff --git a/src/main/java/net/minecraft/world/entity/boss/enderdragon/EnderDragon.java b/src/main/java/net/minecraft/world/entity/boss/enderdragon/EnderDragon.java
+index 85fde792d2d816722ba2547698c63f536fae395f..dbf86ef45d939382de9b455ff29cd7f75dc69834 100644
+--- a/src/main/java/net/minecraft/world/entity/boss/enderdragon/EnderDragon.java
++++ b/src/main/java/net/minecraft/world/entity/boss/enderdragon/EnderDragon.java
+@@ -98,7 +98,7 @@ public class EnderDragon extends Mob implements Enemy {
+     private final BinaryHeap openSet = new BinaryHeap();
+     private Explosion explosionSource = new Explosion(null, this, null, null, Double.NaN, Double.NaN, Double.NaN, Float.NaN, true, Explosion.BlockInteraction.DESTROY); // CraftBukkit - reusable source for CraftTNTPrimed.getSource()
+ 
+-    public EnderDragon(EntityType<? extends EnderDragon> entitytypes, Level world) {
++    public EnderDragon(EntityType<? extends EnderDragon> type, Level world) {
+         super(EntityType.ENDER_DRAGON, world);
+         this.subEntities = new EnderDragonPart[]{this.head, this.neck, this.body, this.tail1, this.tail2, this.tail3, this.wing1, this.wing2};
+         this.setHealth(this.getMaxHealth());
+diff --git a/src/main/java/net/minecraft/world/entity/boss/enderdragon/phases/DragonSittingFlamingPhase.java b/src/main/java/net/minecraft/world/entity/boss/enderdragon/phases/DragonSittingFlamingPhase.java
+index 60b4edf7bd9702da21b8f3d29a963c0b65a6ac44..5e701b02e464889fe433b08018d13e63b24506eb 100644
+--- a/src/main/java/net/minecraft/world/entity/boss/enderdragon/phases/DragonSittingFlamingPhase.java
++++ b/src/main/java/net/minecraft/world/entity/boss/enderdragon/phases/DragonSittingFlamingPhase.java
+@@ -15,8 +15,8 @@ public class DragonSittingFlamingPhase extends AbstractDragonSittingPhase {
+     private int flameCount;
+     private AreaEffectCloud flame;
+ 
+-    public DragonSittingFlamingPhase(EnderDragon entityenderdragon) {
+-        super(entityenderdragon);
++    public DragonSittingFlamingPhase(EnderDragon dragon) {
++        super(dragon);
+     }
+ 
+     @Override
+diff --git a/src/main/java/net/minecraft/world/entity/boss/enderdragon/phases/DragonStrafePlayerPhase.java b/src/main/java/net/minecraft/world/entity/boss/enderdragon/phases/DragonStrafePlayerPhase.java
+index 5763b8cd87ac7957448964883675cb0bf35215a9..01442af7b0c7340f0ece2fa0faa0f783b1b81c48 100644
+--- a/src/main/java/net/minecraft/world/entity/boss/enderdragon/phases/DragonStrafePlayerPhase.java
++++ b/src/main/java/net/minecraft/world/entity/boss/enderdragon/phases/DragonStrafePlayerPhase.java
+@@ -23,8 +23,8 @@ public class DragonStrafePlayerPhase extends AbstractDragonPhaseInstance {
+     private LivingEntity attackTarget;
+     private boolean holdingPatternClockwise;
+ 
+-    public DragonStrafePlayerPhase(EnderDragon entityenderdragon) {
+-        super(entityenderdragon);
++    public DragonStrafePlayerPhase(EnderDragon dragon) {
++        super(dragon);
+     }
+ 
+     @Override
+diff --git a/src/main/java/net/minecraft/world/entity/boss/wither/WitherBoss.java b/src/main/java/net/minecraft/world/entity/boss/wither/WitherBoss.java
+index b178c77f2557681f089b378996d028fbe34e370d..3a275ec157c0077d628c251b981916c742b16223 100644
+--- a/src/main/java/net/minecraft/world/entity/boss/wither/WitherBoss.java
++++ b/src/main/java/net/minecraft/world/entity/boss/wither/WitherBoss.java
+@@ -82,8 +82,8 @@ public class WitherBoss extends Monster implements RangedAttackMob {
+     };
+     private static final TargetingConditions TARGETING_CONDITIONS = (new TargetingConditions()).range(20.0D).selector(WitherBoss.LIVING_ENTITY_SELECTOR);
+ 
+-    public WitherBoss(EntityType<? extends WitherBoss> entitytypes, Level world) {
+-        super(entitytypes, world);
++    public WitherBoss(EntityType<? extends WitherBoss> type, Level world) {
++        super(type, world);
+         this.bossEvent = (ServerBossEvent) (new ServerBossEvent(this.getDisplayName(), BossEvent.BossBarColor.PURPLE, BossEvent.BossBarOverlay.PROGRESS)).setDarkenScreen(true);
+         this.setHealth(this.getMaxHealth());
+         this.getNavigation().setCanFloat(true);
+diff --git a/src/main/java/net/minecraft/world/entity/decoration/LeashFenceKnotEntity.java b/src/main/java/net/minecraft/world/entity/decoration/LeashFenceKnotEntity.java
+index abe99ebd075a05a7d5e47e0a4ec0896ef8aae9d4..3d3e94166b02ddcf2b014d665adbf99b922c8d5b 100644
+--- a/src/main/java/net/minecraft/world/entity/decoration/LeashFenceKnotEntity.java
++++ b/src/main/java/net/minecraft/world/entity/decoration/LeashFenceKnotEntity.java
+@@ -29,8 +29,8 @@ import org.bukkit.craftbukkit.event.CraftEventFactory; // CraftBukkit
+ 
+ public class LeashFenceKnotEntity extends HangingEntity {
+ 
+-    public LeashFenceKnotEntity(EntityType<? extends LeashFenceKnotEntity> entitytypes, Level world) {
+-        super(entitytypes, world);
++    public LeashFenceKnotEntity(EntityType<? extends LeashFenceKnotEntity> type, Level world) {
++        super(type, world);
+     }
+ 
+     public LeashFenceKnotEntity(Level world, BlockPos pos) {
+diff --git a/src/main/java/net/minecraft/world/entity/decoration/Painting.java b/src/main/java/net/minecraft/world/entity/decoration/Painting.java
+index 5e975642c768c2d2231925df8f385968edd168c7..f53833f761e600d90f7795afd6b266148ede1313 100644
+--- a/src/main/java/net/minecraft/world/entity/decoration/Painting.java
++++ b/src/main/java/net/minecraft/world/entity/decoration/Painting.java
+@@ -24,8 +24,8 @@ public class Painting extends HangingEntity {
+ 
+     public Motive motive;
+ 
+-    public Painting(EntityType<? extends Painting> entitytypes, Level world) {
+-        super(entitytypes, world);
++    public Painting(EntityType<? extends Painting> type, Level world) {
++        super(type, world);
+         // CraftBukkit start - generate a non-null painting
+         List<Motive> list = Lists.newArrayList(Motive.KEBAB);
+         this.motive = (Motive) list.get(this.random.nextInt(list.size()));
+diff --git a/src/main/java/net/minecraft/world/entity/item/FallingBlockEntity.java b/src/main/java/net/minecraft/world/entity/item/FallingBlockEntity.java
+index de24b41fdc3d84b7812a1ea98cb26d6e3f044b58..9c448ed19cedb9298228c17c65d6a9079f24e174 100644
+--- a/src/main/java/net/minecraft/world/entity/item/FallingBlockEntity.java
++++ b/src/main/java/net/minecraft/world/entity/item/FallingBlockEntity.java
+@@ -55,8 +55,8 @@ public class FallingBlockEntity extends Entity {
+     public CompoundTag blockData;
+     protected static final EntityDataAccessor<BlockPos> DATA_START_POS = SynchedEntityData.defineId(FallingBlockEntity.class, EntityDataSerializers.BLOCK_POS);
+ 
+-    public FallingBlockEntity(EntityType<? extends FallingBlockEntity> entitytypes, Level world) {
+-        super(entitytypes, world);
++    public FallingBlockEntity(EntityType<? extends FallingBlockEntity> type, Level world) {
++        super(type, world);
+         this.blockState = Blocks.SAND.defaultBlockState();
+         this.dropItem = true;
+         this.fallDamageMax = 40;
+diff --git a/src/main/java/net/minecraft/world/entity/item/PrimedTnt.java b/src/main/java/net/minecraft/world/entity/item/PrimedTnt.java
+index f34fb031c39ec541c71dc6fd5d8d2fbf2299b8d3..62e7223bf8f1f0e7de561c8319ad496d17d1152e 100644
+--- a/src/main/java/net/minecraft/world/entity/item/PrimedTnt.java
++++ b/src/main/java/net/minecraft/world/entity/item/PrimedTnt.java
+@@ -27,8 +27,8 @@ public class PrimedTnt extends Entity {
+     public float yield = 4; // CraftBukkit - add field
+     public boolean isIncendiary = false; // CraftBukkit - add field
+ 
+-    public PrimedTnt(EntityType<? extends PrimedTnt> entitytypes, Level world) {
+-        super(entitytypes, world);
++    public PrimedTnt(EntityType<? extends PrimedTnt> type, Level world) {
++        super(type, world);
+         this.life = 80;
+         this.blocksBuilding = true;
+     }
+diff --git a/src/main/java/net/minecraft/world/entity/monster/AbstractSkeleton.java b/src/main/java/net/minecraft/world/entity/monster/AbstractSkeleton.java
+index 822d3bb38570454e6914a42207dbb81d3a641b7a..cc6e31df45618fe8242841486dbb36b59c67b70c 100644
+--- a/src/main/java/net/minecraft/world/entity/monster/AbstractSkeleton.java
++++ b/src/main/java/net/minecraft/world/entity/monster/AbstractSkeleton.java
+@@ -64,8 +64,8 @@ public abstract class AbstractSkeleton extends Monster implements RangedAttackMo
+         }
+     };
+ 
+-    protected AbstractSkeleton(EntityType<? extends AbstractSkeleton> entitytypes, Level world) {
+-        super(entitytypes, world);
++    protected AbstractSkeleton(EntityType<? extends AbstractSkeleton> type, Level world) {
++        super(type, world);
+         this.reassessWeaponGoal();
+     }
+ 
+diff --git a/src/main/java/net/minecraft/world/entity/monster/CaveSpider.java b/src/main/java/net/minecraft/world/entity/monster/CaveSpider.java
+index e7fe270b7a3c33d0a18b86aaf7285658a8b515bb..c89395cb1ac6480b82da776d47a4945f6bc6308e 100644
+--- a/src/main/java/net/minecraft/world/entity/monster/CaveSpider.java
++++ b/src/main/java/net/minecraft/world/entity/monster/CaveSpider.java
+@@ -20,8 +20,8 @@ import net.minecraft.world.level.ServerLevelAccessor;
+ 
+ public class CaveSpider extends Spider {
+ 
+-    public CaveSpider(EntityType<? extends CaveSpider> entitytypes, Level world) {
+-        super(entitytypes, world);
++    public CaveSpider(EntityType<? extends CaveSpider> type, Level world) {
++        super(type, world);
+     }
+ 
+     public static AttributeSupplier.Builder createCaveSpider() {
+diff --git a/src/main/java/net/minecraft/world/entity/monster/Drowned.java b/src/main/java/net/minecraft/world/entity/monster/Drowned.java
+index 6ec5d15c087fc4f23202da597183f256fa00aa9a..8b9f20f7ff9d0f95b82df63b854f11ded390ee67 100644
+--- a/src/main/java/net/minecraft/world/entity/monster/Drowned.java
++++ b/src/main/java/net/minecraft/world/entity/monster/Drowned.java
+@@ -63,8 +63,8 @@ public class Drowned extends Zombie implements RangedAttackMob {
+     protected final WaterBoundPathNavigation waterNavigation;
+     protected final GroundPathNavigation groundNavigation;
+ 
+-    public Drowned(EntityType<? extends Drowned> entitytypes, Level world) {
+-        super(entitytypes, world);
++    public Drowned(EntityType<? extends Drowned> type, Level world) {
++        super(type, world);
+         this.maxUpStep = 1.0F;
+         this.moveControl = new Drowned.DrownedMoveControl(this);
+         this.setPathfindingMalus(BlockPathTypes.WATER, 0.0F);
+diff --git a/src/main/java/net/minecraft/world/entity/monster/ElderGuardian.java b/src/main/java/net/minecraft/world/entity/monster/ElderGuardian.java
+index a2670be9f8af8b78501a84bc0141ab790ae85cd8..b6a842f9a24634ff84f2f4f94c0f2838f10cddb0 100644
+--- a/src/main/java/net/minecraft/world/entity/monster/ElderGuardian.java
++++ b/src/main/java/net/minecraft/world/entity/monster/ElderGuardian.java
+@@ -21,8 +21,8 @@ public class ElderGuardian extends Guardian {
+ 
+     public static final float ELDER_SIZE_SCALE = EntityType.ELDER_GUARDIAN.getWidth() / EntityType.GUARDIAN.getWidth();
+ 
+-    public ElderGuardian(EntityType<? extends ElderGuardian> entitytypes, Level world) {
+-        super(entitytypes, world);
++    public ElderGuardian(EntityType<? extends ElderGuardian> type, Level world) {
++        super(type, world);
+         this.setPersistenceRequired();
+         if (this.randomStrollGoal != null) {
+             this.randomStrollGoal.setInterval(400);
+diff --git a/src/main/java/net/minecraft/world/entity/monster/EnderMan.java b/src/main/java/net/minecraft/world/entity/monster/EnderMan.java
+index 50e5156ecfd1bb09896d5cc78f216a7ae972e96e..17cb9df8b581e8e1a045a3ea162d27ca1d7deaf4 100644
+--- a/src/main/java/net/minecraft/world/entity/monster/EnderMan.java
++++ b/src/main/java/net/minecraft/world/entity/monster/EnderMan.java
+@@ -77,8 +77,8 @@ public class EnderMan extends Monster implements NeutralMob {
+     private int remainingPersistentAngerTime;
+     private UUID persistentAngerTarget;
+ 
+-    public EnderMan(EntityType<? extends EnderMan> entitytypes, Level world) {
+-        super(entitytypes, world);
++    public EnderMan(EntityType<? extends EnderMan> type, Level world) {
++        super(type, world);
+         this.maxUpStep = 1.0F;
+         this.setPathfindingMalus(BlockPathTypes.WATER, -1.0F);
+     }
+diff --git a/src/main/java/net/minecraft/world/entity/monster/Evoker.java b/src/main/java/net/minecraft/world/entity/monster/Evoker.java
+index 8587c5caa2350130b9aa654f15366af5773b2511..2691e7a1aa1305811a1cc6e4fca70b6ca80b0320 100644
+--- a/src/main/java/net/minecraft/world/entity/monster/Evoker.java
++++ b/src/main/java/net/minecraft/world/entity/monster/Evoker.java
+@@ -42,8 +42,8 @@ public class Evoker extends SpellcasterIllager {
+ 
+     private Sheep wololoTarget;
+ 
+-    public Evoker(EntityType<? extends Evoker> entitytypes, Level world) {
+-        super(entitytypes, world);
++    public Evoker(EntityType<? extends Evoker> type, Level world) {
++        super(type, world);
+         this.xpReward = 10;
+     }
+ 
+diff --git a/src/main/java/net/minecraft/world/entity/monster/Ghast.java b/src/main/java/net/minecraft/world/entity/monster/Ghast.java
+index 6427407add60787487d34b67e528de85e83208b8..b6a246f6768a362f68694ee30418938c25c9f7f6 100644
+--- a/src/main/java/net/minecraft/world/entity/monster/Ghast.java
++++ b/src/main/java/net/minecraft/world/entity/monster/Ghast.java
+@@ -38,8 +38,8 @@ public class Ghast extends FlyingMob implements Enemy {
+     private static final EntityDataAccessor<Boolean> DATA_IS_CHARGING = SynchedEntityData.defineId(Ghast.class, EntityDataSerializers.BOOLEAN);
+     private int explosionPower = 1;
+ 
+-    public Ghast(EntityType<? extends Ghast> entitytypes, Level world) {
+-        super(entitytypes, world);
++    public Ghast(EntityType<? extends Ghast> type, Level world) {
++        super(type, world);
+         this.xpReward = 5;
+         this.moveControl = new Ghast.GhastMoveControl(this);
+     }
+diff --git a/src/main/java/net/minecraft/world/entity/monster/Husk.java b/src/main/java/net/minecraft/world/entity/monster/Husk.java
+index 5fe57895af14e994edecd2535c31383740c4d7c5..621609b6abeae1f062f597ef0b5f8b9941912b15 100644
+--- a/src/main/java/net/minecraft/world/entity/monster/Husk.java
++++ b/src/main/java/net/minecraft/world/entity/monster/Husk.java
+@@ -18,8 +18,8 @@ import net.minecraft.world.level.ServerLevelAccessor;
+ 
+ public class Husk extends Zombie {
+ 
+-    public Husk(EntityType<? extends Husk> entitytypes, Level world) {
+-        super(entitytypes, world);
++    public Husk(EntityType<? extends Husk> type, Level world) {
++        super(type, world);
+     }
+ 
+     public static boolean checkHuskSpawnRules(EntityType<Husk> type, ServerLevelAccessor worldaccess, MobSpawnType spawnReason, BlockPos pos, Random random) {
+diff --git a/src/main/java/net/minecraft/world/entity/monster/Illusioner.java b/src/main/java/net/minecraft/world/entity/monster/Illusioner.java
+index 86b6a1c4708f54019073bd417b092ad59048f857..5c297f0a43b74c6432f61a21ae2181608927fa43 100644
+--- a/src/main/java/net/minecraft/world/entity/monster/Illusioner.java
++++ b/src/main/java/net/minecraft/world/entity/monster/Illusioner.java
+@@ -44,8 +44,8 @@ public class Illusioner extends SpellcasterIllager implements RangedAttackMob {
+     private int clientSideIllusionTicks;
+     private final Vec3[][] clientSideIllusionOffsets;
+ 
+-    public Illusioner(EntityType<? extends Illusioner> entitytypes, Level world) {
+-        super(entitytypes, world);
++    public Illusioner(EntityType<? extends Illusioner> type, Level world) {
++        super(type, world);
+         this.xpReward = 5;
+         this.clientSideIllusionOffsets = new Vec3[2][4];
+ 
+diff --git a/src/main/java/net/minecraft/world/entity/monster/Phantom.java b/src/main/java/net/minecraft/world/entity/monster/Phantom.java
+index 375b1e625c278487e80638b74cf5a9a4fec14267..260276e0c2ecca96ec212f0d955838936bd3e1b8 100644
+--- a/src/main/java/net/minecraft/world/entity/monster/Phantom.java
++++ b/src/main/java/net/minecraft/world/entity/monster/Phantom.java
+@@ -49,8 +49,8 @@ public class Phantom extends FlyingMob implements Enemy {
+     private BlockPos anchorPoint;
+     private Phantom.AttackPhase attackPhase;
+ 
+-    public Phantom(EntityType<? extends Phantom> entitytypes, Level world) {
+-        super(entitytypes, world);
++    public Phantom(EntityType<? extends Phantom> type, Level world) {
++        super(type, world);
+         this.moveTargetPoint = Vec3.ZERO;
+         this.anchorPoint = BlockPos.ZERO;
+         this.attackPhase = Phantom.AttackPhase.CIRCLE;
+diff --git a/src/main/java/net/minecraft/world/entity/monster/Pillager.java b/src/main/java/net/minecraft/world/entity/monster/Pillager.java
+index 04fe33865c2539363393465d496359e74943cfb2..d14683df46cb50d5251b58084b52a59e2edc6e5b 100644
+--- a/src/main/java/net/minecraft/world/entity/monster/Pillager.java
++++ b/src/main/java/net/minecraft/world/entity/monster/Pillager.java
+@@ -57,8 +57,8 @@ public class Pillager extends AbstractIllager implements CrossbowAttackMob {
+     private static final EntityDataAccessor<Boolean> IS_CHARGING_CROSSBOW = SynchedEntityData.defineId(Pillager.class, EntityDataSerializers.BOOLEAN);
+     public final SimpleContainer inventory = new SimpleContainer(5);
+ 
+-    public Pillager(EntityType<? extends Pillager> entitytypes, Level world) {
+-        super(entitytypes, world);
++    public Pillager(EntityType<? extends Pillager> type, Level world) {
++        super(type, world);
+     }
+ 
+     @Override
+diff --git a/src/main/java/net/minecraft/world/entity/monster/Ravager.java b/src/main/java/net/minecraft/world/entity/monster/Ravager.java
+index 6fa29e99ec8111631c3d108a0aec59971f32ba98..fee6711a8f7f8b70355ad99142aa5d842d627350 100644
+--- a/src/main/java/net/minecraft/world/entity/monster/Ravager.java
++++ b/src/main/java/net/minecraft/world/entity/monster/Ravager.java
+@@ -56,8 +56,8 @@ public class Ravager extends Raider {
+     private int stunnedTick;
+     private int roarTick;
+ 
+-    public Ravager(EntityType<? extends Ravager> entitytypes, Level world) {
+-        super(entitytypes, world);
++    public Ravager(EntityType<? extends Ravager> type, Level world) {
++        super(type, world);
+         this.maxUpStep = 1.0F;
+         this.xpReward = 20;
+     }
+diff --git a/src/main/java/net/minecraft/world/entity/monster/Shulker.java b/src/main/java/net/minecraft/world/entity/monster/Shulker.java
+index e24ef1ba020c042618f2d43870497f13ad4aef41..5157d5fba68ccb572c200d76961e51c847804a26 100644
+--- a/src/main/java/net/minecraft/world/entity/monster/Shulker.java
++++ b/src/main/java/net/minecraft/world/entity/monster/Shulker.java
+@@ -65,8 +65,8 @@ public class Shulker extends AbstractGolem implements Enemy {
+     private BlockPos oldAttachPosition = null;
+     private int clientSideTeleportInterpolation;
+ 
+-    public Shulker(EntityType<? extends Shulker> entitytypes, Level world) {
+-        super(entitytypes, world);
++    public Shulker(EntityType<? extends Shulker> type, Level world) {
++        super(type, world);
+         this.xpReward = 5;
+     }
+ 
+diff --git a/src/main/java/net/minecraft/world/entity/monster/Silverfish.java b/src/main/java/net/minecraft/world/entity/monster/Silverfish.java
+index 529ce76249b7683bd5e6e0d4dbbe090b8bbf232a..78b97b961402be4f6d847e04c3c5b9273414ab5a 100644
+--- a/src/main/java/net/minecraft/world/entity/monster/Silverfish.java
++++ b/src/main/java/net/minecraft/world/entity/monster/Silverfish.java
+@@ -35,8 +35,8 @@ public class Silverfish extends Monster {
+ 
+     private Silverfish.SilverfishWakeUpFriendsGoal friendsGoal;
+ 
+-    public Silverfish(EntityType<? extends Silverfish> entitytypes, Level world) {
+-        super(entitytypes, world);
++    public Silverfish(EntityType<? extends Silverfish> type, Level world) {
++        super(type, world);
+     }
+ 
+     @Override
+diff --git a/src/main/java/net/minecraft/world/entity/monster/Spider.java b/src/main/java/net/minecraft/world/entity/monster/Spider.java
+index 36afda406865c1678dd015c939a1c5dc57c4bb16..e6e849afc679e65d7cd9d7744ee07d0cc5f8cf5e 100644
+--- a/src/main/java/net/minecraft/world/entity/monster/Spider.java
++++ b/src/main/java/net/minecraft/world/entity/monster/Spider.java
+@@ -46,8 +46,8 @@ public class Spider extends Monster {
+ 
+     private static final EntityDataAccessor<Byte> DATA_FLAGS_ID = SynchedEntityData.defineId(Spider.class, EntityDataSerializers.BYTE);
+ 
+-    public Spider(EntityType<? extends Spider> entitytypes, Level world) {
+-        super(entitytypes, world);
++    public Spider(EntityType<? extends Spider> type, Level world) {
++        super(type, world);
+     }
+ 
+     @Override
+diff --git a/src/main/java/net/minecraft/world/entity/monster/Vindicator.java b/src/main/java/net/minecraft/world/entity/monster/Vindicator.java
+index 0b4b579a17bd49a5a89bf76918cd71ffd07576a3..97ab586de5bc93223aed62216df3fa23ae809f0d 100644
+--- a/src/main/java/net/minecraft/world/entity/monster/Vindicator.java
++++ b/src/main/java/net/minecraft/world/entity/monster/Vindicator.java
+@@ -53,8 +53,8 @@ public class Vindicator extends AbstractIllager {
+     };
+     private boolean isJohnny;
+ 
+-    public Vindicator(EntityType<? extends Vindicator> entitytypes, Level world) {
+-        super(entitytypes, world);
++    public Vindicator(EntityType<? extends Vindicator> type, Level world) {
++        super(type, world);
+     }
+ 
+     @Override
+diff --git a/src/main/java/net/minecraft/world/entity/monster/Witch.java b/src/main/java/net/minecraft/world/entity/monster/Witch.java
+index ce3cc2e5ee95557b33946449b19394345f159c07..f71b13295e96b17065dc9cbda1935ff89a131772 100644
+--- a/src/main/java/net/minecraft/world/entity/monster/Witch.java
++++ b/src/main/java/net/minecraft/world/entity/monster/Witch.java
+@@ -53,8 +53,8 @@ public class Witch extends Raider implements RangedAttackMob {
+     private NearestHealableRaiderTargetGoal<Raider> healRaidersGoal;
+     private NearestAttackableWitchTargetGoal<Player> attackPlayersGoal;
+ 
+-    public Witch(EntityType<? extends Witch> entitytypes, Level world) {
+-        super(entitytypes, world);
++    public Witch(EntityType<? extends Witch> type, Level world) {
++        super(type, world);
+     }
+ 
+     @Override
+diff --git a/src/main/java/net/minecraft/world/entity/monster/WitherSkeleton.java b/src/main/java/net/minecraft/world/entity/monster/WitherSkeleton.java
+index 96b08325f0fea45990ed18a134bd87fbcaf231f1..b79d550527b5bf7506767aeca7e743ca13edc2a5 100644
+--- a/src/main/java/net/minecraft/world/entity/monster/WitherSkeleton.java
++++ b/src/main/java/net/minecraft/world/entity/monster/WitherSkeleton.java
+@@ -29,8 +29,8 @@ import net.minecraft.world.level.pathfinder.BlockPathTypes;
+ 
+ public class WitherSkeleton extends AbstractSkeleton {
+ 
+-    public WitherSkeleton(EntityType<? extends WitherSkeleton> entitytypes, Level world) {
+-        super(entitytypes, world);
++    public WitherSkeleton(EntityType<? extends WitherSkeleton> type, Level world) {
++        super(type, world);
+         this.setPathfindingMalus(BlockPathTypes.LAVA, 8.0F);
+     }
+ 
+diff --git a/src/main/java/net/minecraft/world/entity/npc/WanderingTrader.java b/src/main/java/net/minecraft/world/entity/npc/WanderingTrader.java
+index 48e7fcc03d0e61463ca448e02fe0a94df4a37c9d..fc9686d52cd86490703f57218a3b09aa70c96be3 100644
+--- a/src/main/java/net/minecraft/world/entity/npc/WanderingTrader.java
++++ b/src/main/java/net/minecraft/world/entity/npc/WanderingTrader.java
+@@ -58,8 +58,8 @@ public class WanderingTrader extends net.minecraft.world.entity.npc.AbstractVill
+     private BlockPos wanderTarget;
+     private int despawnDelay;
+ 
+-    public WanderingTrader(EntityType<? extends WanderingTrader> entitytypes, Level world) {
+-        super(entitytypes, world);
++    public WanderingTrader(EntityType<? extends WanderingTrader> type, Level world) {
++        super(type, world);
+         this.forcedLoading = true;
+     }
+ 
+diff --git a/src/main/java/net/minecraft/world/entity/projectile/DragonFireball.java b/src/main/java/net/minecraft/world/entity/projectile/DragonFireball.java
+index 3953b5ccf41aed1fedfb4ea398a8903bd70f0734..fc33cdd2285d0b9746845e238c604fb00e5b6a48 100644
+--- a/src/main/java/net/minecraft/world/entity/projectile/DragonFireball.java
++++ b/src/main/java/net/minecraft/world/entity/projectile/DragonFireball.java
+@@ -17,8 +17,8 @@ import net.minecraft.world.phys.HitResult;
+ 
+ public class DragonFireball extends AbstractHurtingProjectile {
+ 
+-    public DragonFireball(EntityType<? extends DragonFireball> entitytypes, Level world) {
+-        super(entitytypes, world);
++    public DragonFireball(EntityType<? extends DragonFireball> type, Level world) {
++        super(type, world);
+     }
+ 
+     public DragonFireball(Level world, LivingEntity owner, double directionX, double directionY, double directionZ) {
+diff --git a/src/main/java/net/minecraft/world/entity/projectile/Fireball.java b/src/main/java/net/minecraft/world/entity/projectile/Fireball.java
+index 02d38b081150f02d126870363d65181a825c33c3..1eb4369bb4aa1014bb5e7e6c1953fde141b3ecbc 100644
+--- a/src/main/java/net/minecraft/world/entity/projectile/Fireball.java
++++ b/src/main/java/net/minecraft/world/entity/projectile/Fireball.java
+@@ -15,16 +15,16 @@ public abstract class Fireball extends AbstractHurtingProjectile {
+ 
+     private static final EntityDataAccessor<ItemStack> DATA_ITEM_STACK = SynchedEntityData.defineId(Fireball.class, EntityDataSerializers.ITEM_STACK);
+ 
+-    public Fireball(EntityType<? extends Fireball> entitytypes, Level world) {
+-        super(entitytypes, world);
++    public Fireball(EntityType<? extends Fireball> type, Level world) {
++        super(type, world);
+     }
+ 
+-    public Fireball(EntityType<? extends Fireball> entitytypes, double d0, double d1, double d2, double d3, double d4, double d5, Level world) {
+-        super(entitytypes, d0, d1, d2, d3, d4, d5, world);
++    public Fireball(EntityType<? extends Fireball> type, double x, double y, double z, double directionX, double directionY, double directionZ, Level world) {
++        super(type, x, y, z, directionX, directionY, directionZ, world);
+     }
+ 
+-    public Fireball(EntityType<? extends Fireball> entitytypes, LivingEntity entityliving, double d0, double d1, double d2, Level world) {
+-        super(entitytypes, entityliving, d0, d1, d2, world);
++    public Fireball(EntityType<? extends Fireball> type, LivingEntity owner, double directionX, double directionY, double directionZ, Level world) {
++        super(type, owner, directionX, directionY, directionZ, world);
+     }
+ 
+     public void setItem(ItemStack stack) {
+diff --git a/src/main/java/net/minecraft/world/entity/projectile/LargeFireball.java b/src/main/java/net/minecraft/world/entity/projectile/LargeFireball.java
+index 787a6323c3fc49972dfebb6f2c8cdb8772604650..edf5b5c304eeef1e01217e1a4272028c60b47840 100644
+--- a/src/main/java/net/minecraft/world/entity/projectile/LargeFireball.java
++++ b/src/main/java/net/minecraft/world/entity/projectile/LargeFireball.java
+@@ -16,8 +16,8 @@ public class LargeFireball extends Fireball {
+ 
+     public int explosionPower = 1;
+ 
+-    public LargeFireball(EntityType<? extends LargeFireball> entitytypes, Level world) {
+-        super(entitytypes, world);
++    public LargeFireball(EntityType<? extends LargeFireball> type, Level world) {
++        super(type, world);
+         isIncendiary = this.level.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING); // CraftBukkit
+     }
+ 
+diff --git a/src/main/java/net/minecraft/world/entity/projectile/SmallFireball.java b/src/main/java/net/minecraft/world/entity/projectile/SmallFireball.java
+index 6d657a448823e363b105cda5f353f5f7ca5a2d9a..6b16e3cbbdc7e6274492270f7604098f1bec01b1 100644
+--- a/src/main/java/net/minecraft/world/entity/projectile/SmallFireball.java
++++ b/src/main/java/net/minecraft/world/entity/projectile/SmallFireball.java
+@@ -17,8 +17,8 @@ import org.bukkit.event.entity.EntityCombustByEntityEvent; // CraftBukkit
+ 
+ public class SmallFireball extends Fireball {
+ 
+-    public SmallFireball(EntityType<? extends SmallFireball> entitytypes, Level world) {
+-        super(entitytypes, world);
++    public SmallFireball(EntityType<? extends SmallFireball> type, Level world) {
++        super(type, world);
+     }
+ 
+     public SmallFireball(Level world, LivingEntity owner, double velocityX, double velocityY, double velocityZ) {
+diff --git a/src/main/java/net/minecraft/world/entity/projectile/SpectralArrow.java b/src/main/java/net/minecraft/world/entity/projectile/SpectralArrow.java
+index b708392a64263e46f22453324539c13bee6a3de3..a755e86ec0fa785c779ed63606f382267e67dd97 100644
+--- a/src/main/java/net/minecraft/world/entity/projectile/SpectralArrow.java
++++ b/src/main/java/net/minecraft/world/entity/projectile/SpectralArrow.java
+@@ -14,8 +14,8 @@ public class SpectralArrow extends AbstractArrow {
+ 
+     public int duration = 200;
+ 
+-    public SpectralArrow(EntityType<? extends SpectralArrow> entitytypes, Level world) {
+-        super(entitytypes, world);
++    public SpectralArrow(EntityType<? extends SpectralArrow> type, Level world) {
++        super(type, world);
+     }
+ 
+     public SpectralArrow(Level world, LivingEntity owner) {
+diff --git a/src/main/java/net/minecraft/world/entity/projectile/ThrownEgg.java b/src/main/java/net/minecraft/world/entity/projectile/ThrownEgg.java
+index 8d0c7f896af8136d41ca1f548a4f3a8d6501e005..eebc8affbda6e15a082317c979a8030f0ac9e855 100644
+--- a/src/main/java/net/minecraft/world/entity/projectile/ThrownEgg.java
++++ b/src/main/java/net/minecraft/world/entity/projectile/ThrownEgg.java
+@@ -18,8 +18,8 @@ import org.bukkit.event.player.PlayerEggThrowEvent;
+ 
+ public class ThrownEgg extends ThrowableItemProjectile {
+ 
+-    public ThrownEgg(net.minecraft.world.entity.EntityType<? extends ThrownEgg> entitytypes, Level world) {
+-        super(entitytypes, world);
++    public ThrownEgg(net.minecraft.world.entity.EntityType<? extends ThrownEgg> type, Level world) {
++        super(type, world);
+     }
+ 
+     public ThrownEgg(Level world, LivingEntity owner) {
+diff --git a/src/main/java/net/minecraft/world/entity/projectile/ThrownEnderpearl.java b/src/main/java/net/minecraft/world/entity/projectile/ThrownEnderpearl.java
+index 49439981dabdedea428ca7617fa5773a97a47035..0cca255aa71dbffa90d8aeebaca89f903fe6cbfe 100644
+--- a/src/main/java/net/minecraft/world/entity/projectile/ThrownEnderpearl.java
++++ b/src/main/java/net/minecraft/world/entity/projectile/ThrownEnderpearl.java
+@@ -25,8 +25,8 @@ import org.bukkit.event.player.PlayerTeleportEvent;
+ 
+ public class ThrownEnderpearl extends ThrowableItemProjectile {
+ 
+-    public ThrownEnderpearl(EntityType<? extends ThrownEnderpearl> entitytypes, Level world) {
+-        super(entitytypes, world);
++    public ThrownEnderpearl(EntityType<? extends ThrownEnderpearl> type, Level world) {
++        super(type, world);
+     }
+ 
+     public ThrownEnderpearl(Level world, LivingEntity owner) {
+diff --git a/src/main/java/net/minecraft/world/entity/projectile/ThrownExperienceBottle.java b/src/main/java/net/minecraft/world/entity/projectile/ThrownExperienceBottle.java
+index fc7e613e2ed9bff70caf2d105b30d9af67b09f57..5fba4ad85ee07616316ee91db92504c140fdf471 100644
+--- a/src/main/java/net/minecraft/world/entity/projectile/ThrownExperienceBottle.java
++++ b/src/main/java/net/minecraft/world/entity/projectile/ThrownExperienceBottle.java
+@@ -12,8 +12,8 @@ import net.minecraft.world.phys.HitResult;
+ 
+ public class ThrownExperienceBottle extends ThrowableItemProjectile {
+ 
+-    public ThrownExperienceBottle(EntityType<? extends ThrownExperienceBottle> entitytypes, Level world) {
+-        super(entitytypes, world);
++    public ThrownExperienceBottle(EntityType<? extends ThrownExperienceBottle> type, Level world) {
++        super(type, world);
+     }
+ 
+     public ThrownExperienceBottle(Level world, LivingEntity owner) {
+diff --git a/src/main/java/net/minecraft/world/entity/projectile/ThrownPotion.java b/src/main/java/net/minecraft/world/entity/projectile/ThrownPotion.java
+index 9d9dd8df7084a11a9d2efc0b669a258226751296..22754d715c3c7361fa1e1555ce8d6c8f9c5e2913 100644
+--- a/src/main/java/net/minecraft/world/entity/projectile/ThrownPotion.java
++++ b/src/main/java/net/minecraft/world/entity/projectile/ThrownPotion.java
+@@ -44,8 +44,8 @@ public class ThrownPotion extends ThrowableItemProjectile {
+ 
+     public static final Predicate<net.minecraft.world.entity.LivingEntity> WATER_SENSITIVE = net.minecraft.world.entity.LivingEntity::isSensitiveToWater;
+ 
+-    public ThrownPotion(EntityType<? extends ThrownPotion> entitytypes, Level world) {
+-        super(entitytypes, world);
++    public ThrownPotion(EntityType<? extends ThrownPotion> type, Level world) {
++        super(type, world);
+     }
+ 
+     public ThrownPotion(Level world, net.minecraft.world.entity.LivingEntity owner) {
+diff --git a/src/main/java/net/minecraft/world/entity/projectile/ThrownTrident.java b/src/main/java/net/minecraft/world/entity/projectile/ThrownTrident.java
+index 55e00ff7ed48774adec30e97dfcd6ecdd7985743..7fef8e185e25cd067f72d55043a9ec6cde1dfd8e 100644
+--- a/src/main/java/net/minecraft/world/entity/projectile/ThrownTrident.java
++++ b/src/main/java/net/minecraft/world/entity/projectile/ThrownTrident.java
+@@ -32,8 +32,8 @@ public class ThrownTrident extends AbstractArrow {
+     private boolean dealtDamage;
+     public int clientSideReturnTridentTickCount;
+ 
+-    public ThrownTrident(EntityType<? extends ThrownTrident> entitytypes, Level world) {
+-        super(entitytypes, world);
++    public ThrownTrident(EntityType<? extends ThrownTrident> type, Level world) {
++        super(type, world);
+         this.tridentItem = new ItemStack(Items.TRIDENT);
+     }
+ 
+diff --git a/src/main/java/net/minecraft/world/entity/projectile/WitherSkull.java b/src/main/java/net/minecraft/world/entity/projectile/WitherSkull.java
+index 52f562b393c4e35dd71eb0fb22d85ae6b5cdeb56..9df62c393acc67cbe26d5a6ddedc2e6b30149415 100644
+--- a/src/main/java/net/minecraft/world/entity/projectile/WitherSkull.java
++++ b/src/main/java/net/minecraft/world/entity/projectile/WitherSkull.java
+@@ -26,8 +26,8 @@ public class WitherSkull extends AbstractHurtingProjectile {
+ 
+     private static final EntityDataAccessor<Boolean> DATA_DANGEROUS = SynchedEntityData.defineId(WitherSkull.class, EntityDataSerializers.BOOLEAN);
+ 
+-    public WitherSkull(EntityType<? extends WitherSkull> entitytypes, Level world) {
+-        super(entitytypes, world);
++    public WitherSkull(EntityType<? extends WitherSkull> type, Level world) {
++        super(type, world);
+     }
+ 
+     public WitherSkull(Level world, LivingEntity owner, double directionX, double directionY, double directionZ) {
+diff --git a/src/main/java/net/minecraft/world/entity/vehicle/Boat.java b/src/main/java/net/minecraft/world/entity/vehicle/Boat.java
+index 5697bc2979c37c405e1dbf3ad98c52dd3ff2cae0..bfb8767b369bafc4962786594ab6ada088a9b585 100644
+--- a/src/main/java/net/minecraft/world/entity/vehicle/Boat.java
++++ b/src/main/java/net/minecraft/world/entity/vehicle/Boat.java
+@@ -98,8 +98,8 @@ public class Boat extends Entity {
+     public boolean landBoats = false;
+     // CraftBukkit end
+ 
+-    public Boat(EntityType<? extends Boat> entitytypes, Level world) {
+-        super(entitytypes, world);
++    public Boat(EntityType<? extends Boat> type, Level world) {
++        super(type, world);
+         this.paddlePositions = new float[2];
+         this.blocksBuilding = true;
+     }
+diff --git a/src/main/java/net/minecraft/world/inventory/BrewingStandMenu.java b/src/main/java/net/minecraft/world/inventory/BrewingStandMenu.java
+index 68decf777dc4203ebaa76fe421ecd652da9dc2fe..24ce789572d3bd625990f2b3cefb0f24d7da8e4b 100644
+--- a/src/main/java/net/minecraft/world/inventory/BrewingStandMenu.java
++++ b/src/main/java/net/minecraft/world/inventory/BrewingStandMenu.java
+@@ -125,8 +125,8 @@ public class BrewingStandMenu extends AbstractContainerMenu {
+ 
+     static class FuelSlot extends Slot {
+ 
+-        public FuelSlot(Container iinventory, int i, int j, int k) {
+-            super(iinventory, i, j, k);
++        public FuelSlot(Container inventory, int index, int x, int y) {
++            super(inventory, index, x, y);
+         }
+ 
+         @Override
+@@ -146,8 +146,8 @@ public class BrewingStandMenu extends AbstractContainerMenu {
+ 
+     static class IngredientsSlot extends Slot {
+ 
+-        public IngredientsSlot(Container iinventory, int i, int j, int k) {
+-            super(iinventory, i, j, k);
++        public IngredientsSlot(Container inventory, int index, int x, int y) {
++            super(inventory, index, x, y);
+         }
+ 
+         @Override
+@@ -163,8 +163,8 @@ public class BrewingStandMenu extends AbstractContainerMenu {
+ 
+     static class PotionSlot extends Slot {
+ 
+-        public PotionSlot(Container iinventory, int i, int j, int k) {
+-            super(iinventory, i, j, k);
++        public PotionSlot(Container inventory, int index, int x, int y) {
++            super(inventory, index, x, y);
+         }
+ 
+         @Override
+diff --git a/src/main/java/net/minecraft/world/item/PotionItem.java b/src/main/java/net/minecraft/world/item/PotionItem.java
+index 517c533492f551129f46cdecfa0c4d69fe63743a..52ae32a30200e7e53d276160dc7b1cbebbf73a4d 100644
+--- a/src/main/java/net/minecraft/world/item/PotionItem.java
++++ b/src/main/java/net/minecraft/world/item/PotionItem.java
+@@ -19,8 +19,8 @@ import net.minecraft.world.level.Level;
+ 
+ public class PotionItem extends Item {
+ 
+-    public PotionItem(Item.Properties item_info) {
+-        super(item_info);
++    public PotionItem(Item.Properties settings) {
++        super(settings);
+     }
+ 
+     @Override
+diff --git a/src/main/java/net/minecraft/world/level/block/BambooBlock.java b/src/main/java/net/minecraft/world/level/block/BambooBlock.java
+index 64ba9cfc6e3eabfce5768b9f746f024b20d164c1..17fd29002734a642cab53d01c8e6209b549bf9e4 100644
+--- a/src/main/java/net/minecraft/world/level/block/BambooBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/BambooBlock.java
+@@ -37,8 +37,8 @@ public class BambooBlock extends Block implements BonemealableBlock {
+     public static final EnumProperty<BambooLeaves> LEAVES = BlockStateProperties.BAMBOO_LEAVES;
+     public static final IntegerProperty STAGE = BlockStateProperties.STAGE;
+ 
+-    public BambooBlock(BlockBehaviour.Properties blockbase_info) {
+-        super(blockbase_info);
++    public BambooBlock(BlockBehaviour.Properties settings) {
++        super(settings);
+         this.registerDefaultState((BlockState) ((BlockState) ((BlockState) ((BlockState) this.stateDefinition.any()).setValue(BambooBlock.AGE, 0)).setValue(BambooBlock.LEAVES, BambooLeaves.NONE)).setValue(BambooBlock.STAGE, 0));
+     }
+ 
+diff --git a/src/main/java/net/minecraft/world/level/block/BambooSaplingBlock.java b/src/main/java/net/minecraft/world/level/block/BambooSaplingBlock.java
+index 20e9e4807a66f892b998e62ee4bfeaa8dd6637f4..8c62dbe18b7528e0094754ffdb30453bd35401c8 100644
+--- a/src/main/java/net/minecraft/world/level/block/BambooSaplingBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/BambooSaplingBlock.java
+@@ -23,8 +23,8 @@ public class BambooSaplingBlock extends Block implements BonemealableBlock {
+ 
+     protected static final VoxelShape SAPLING_SHAPE = Block.box(4.0D, 0.0D, 4.0D, 12.0D, 12.0D, 12.0D);
+ 
+-    public BambooSaplingBlock(BlockBehaviour.Properties blockbase_info) {
+-        super(blockbase_info);
++    public BambooSaplingBlock(BlockBehaviour.Properties settings) {
++        super(settings);
+     }
+ 
+     @Override
+diff --git a/src/main/java/net/minecraft/world/level/block/BeehiveBlock.java b/src/main/java/net/minecraft/world/level/block/BeehiveBlock.java
+index f9d0900c11c4ec8cacb2e6864f8861f752a698f7..8d4c981b5f29a1b4a5b93ce59f2dce2eeb76b61f 100644
+--- a/src/main/java/net/minecraft/world/level/block/BeehiveBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/BeehiveBlock.java
+@@ -53,8 +53,8 @@ public class BeehiveBlock extends BaseEntityBlock {
+     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
+     public static final IntegerProperty HONEY_LEVEL = BlockStateProperties.LEVEL_HONEY;
+ 
+-    public BeehiveBlock(BlockBehaviour.Properties blockbase_info) {
+-        super(blockbase_info);
++    public BeehiveBlock(BlockBehaviour.Properties settings) {
++        super(settings);
+         this.registerDefaultState((BlockState) ((BlockState) ((BlockState) this.stateDefinition.any()).setValue(BeehiveBlock.HONEY_LEVEL, 0)).setValue(BeehiveBlock.FACING, Direction.NORTH));
+     }
+ 
+diff --git a/src/main/java/net/minecraft/world/level/block/BellBlock.java b/src/main/java/net/minecraft/world/level/block/BellBlock.java
+index f44f3d54bea93e548f4d0579520ea4078526fe13..9c30350d19cbe83adb1e44173da368dec57f4a0d 100644
+--- a/src/main/java/net/minecraft/world/level/block/BellBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/BellBlock.java
+@@ -51,8 +51,8 @@ public class BellBlock extends BaseEntityBlock {
+     private static final VoxelShape TO_SOUTH = Shapes.or(BellBlock.BELL_SHAPE, Block.box(7.0D, 13.0D, 3.0D, 9.0D, 15.0D, 16.0D));
+     private static final VoxelShape CEILING_SHAPE = Shapes.or(BellBlock.BELL_SHAPE, Block.box(7.0D, 13.0D, 7.0D, 9.0D, 16.0D, 9.0D));
+ 
+-    public BellBlock(BlockBehaviour.Properties blockbase_info) {
+-        super(blockbase_info);
++    public BellBlock(BlockBehaviour.Properties settings) {
++        super(settings);
+         this.registerDefaultState((BlockState) ((BlockState) ((BlockState) ((BlockState) this.stateDefinition.any()).setValue(BellBlock.FACING, Direction.NORTH)).setValue(BellBlock.ATTACHMENT, BellAttachType.FLOOR)).setValue(BellBlock.POWERED, false));
+     }
+ 
+diff --git a/src/main/java/net/minecraft/world/level/block/CactusBlock.java b/src/main/java/net/minecraft/world/level/block/CactusBlock.java
+index c996c94306c184e5c0ceb745636aadcb0a41ceb8..1a4f240b2e35a6175ade9929135f2167c1997fab 100644
+--- a/src/main/java/net/minecraft/world/level/block/CactusBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/CactusBlock.java
+@@ -30,8 +30,8 @@ public class CactusBlock extends Block {
+     protected static final VoxelShape COLLISION_SHAPE = Block.box(1.0D, 0.0D, 1.0D, 15.0D, 15.0D, 15.0D);
+     protected static final VoxelShape OUTLINE_SHAPE = Block.box(1.0D, 0.0D, 1.0D, 15.0D, 16.0D, 15.0D);
+ 
+-    protected CactusBlock(BlockBehaviour.Properties blockbase_info) {
+-        super(blockbase_info);
++    protected CactusBlock(BlockBehaviour.Properties settings) {
++        super(settings);
+         this.registerDefaultState((BlockState) ((BlockState) this.stateDefinition.any()).setValue(CactusBlock.AGE, 0));
+     }
+ 
+diff --git a/src/main/java/net/minecraft/world/level/block/CakeBlock.java b/src/main/java/net/minecraft/world/level/block/CakeBlock.java
+index 1ec8cef3dd363e7232c0fe8e5f56d8be01460e72..b7f9569852a53e53d34c37221886fbe642531550 100644
+--- a/src/main/java/net/minecraft/world/level/block/CakeBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/CakeBlock.java
+@@ -27,8 +27,8 @@ public class CakeBlock extends Block {
+     public static final IntegerProperty BITES = BlockStateProperties.BITES;
+     protected static final VoxelShape[] SHAPE_BY_BITE = new VoxelShape[]{Block.box(1.0D, 0.0D, 1.0D, 15.0D, 8.0D, 15.0D), Block.box(3.0D, 0.0D, 1.0D, 15.0D, 8.0D, 15.0D), Block.box(5.0D, 0.0D, 1.0D, 15.0D, 8.0D, 15.0D), Block.box(7.0D, 0.0D, 1.0D, 15.0D, 8.0D, 15.0D), Block.box(9.0D, 0.0D, 1.0D, 15.0D, 8.0D, 15.0D), Block.box(11.0D, 0.0D, 1.0D, 15.0D, 8.0D, 15.0D), Block.box(13.0D, 0.0D, 1.0D, 15.0D, 8.0D, 15.0D)};
+ 
+-    protected CakeBlock(BlockBehaviour.Properties blockbase_info) {
+-        super(blockbase_info);
++    protected CakeBlock(BlockBehaviour.Properties settings) {
++        super(settings);
+         this.registerDefaultState((BlockState) ((BlockState) this.stateDefinition.any()).setValue(CakeBlock.BITES, 0));
+     }
+ 
+diff --git a/src/main/java/net/minecraft/world/level/block/CarvedPumpkinBlock.java b/src/main/java/net/minecraft/world/level/block/CarvedPumpkinBlock.java
+index 2c9a2181b1778b65f1d0ba1be437d1139d45a700..239444fdfd210d2dff925d9ff15c5e646b475cb4 100644
+--- a/src/main/java/net/minecraft/world/level/block/CarvedPumpkinBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/CarvedPumpkinBlock.java
+@@ -46,8 +46,8 @@ public class CarvedPumpkinBlock extends HorizontalDirectionalBlock implements We
+         return iblockdata != null && (iblockdata.is(Blocks.CARVED_PUMPKIN) || iblockdata.is(Blocks.JACK_O_LANTERN));
+     };
+ 
+-    protected CarvedPumpkinBlock(BlockBehaviour.Properties blockbase_info) {
+-        super(blockbase_info);
++    protected CarvedPumpkinBlock(BlockBehaviour.Properties settings) {
++        super(settings);
+         this.registerDefaultState((BlockState) ((BlockState) this.stateDefinition.any()).setValue(CarvedPumpkinBlock.FACING, Direction.NORTH));
+     }
+ 
+diff --git a/src/main/java/net/minecraft/world/level/block/CauldronBlock.java b/src/main/java/net/minecraft/world/level/block/CauldronBlock.java
+index 56c9a9f9908365c5b61d65a523a2506dfb319f80..1a6bbba5b9c089b13759f75b9e663b82feac94be 100644
+--- a/src/main/java/net/minecraft/world/level/block/CauldronBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/CauldronBlock.java
+@@ -41,8 +41,8 @@ public class CauldronBlock extends Block {
+     private static final VoxelShape INSIDE = box(2.0D, 4.0D, 2.0D, 14.0D, 16.0D, 14.0D);
+     protected static final VoxelShape SHAPE = Shapes.join(Shapes.block(), Shapes.or(box(0.0D, 0.0D, 4.0D, 16.0D, 3.0D, 12.0D), box(4.0D, 0.0D, 0.0D, 12.0D, 3.0D, 16.0D), box(2.0D, 0.0D, 2.0D, 14.0D, 3.0D, 14.0D), CauldronBlock.INSIDE), BooleanOp.ONLY_FIRST);
+ 
+-    public CauldronBlock(BlockBehaviour.Properties blockbase_info) {
+-        super(blockbase_info);
++    public CauldronBlock(BlockBehaviour.Properties settings) {
++        super(settings);
+         this.registerDefaultState((BlockState) ((BlockState) this.stateDefinition.any()).setValue(CauldronBlock.LEVEL, 0));
+     }
+ 
+diff --git a/src/main/java/net/minecraft/world/level/block/ChestBlock.java b/src/main/java/net/minecraft/world/level/block/ChestBlock.java
+index 66f89f24f4e520334251aa395184510c2088405b..3447e935469ee95444fb25a1ebc2c805e6229250 100644
+--- a/src/main/java/net/minecraft/world/level/block/ChestBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/ChestBlock.java
+@@ -79,7 +79,7 @@ public class ChestBlock extends AbstractChestBlock<ChestBlockEntity> implements
+         public Optional<MenuProvider> acceptDouble(final ChestBlockEntity tileentitychest, final ChestBlockEntity tileentitychest1) {
+             final CompoundContainer inventorylargechest = new CompoundContainer(tileentitychest, tileentitychest1);
+ 
+-            return Optional.of(new net.minecraft.world.level.block.ChestBlock.DoubleInventory(tileentitychest, tileentitychest1, inventorylargechest)); // CraftBukkit
++            return Optional.of(new DoubleInventory(tileentitychest, tileentitychest1, inventorylargechest)); // CraftBukkit
+         }
+ 
+         public Optional<MenuProvider> acceptSingle(ChestBlockEntity tileentitychest) {
+diff --git a/src/main/java/net/minecraft/world/level/block/CocoaBlock.java b/src/main/java/net/minecraft/world/level/block/CocoaBlock.java
+index 363b3f40c342a42f361de4951dce2c5681199346..c3828b946c9ddfa8799664bb5eda3e3ab7603c23 100644
+--- a/src/main/java/net/minecraft/world/level/block/CocoaBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/CocoaBlock.java
+@@ -30,8 +30,8 @@ public class CocoaBlock extends HorizontalDirectionalBlock implements Bonemealab
+     protected static final VoxelShape[] NORTH_AABB = new VoxelShape[]{Block.box(6.0D, 7.0D, 1.0D, 10.0D, 12.0D, 5.0D), Block.box(5.0D, 5.0D, 1.0D, 11.0D, 12.0D, 7.0D), Block.box(4.0D, 3.0D, 1.0D, 12.0D, 12.0D, 9.0D)};
+     protected static final VoxelShape[] SOUTH_AABB = new VoxelShape[]{Block.box(6.0D, 7.0D, 11.0D, 10.0D, 12.0D, 15.0D), Block.box(5.0D, 5.0D, 9.0D, 11.0D, 12.0D, 15.0D), Block.box(4.0D, 3.0D, 7.0D, 12.0D, 12.0D, 15.0D)};
+ 
+-    public CocoaBlock(BlockBehaviour.Properties blockbase_info) {
+-        super(blockbase_info);
++    public CocoaBlock(BlockBehaviour.Properties settings) {
++        super(settings);
+         this.registerDefaultState((BlockState) ((BlockState) ((BlockState) this.stateDefinition.any()).setValue(CocoaBlock.FACING, Direction.NORTH)).setValue(CocoaBlock.AGE, 0));
+     }
+ 
+diff --git a/src/main/java/net/minecraft/world/level/block/CommandBlock.java b/src/main/java/net/minecraft/world/level/block/CommandBlock.java
+index b1175735423050c7067909d2dd1a3a7f49cea883..fa5b1c994cfb246ccae9a86906fb8b1a7a976444 100644
+--- a/src/main/java/net/minecraft/world/level/block/CommandBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/CommandBlock.java
+@@ -35,8 +35,8 @@ public class CommandBlock extends BaseEntityBlock {
+     public static final DirectionProperty FACING = DirectionalBlock.FACING;
+     public static final BooleanProperty CONDITIONAL = BlockStateProperties.CONDITIONAL;
+ 
+-    public CommandBlock(BlockBehaviour.Properties blockbase_info) {
+-        super(blockbase_info);
++    public CommandBlock(BlockBehaviour.Properties settings) {
++        super(settings);
+         this.registerDefaultState((BlockState) ((BlockState) ((BlockState) this.stateDefinition.any()).setValue(CommandBlock.FACING, Direction.NORTH)).setValue(CommandBlock.CONDITIONAL, false));
+     }
+ 
+diff --git a/src/main/java/net/minecraft/world/level/block/ComparatorBlock.java b/src/main/java/net/minecraft/world/level/block/ComparatorBlock.java
+index ffbca9f14c2451bbb2c8f5d950aaefefca6ccc0f..866491ec0aff5146c681074f214437733e233813 100644
+--- a/src/main/java/net/minecraft/world/level/block/ComparatorBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/ComparatorBlock.java
+@@ -33,8 +33,8 @@ public class ComparatorBlock extends DiodeBlock implements EntityBlock {
+ 
+     public static final EnumProperty<ComparatorMode> MODE = BlockStateProperties.MODE_COMPARATOR;
+ 
+-    public ComparatorBlock(BlockBehaviour.Properties blockbase_info) {
+-        super(blockbase_info);
++    public ComparatorBlock(BlockBehaviour.Properties settings) {
++        super(settings);
+         this.registerDefaultState((BlockState) ((BlockState) ((BlockState) ((BlockState) this.stateDefinition.any()).setValue(ComparatorBlock.FACING, Direction.NORTH)).setValue(ComparatorBlock.POWERED, false)).setValue(ComparatorBlock.MODE, ComparatorMode.COMPARE));
+     }
+ 
+diff --git a/src/main/java/net/minecraft/world/level/block/CropBlock.java b/src/main/java/net/minecraft/world/level/block/CropBlock.java
+index d809766a8737235bff605b09ac3cb1d0296abf76..f1af1a7b80be5a973c431025f07ba9ef6feadbef 100644
+--- a/src/main/java/net/minecraft/world/level/block/CropBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/CropBlock.java
+@@ -24,8 +24,8 @@ public class CropBlock extends BushBlock implements BonemealableBlock {
+     public static final IntegerProperty AGE = BlockStateProperties.AGE_7;
+     private static final VoxelShape[] SHAPE_BY_AGE = new VoxelShape[]{Block.box(0.0D, 0.0D, 0.0D, 16.0D, 2.0D, 16.0D), Block.box(0.0D, 0.0D, 0.0D, 16.0D, 4.0D, 16.0D), Block.box(0.0D, 0.0D, 0.0D, 16.0D, 6.0D, 16.0D), Block.box(0.0D, 0.0D, 0.0D, 16.0D, 8.0D, 16.0D), Block.box(0.0D, 0.0D, 0.0D, 16.0D, 10.0D, 16.0D), Block.box(0.0D, 0.0D, 0.0D, 16.0D, 12.0D, 16.0D), Block.box(0.0D, 0.0D, 0.0D, 16.0D, 14.0D, 16.0D), Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D)};
+ 
+-    protected CropBlock(BlockBehaviour.Properties blockbase_info) {
+-        super(blockbase_info);
++    protected CropBlock(BlockBehaviour.Properties settings) {
++        super(settings);
+         this.registerDefaultState((BlockState) ((BlockState) this.stateDefinition.any()).setValue(this.getAgeProperty(), 0));
+     }
+ 
+diff --git a/src/main/java/net/minecraft/world/level/block/DaylightDetectorBlock.java b/src/main/java/net/minecraft/world/level/block/DaylightDetectorBlock.java
+index eef7811f308b1f55cee67581a093786aa8fb9b28..0d0bf3b4ed3f65f3ad22868c0eafcb566f37b5d7 100644
+--- a/src/main/java/net/minecraft/world/level/block/DaylightDetectorBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/DaylightDetectorBlock.java
+@@ -28,8 +28,8 @@ public class DaylightDetectorBlock extends BaseEntityBlock {
+     public static final BooleanProperty INVERTED = BlockStateProperties.INVERTED;
+     protected static final VoxelShape SHAPE = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 6.0D, 16.0D);
+ 
+-    public DaylightDetectorBlock(BlockBehaviour.Properties blockbase_info) {
+-        super(blockbase_info);
++    public DaylightDetectorBlock(BlockBehaviour.Properties settings) {
++        super(settings);
+         this.registerDefaultState((BlockState) ((BlockState) ((BlockState) this.stateDefinition.any()).setValue(DaylightDetectorBlock.POWER, 0)).setValue(DaylightDetectorBlock.INVERTED, false));
+     }
+ 
+diff --git a/src/main/java/net/minecraft/world/level/block/DetectorRailBlock.java b/src/main/java/net/minecraft/world/level/block/DetectorRailBlock.java
+index 1bceb76a6d6075b2aee3a7aa66eafc8b0e1671ea..25ebf886973b06b41a459ec42aefac39ff878994 100644
+--- a/src/main/java/net/minecraft/world/level/block/DetectorRailBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/DetectorRailBlock.java
+@@ -32,8 +32,8 @@ public class DetectorRailBlock extends BaseRailBlock {
+     public static final EnumProperty<RailShape> SHAPE = BlockStateProperties.RAIL_SHAPE_STRAIGHT;
+     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
+ 
+-    public DetectorRailBlock(BlockBehaviour.Properties blockbase_info) {
+-        super(true, blockbase_info);
++    public DetectorRailBlock(BlockBehaviour.Properties settings) {
++        super(true, settings);
+         this.registerDefaultState((BlockState) ((BlockState) ((BlockState) this.stateDefinition.any()).setValue(DetectorRailBlock.POWERED, false)).setValue(DetectorRailBlock.SHAPE, RailShape.NORTH_SOUTH));
+     }
+ 
+diff --git a/src/main/java/net/minecraft/world/level/block/DiodeBlock.java b/src/main/java/net/minecraft/world/level/block/DiodeBlock.java
+index 120a7aa84980be35b07e863444ba3a9a6d866f28..36df9c02af067bbe18497f738ff01de9ec70e74b 100644
+--- a/src/main/java/net/minecraft/world/level/block/DiodeBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/DiodeBlock.java
+@@ -26,8 +26,8 @@ public abstract class DiodeBlock extends HorizontalDirectionalBlock {
+     protected static final VoxelShape SHAPE = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 2.0D, 16.0D);
+     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
+ 
+-    protected DiodeBlock(BlockBehaviour.Properties blockbase_info) {
+-        super(blockbase_info);
++    protected DiodeBlock(BlockBehaviour.Properties settings) {
++        super(settings);
+     }
+ 
+     @Override
+diff --git a/src/main/java/net/minecraft/world/level/block/DoorBlock.java b/src/main/java/net/minecraft/world/level/block/DoorBlock.java
+index bdcdec46a45cc36ce68db65dee1798b37f25301c..ca5b8d2abd033fcb077871e98b6a640753493b6b 100644
+--- a/src/main/java/net/minecraft/world/level/block/DoorBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/DoorBlock.java
+@@ -44,8 +44,8 @@ public class DoorBlock extends Block {
+     protected static final VoxelShape WEST_AABB = Block.box(13.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D);
+     protected static final VoxelShape EAST_AABB = Block.box(0.0D, 0.0D, 0.0D, 3.0D, 16.0D, 16.0D);
+ 
+-    protected DoorBlock(BlockBehaviour.Properties blockbase_info) {
+-        super(blockbase_info);
++    protected DoorBlock(BlockBehaviour.Properties settings) {
++        super(settings);
+         this.registerDefaultState((BlockState) ((BlockState) ((BlockState) ((BlockState) ((BlockState) ((BlockState) this.stateDefinition.any()).setValue(DoorBlock.FACING, Direction.NORTH)).setValue(DoorBlock.OPEN, false)).setValue(DoorBlock.HINGE, DoorHingeSide.LEFT)).setValue(DoorBlock.POWERED, false)).setValue(DoorBlock.HALF, DoubleBlockHalf.LOWER));
+     }
+ 
+diff --git a/src/main/java/net/minecraft/world/level/block/DoublePlantBlock.java b/src/main/java/net/minecraft/world/level/block/DoublePlantBlock.java
+index 2e489e8bd7228756c4fb17819d02b0f7e3cf91a7..b8d79e57db826f0a9fe0f8745f10315630d6bba0 100644
+--- a/src/main/java/net/minecraft/world/level/block/DoublePlantBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/DoublePlantBlock.java
+@@ -22,8 +22,8 @@ public class DoublePlantBlock extends BushBlock {
+ 
+     public static final EnumProperty<DoubleBlockHalf> HALF = BlockStateProperties.DOUBLE_BLOCK_HALF;
+ 
+-    public DoublePlantBlock(BlockBehaviour.Properties blockbase_info) {
+-        super(blockbase_info);
++    public DoublePlantBlock(BlockBehaviour.Properties settings) {
++        super(settings);
+         this.registerDefaultState((BlockState) ((BlockState) this.stateDefinition.any()).setValue(DoublePlantBlock.HALF, DoubleBlockHalf.LOWER));
+     }
+ 
+diff --git a/src/main/java/net/minecraft/world/level/block/DragonEggBlock.java b/src/main/java/net/minecraft/world/level/block/DragonEggBlock.java
+index 98f2458dccdc018cecffb0726c68f10c4820b22c..7e9b758a276e39aac1ed65667930f8e3af309388 100644
+--- a/src/main/java/net/minecraft/world/level/block/DragonEggBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/DragonEggBlock.java
+@@ -20,8 +20,8 @@ public class DragonEggBlock extends FallingBlock {
+ 
+     protected static final VoxelShape SHAPE = Block.box(1.0D, 0.0D, 1.0D, 15.0D, 16.0D, 15.0D);
+ 
+-    public DragonEggBlock(BlockBehaviour.Properties blockbase_info) {
+-        super(blockbase_info);
++    public DragonEggBlock(BlockBehaviour.Properties settings) {
++        super(settings);
+     }
+ 
+     @Override
+diff --git a/src/main/java/net/minecraft/world/level/block/EndPortalBlock.java b/src/main/java/net/minecraft/world/level/block/EndPortalBlock.java
+index d9083d36fcf09219c216d8505927badbb3529cda..df5ad7219f317b99897da08b35a2c26bde9ebf33 100644
+--- a/src/main/java/net/minecraft/world/level/block/EndPortalBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/EndPortalBlock.java
+@@ -26,8 +26,8 @@ public class EndPortalBlock extends BaseEntityBlock {
+ 
+     protected static final VoxelShape SHAPE = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 12.0D, 16.0D);
+ 
+-    protected EndPortalBlock(BlockBehaviour.Properties blockbase_info) {
+-        super(blockbase_info);
++    protected EndPortalBlock(BlockBehaviour.Properties settings) {
++        super(settings);
+     }
+ 
+     @Override
+diff --git a/src/main/java/net/minecraft/world/level/block/FarmBlock.java b/src/main/java/net/minecraft/world/level/block/FarmBlock.java
+index ed9a21661ea56f53652a2323e7dc1ebec1790eca..6dec55645839ce033ca436ae3cd7453d81dc9da8 100644
+--- a/src/main/java/net/minecraft/world/level/block/FarmBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/FarmBlock.java
+@@ -35,8 +35,8 @@ public class FarmBlock extends Block {
+     public static final IntegerProperty MOISTURE = BlockStateProperties.MOISTURE;
+     protected static final VoxelShape SHAPE = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 15.0D, 16.0D);
+ 
+-    protected FarmBlock(BlockBehaviour.Properties blockbase_info) {
+-        super(blockbase_info);
++    protected FarmBlock(BlockBehaviour.Properties settings) {
++        super(settings);
+         this.registerDefaultState((BlockState) ((BlockState) this.stateDefinition.any()).setValue(FarmBlock.MOISTURE, 0));
+     }
+ 
+diff --git a/src/main/java/net/minecraft/world/level/block/FenceGateBlock.java b/src/main/java/net/minecraft/world/level/block/FenceGateBlock.java
+index d2c24bbddfe79ab77fe8a05cf14a38616905deb9..d6800868f706a4bec0ac91d2fbac5a0a26ee8ff9 100644
+--- a/src/main/java/net/minecraft/world/level/block/FenceGateBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/FenceGateBlock.java
+@@ -38,8 +38,8 @@ public class FenceGateBlock extends HorizontalDirectionalBlock {
+     protected static final VoxelShape Z_OCCLUSION_SHAPE_LOW = Shapes.or(Block.box(0.0D, 2.0D, 7.0D, 2.0D, 13.0D, 9.0D), Block.box(14.0D, 2.0D, 7.0D, 16.0D, 13.0D, 9.0D));
+     protected static final VoxelShape X_OCCLUSION_SHAPE_LOW = Shapes.or(Block.box(7.0D, 2.0D, 0.0D, 9.0D, 13.0D, 2.0D), Block.box(7.0D, 2.0D, 14.0D, 9.0D, 13.0D, 16.0D));
+ 
+-    public FenceGateBlock(BlockBehaviour.Properties blockbase_info) {
+-        super(blockbase_info);
++    public FenceGateBlock(BlockBehaviour.Properties settings) {
++        super(settings);
+         this.registerDefaultState((BlockState) ((BlockState) ((BlockState) ((BlockState) this.stateDefinition.any()).setValue(FenceGateBlock.OPEN, false)).setValue(FenceGateBlock.POWERED, false)).setValue(FenceGateBlock.IN_WALL, false));
+     }
+ 
+diff --git a/src/main/java/net/minecraft/world/level/block/FireBlock.java b/src/main/java/net/minecraft/world/level/block/FireBlock.java
+index 95813e2284b38e2ef2ded0b445ba6ca18fb9e087..eaf7a64b16d61152235d4e976dd1be36193f2a84 100644
+--- a/src/main/java/net/minecraft/world/level/block/FireBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/FireBlock.java
+@@ -54,8 +54,8 @@ public class FireBlock extends BaseFireBlock {
+     private final Object2IntMap<Block> flameOdds = new Object2IntOpenHashMap();
+     private final Object2IntMap<Block> burnOdds = new Object2IntOpenHashMap();
+ 
+-    public FireBlock(BlockBehaviour.Properties blockbase_info) {
+-        super(blockbase_info, 1.0F);
++    public FireBlock(BlockBehaviour.Properties settings) {
++        super(settings, 1.0F);
+         this.registerDefaultState((BlockState) ((BlockState) ((BlockState) ((BlockState) ((BlockState) ((BlockState) ((BlockState) this.stateDefinition.any()).setValue(FireBlock.AGE, 0)).setValue(FireBlock.NORTH, false)).setValue(FireBlock.EAST, false)).setValue(FireBlock.SOUTH, false)).setValue(FireBlock.WEST, false)).setValue(FireBlock.UP, false));
+         this.shapesCache = ImmutableMap.copyOf((Map) this.stateDefinition.getPossibleStates().stream().filter((iblockdata) -> {
+             return (Integer) iblockdata.getValue(FireBlock.AGE) == 0;
+diff --git a/src/main/java/net/minecraft/world/level/block/FrostedIceBlock.java b/src/main/java/net/minecraft/world/level/block/FrostedIceBlock.java
+index f2075d418943ee91092e09539a57787d44f5c6c8..7a56e8e73f379128c4f3c7cc2647217193b3ff88 100644
+--- a/src/main/java/net/minecraft/world/level/block/FrostedIceBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/FrostedIceBlock.java
+@@ -18,8 +18,8 @@ public class FrostedIceBlock extends IceBlock {
+ 
+     public static final IntegerProperty AGE = BlockStateProperties.AGE_3;
+ 
+-    public FrostedIceBlock(BlockBehaviour.Properties blockbase_info) {
+-        super(blockbase_info);
++    public FrostedIceBlock(BlockBehaviour.Properties settings) {
++        super(settings);
+         this.registerDefaultState((BlockState) ((BlockState) this.stateDefinition.any()).setValue(FrostedIceBlock.AGE, 0));
+     }
+ 
+diff --git a/src/main/java/net/minecraft/world/level/block/GrassPathBlock.java b/src/main/java/net/minecraft/world/level/block/GrassPathBlock.java
+index d69be55692d09b7f9a67e9e90338d27ab5637b07..2a4a5450466bf0b3d8b59f2f6e1369e3805d6209 100644
+--- a/src/main/java/net/minecraft/world/level/block/GrassPathBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/GrassPathBlock.java
+@@ -18,8 +18,8 @@ public class GrassPathBlock extends Block {
+ 
+     protected static final VoxelShape SHAPE = FarmBlock.SHAPE;
+ 
+-    protected GrassPathBlock(BlockBehaviour.Properties blockbase_info) {
+-        super(blockbase_info);
++    protected GrassPathBlock(BlockBehaviour.Properties settings) {
++        super(settings);
+     }
+ 
+     @Override
+diff --git a/src/main/java/net/minecraft/world/level/block/JukeboxBlock.java b/src/main/java/net/minecraft/world/level/block/JukeboxBlock.java
+index f5048d8a780f8db482f049951b3694a3b7af05be..51e486b56ee255da389ef42dce2734439edd5428 100644
+--- a/src/main/java/net/minecraft/world/level/block/JukeboxBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/JukeboxBlock.java
+@@ -27,8 +27,8 @@ public class JukeboxBlock extends BaseEntityBlock {
+ 
+     public static final BooleanProperty HAS_RECORD = BlockStateProperties.HAS_RECORD;
+ 
+-    protected JukeboxBlock(BlockBehaviour.Properties blockbase_info) {
+-        super(blockbase_info);
++    protected JukeboxBlock(BlockBehaviour.Properties settings) {
++        super(settings);
+         this.registerDefaultState((BlockState) ((BlockState) this.stateDefinition.any()).setValue(JukeboxBlock.HAS_RECORD, false));
+     }
+ 
+diff --git a/src/main/java/net/minecraft/world/level/block/LeavesBlock.java b/src/main/java/net/minecraft/world/level/block/LeavesBlock.java
+index 57f9572417fe30e5ac38f4b24da417f9c32d0808..27f6b6217642588a7be7e9b6013e963ba5136313 100644
+--- a/src/main/java/net/minecraft/world/level/block/LeavesBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/LeavesBlock.java
+@@ -25,8 +25,8 @@ public class LeavesBlock extends Block {
+     public static final IntegerProperty DISTANCE = BlockStateProperties.DISTANCE;
+     public static final BooleanProperty PERSISTENT = BlockStateProperties.PERSISTENT;
+ 
+-    public LeavesBlock(BlockBehaviour.Properties blockbase_info) {
+-        super(blockbase_info);
++    public LeavesBlock(BlockBehaviour.Properties settings) {
++        super(settings);
+         this.registerDefaultState((BlockState) ((BlockState) ((BlockState) this.stateDefinition.any()).setValue(LeavesBlock.DISTANCE, 7)).setValue(LeavesBlock.PERSISTENT, false));
+     }
+ 
+diff --git a/src/main/java/net/minecraft/world/level/block/LecternBlock.java b/src/main/java/net/minecraft/world/level/block/LecternBlock.java
+index 6877dee3532cb7cd5ae7e5c614a0417820960dfa..80f98825671c2de6bd701ea801734bedb132916c 100644
+--- a/src/main/java/net/minecraft/world/level/block/LecternBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/LecternBlock.java
+@@ -49,8 +49,8 @@ public class LecternBlock extends BaseEntityBlock {
+     public static final VoxelShape SHAPE_EAST = Shapes.or(Block.box(15.0D, 10.0D, 0.0D, 10.666667D, 14.0D, 16.0D), Block.box(10.666667D, 12.0D, 0.0D, 6.333333D, 16.0D, 16.0D), Block.box(6.333333D, 14.0D, 0.0D, 2.0D, 18.0D, 16.0D), LecternBlock.SHAPE_COMMON);
+     public static final VoxelShape SHAPE_SOUTH = Shapes.or(Block.box(0.0D, 10.0D, 15.0D, 16.0D, 14.0D, 10.666667D), Block.box(0.0D, 12.0D, 10.666667D, 16.0D, 16.0D, 6.333333D), Block.box(0.0D, 14.0D, 6.333333D, 16.0D, 18.0D, 2.0D), LecternBlock.SHAPE_COMMON);
+ 
+-    protected LecternBlock(BlockBehaviour.Properties blockbase_info) {
+-        super(blockbase_info);
++    protected LecternBlock(BlockBehaviour.Properties settings) {
++        super(settings);
+         this.registerDefaultState((BlockState) ((BlockState) ((BlockState) ((BlockState) this.stateDefinition.any()).setValue(LecternBlock.FACING, Direction.NORTH)).setValue(LecternBlock.POWERED, false)).setValue(LecternBlock.HAS_BOOK, false));
+     }
+ 
+diff --git a/src/main/java/net/minecraft/world/level/block/LeverBlock.java b/src/main/java/net/minecraft/world/level/block/LeverBlock.java
+index beae1c61bd3c617f8a509e1f95b8ca30cb37a91e..f602ae933fc91e133bf351a21f8892b054f3b0af 100644
+--- a/src/main/java/net/minecraft/world/level/block/LeverBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/LeverBlock.java
+@@ -35,8 +35,8 @@ public class LeverBlock extends FaceAttachedHorizontalDirectionalBlock {
+     protected static final VoxelShape DOWN_AABB_Z = Block.box(5.0D, 10.0D, 4.0D, 11.0D, 16.0D, 12.0D);
+     protected static final VoxelShape DOWN_AABB_X = Block.box(4.0D, 10.0D, 5.0D, 12.0D, 16.0D, 11.0D);
+ 
+-    protected LeverBlock(BlockBehaviour.Properties blockbase_info) {
+-        super(blockbase_info);
++    protected LeverBlock(BlockBehaviour.Properties settings) {
++        super(settings);
+         this.registerDefaultState((BlockState) ((BlockState) ((BlockState) ((BlockState) this.stateDefinition.any()).setValue(LeverBlock.FACING, Direction.NORTH)).setValue(LeverBlock.POWERED, false)).setValue(LeverBlock.FACE, AttachFace.WALL));
+     }
+ 
+diff --git a/src/main/java/net/minecraft/world/level/block/MagmaBlock.java b/src/main/java/net/minecraft/world/level/block/MagmaBlock.java
+index b004963ea6a8edeb7bca598c1f82735ad62bcc78..7eb06e800e7dc4e123e85a7f90eb499c3c33508d 100644
+--- a/src/main/java/net/minecraft/world/level/block/MagmaBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/MagmaBlock.java
+@@ -21,8 +21,8 @@ import net.minecraft.world.level.block.state.BlockState;
+ 
+ public class MagmaBlock extends Block {
+ 
+-    public MagmaBlock(BlockBehaviour.Properties blockbase_info) {
+-        super(blockbase_info);
++    public MagmaBlock(BlockBehaviour.Properties settings) {
++        super(settings);
+     }
+ 
+     @Override
+diff --git a/src/main/java/net/minecraft/world/level/block/MushroomBlock.java b/src/main/java/net/minecraft/world/level/block/MushroomBlock.java
+index 6925cc783dab103354cace30e6f29f21057e5f0d..e06c108946ec734e0f6dd0afde01364bf214f285 100644
+--- a/src/main/java/net/minecraft/world/level/block/MushroomBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/MushroomBlock.java
+@@ -23,8 +23,8 @@ public class MushroomBlock extends BushBlock implements BonemealableBlock {
+ 
+     protected static final VoxelShape SHAPE = Block.box(5.0D, 0.0D, 5.0D, 11.0D, 6.0D, 11.0D);
+ 
+-    public MushroomBlock(BlockBehaviour.Properties blockbase_info) {
+-        super(blockbase_info);
++    public MushroomBlock(BlockBehaviour.Properties settings) {
++        super(settings);
+     }
+ 
+     @Override
+diff --git a/src/main/java/net/minecraft/world/level/block/NetherPortalBlock.java b/src/main/java/net/minecraft/world/level/block/NetherPortalBlock.java
+index 9050455a5ffd5cb3d3f2f8f144006b7ed4190979..17ec93af1547dcfc08c8ee1dd7359b63a7c0a1ab 100644
+--- a/src/main/java/net/minecraft/world/level/block/NetherPortalBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/NetherPortalBlock.java
+@@ -35,8 +35,8 @@ public class NetherPortalBlock extends Block {
+     protected static final VoxelShape X_AXIS_AABB = Block.box(0.0D, 0.0D, 6.0D, 16.0D, 16.0D, 10.0D);
+     protected static final VoxelShape Z_AXIS_AABB = Block.box(6.0D, 0.0D, 0.0D, 10.0D, 16.0D, 16.0D);
+ 
+-    public NetherPortalBlock(BlockBehaviour.Properties blockbase_info) {
+-        super(blockbase_info);
++    public NetherPortalBlock(BlockBehaviour.Properties settings) {
++        super(settings);
+         this.registerDefaultState((BlockState) ((BlockState) this.stateDefinition.any()).setValue(NetherPortalBlock.AXIS, Direction.Axis.X));
+     }
+ 
+diff --git a/src/main/java/net/minecraft/world/level/block/NetherWartBlock.java b/src/main/java/net/minecraft/world/level/block/NetherWartBlock.java
+index f9a5070c87f32b1d91077120c50dd81002fdf824..8c56ef82b47ef251626217d0ee8a8cf5aa1b0bdb 100644
+--- a/src/main/java/net/minecraft/world/level/block/NetherWartBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/NetherWartBlock.java
+@@ -17,8 +17,8 @@ public class NetherWartBlock extends BushBlock {
+     public static final IntegerProperty AGE = BlockStateProperties.AGE_3;
+     private static final VoxelShape[] SHAPE_BY_AGE = new VoxelShape[]{Block.box(0.0D, 0.0D, 0.0D, 16.0D, 5.0D, 16.0D), Block.box(0.0D, 0.0D, 0.0D, 16.0D, 8.0D, 16.0D), Block.box(0.0D, 0.0D, 0.0D, 16.0D, 11.0D, 16.0D), Block.box(0.0D, 0.0D, 0.0D, 16.0D, 14.0D, 16.0D)};
+ 
+-    protected NetherWartBlock(BlockBehaviour.Properties blockbase_info) {
+-        super(blockbase_info);
++    protected NetherWartBlock(BlockBehaviour.Properties settings) {
++        super(settings);
+         this.registerDefaultState((BlockState) ((BlockState) this.stateDefinition.any()).setValue(NetherWartBlock.AGE, 0));
+     }
+ 
+diff --git a/src/main/java/net/minecraft/world/level/block/NoteBlock.java b/src/main/java/net/minecraft/world/level/block/NoteBlock.java
+index c62bf34e61441f106690cf84335317194d2c9415..0266405e62e210a17036a2171bdbe0353c944fa7 100644
+--- a/src/main/java/net/minecraft/world/level/block/NoteBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/NoteBlock.java
+@@ -28,8 +28,8 @@ public class NoteBlock extends Block {
+     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
+     public static final IntegerProperty NOTE = BlockStateProperties.NOTE;
+ 
+-    public NoteBlock(BlockBehaviour.Properties blockbase_info) {
+-        super(blockbase_info);
++    public NoteBlock(BlockBehaviour.Properties settings) {
++        super(settings);
+         this.registerDefaultState((BlockState) ((BlockState) ((BlockState) ((BlockState) this.stateDefinition.any()).setValue(NoteBlock.INSTRUMENT, NoteBlockInstrument.HARP)).setValue(NoteBlock.NOTE, 0)).setValue(NoteBlock.POWERED, false));
+     }
+ 
+diff --git a/src/main/java/net/minecraft/world/level/block/ObserverBlock.java b/src/main/java/net/minecraft/world/level/block/ObserverBlock.java
+index 38365a0a8ef951fcdf8eecbb56d2e456ef38a13c..a4977bda0a7e9b91af187b741a5b4f70b08399f3 100644
+--- a/src/main/java/net/minecraft/world/level/block/ObserverBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/ObserverBlock.java
+@@ -19,8 +19,8 @@ public class ObserverBlock extends DirectionalBlock {
+ 
+     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
+ 
+-    public ObserverBlock(BlockBehaviour.Properties blockbase_info) {
+-        super(blockbase_info);
++    public ObserverBlock(BlockBehaviour.Properties settings) {
++        super(settings);
+         this.registerDefaultState((BlockState) ((BlockState) ((BlockState) this.stateDefinition.any()).setValue(ObserverBlock.FACING, Direction.SOUTH)).setValue(ObserverBlock.POWERED, false));
+     }
+ 
+diff --git a/src/main/java/net/minecraft/world/level/block/OreBlock.java b/src/main/java/net/minecraft/world/level/block/OreBlock.java
+index dc204b688160d5afd18db118b6e908dbe124a88b..2402630befb5b60d59c6397c2bd70ceab3a8ae3a 100644
+--- a/src/main/java/net/minecraft/world/level/block/OreBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/OreBlock.java
+@@ -12,8 +12,8 @@ import net.minecraft.world.level.block.state.BlockState;
+ 
+ public class OreBlock extends Block {
+ 
+-    public OreBlock(BlockBehaviour.Properties blockbase_info) {
+-        super(blockbase_info);
++    public OreBlock(BlockBehaviour.Properties settings) {
++        super(settings);
+     }
+ 
+     protected int xpOnDrop(Random random) {
+diff --git a/src/main/java/net/minecraft/world/level/block/PumpkinBlock.java b/src/main/java/net/minecraft/world/level/block/PumpkinBlock.java
+index a4586b07be8d1f7c28dd3afb14cad2ed2df09fe2..fe528f7dee693982285ce035abd9929cb4e0cbdf 100644
+--- a/src/main/java/net/minecraft/world/level/block/PumpkinBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/PumpkinBlock.java
+@@ -17,8 +17,8 @@ import net.minecraft.world.phys.BlockHitResult;
+ 
+ public class PumpkinBlock extends StemGrownBlock {
+ 
+-    protected PumpkinBlock(BlockBehaviour.Properties blockbase_info) {
+-        super(blockbase_info);
++    protected PumpkinBlock(BlockBehaviour.Properties settings) {
++        super(settings);
+     }
+ 
+     @Override
+diff --git a/src/main/java/net/minecraft/world/level/block/RedStoneOreBlock.java b/src/main/java/net/minecraft/world/level/block/RedStoneOreBlock.java
+index d945b5418aefb46c4d530d9a6c9010db1009f616..0953bbcc989a0272caddf7b71155a932f1705061 100644
+--- a/src/main/java/net/minecraft/world/level/block/RedStoneOreBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/RedStoneOreBlock.java
+@@ -29,8 +29,8 @@ public class RedStoneOreBlock extends Block {
+ 
+     public static final BooleanProperty LIT = RedstoneTorchBlock.LIT;
+ 
+-    public RedStoneOreBlock(BlockBehaviour.Properties blockbase_info) {
+-        super(blockbase_info);
++    public RedStoneOreBlock(BlockBehaviour.Properties settings) {
++        super(settings);
+         this.registerDefaultState((BlockState) this.defaultBlockState().setValue(RedStoneOreBlock.LIT, false));
+     }
+ 
+diff --git a/src/main/java/net/minecraft/world/level/block/RedStoneWireBlock.java b/src/main/java/net/minecraft/world/level/block/RedStoneWireBlock.java
+index d67aa6eb09180f1e76200a7bebe3852b1848649a..2e1f5350e1865f5a54d743c3815ebb2eb84e6e4c 100644
+--- a/src/main/java/net/minecraft/world/level/block/RedStoneWireBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/RedStoneWireBlock.java
+@@ -51,8 +51,8 @@ public class RedStoneWireBlock extends Block {
+     private final BlockState crossState;
+     private boolean shouldSignal = true;
+ 
+-    public RedStoneWireBlock(BlockBehaviour.Properties blockbase_info) {
+-        super(blockbase_info);
++    public RedStoneWireBlock(BlockBehaviour.Properties settings) {
++        super(settings);
+         this.registerDefaultState((BlockState) ((BlockState) ((BlockState) ((BlockState) ((BlockState) ((BlockState) this.stateDefinition.any()).setValue(RedStoneWireBlock.NORTH, RedstoneSide.NONE)).setValue(RedStoneWireBlock.EAST, RedstoneSide.NONE)).setValue(RedStoneWireBlock.SOUTH, RedstoneSide.NONE)).setValue(RedStoneWireBlock.WEST, RedstoneSide.NONE)).setValue(RedStoneWireBlock.POWER, 0));
+         this.crossState = (BlockState) ((BlockState) ((BlockState) ((BlockState) this.defaultBlockState().setValue(RedStoneWireBlock.NORTH, RedstoneSide.SIDE)).setValue(RedStoneWireBlock.EAST, RedstoneSide.SIDE)).setValue(RedStoneWireBlock.SOUTH, RedstoneSide.SIDE)).setValue(RedStoneWireBlock.WEST, RedstoneSide.SIDE);
+         UnmodifiableIterator unmodifiableiterator = this.getStateDefinition().getPossibleStates().iterator();
+diff --git a/src/main/java/net/minecraft/world/level/block/RedstoneLampBlock.java b/src/main/java/net/minecraft/world/level/block/RedstoneLampBlock.java
+index 3c6dcc43040d5d469b312587335ca6f923d09f70..4d6500b7346794548e43be04f5ea49f399806bfc 100644
+--- a/src/main/java/net/minecraft/world/level/block/RedstoneLampBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/RedstoneLampBlock.java
+@@ -17,8 +17,8 @@ public class RedstoneLampBlock extends Block {
+ 
+     public static final BooleanProperty LIT = RedstoneTorchBlock.LIT;
+ 
+-    public RedstoneLampBlock(BlockBehaviour.Properties blockbase_info) {
+-        super(blockbase_info);
++    public RedstoneLampBlock(BlockBehaviour.Properties settings) {
++        super(settings);
+         this.registerDefaultState((BlockState) this.defaultBlockState().setValue(RedstoneLampBlock.LIT, false));
+     }
+ 
+diff --git a/src/main/java/net/minecraft/world/level/block/RedstoneTorchBlock.java b/src/main/java/net/minecraft/world/level/block/RedstoneTorchBlock.java
+index 03fb7eda44f5c39e3509b29126baa6a78e4fdd46..0187e3cb5b08aacb7de6e2cadf74d7e1dc22f065 100644
+--- a/src/main/java/net/minecraft/world/level/block/RedstoneTorchBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/RedstoneTorchBlock.java
+@@ -23,8 +23,8 @@ public class RedstoneTorchBlock extends TorchBlock {
+     public static final BooleanProperty LIT = BlockStateProperties.LIT;
+     private static final Map<BlockGetter, List<RedstoneTorchBlock.Toggle>> RECENT_TOGGLES = new WeakHashMap();
+ 
+-    protected RedstoneTorchBlock(BlockBehaviour.Properties blockbase_info) {
+-        super(blockbase_info, DustParticleOptions.REDSTONE);
++    protected RedstoneTorchBlock(BlockBehaviour.Properties settings) {
++        super(settings, DustParticleOptions.REDSTONE);
+         this.registerDefaultState((BlockState) ((BlockState) this.stateDefinition.any()).setValue(RedstoneTorchBlock.LIT, true));
+     }
+ 
+diff --git a/src/main/java/net/minecraft/world/level/block/ScaffoldingBlock.java b/src/main/java/net/minecraft/world/level/block/ScaffoldingBlock.java
+index d3f09edc1efdca7af3421b589f18a555df4b0808..3f95f264b72d358deff15d5bdd515c1ff31fd40d 100644
+--- a/src/main/java/net/minecraft/world/level/block/ScaffoldingBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/ScaffoldingBlock.java
+@@ -34,8 +34,8 @@ public class ScaffoldingBlock extends Block implements SimpleWaterloggedBlock {
+     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
+     public static final BooleanProperty BOTTOM = BlockStateProperties.BOTTOM;
+ 
+-    protected ScaffoldingBlock(BlockBehaviour.Properties blockbase_info) {
+-        super(blockbase_info);
++    protected ScaffoldingBlock(BlockBehaviour.Properties settings) {
++        super(settings);
+         this.registerDefaultState((BlockState) ((BlockState) ((BlockState) ((BlockState) this.stateDefinition.any()).setValue(ScaffoldingBlock.DISTANCE, 7)).setValue(ScaffoldingBlock.WATERLOGGED, false)).setValue(ScaffoldingBlock.BOTTOM, false));
+     }
+ 
+diff --git a/src/main/java/net/minecraft/world/level/block/SnowLayerBlock.java b/src/main/java/net/minecraft/world/level/block/SnowLayerBlock.java
+index 6c6cd3b653fe207ec2de95091a7e936978b9d43e..a65624a9c560080256a41b87589396f7a1863e56 100644
+--- a/src/main/java/net/minecraft/world/level/block/SnowLayerBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/SnowLayerBlock.java
+@@ -26,8 +26,8 @@ public class SnowLayerBlock extends Block {
+     public static final IntegerProperty LAYERS = BlockStateProperties.LAYERS;
+     protected static final VoxelShape[] SHAPE_BY_LAYER = new VoxelShape[]{Shapes.empty(), Block.box(0.0D, 0.0D, 0.0D, 16.0D, 2.0D, 16.0D), Block.box(0.0D, 0.0D, 0.0D, 16.0D, 4.0D, 16.0D), Block.box(0.0D, 0.0D, 0.0D, 16.0D, 6.0D, 16.0D), Block.box(0.0D, 0.0D, 0.0D, 16.0D, 8.0D, 16.0D), Block.box(0.0D, 0.0D, 0.0D, 16.0D, 10.0D, 16.0D), Block.box(0.0D, 0.0D, 0.0D, 16.0D, 12.0D, 16.0D), Block.box(0.0D, 0.0D, 0.0D, 16.0D, 14.0D, 16.0D), Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D)};
+ 
+-    protected SnowLayerBlock(BlockBehaviour.Properties blockbase_info) {
+-        super(blockbase_info);
++    protected SnowLayerBlock(BlockBehaviour.Properties settings) {
++        super(settings);
+         this.registerDefaultState((BlockState) ((BlockState) this.stateDefinition.any()).setValue(SnowLayerBlock.LAYERS, 1));
+     }
+ 
+diff --git a/src/main/java/net/minecraft/world/level/block/SpawnerBlock.java b/src/main/java/net/minecraft/world/level/block/SpawnerBlock.java
+index 35eb195eabdc48e8e3a9366c4beb6b79804f0c5d..820a22571f7342554c7d8499510ec99aa99a65c2 100644
+--- a/src/main/java/net/minecraft/world/level/block/SpawnerBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/SpawnerBlock.java
+@@ -11,8 +11,8 @@ import net.minecraft.world.level.block.state.BlockState;
+ 
+ public class SpawnerBlock extends BaseEntityBlock {
+ 
+-    protected SpawnerBlock(BlockBehaviour.Properties blockbase_info) {
+-        super(blockbase_info);
++    protected SpawnerBlock(BlockBehaviour.Properties settings) {
++        super(settings);
+     }
+ 
+     @Override
+diff --git a/src/main/java/net/minecraft/world/level/block/SpongeBlock.java b/src/main/java/net/minecraft/world/level/block/SpongeBlock.java
+index dba7c351461c7c1bc4ae7f4521bb25b8a77f875e..2e51309ab2c2b847a07aac6f37d9c881a79ac7a0 100644
+--- a/src/main/java/net/minecraft/world/level/block/SpongeBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/SpongeBlock.java
+@@ -23,8 +23,8 @@ import org.bukkit.event.block.SpongeAbsorbEvent;
+ 
+ public class SpongeBlock extends Block {
+ 
+-    protected SpongeBlock(BlockBehaviour.Properties blockbase_info) {
+-        super(blockbase_info);
++    protected SpongeBlock(BlockBehaviour.Properties settings) {
++        super(settings);
+     }
+ 
+     @Override
+diff --git a/src/main/java/net/minecraft/world/level/block/SpreadingSnowyDirtBlock.java b/src/main/java/net/minecraft/world/level/block/SpreadingSnowyDirtBlock.java
+index eba0b6882158fa65e7256402fa042a7f0dd85a14..d54f097afc455a01486d7f7459b0cfc4ab4f3970 100644
+--- a/src/main/java/net/minecraft/world/level/block/SpreadingSnowyDirtBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/SpreadingSnowyDirtBlock.java
+@@ -14,8 +14,8 @@ import net.minecraft.world.level.lighting.LayerLightEngine;
+ 
+ public abstract class SpreadingSnowyDirtBlock extends SnowyDirtBlock {
+ 
+-    protected SpreadingSnowyDirtBlock(BlockBehaviour.Properties blockbase_info) {
+-        super(blockbase_info);
++    protected SpreadingSnowyDirtBlock(BlockBehaviour.Properties settings) {
++        super(settings);
+     }
+ 
+     private static boolean canBeGrass(BlockState state, LevelReader iworldreader, BlockPos pos) {
+diff --git a/src/main/java/net/minecraft/world/level/block/SugarCaneBlock.java b/src/main/java/net/minecraft/world/level/block/SugarCaneBlock.java
+index a7277b960bae33d7d5807a81dc751bd8aea0ce74..2ff1d0f2fbb498501be0695373268b819a871449 100644
+--- a/src/main/java/net/minecraft/world/level/block/SugarCaneBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/SugarCaneBlock.java
+@@ -24,8 +24,8 @@ public class SugarCaneBlock extends Block {
+     public static final IntegerProperty AGE = BlockStateProperties.AGE_15;
+     protected static final VoxelShape SHAPE = Block.box(2.0D, 0.0D, 2.0D, 14.0D, 16.0D, 14.0D);
+ 
+-    protected SugarCaneBlock(BlockBehaviour.Properties blockbase_info) {
+-        super(blockbase_info);
++    protected SugarCaneBlock(BlockBehaviour.Properties settings) {
++        super(settings);
+         this.registerDefaultState((BlockState) ((BlockState) this.stateDefinition.any()).setValue(SugarCaneBlock.AGE, 0));
+     }
+ 
+diff --git a/src/main/java/net/minecraft/world/level/block/SweetBerryBushBlock.java b/src/main/java/net/minecraft/world/level/block/SweetBerryBushBlock.java
+index 8bd7fda4d8c889a04ea27427f29211a1a51e905b..59dc2f799c69f755a283ac47f3c579c0845955fe 100644
+--- a/src/main/java/net/minecraft/world/level/block/SweetBerryBushBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/SweetBerryBushBlock.java
+@@ -39,8 +39,8 @@ public class SweetBerryBushBlock extends BushBlock implements BonemealableBlock
+     private static final VoxelShape SAPLING_SHAPE = Block.box(3.0D, 0.0D, 3.0D, 13.0D, 8.0D, 13.0D);
+     private static final VoxelShape MID_GROWTH_SHAPE = Block.box(1.0D, 0.0D, 1.0D, 15.0D, 16.0D, 15.0D);
+ 
+-    public SweetBerryBushBlock(BlockBehaviour.Properties blockbase_info) {
+-        super(blockbase_info);
++    public SweetBerryBushBlock(BlockBehaviour.Properties settings) {
++        super(settings);
+         this.registerDefaultState((BlockState) ((BlockState) this.stateDefinition.any()).setValue(SweetBerryBushBlock.AGE, 0));
+     }
+ 
+diff --git a/src/main/java/net/minecraft/world/level/block/TntBlock.java b/src/main/java/net/minecraft/world/level/block/TntBlock.java
+index b8fa035e29ab6d83a5d1ec378d52c6519fb86d7f..de67277d701f7769f44c459d9d6627026831d0c5 100644
+--- a/src/main/java/net/minecraft/world/level/block/TntBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/TntBlock.java
+@@ -27,8 +27,8 @@ public class TntBlock extends Block {
+ 
+     public static final BooleanProperty UNSTABLE = BlockStateProperties.UNSTABLE;
+ 
+-    public TntBlock(BlockBehaviour.Properties blockbase_info) {
+-        super(blockbase_info);
++    public TntBlock(BlockBehaviour.Properties settings) {
++        super(settings);
+         this.registerDefaultState((BlockState) this.defaultBlockState().setValue(TntBlock.UNSTABLE, false));
+     }
+ 
+diff --git a/src/main/java/net/minecraft/world/level/block/TrapDoorBlock.java b/src/main/java/net/minecraft/world/level/block/TrapDoorBlock.java
+index 7261ea1a236f37bc053c88be75fa15de73f3ef8b..a75c25a230238f0bdf1643807b6a8ae45ebaebe3 100644
+--- a/src/main/java/net/minecraft/world/level/block/TrapDoorBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/TrapDoorBlock.java
+@@ -41,8 +41,8 @@ public class TrapDoorBlock extends HorizontalDirectionalBlock implements SimpleW
+     protected static final VoxelShape BOTTOM_AABB = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 3.0D, 16.0D);
+     protected static final VoxelShape TOP_AABB = Block.box(0.0D, 13.0D, 0.0D, 16.0D, 16.0D, 16.0D);
+ 
+-    protected TrapDoorBlock(BlockBehaviour.Properties blockbase_info) {
+-        super(blockbase_info);
++    protected TrapDoorBlock(BlockBehaviour.Properties settings) {
++        super(settings);
+         this.registerDefaultState((BlockState) ((BlockState) ((BlockState) ((BlockState) ((BlockState) ((BlockState) this.stateDefinition.any()).setValue(TrapDoorBlock.FACING, Direction.NORTH)).setValue(TrapDoorBlock.OPEN, false)).setValue(TrapDoorBlock.HALF, Half.BOTTOM)).setValue(TrapDoorBlock.POWERED, false)).setValue(TrapDoorBlock.WATERLOGGED, false));
+     }
+ 
+diff --git a/src/main/java/net/minecraft/world/level/block/TripWireHookBlock.java b/src/main/java/net/minecraft/world/level/block/TripWireHookBlock.java
+index ab447f40422f3c7ffaa89ee358657a23ec66a868..4d9c2350bb7d0dfba8a5f4cb1d9b2c179b2ac06c 100644
+--- a/src/main/java/net/minecraft/world/level/block/TripWireHookBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/TripWireHookBlock.java
+@@ -36,8 +36,8 @@ public class TripWireHookBlock extends Block {
+     protected static final VoxelShape WEST_AABB = Block.box(10.0D, 0.0D, 5.0D, 16.0D, 10.0D, 11.0D);
+     protected static final VoxelShape EAST_AABB = Block.box(0.0D, 0.0D, 5.0D, 6.0D, 10.0D, 11.0D);
+ 
+-    public TripWireHookBlock(BlockBehaviour.Properties blockbase_info) {
+-        super(blockbase_info);
++    public TripWireHookBlock(BlockBehaviour.Properties settings) {
++        super(settings);
+         this.registerDefaultState((BlockState) ((BlockState) ((BlockState) ((BlockState) this.stateDefinition.any()).setValue(TripWireHookBlock.FACING, Direction.NORTH)).setValue(TripWireHookBlock.POWERED, false)).setValue(TripWireHookBlock.ATTACHED, false));
+     }
+ 
+diff --git a/src/main/java/net/minecraft/world/level/block/TurtleEggBlock.java b/src/main/java/net/minecraft/world/level/block/TurtleEggBlock.java
+index 835cb231f58b71485a94a53880eb31ed1fa4a7e0..28d94a361a905341a235845c4e5614f9458e00fb 100644
+--- a/src/main/java/net/minecraft/world/level/block/TurtleEggBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/TurtleEggBlock.java
+@@ -42,8 +42,8 @@ public class TurtleEggBlock extends Block {
+     public static final IntegerProperty HATCH = BlockStateProperties.HATCH;
+     public static final IntegerProperty EGGS = BlockStateProperties.EGGS;
+ 
+-    public TurtleEggBlock(BlockBehaviour.Properties blockbase_info) {
+-        super(blockbase_info);
++    public TurtleEggBlock(BlockBehaviour.Properties settings) {
++        super(settings);
+         this.registerDefaultState((BlockState) ((BlockState) ((BlockState) this.stateDefinition.any()).setValue(TurtleEggBlock.HATCH, 0)).setValue(TurtleEggBlock.EGGS, 1));
+     }
+ 
+diff --git a/src/main/java/net/minecraft/world/level/block/VineBlock.java b/src/main/java/net/minecraft/world/level/block/VineBlock.java
+index c02dd393c3d1bcf40958d80fd9bd23fd0868e647..49974b411e238790380fcd3b607101042e55d6db 100644
+--- a/src/main/java/net/minecraft/world/level/block/VineBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/VineBlock.java
+@@ -41,8 +41,8 @@ public class VineBlock extends Block {
+     private static final VoxelShape SOUTH_AABB = Block.box(0.0D, 0.0D, 15.0D, 16.0D, 16.0D, 16.0D);
+     private final Map<BlockState, VoxelShape> shapesCache;
+ 
+-    public VineBlock(BlockBehaviour.Properties blockbase_info) {
+-        super(blockbase_info);
++    public VineBlock(BlockBehaviour.Properties settings) {
++        super(settings);
+         this.registerDefaultState((BlockState) ((BlockState) ((BlockState) ((BlockState) ((BlockState) ((BlockState) this.stateDefinition.any()).setValue(VineBlock.UP, false)).setValue(VineBlock.NORTH, false)).setValue(VineBlock.EAST, false)).setValue(VineBlock.SOUTH, false)).setValue(VineBlock.WEST, false));
+         this.shapesCache = ImmutableMap.copyOf((Map) this.stateDefinition.getPossibleStates().stream().collect(Collectors.toMap(Function.identity(), VineBlock::calculateShape)));
+     }
+diff --git a/src/main/java/net/minecraft/world/level/block/WitherSkullBlock.java b/src/main/java/net/minecraft/world/level/block/WitherSkullBlock.java
+index 0aaa2266fb96a4619f64b1a3c9b9909fe28b6111..35bc4dcf13e3939e548fa9b6eefaaab2f08879c6 100644
+--- a/src/main/java/net/minecraft/world/level/block/WitherSkullBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/WitherSkullBlock.java
+@@ -38,8 +38,8 @@ public class WitherSkullBlock extends SkullBlock {
+     @Nullable
+     private static BlockPattern witherPatternBase;
+ 
+-    protected WitherSkullBlock(BlockBehaviour.Properties blockbase_info) {
+-        super(SkullBlock.Types.WITHER_SKELETON, blockbase_info);
++    protected WitherSkullBlock(BlockBehaviour.Properties settings) {
++        super(SkullBlock.Types.WITHER_SKELETON, settings);
+     }
+ 
+     @Override
+diff --git a/src/main/java/net/minecraft/world/level/block/entity/ConduitBlockEntity.java b/src/main/java/net/minecraft/world/level/block/entity/ConduitBlockEntity.java
+index bff7d5dd21c0e02628d47e7dacdc9837aee18813..d5395d3d5bdebb041fc429d65015d29b6d5df608 100644
+--- a/src/main/java/net/minecraft/world/level/block/entity/ConduitBlockEntity.java
++++ b/src/main/java/net/minecraft/world/level/block/entity/ConduitBlockEntity.java
+@@ -49,8 +49,8 @@ public class ConduitBlockEntity extends BlockEntity implements TickableBlockEnti
+         this(BlockEntityType.CONDUIT);
+     }
+ 
+-    public ConduitBlockEntity(BlockEntityType<?> tileentitytypes) {
+-        super(tileentitytypes);
++    public ConduitBlockEntity(BlockEntityType<?> type) {
++        super(type);
+         this.effectBlocks = Lists.newArrayList();
+     }
+ 
+diff --git a/src/main/java/net/minecraft/world/level/block/entity/LecternBlockEntity.java b/src/main/java/net/minecraft/world/level/block/entity/LecternBlockEntity.java
+index 9dbfe5801620483e8d5c65205b2213dbb5f1a31e..ce96583f186fab185f67c1a59c67da210026f9ca 100644
+--- a/src/main/java/net/minecraft/world/level/block/entity/LecternBlockEntity.java
++++ b/src/main/java/net/minecraft/world/level/block/entity/LecternBlockEntity.java
+@@ -42,7 +42,7 @@ import org.bukkit.inventory.InventoryHolder;
+ public class LecternBlockEntity extends BlockEntity implements Clearable, MenuProvider, CommandSource { // CraftBukkit - ICommandListener
+ 
+     // CraftBukkit start - add fields and methods
+-    public final Container bookAccess = new net.minecraft.world.level.block.entity.LecternBlockEntity.LecternInventory();
++    public final Container bookAccess = new LecternInventory();
+     public class LecternInventory implements Container {
+ 
+         public List<HumanEntity> transaction = new ArrayList<>();
+diff --git a/src/main/java/org/bukkit/craftbukkit/Main.java b/src/main/java/org/bukkit/craftbukkit/Main.java
+index 60ede7442b2d9a63fcd765aff29a96c9130aebac..3f52c19b6b797e26b3dcedcec2afd28c478e7091 100644
+--- a/src/main/java/org/bukkit/craftbukkit/Main.java
++++ b/src/main/java/org/bukkit/craftbukkit/Main.java
+@@ -186,7 +186,7 @@ public class Main {
+                 }
+ 
+                 if (Main.class.getPackage().getImplementationVendor() != null && System.getProperty("IReallyKnowWhatIAmDoingISwear") == null) {
+-                    Date buildDate = new Date(Integer.parseInt(Main.class.getPackage().getImplementationVendor()) * 1000L);
++                    Date buildDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").parse(Main.class.getPackage().getImplementationVendor()); // Paper
+ 
+                     Calendar deadline = Calendar.getInstance();
+                     deadline.add(Calendar.DAY_OF_YEAR, -28);
+diff --git a/src/main/java/org/bukkit/craftbukkit/generator/InternalChunkGenerator.java b/src/main/java/org/bukkit/craftbukkit/generator/InternalChunkGenerator.java
+index c16b17b2f13a49955c1c95d4404a219d90e2fd55..dfd78921ed5fad69a294e6c8652a2276f4839780 100644
+--- a/src/main/java/org/bukkit/craftbukkit/generator/InternalChunkGenerator.java
++++ b/src/main/java/org/bukkit/craftbukkit/generator/InternalChunkGenerator.java
+@@ -6,7 +6,7 @@ import net.minecraft.world.level.levelgen.StructureSettings;
+ // Do not implement functions to this class, add to NormalChunkGenerator
+ public abstract class InternalChunkGenerator extends net.minecraft.world.level.chunk.ChunkGenerator {
+ 
+-    public InternalChunkGenerator(BiomeSource worldchunkmanager, StructureSettings structuresettings) {
+-        super(worldchunkmanager, structuresettings);
++    public InternalChunkGenerator(BiomeSource biomeSource, StructureSettings structuresConfig) {
++        super(biomeSource, structuresConfig);
+     }
+ }
+diff --git a/src/main/java/org/bukkit/craftbukkit/inventory/CraftMetaBlockState.java b/src/main/java/org/bukkit/craftbukkit/inventory/CraftMetaBlockState.java
+index f946119b43920cac69b048e8ebf57296bf05bb1c..d6f97597eaf2727d34e12aceabb4e0b20bfeec76 100644
+--- a/src/main/java/org/bukkit/craftbukkit/inventory/CraftMetaBlockState.java
++++ b/src/main/java/org/bukkit/craftbukkit/inventory/CraftMetaBlockState.java
+@@ -68,7 +68,6 @@ import org.bukkit.craftbukkit.block.CraftSign;
+ import org.bukkit.craftbukkit.block.CraftSkull;
+ import org.bukkit.craftbukkit.block.CraftSmoker;
+ import org.bukkit.craftbukkit.block.CraftStructureBlock;
+-import org.bukkit.craftbukkit.inventory.CraftMetaItem.ItemMetaKey;
+ import org.bukkit.craftbukkit.util.CraftMagicNumbers;
+ import org.bukkit.inventory.meta.BlockStateMeta;
+ 
+diff --git a/src/main/java/org/bukkit/craftbukkit/inventory/CraftMetaLeatherArmor.java b/src/main/java/org/bukkit/craftbukkit/inventory/CraftMetaLeatherArmor.java
+index 04fa48563ecbbf69289785576d168deaa2777695..60aab1f9bdc2fa14ac804b351fc2741e2b2ff9cd 100644
+--- a/src/main/java/org/bukkit/craftbukkit/inventory/CraftMetaLeatherArmor.java
++++ b/src/main/java/org/bukkit/craftbukkit/inventory/CraftMetaLeatherArmor.java
+@@ -8,7 +8,6 @@ import net.minecraft.nbt.IntTag;
+ import org.bukkit.Color;
+ import org.bukkit.Material;
+ import org.bukkit.configuration.serialization.DelegateDeserialization;
+-import org.bukkit.craftbukkit.inventory.CraftMetaItem.ItemMetaKey;
+ import org.bukkit.craftbukkit.inventory.CraftMetaItem.SerializableMeta;
+ import org.bukkit.inventory.meta.LeatherArmorMeta;
+ 
+diff --git a/src/main/java/org/bukkit/craftbukkit/util/Versioning.java b/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
+index 93046379d0cefd5d3236fc59e698809acdc18f80..674096cab190d62622f9947853b056f57d43a2a5 100644
+--- a/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
++++ b/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
+@@ -11,7 +11,7 @@ public final class Versioning {
+     public static String getBukkitVersion() {
+         String result = "Unknown-Version";
+ 
+-        InputStream stream = Bukkit.class.getClassLoader().getResourceAsStream("META-INF/maven/org.spigotmc/spigot-api/pom.properties");
++        InputStream stream = Bukkit.class.getClassLoader().getResourceAsStream("META-INF/maven/com.destroystokyo.paper/paper-api/pom.properties");
+         Properties properties = new Properties();
+ 
+         if (stream != null) {

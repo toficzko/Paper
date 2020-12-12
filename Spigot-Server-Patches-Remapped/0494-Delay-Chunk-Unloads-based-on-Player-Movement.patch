@@ -1,0 +1,208 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Aikar <aikar@aikar.co>
+Date: Sat, 18 Jun 2016 23:22:12 -0400
+Subject: [PATCH] Delay Chunk Unloads based on Player Movement
+
+When players are moving in the world, doing things such as building or exploring,
+they will commonly go back and forth in a small area. This causes a ton of chunk load
+and unload activity on the edge chunks of their view distance.
+
+A simple back and forth movement in 6 blocks could spam a chunk to thrash a
+loading and unload cycle over and over again.
+
+This is very wasteful. This system introduces a delay of inactivity on a chunk
+before it actually unloads, which will be handled by the ticket expiry process.
+
+This allows servers with smaller worlds who do less long distance exploring to stop
+wasting cpu cycles on saving/unloading/reloading chunks repeatedly.
+
+diff --git a/src/main/java/com/destroystokyo/paper/PaperWorldConfig.java b/src/main/java/com/destroystokyo/paper/PaperWorldConfig.java
+index 9e55c800eb8b4dd4930dbf730bb6d106a2029036..62e25da19c7ffc13ef1f7dcc375585afd79bb59f 100644
+--- a/src/main/java/com/destroystokyo/paper/PaperWorldConfig.java
++++ b/src/main/java/com/destroystokyo/paper/PaperWorldConfig.java
+@@ -626,4 +626,13 @@ public class PaperWorldConfig {
+     private void viewDistance() {
+         this.noTickViewDistance = this.getInt("viewdistances.no-tick-view-distance", -1);
+     }
++
++    public long delayChunkUnloadsBy;
++    private void delayChunkUnloadsBy() {
++        delayChunkUnloadsBy = PaperConfig.getSeconds(getString("delay-chunk-unloads-by", "10s"));
++        if (delayChunkUnloadsBy > 0) {
++            log("Delaying chunk unloads by " + delayChunkUnloadsBy + " seconds");
++            delayChunkUnloadsBy *= 20;
++        }
++    }
+ }
+diff --git a/src/main/java/net/minecraft/server/level/DistanceManager.java b/src/main/java/net/minecraft/server/level/DistanceManager.java
+index b39736a6f202034aa656b1098a870e0f9856d0b9..0944924a42c33986dcc88f93e4ec6236c59a3d0c 100644
+--- a/src/main/java/net/minecraft/server/level/DistanceManager.java
++++ b/src/main/java/net/minecraft/server/level/DistanceManager.java
+@@ -185,6 +185,27 @@ public abstract class DistanceManager {
+         boolean removed = false; // CraftBukkit
+         if (arraysetsorted.remove(ticket)) {
+             removed = true; // CraftBukkit
++            // Paper start - delay chunk unloads for player tickets
++            long delayChunkUnloadsBy = chunkMap.level.paperConfig.delayChunkUnloadsBy;
++            if (ticket.getType() == TicketType.PLAYER && delayChunkUnloadsBy > 0) {
++                boolean hasPlayer = false;
++                for (Ticket<?> ticket1 : arraysetsorted) {
++                    if (ticket1.getType() == TicketType.PLAYER) {
++                        hasPlayer = true;
++                        break;
++                    }
++                }
++                ChunkHolder playerChunk = chunkMap.getUpdatingChunkIfPresent(i);
++                if (!hasPlayer && playerChunk != null && playerChunk.isFullChunkReady()) {
++                    Ticket<Long> delayUnload = new Ticket<Long>(TicketType.DELAY_UNLOAD, 33, i);
++                    delayUnload.delayUnloadBy = delayChunkUnloadsBy;
++                    delayUnload.setCurrentTick(this.ticketTickCounter);
++                    arraysetsorted.remove(delayUnload);
++                    // refresh ticket
++                    arraysetsorted.add(delayUnload);
++                }
++            }
++            // Paper end
+         }
+ 
+         if (arraysetsorted.isEmpty()) {
+diff --git a/src/main/java/net/minecraft/server/level/ThreadedLevelLightEngine.java b/src/main/java/net/minecraft/server/level/ThreadedLevelLightEngine.java
+index 226156cec66a57a73d826b4024d4a6b713b4ec5c..8cc689deb29b12dc56e24113a908fa0c75b38f33 100644
+--- a/src/main/java/net/minecraft/server/level/ThreadedLevelLightEngine.java
++++ b/src/main/java/net/minecraft/server/level/ThreadedLevelLightEngine.java
+@@ -69,8 +69,8 @@ public class ThreadedLevelLightEngine extends LevelLightEngine implements AutoCl
+     // Retain the chunks priority level for queued light tasks
+     class LightQueue {
+         private int size = 0;
+-        private final Long2ObjectLinkedOpenHashMap<net.minecraft.server.level.ThreadedLevelLightEngine.ChunkLightQueue>[] buckets = new Long2ObjectLinkedOpenHashMap[MAX_PRIORITIES];
+-        private final java.util.concurrent.ConcurrentLinkedQueue<net.minecraft.server.level.ThreadedLevelLightEngine.PendingLightTask> pendingTasks = new java.util.concurrent.ConcurrentLinkedQueue<>();
++        private final Long2ObjectLinkedOpenHashMap<ChunkLightQueue>[] buckets = new Long2ObjectLinkedOpenHashMap[MAX_PRIORITIES];
++        private final java.util.concurrent.ConcurrentLinkedQueue<PendingLightTask> pendingTasks = new java.util.concurrent.ConcurrentLinkedQueue<>();
+         private final java.util.concurrent.ConcurrentLinkedQueue<Runnable> priorityChanges = new java.util.concurrent.ConcurrentLinkedQueue<>();
+ 
+         private LightQueue() {
+@@ -81,9 +81,9 @@ public class ThreadedLevelLightEngine extends LevelLightEngine implements AutoCl
+ 
+         public void changePriority(long pair, int currentPriority, int priority) {
+             this.priorityChanges.add(() -> {
+-                net.minecraft.server.level.ThreadedLevelLightEngine.ChunkLightQueue remove = this.buckets[currentPriority].remove(pair);
++                ChunkLightQueue remove = this.buckets[currentPriority].remove(pair);
+                 if (remove != null) {
+-                    net.minecraft.server.level.ThreadedLevelLightEngine.ChunkLightQueue existing = this.buckets[Math.max(1, priority)].put(pair, remove);
++                    ChunkLightQueue existing = this.buckets[Math.max(1, priority)].put(pair, remove);
+                     if (existing != null) {
+                         remove.pre.addAll(existing.pre);
+                         remove.post.addAll(existing.post);
+@@ -93,16 +93,16 @@ public class ThreadedLevelLightEngine extends LevelLightEngine implements AutoCl
+         }
+ 
+         public final void addChunk(long chunkId, IntSupplier priority, Runnable pre, Runnable post) {
+-            pendingTasks.add(new net.minecraft.server.level.ThreadedLevelLightEngine.PendingLightTask(chunkId, priority, pre, post, true));
++            pendingTasks.add(new PendingLightTask(chunkId, priority, pre, post, true));
+             tryScheduleUpdate();
+         }
+ 
+         public final void add(long chunkId, IntSupplier priority, ThreadedLevelLightEngine.TaskType type, Runnable run) {
+-            pendingTasks.add(new net.minecraft.server.level.ThreadedLevelLightEngine.PendingLightTask(chunkId, priority, type == TaskType.PRE_UPDATE ? run : null, type == TaskType.POST_UPDATE ? run : null, false));
++            pendingTasks.add(new PendingLightTask(chunkId, priority, type == TaskType.PRE_UPDATE ? run : null, type == TaskType.POST_UPDATE ? run : null, false));
+         }
+-        public final void add(net.minecraft.server.level.ThreadedLevelLightEngine.PendingLightTask update) {
++        public final void add(PendingLightTask update) {
+             int priority = update.priority.getAsInt();
+-            net.minecraft.server.level.ThreadedLevelLightEngine.ChunkLightQueue lightQueue = this.buckets[priority].computeIfAbsent(update.chunkId, net.minecraft.server.level.ThreadedLevelLightEngine.ChunkLightQueue::new);
++            ChunkLightQueue lightQueue = this.buckets[priority].computeIfAbsent(update.chunkId, ChunkLightQueue::new);
+ 
+             if (update.pre != null) {
+                 this.size++;
+@@ -126,7 +126,7 @@ public class ThreadedLevelLightEngine extends LevelLightEngine implements AutoCl
+         }
+ 
+         public boolean poll(java.util.List<Runnable> pre, java.util.List<Runnable> post) {
+-            net.minecraft.server.level.ThreadedLevelLightEngine.PendingLightTask pending;
++            PendingLightTask pending;
+             while ((pending = pendingTasks.poll()) != null) {
+                 add(pending);
+             }
+@@ -135,10 +135,10 @@ public class ThreadedLevelLightEngine extends LevelLightEngine implements AutoCl
+                 run.run();
+             }
+             boolean hasWork = false;
+-            Long2ObjectLinkedOpenHashMap<net.minecraft.server.level.ThreadedLevelLightEngine.ChunkLightQueue>[] buckets = this.buckets;
++            Long2ObjectLinkedOpenHashMap<ChunkLightQueue>[] buckets = this.buckets;
+             int priority = 0;
+             while (priority < MAX_PRIORITIES && !isEmpty()) {
+-                Long2ObjectLinkedOpenHashMap<net.minecraft.server.level.ThreadedLevelLightEngine.ChunkLightQueue> bucket = buckets[priority];
++                Long2ObjectLinkedOpenHashMap<ChunkLightQueue> bucket = buckets[priority];
+                 if (bucket.isEmpty()) {
+                     priority++;
+                     if (hasWork) {
+@@ -147,7 +147,7 @@ public class ThreadedLevelLightEngine extends LevelLightEngine implements AutoCl
+                         continue;
+                     }
+                 }
+-                net.minecraft.server.level.ThreadedLevelLightEngine.ChunkLightQueue queue = bucket.removeFirst();
++                ChunkLightQueue queue = bucket.removeFirst();
+                 this.size -= queue.pre.size() + queue.post.size();
+                 pre.addAll(queue.pre);
+                 post.addAll(queue.post);
+@@ -162,7 +162,7 @@ public class ThreadedLevelLightEngine extends LevelLightEngine implements AutoCl
+         }
+     }
+ 
+-    final net.minecraft.server.level.ThreadedLevelLightEngine.LightQueue queue = new net.minecraft.server.level.ThreadedLevelLightEngine.LightQueue();
++    final LightQueue queue = new LightQueue();
+     // Paper end
+     private final ChunkMap chunkMap; private final ChunkMap playerChunkMap; // Paper
+     private final ProcessorHandle<ChunkTaskPriorityQueueSorter.Message<Runnable>> sorterMailbox;
+diff --git a/src/main/java/net/minecraft/server/level/Ticket.java b/src/main/java/net/minecraft/server/level/Ticket.java
+index 5dd9b58ab9b48e25bd1929f139b340a06c865081..4bdb26ef73d8b39ab2eec6c253bc977f46eccd45 100644
+--- a/src/main/java/net/minecraft/server/level/Ticket.java
++++ b/src/main/java/net/minecraft/server/level/Ticket.java
+@@ -9,11 +9,13 @@ public final class Ticket<T> implements Comparable<Ticket<?>> {
+     public final T key; public final T getObjectReason() { return this.key; } // Paper - OBFHELPER
+     private long createdTick; public final long getCreationTick() { return this.createdTick; } // Paper - OBFHELPER
+     public int priority = 0; // Paper
++    public long delayUnloadBy; // Paper
+ 
+     protected Ticket(TicketType<T> type, int level, T argument) {
+         this.type = type;
+         this.ticketLevel = level;
+         this.key = argument;
++        this.delayUnloadBy = type.timeout; // Paper
+     }
+ 
+     public int compareTo(Ticket<?> ticket) {
+@@ -63,7 +65,7 @@ public final class Ticket<T> implements Comparable<Ticket<?>> {
+     }
+ 
+     protected boolean timedOut(long currentTick) {
+-        long j = this.type.timeout();
++        long j = delayUnloadBy; // Paper
+ 
+         return j != 0L && currentTick - this.createdTick > j;
+     }
+diff --git a/src/main/java/net/minecraft/server/level/TicketType.java b/src/main/java/net/minecraft/server/level/TicketType.java
+index 2444f6f676db543509b14e8c882491dc3f41b264..531ebf1bafec2b295af9f6dfec8f4b6466688287 100644
+--- a/src/main/java/net/minecraft/server/level/TicketType.java
++++ b/src/main/java/net/minecraft/server/level/TicketType.java
+@@ -30,6 +30,7 @@ public class TicketType<T> {
+     public static final TicketType<Long> ASYNC_LOAD = create("async_load", Long::compareTo); // Paper
+     public static final TicketType<ChunkPos> PRIORITY = create("priority", Comparator.comparingLong(ChunkPos::toLong), 300); // Paper
+     public static final TicketType<ChunkPos> URGENT = create("urgent", Comparator.comparingLong(ChunkPos::toLong), 300); // Paper
++    public static final TicketType<Long> DELAY_UNLOAD = create("delay_unload", Long::compareTo, 300); // Paper
+ 
+     public static <T> TicketType<T> create(String name, Comparator<T> comparator) {
+         return new TicketType<>(name, comparator, 0L);
+diff --git a/src/main/java/net/minecraft/world/level/lighting/DataLayerStorageMap.java b/src/main/java/net/minecraft/world/level/lighting/DataLayerStorageMap.java
+index 3ece61cf7fd4dbe4ce85bdaabb76608f1a5079b8..ed2ed6194670016086be580dc4514d5d3d1b235b 100644
+--- a/src/main/java/net/minecraft/world/level/lighting/DataLayerStorageMap.java
++++ b/src/main/java/net/minecraft/world/level/lighting/DataLayerStorageMap.java
+@@ -14,7 +14,7 @@ public abstract class DataLayerStorageMap<M extends DataLayerStorageMap<M>> {
+     protected final boolean isVisible; // Paper - avoid copying light data
+ 
+     // Paper start - faster lookups with less branching, use interface to avoid boxing instead of Function
+-    public final net.minecraft.world.level.lighting.DataLayerStorageMap.NibbleArrayAccess lookup;
++    public final NibbleArrayAccess lookup;
+     public interface NibbleArrayAccess {
+         DataLayer apply(long id);
+     }

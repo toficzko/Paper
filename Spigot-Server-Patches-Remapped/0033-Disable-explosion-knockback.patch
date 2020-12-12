@@ -1,0 +1,87 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Sudzzy <originmc@outlook.com>
+Date: Wed, 2 Mar 2016 14:48:03 -0600
+Subject: [PATCH] Disable explosion knockback
+
+
+diff --git a/src/main/java/com/destroystokyo/paper/PaperWorldConfig.java b/src/main/java/com/destroystokyo/paper/PaperWorldConfig.java
+index 41d03030741f2bc5dd904957be546de82be61a47..623186e8503ff1debabc409b27fd3d29dcd5ced8 100644
+--- a/src/main/java/com/destroystokyo/paper/PaperWorldConfig.java
++++ b/src/main/java/com/destroystokyo/paper/PaperWorldConfig.java
+@@ -157,4 +157,9 @@ public class PaperWorldConfig {
+         optimizeExplosions = getBoolean("optimize-explosions", false);
+         log("Optimize explosions: " + optimizeExplosions);
+     }
++
++    public boolean disableExplosionKnockback;
++    private void disableExplosionKnockback(){
++        disableExplosionKnockback = getBoolean("disable-explosion-knockback", false);
++    }
+ }
+diff --git a/src/main/java/net/minecraft/world/entity/LivingEntity.java b/src/main/java/net/minecraft/world/entity/LivingEntity.java
+index 3a30597791fbf76e32e9e0e1be11c9024b0e3fbe..3a72401efefd2a8b60b860c47d88c43695714ab5 100644
+--- a/src/main/java/net/minecraft/world/entity/LivingEntity.java
++++ b/src/main/java/net/minecraft/world/entity/LivingEntity.java
+@@ -1274,6 +1274,7 @@ public abstract class LivingEntity extends Entity {
+                 }
+             }
+ 
++            boolean knockbackCancelled = level.paperConfig.disableExplosionKnockback && damagesource.isExplosion() && this instanceof net.minecraft.world.entity.player.Player; // Paper - Disable explosion knockback
+             if (flag1) {
+                 if (flag) {
+                     this.level.broadcastEntityEvent(this, (byte) 29);
+@@ -1292,6 +1293,7 @@ public abstract class LivingEntity extends Entity {
+                         b0 = 2;
+                     }
+ 
++                    if (!knockbackCancelled) // Paper - Disable explosion knockback
+                     this.level.broadcastEntityEvent(this, b0);
+                 }
+ 
+@@ -1315,6 +1317,7 @@ public abstract class LivingEntity extends Entity {
+                 }
+             }
+ 
++            if (knockbackCancelled) this.level.broadcastEntityEvent(this, (byte) 2); // Paper - Disable explosion knockback
+             if (this.isDeadOrDying()) {
+                 if (!this.checkTotemDeathProtection(damagesource)) {
+                     SoundEvent soundeffect = this.getDeathSound();
+diff --git a/src/main/java/net/minecraft/world/level/Explosion.java b/src/main/java/net/minecraft/world/level/Explosion.java
+index 2fb7fc001e5988f81f98dfdf82566f05718e04ff..8b630a2b436b5d70c90244b9972aa54a9a5f63ff 100644
+--- a/src/main/java/net/minecraft/world/level/Explosion.java
++++ b/src/main/java/net/minecraft/world/level/Explosion.java
+@@ -216,14 +216,14 @@ public class Explosion {
+                         double d14 = d13;
+ 
+                         if (entity instanceof LivingEntity) {
+-                            d14 = ProtectionEnchantment.getExplosionKnockbackAfterDampener((LivingEntity) entity, d13);
++                            d14 = entity instanceof Player && level.paperConfig.disableExplosionKnockback ? 0 : ProtectionEnchantment.getExplosionKnockbackAfterDampener((LivingEntity) entity, d13); // Paper - Disable explosion knockback
+                         }
+ 
+                         entity.setDeltaMovement(entity.getDeltaMovement().add(d8 * d14, d9 * d14, d10 * d14));
+                         if (entity instanceof Player) {
+                             Player entityhuman = (Player) entity;
+ 
+-                            if (!entityhuman.isSpectator() && (!entityhuman.isCreative() || !entityhuman.abilities.flying)) {
++                            if (!entityhuman.isSpectator() && (!entityhuman.isCreative() || !entityhuman.abilities.flying) && !level.paperConfig.disableExplosionKnockback) { // Paper - Disable explosion knockback
+                                 this.hitPlayers.put(entityhuman, new Vec3(d8 * d13, d9 * d13, d10 * d13));
+                             }
+                         }
+@@ -424,7 +424,7 @@ public class Explosion {
+         if (!this.level.paperConfig.optimizeExplosions) {
+             return getSeenPercent(vec3d, entity);
+         }
+-        net.minecraft.world.level.Explosion.CacheKey key = new net.minecraft.world.level.Explosion.CacheKey(this, entity.getBoundingBox());
++        CacheKey key = new CacheKey(this, entity.getBoundingBox());
+         Float blockDensity = this.level.explosionDensityCache.get(key);
+         if (blockDensity == null) {
+             blockDensity = getSeenPercent(vec3d, entity);
+@@ -458,7 +458,7 @@ public class Explosion {
+             if (this == o) return true;
+             if (o == null || getClass() != o.getClass()) return false;
+ 
+-            net.minecraft.world.level.Explosion.CacheKey cacheKey = (net.minecraft.world.level.Explosion.CacheKey) o;
++            CacheKey cacheKey = (CacheKey) o;
+ 
+             if (Double.compare(cacheKey.posX, posX) != 0) return false;
+             if (Double.compare(cacheKey.posY, posY) != 0) return false;

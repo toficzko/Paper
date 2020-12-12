@@ -1,0 +1,40 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: BillyGalbreath <Blake.Galbreath@GMail.com>
+Date: Mon, 31 Jul 2017 01:49:48 -0500
+Subject: [PATCH] LivingEntity#setKiller
+
+
+diff --git a/src/main/java/net/minecraft/world/entity/LivingEntity.java b/src/main/java/net/minecraft/world/entity/LivingEntity.java
+index f8100b25f29e34eb3d6b21c4388e991611845e4c..949c33481a9e64e72b31356566bb844ec9e62e73 100644
+--- a/src/main/java/net/minecraft/world/entity/LivingEntity.java
++++ b/src/main/java/net/minecraft/world/entity/LivingEntity.java
+@@ -177,7 +177,7 @@ public abstract class LivingEntity extends Entity {
+     public float flyingSpeed;
+     @Nullable
+     public net.minecraft.world.entity.player.Player lastHurtByPlayer;
+-    protected int lastHurtByPlayerTime;
++    public int lastHurtByPlayerTime; // Paper - protected -> public
+     protected boolean dead;
+     protected int noActionTime;
+     protected float oRun;
+diff --git a/src/main/java/org/bukkit/craftbukkit/entity/CraftLivingEntity.java b/src/main/java/org/bukkit/craftbukkit/entity/CraftLivingEntity.java
+index ebeefdf732e1fc3361afc7f3b6e6cbb94562e640..219d1061605123a3d6eb450acc921a2ceccf9167 100644
+--- a/src/main/java/org/bukkit/craftbukkit/entity/CraftLivingEntity.java
++++ b/src/main/java/org/bukkit/craftbukkit/entity/CraftLivingEntity.java
+@@ -332,6 +332,16 @@ public class CraftLivingEntity extends CraftEntity implements LivingEntity {
+         return getHandle().lastHurtByPlayer == null ? null : (Player) getHandle().lastHurtByPlayer.getBukkitEntity();
+     }
+ 
++    // Paper start
++    @Override
++    public void setKiller(Player killer) {
++        net.minecraft.server.level.ServerPlayer entityPlayer = killer == null ? null : ((CraftPlayer) killer).getHandle();
++        getHandle().lastHurtByPlayer = entityPlayer;
++        getHandle().lastHurtByMob = entityPlayer;
++        getHandle().lastHurtByPlayerTime = entityPlayer == null ? 0 : 100; // 100 value taken from EntityLiving#damageEntity
++    }
++    // Paper end
++
+     @Override
+     public boolean addPotionEffect(PotionEffect effect) {
+         return addPotionEffect(effect, false);

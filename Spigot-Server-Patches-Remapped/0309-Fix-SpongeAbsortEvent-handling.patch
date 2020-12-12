@@ -1,0 +1,37 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Shane Freeder <theboyetronic@gmail.com>
+Date: Sat, 10 Nov 2018 05:15:21 +0000
+Subject: [PATCH] Fix SpongeAbsortEvent handling
+
+Only process drops when the block is actually going to be removed
+
+diff --git a/src/main/java/net/minecraft/world/level/block/Block.java b/src/main/java/net/minecraft/world/level/block/Block.java
+index acf80f4b32b70e8a01afb32526260be2b9f721c0..5b28bc4b674ac9ef3e236c955a819914cc070bf1 100644
+--- a/src/main/java/net/minecraft/world/level/block/Block.java
++++ b/src/main/java/net/minecraft/world/level/block/Block.java
+@@ -229,6 +229,7 @@ public class Block extends BlockBehaviour implements ItemLike {
+ 
+     }
+ 
++    public static void dropNaturally(BlockState iblockdata, LevelAccessor generatoraccess, BlockPos blockposition, @Nullable BlockEntity tileentity) { dropResources(iblockdata, generatoraccess, blockposition, tileentity); }
+     public static void dropResources(BlockState state, LevelAccessor world, BlockPos pos, @Nullable BlockEntity blockEntity) {
+         if (world instanceof ServerLevel) {
+             getDrops(state, (ServerLevel) world, pos, blockEntity).forEach((itemstack) -> {
+diff --git a/src/main/java/net/minecraft/world/level/block/SpongeBlock.java b/src/main/java/net/minecraft/world/level/block/SpongeBlock.java
+index 2e51309ab2c2b847a07aac6f37d9c881a79ac7a0..38142c06d55e86f7fb9dc1c8f6558d9c5309d36a 100644
+--- a/src/main/java/net/minecraft/world/level/block/SpongeBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/SpongeBlock.java
+@@ -127,8 +127,11 @@ public class SpongeBlock extends Block {
+                         // NOP
+                     } else if (material == Material.WATER_PLANT || material == Material.REPLACEABLE_WATER_PLANT) {
+                         BlockEntity tileentity = iblockdata.getBlock().isEntityBlock() ? world.getBlockEntity(blockposition2) : null;
+-
+-                        dropResources(iblockdata, world, blockposition2, tileentity);
++                        // Paper start
++                        if (block.getHandle().getMaterial() == Material.AIR) {
++                            dropNaturally(iblockdata, world, blockposition2, tileentity);
++                        }
++                        // Paper end
+                     }
+                 }
+                 world.setBlock(blockposition2, block.getHandle(), block.getFlag());
