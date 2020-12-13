@@ -49,3 +49,7 @@ paperweight {
         mappingsPatch.set(file("build-data/mappings-patch.tiny"))
     }
 }
+
+tasks.remapSpigotSources {
+    outputs.upToDateWhen { false }
+}

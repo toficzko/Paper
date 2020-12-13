@@ -15,4 +15,4 @@ include("Paper-API", "Paper-Server")
 //project(":Paper-API").buildFileName = "../paperApi.gradle.kts"
 //project(":Paper-Server").buildFileName = "../paperServer.gradle.kts"
 
-gradle.startParameter.showStacktrace = ShowStacktrace.ALWAYS_FULL
+gradle.startParameter.showStacktrace = ShowStacktrace.ALWAYS
