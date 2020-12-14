@@ -1,0 +1,20 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Aikar <aikar@aikar.co>
+Date: Sun, 13 Dec 2020 16:32:58 -0800
+Subject: [PATCH] Add FastUtil to Bukkit
+
+Doesn't expose to plugins, just allows Paper-API to use it for optimization
+
+diff --git a/build.gradle.kts b/build.gradle.kts
+index 264db3850908fe82b7cf69c0343e93cb7a2274aa..ecb8c1e44adf76433dad50dd12160d4db0cdd93c 100644
+--- a/build.gradle.kts
++++ b/build.gradle.kts
+@@ -16,6 +16,8 @@ dependencies {
+     api("net.md-5:bungeecord-chat:1.16-R0.3")
+     api("org.yaml:snakeyaml:1.26")
+ 
++    compileOnly("it.unimi.dsi:fastutil:8.2.2")
++
+     val annotations = "org.jetbrains:annotations-java5:19.0.0"
+     compileOnly(annotations)
+     testCompileOnly(annotations)

@@ -1,0 +1,42 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: DoctorDark <doctordark11@gmail.com>
+Date: Wed, 16 Mar 2016 02:21:39 -0500
+Subject: [PATCH] Configurable end credits
+
+
+diff --git a/src/main/java/com/destroystokyo/paper/PaperWorldConfig.java b/src/main/java/com/destroystokyo/paper/PaperWorldConfig.java
+index a005c4398336dba3b5e3ef716f44f2eda7306442..88f5a415770da5dfcf7af95045f547e0761adc8b 100644
+--- a/src/main/java/com/destroystokyo/paper/PaperWorldConfig.java
++++ b/src/main/java/com/destroystokyo/paper/PaperWorldConfig.java
+@@ -145,4 +145,10 @@ public class PaperWorldConfig {
+             }
+         }
+     }
++
++    public boolean disableEndCredits;
++    private void disableEndCredits() {
++        disableEndCredits = getBoolean("game-mechanics.disable-end-credits", false);
++        log("End credits disabled: " + disableEndCredits);
++    }
+ }
+diff --git a/src/main/java/net/minecraft/server/level/ServerPlayer.java b/src/main/java/net/minecraft/server/level/ServerPlayer.java
+index 1306989d8521cadb4eea4b61f825c50911902ab0..53cc30e36700c62c605e0a2ddaba012bbb9cc708 100644
+--- a/src/main/java/net/minecraft/server/level/ServerPlayer.java
++++ b/src/main/java/net/minecraft/server/level/ServerPlayer.java
+@@ -186,7 +186,7 @@ public class ServerPlayer extends Player implements ContainerListener {
+     private long lastActionTime = Util.getMillis();
+     private Entity camera;
+     public boolean isChangingDimension;
+-    private boolean seenCredits;
++    private boolean seenCredits; private void setHasSeenCredits(boolean has) { this.seenCredits = has; } // Paper - OBFHELPER
+     private final ServerRecipeBook recipeBook = new ServerRecipeBook();
+     private Vec3 levitationStartPos;
+     private int levitationStartTime;
+@@ -895,6 +895,7 @@ public class ServerPlayer extends Player implements ContainerListener {
+             this.unRide();
+             this.getLevel().removePlayerImmediately(this);
+             if (!this.wonGame) {
++                if (level.paperConfig.disableEndCredits) this.setHasSeenCredits(true); // Paper - Toggle to always disable end credits
+                 this.wonGame = true;
+                 this.connection.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.WIN_GAME, this.seenCredits ? 0.0F : 1.0F));
+                 this.seenCredits = true;

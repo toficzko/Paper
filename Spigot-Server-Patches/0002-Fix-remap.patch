@@ -5,7 +5,7 @@ Subject: [PATCH] Fix remap
 
 
 diff --git a/src/main/java/net/minecraft/world/entity/monster/Phantom.java b/src/main/java/net/minecraft/world/entity/monster/Phantom.java
-index 8b04be948a11c5ab2160d61fbac1469d4f2209c7..974944e5eee0b982a12d0359f8421076b0364e00 100644
+index ec0dc82d4c7924fd9fb363806fb2b0a0269a8bec..1b4794555f199c80ca3b0970710f014254da4bcc 100644
 --- a/src/main/java/net/minecraft/world/entity/monster/Phantom.java
 +++ b/src/main/java/net/minecraft/world/entity/monster/Phantom.java
 @@ -236,7 +236,7 @@ public class Phantom extends FlyingMob implements Enemy {

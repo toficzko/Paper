@@ -24,6 +24,10 @@ subprojects {
         options.release.set(8)
     }
 
+    if (name == "Paper-MojangAPI") {
+        return@subprojects
+    }
+
     repositories {
         mavenCentral()
         maven("https://repo1.maven.org/maven2/")
@@ -48,8 +52,4 @@ paperweight {
     paper {
         mappingsPatch.set(file("build-data/mappings-patch.tiny"))
     }
-}
-
-tasks.remapSpigotSources {
-    outputs.upToDateWhen { false }
 }

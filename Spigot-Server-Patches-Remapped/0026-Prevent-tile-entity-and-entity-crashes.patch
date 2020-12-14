@@ -1,0 +1,65 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Aikar <aikar@aikar.co>
+Date: Tue, 1 Mar 2016 23:52:34 -0600
+Subject: [PATCH] Prevent tile entity and entity crashes
+
+
+diff --git a/src/main/java/net/minecraft/world/level/Level.java b/src/main/java/net/minecraft/world/level/Level.java
+index 6b48898e46b4fc55f834f501b6f45fb252c2326f..b81f0428550d96436c4f1a95eee339ad3c62363e 100644
+--- a/src/main/java/net/minecraft/world/level/Level.java
++++ b/src/main/java/net/minecraft/world/level/Level.java
+@@ -738,11 +738,13 @@ public abstract class Level implements LevelAccessor, AutoCloseable {
+ 
+                         gameprofilerfiller.pop();
+                     } catch (Throwable throwable) {
+-                        CrashReport crashreport = CrashReport.forThrowable(throwable, "Ticking block entity");
+-                        CrashReportCategory crashreportsystemdetails = crashreport.addCategory("Block entity being ticked");
+-
+-                        tileentity.fillCrashReportCategory(crashreportsystemdetails);
+-                        throw new ReportedException(crashreport);
++                        // Paper start - Prevent tile entity and entity crashes
++                        System.err.println("TileEntity threw exception at " + tileentity.level.getWorld().getName() + ":" + tileentity.worldPosition.getX() + "," + tileentity.worldPosition.getY() + "," + tileentity.worldPosition.getZ());
++                        throwable.printStackTrace();
++                        tilesThisCycle--;
++                        this.tickableBlockEntities.remove(tileTickPosition--);
++                        continue;
++                        // Paper end
+                     }
+                     // Spigot start
+                     finally {
+@@ -808,11 +810,12 @@ public abstract class Level implements LevelAccessor, AutoCloseable {
+         try {
+             tickConsumer.accept(entity);
+         } catch (Throwable throwable) {
+-            CrashReport crashreport = CrashReport.forThrowable(throwable, "Ticking entity");
+-            CrashReportCategory crashreportsystemdetails = crashreport.addCategory("Entity being ticked");
+-
+-            entity.fillCrashReportCategory(crashreportsystemdetails);
+-            throw new ReportedException(crashreport);
++            // Paper start - Prevent tile entity and entity crashes
++            System.err.println("Entity threw exception at " + entity.level.getWorld().getName() + ":" + entity.getX() + "," + entity.getY() + "," + entity.getZ());
++            throwable.printStackTrace();
++            entity.removed = true;
++            return;
++            // Paper end
+         }
+     }
+ 
+diff --git a/src/main/java/net/minecraft/world/level/block/entity/BlockEntity.java b/src/main/java/net/minecraft/world/level/block/entity/BlockEntity.java
+index b1f99c6cbadab0733aa9bd997557169b856e9b74..d0f7f79a0f99616134568c30dc26033e350c78cc 100644
+--- a/src/main/java/net/minecraft/world/level/block/entity/BlockEntity.java
++++ b/src/main/java/net/minecraft/world/level/block/entity/BlockEntity.java
+@@ -207,7 +207,12 @@ public abstract class BlockEntity implements KeyedObject { // Paper
+             return Registry.BLOCK_ENTITY_TYPE.getKey(this.getType()) + " // " + this.getClass().getCanonicalName();
+         });
+         if (this.level != null) {
+-            CrashReportCategory.populateBlockDetails(crashreportsystemdetails, this.worldPosition, this.getBlockState());
++            // Paper start - Prevent TileEntity and Entity crashes
++            BlockState block = this.getBlockState();
++            if (block != null) {
++                CrashReportCategory.populateBlockDetails(crashreportsystemdetails, this.worldPosition, block);
++            }
++            // Paper end
+             CrashReportCategory.populateBlockDetails(crashreportsystemdetails, this.worldPosition, this.level.getBlockState(this.worldPosition));
+         }
+     }

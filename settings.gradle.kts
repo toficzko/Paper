@@ -10,9 +10,4 @@ pluginManagement {
 }
 
 rootProject.name = "Paper"
-include("Paper-API", "Paper-Server")
-
-//project(":Paper-API").buildFileName = "../paperApi.gradle.kts"
-//project(":Paper-Server").buildFileName = "../paperServer.gradle.kts"
-
-gradle.startParameter.showStacktrace = ShowStacktrace.ALWAYS
+include("Paper-API", "Paper-Server", "Paper-MojangAPI")
