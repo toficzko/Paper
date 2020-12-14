@@ -75,4 +75,7 @@ c	net/minecraft/server/GeneratorAccess	net/minecraft/world/level/LevelAccessor
 # both correct mappings
 c	net/minecraft/server/LootEntryAbstract$Serializer	net/minecraft/world/level/storage/loot/entries/LootPoolEntryContainer$Serializer
 	m	(Lcom/google/gson/JsonObject;Lnet/minecraft/server/LootEntryAbstract;Lcom/google/gson/JsonSerializationContext;)V	a	serialize
+		p	0		json
+		p	1		entry
+		p	2		context
 	m	(Lcom/google/gson/JsonObject;Lnet/minecraft/server/LootEntryAbstract;Lcom/google/gson/JsonSerializationContext;)V	serializeType	serializeCustom

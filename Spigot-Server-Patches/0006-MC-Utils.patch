@@ -3753,7 +3753,7 @@ index 616c86bbbd162a2ccc7632d8dd6a526b115d63e2..3eface0923e141d2ed5af3e5a48fc919
          super(type, world);
      }
 diff --git a/src/main/java/net/minecraft/world/entity/monster/Monster.java b/src/main/java/net/minecraft/world/entity/monster/Monster.java
-index 0a7d61aba75ce21f5639ebffd7c4f36641c89ba1..0538d5124b333eceeaaccc105a65404591573c79 100644
+index 6b23575d1d0070b2422294635ee21461edab6d29..3de34b1c9c0fdbce3c98d3015f693bec3ad5ad19 100644
 --- a/src/main/java/net/minecraft/world/entity/monster/Monster.java
 +++ b/src/main/java/net/minecraft/world/entity/monster/Monster.java
 @@ -25,6 +25,8 @@ import net.minecraft.world.level.LightLayer;
@@ -4029,7 +4029,7 @@ index 8ea5697bba3e518c513dc9ea5340b5e19cfac196..d6ee6e6cf48c13a6a1a815ab1530e923
  
          return this.setBlock(blockposition, fluid.createLegacyBlock(), 3 | (flag ? 64 : 0));
 diff --git a/src/main/java/net/minecraft/world/level/LevelReader.java b/src/main/java/net/minecraft/world/level/LevelReader.java
-index d64a8a6d234580dc8a122e38cef2fb89adb03959..6611b88e3b5a433639d25f29256f338b27ef27a7 100644
+index ace1ca056b71ee7b95527d820c9d31b4b72db5d9..a4e5ef16132a1f8d3432bfc6705fd47fdb6753e0 100644
 --- a/src/main/java/net/minecraft/world/level/LevelReader.java
 +++ b/src/main/java/net/minecraft/world/level/LevelReader.java
 @@ -105,6 +105,7 @@ public interface LevelReader extends BlockAndTintGetter, CollisionGetter, BiomeM
@@ -4038,10 +4038,10 @@ index d64a8a6d234580dc8a122e38cef2fb89adb03959..6611b88e3b5a433639d25f29256f338b
  
 +    @Nullable ChunkAccess getChunkIfLoadedImmediately(int x, int z); // Paper - ifLoaded api (we need this since current impl blocks if the chunk is loading)
      @Nullable
-     default BlockGetter getChunkForCollisions(int i, int j) {
-         return this.getChunk(i, j, ChunkStatus.EMPTY, false);
+     default BlockGetter getChunkForCollisions(int chunkX, int chunkZ) {
+         return this.getChunk(chunkX, chunkZ, ChunkStatus.EMPTY, false);
 diff --git a/src/main/java/net/minecraft/world/level/PathNavigationRegion.java b/src/main/java/net/minecraft/world/level/PathNavigationRegion.java
-index f3783223ecd9fc5049b58476fbc510ed4f3ea9be..ebbb50300bdc30e85b7c1d133f8f79ef22f917a5 100644
+index 7130c023f2b3ec68a5fb6995c026b8a8d5ae07bb..889f5d6f96cce07eb84d4a9b2b41c967589b712e 100644
 --- a/src/main/java/net/minecraft/world/level/PathNavigationRegion.java
 +++ b/src/main/java/net/minecraft/world/level/PathNavigationRegion.java
 @@ -4,6 +4,7 @@ import java.util.function.Predicate;
@@ -4080,7 +4080,7 @@ index f3783223ecd9fc5049b58476fbc510ed4f3ea9be..ebbb50300bdc30e85b7c1d133f8f79ef
              return (ChunkAccess)(chunkAccess != null ? chunkAccess : new EmptyLevelChunk(this.level, new ChunkPos(i, j)));
          } else {
 @@ -75,6 +76,29 @@ public class PathNavigationRegion implements BlockGetter, CollisionGetter {
-         return this.getChunk(i, j);
+         return this.getChunk(chunkX, chunkZ);
      }
  
 +    // Paper start - if loaded util
@@ -4449,7 +4449,7 @@ index b8bbf016ecdf28ba46db651e48c86468765bcfda..720d1e467c9dcf5a0e8da3b0ca7439f3
          this.acquire();
          buf.writeByte(this.bits);
 diff --git a/src/main/java/net/minecraft/world/level/chunk/ProtoChunk.java b/src/main/java/net/minecraft/world/level/chunk/ProtoChunk.java
-index 248ac786ba5895444f26d09c65691208c526dc39..09590ef37083612811065422e63716942cde578b 100644
+index 72425e4f72736b5da51edda5e2b72f0538ecde24..a7d3bb7d0340a2cbce07ba88504329ba52984157 100644
 --- a/src/main/java/net/minecraft/world/level/chunk/ProtoChunk.java
 +++ b/src/main/java/net/minecraft/world/level/chunk/ProtoChunk.java
 @@ -85,6 +85,18 @@ public class ProtoChunk implements ChunkAccess {
