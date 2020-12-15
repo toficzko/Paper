@@ -1,0 +1,45 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Aikar <aikar@aikar.co>
+Date: Tue, 5 Apr 2016 21:38:58 -0400
+Subject: [PATCH] Remove Debug checks from DataBits
+
+These are super hot and causing noticeable hits
+
+Before: http://i.imgur.com/nQsMzAE.png
+After: http://i.imgur.com/nJ46crB.png
+
+diff --git a/src/main/java/net/minecraft/util/BitStorage.java b/src/main/java/net/minecraft/util/BitStorage.java
+index 8b7b2e29cf3acab788207e7f32506cf1b1575ba5..fc70d3c9a2e9f87b19ec1f33017078a9077a76fe 100644
+--- a/src/main/java/net/minecraft/util/BitStorage.java
++++ b/src/main/java/net/minecraft/util/BitStorage.java
+@@ -50,8 +50,8 @@ public class BitStorage {
+     }
+ 
+     public int getAndSet(int index, int value) {
+-        Validate.inclusiveBetween(0L, (long)(this.size - 1), (long)index);
+-        Validate.inclusiveBetween(0L, this.mask, (long)value);
++//        Validate.inclusiveBetween(0L, (long)(this.size - 1), (long)index); // Paper
++//        Validate.inclusiveBetween(0L, this.mask, (long)value); // Paper
+         int i = this.cellIndex(index);
+         long l = this.data[i];
+         int j = (index - i * this.valuesPerLong) * this.bits;
+@@ -61,8 +61,8 @@ public class BitStorage {
+     }
+ 
+     public void set(int index, int value) {
+-        Validate.inclusiveBetween(0L, (long)(this.size - 1), (long)index);
+-        Validate.inclusiveBetween(0L, this.mask, (long)value);
++//        Validate.inclusiveBetween(0L, (long)(this.size - 1), (long)index); // Paper
++//        Validate.inclusiveBetween(0L, this.mask, (long)value); // Paper
+         int i = this.cellIndex(index);
+         long l = this.data[i];
+         int j = (index - i * this.valuesPerLong) * this.bits;
+@@ -70,7 +70,7 @@ public class BitStorage {
+     }
+ 
+     public int get(int index) {
+-        Validate.inclusiveBetween(0L, (long)(this.size - 1), (long)index);
++//        Validate.inclusiveBetween(0L, (long)(this.size - 1), (long)index); // Paper
+         int i = this.cellIndex(index);
+         long l = this.data[i];
+         int j = (index - i * this.valuesPerLong) * this.bits;

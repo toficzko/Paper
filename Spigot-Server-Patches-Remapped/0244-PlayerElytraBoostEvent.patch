@@ -1,0 +1,39 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: BillyGalbreath <Blake.Galbreath@GMail.com>
+Date: Sat, 21 Jul 2018 01:59:59 -0500
+Subject: [PATCH] PlayerElytraBoostEvent
+
+
+diff --git a/src/main/java/net/minecraft/world/item/FireworkRocketItem.java b/src/main/java/net/minecraft/world/item/FireworkRocketItem.java
+index eacd4837b5c2e2c75d2b8c7ca711fc35ecf385ab..c605e85d63d203c67a81dfa3eb38b61188708718 100644
+--- a/src/main/java/net/minecraft/world/item/FireworkRocketItem.java
++++ b/src/main/java/net/minecraft/world/item/FireworkRocketItem.java
+@@ -3,6 +3,7 @@ package net.minecraft.world.item;
+ import java.util.Arrays;
+ import java.util.Comparator;
+ import net.minecraft.core.Direction;
++import net.minecraft.server.level.ServerPlayer;
+ import net.minecraft.world.InteractionHand;
+ import net.minecraft.world.InteractionResult;
+ import net.minecraft.world.InteractionResultHolder;
+@@ -45,11 +46,16 @@ public class FireworkRocketItem extends Item {
+                 // Paper start
+                 final FireworkRocketEntity entityfireworks = new FireworkRocketEntity(world, itemstack, entityhuman);
+                 entityfireworks.spawningEntity = entityhuman.getUUID();
+-                world.addFreshEntity(entityfireworks);
+-                // Paper end
+-                if (!entityhuman.abilities.instabuild) {
+-                    itemstack.shrink(1);
++                // Paper start
++                com.destroystokyo.paper.event.player.PlayerElytraBoostEvent event = new com.destroystokyo.paper.event.player.PlayerElytraBoostEvent((org.bukkit.entity.Player) entityhuman.getBukkitEntity(), org.bukkit.craftbukkit.inventory.CraftItemStack.asCraftMirror(itemstack), (org.bukkit.entity.Firework) entityfireworks.getBukkitEntity());
++                if (event.callEvent() && world.addFreshEntity(entityfireworks)) {
++                    if (event.shouldConsume() && !entityhuman.abilities.instabuild) {
++                        itemstack.shrink(1);
++                    } else ((ServerPlayer) entityhuman).getBukkitEntity().updateInventory();
++                } else if (entityhuman instanceof ServerPlayer) {
++                    ((ServerPlayer) entityhuman).getBukkitEntity().updateInventory();
+                 }
++                // Paper end
+             }
+ 
+             return InteractionResultHolder.sidedSuccess(entityhuman.getItemInHand(enumhand), world.isClientSide());

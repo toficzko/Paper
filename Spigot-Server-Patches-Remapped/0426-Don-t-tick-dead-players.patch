@@ -1,0 +1,21 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Aikar <aikar@aikar.co>
+Date: Thu, 2 Apr 2020 17:16:48 -0400
+Subject: [PATCH] Don't tick dead players
+
+Causes sync chunk loads and who knows what all else.
+This is safe because Spectators are skipped in unloaded chunks too in vanilla.
+
+diff --git a/src/main/java/net/minecraft/server/level/ServerPlayer.java b/src/main/java/net/minecraft/server/level/ServerPlayer.java
+index 211e012b3db0f0f7a599838663b22e4b44edc000..96262e6421c716c092d6ae7b83686e09153a734d 100644
+--- a/src/main/java/net/minecraft/server/level/ServerPlayer.java
++++ b/src/main/java/net/minecraft/server/level/ServerPlayer.java
+@@ -602,7 +602,7 @@ public class ServerPlayer extends Player implements ContainerListener {
+ 
+     public void doTick() {
+         try {
+-            if (!this.isSpectator() || this.level.hasChunkAt(this.blockPosition())) {
++            if (valid && !this.isSpectator() || this.level.hasChunkAt(this.blockPosition())) { // Paper - don't tick dead players that are not in the world currently (pending respawn)
+                 super.tick();
+             }
+ 

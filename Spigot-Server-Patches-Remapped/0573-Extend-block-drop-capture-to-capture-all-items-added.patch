@@ -1,0 +1,60 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Shane Freeder <theboyetronic@gmail.com>
+Date: Thu, 17 Sep 2020 00:36:05 +0100
+Subject: [PATCH] Extend block drop capture to capture all items added to the
+ world
+
+
+diff --git a/src/main/java/net/minecraft/server/level/ServerLevel.java b/src/main/java/net/minecraft/server/level/ServerLevel.java
+index 80342a2f25d11371491723cfeb4519ee0fd346e1..f76c85ba6e95aeb434563526467e9b40a11ff360 100644
+--- a/src/main/java/net/minecraft/server/level/ServerLevel.java
++++ b/src/main/java/net/minecraft/server/level/ServerLevel.java
+@@ -95,6 +95,7 @@ import net.minecraft.world.entity.ai.village.poi.PoiType;
+ import net.minecraft.world.entity.animal.horse.SkeletonHorse;
+ import net.minecraft.world.entity.boss.EnderDragonPart;
+ import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
++import net.minecraft.world.entity.item.ItemEntity;
+ import net.minecraft.world.entity.monster.Drowned;
+ import net.minecraft.world.entity.player.Player;
+ import net.minecraft.world.entity.raid.Raid;
+@@ -1283,6 +1284,13 @@ public class ServerLevel extends net.minecraft.world.level.Level implements Worl
+         } else if (this.isUUIDUsed(entity)) {
+             return false;
+         } else {
++            // Paper start - capture all item additions to the world
++            if (captureDrops != null && entity instanceof ItemEntity) {
++                captureDrops.add((ItemEntity) entity);
++                return true;
++            }
++            // Paper end
++
+             if (!CraftEventFactory.doEntityAddEventCalling(this, entity, spawnReason)) {
+                 return false;
+             }
+diff --git a/src/main/java/net/minecraft/server/level/ServerPlayerGameMode.java b/src/main/java/net/minecraft/server/level/ServerPlayerGameMode.java
+index d7cd4e5dfae5d320a078a6f231bb981b346500db..984e62883733f307ff7f3b1f8d914c177cc9e76f 100644
+--- a/src/main/java/net/minecraft/server/level/ServerPlayerGameMode.java
++++ b/src/main/java/net/minecraft/server/level/ServerPlayerGameMode.java
+@@ -15,6 +15,7 @@ import net.minecraft.world.InteractionResult;
+ import net.minecraft.world.InteractionResultHolder;
+ import net.minecraft.world.MenuProvider;
+ import net.minecraft.world.entity.EquipmentSlot;
++import net.minecraft.world.entity.item.ItemEntity;
+ import net.minecraft.world.entity.player.Player;
+ import net.minecraft.world.item.ItemStack;
+ import net.minecraft.world.item.context.UseOnContext;
+@@ -417,10 +418,12 @@ public class ServerPlayerGameMode {
+                     // return true; // CraftBukkit
+                 }
+                 // CraftBukkit start
++                java.util.List<ItemEntity> itemsToDrop = level.captureDrops; // Paper - store current list
++                level.captureDrops = null; // Paper - Remove this earlier so that we can actually drop stuff
+                 if (event.isDropItems()) {
+-                    org.bukkit.craftbukkit.event.CraftEventFactory.handleBlockDropItemEvent(bblock, state, this.player, level.captureDrops);
++                    org.bukkit.craftbukkit.event.CraftEventFactory.handleBlockDropItemEvent(bblock, state, this.player, itemsToDrop); // Paper - use stored ref
+                 }
+-                level.captureDrops = null;
++                //world.captureDrops = null; // Paper - move up
+ 
+                 // Drop event experience
+                 if (flag && event != null) {

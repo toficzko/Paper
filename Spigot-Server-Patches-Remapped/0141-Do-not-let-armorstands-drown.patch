@@ -1,0 +1,42 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Zach Brown <zach.brown@destroystokyo.com>
+Date: Sat, 18 Feb 2017 19:29:58 -0600
+Subject: [PATCH] Do not let armorstands drown
+
+
+diff --git a/src/main/java/net/minecraft/world/entity/LivingEntity.java b/src/main/java/net/minecraft/world/entity/LivingEntity.java
+index 514eddfea7064880f7a0d4336e0c5b76a453b4ca..24eb6139d8c2d6f3392dd10ce3fd5ab2987e7995 100644
+--- a/src/main/java/net/minecraft/world/entity/LivingEntity.java
++++ b/src/main/java/net/minecraft/world/entity/LivingEntity.java
+@@ -335,6 +335,7 @@ public abstract class LivingEntity extends Entity {
+         super.checkFallDamage(d0, flag, iblockdata, blockposition);
+     }
+ 
++    public boolean canBreatheUnderwater() { return this.canBreatheUnderwater(); } // Paper - OBFHELPER
+     public boolean canBreatheUnderwater() {
+         return this.getMobType() == MobType.UNDEAD;
+     }
+@@ -378,7 +379,7 @@ public abstract class LivingEntity extends Entity {
+ 
+         if (this.isAlive()) {
+             if (this.isEyeInFluid((Tag) FluidTags.WATER) && !this.level.getBlockState(new BlockPos(this.getX(), this.getEyeY(), this.getZ())).is(Blocks.BUBBLE_COLUMN)) {
+-                if (!this.canBreatheUnderwater() && !MobEffectUtil.hasWaterBreathing(this) && !flag1) {
++                if (!this.canBreatheUnderwater() && !MobEffectUtil.hasWaterBreathing(this) && !flag1) {  // Paper - use OBFHELPER so it can be overridden
+                     this.setAirSupply(this.decreaseAirSupply(this.getAirSupply()));
+                     if (this.getAirSupply() == -20) {
+                         this.setAirSupply(0);
+diff --git a/src/main/java/net/minecraft/world/entity/decoration/ArmorStand.java b/src/main/java/net/minecraft/world/entity/decoration/ArmorStand.java
+index a0f9eb650db8e29207f87b7ab2034560287afb2f..c6608d6dac7aff998ab32d6037bd05132678b912 100644
+--- a/src/main/java/net/minecraft/world/entity/decoration/ArmorStand.java
++++ b/src/main/java/net/minecraft/world/entity/decoration/ArmorStand.java
+@@ -860,5 +860,10 @@ public class ArmorStand extends LivingEntity {
+             super.move(type, movement);
+         }
+     }
++
++    @Override
++    public boolean canBreatheUnderwater() { // Skips a bit of damage handling code, probably a micro-optimization
++        return true;
++    }
+     // Paper end
+ }

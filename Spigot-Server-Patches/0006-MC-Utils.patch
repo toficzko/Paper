@@ -3753,7 +3753,7 @@ index 616c86bbbd162a2ccc7632d8dd6a526b115d63e2..3eface0923e141d2ed5af3e5a48fc919
          super(type, world);
      }
 diff --git a/src/main/java/net/minecraft/world/entity/monster/Monster.java b/src/main/java/net/minecraft/world/entity/monster/Monster.java
-index 6b23575d1d0070b2422294635ee21461edab6d29..3de34b1c9c0fdbce3c98d3015f693bec3ad5ad19 100644
+index e710cf78e421f5079ce1a62f2a80e28911863956..7ef7681331e1e04c0ded039c2a254bb954c1157a 100644
 --- a/src/main/java/net/minecraft/world/entity/monster/Monster.java
 +++ b/src/main/java/net/minecraft/world/entity/monster/Monster.java
 @@ -25,6 +25,8 @@ import net.minecraft.world.level.LightLayer;
@@ -4449,7 +4449,7 @@ index b8bbf016ecdf28ba46db651e48c86468765bcfda..720d1e467c9dcf5a0e8da3b0ca7439f3
          this.acquire();
          buf.writeByte(this.bits);
 diff --git a/src/main/java/net/minecraft/world/level/chunk/ProtoChunk.java b/src/main/java/net/minecraft/world/level/chunk/ProtoChunk.java
-index 3b953a8265116728be24bb695be394dd78cfda88..c38a543b638181c72df2e2fd980946a253ff81a7 100644
+index 72425e4f72736b5da51edda5e2b72f0538ecde24..a7d3bb7d0340a2cbce07ba88504329ba52984157 100644
 --- a/src/main/java/net/minecraft/world/level/chunk/ProtoChunk.java
 +++ b/src/main/java/net/minecraft/world/level/chunk/ProtoChunk.java
 @@ -85,6 +85,18 @@ public class ProtoChunk implements ChunkAccess {

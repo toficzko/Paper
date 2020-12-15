@@ -1,0 +1,39 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Aikar <aikar@aikar.co>
+Date: Mon, 18 Jun 2018 01:12:53 -0400
+Subject: [PATCH] PlayerReadyArrowEvent
+
+Called when a player is firing a bow and the server is choosing an arrow to use.
+Plugins can skip selection of certain arrows and control which is used.
+
+diff --git a/src/main/java/net/minecraft/world/entity/player/Player.java b/src/main/java/net/minecraft/world/entity/player/Player.java
+index f22528ecf6798febfd93c4a96e31e7c61ff8a6ef..1b62b98ab83433447a034a93741019a63d585b30 100644
+--- a/src/main/java/net/minecraft/world/entity/player/Player.java
++++ b/src/main/java/net/minecraft/world/entity/player/Player.java
+@@ -2138,6 +2138,17 @@ public abstract class Player extends LivingEntity {
+         return ImmutableList.of(Pose.STANDING, Pose.CROUCHING, Pose.SWIMMING);
+     }
+ 
++    // Paper start
++    protected boolean tryReadyArrow(ItemStack bow, ItemStack itemstack) {
++        return !(this instanceof ServerPlayer) ||
++                new com.destroystokyo.paper.event.player.PlayerReadyArrowEvent(
++                    ((ServerPlayer) this).getBukkitEntity(),
++                    org.bukkit.craftbukkit.inventory.CraftItemStack.asCraftMirror(bow),
++                    org.bukkit.craftbukkit.inventory.CraftItemStack.asCraftMirror(itemstack)
++                ).callEvent();
++        // Paper end
++    }
++
+     @Override
+     public ItemStack getProjectile(ItemStack itemstack) {
+         if (!(itemstack.getItem() instanceof ProjectileWeaponItem)) {
+@@ -2154,7 +2165,7 @@ public abstract class Player extends LivingEntity {
+                 for (int i = 0; i < this.inventory.getContainerSize(); ++i) {
+                     ItemStack itemstack2 = this.inventory.getItem(i);
+ 
+-                    if (predicate.test(itemstack2)) {
++                    if (predicate.test(itemstack2) && tryReadyArrow(itemstack, itemstack2)) { // Paper
+                         return itemstack2;
+                     }
+                 }

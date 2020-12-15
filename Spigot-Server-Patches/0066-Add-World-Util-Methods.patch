@@ -1,0 +1,65 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Aikar <aikar@aikar.co>
+Date: Fri, 18 Mar 2016 20:16:03 -0400
+Subject: [PATCH] Add World Util Methods
+
+Methods that can be used for other patches to help improve logic.
+
+diff --git a/src/main/java/net/minecraft/server/level/ServerLevel.java b/src/main/java/net/minecraft/server/level/ServerLevel.java
+index 77a7a4cc98e71b4422993f1401c070bdf188bbaa..f5a5190a8f57134a9bfc5521ef847c62b9ce1b3f 100644
+--- a/src/main/java/net/minecraft/server/level/ServerLevel.java
++++ b/src/main/java/net/minecraft/server/level/ServerLevel.java
+@@ -191,7 +191,7 @@ public class ServerLevel extends net.minecraft.world.level.Level implements Worl
+     public final LevelStorageSource.LevelStorageAccess convertable;
+     public final UUID uuid;
+ 
+-    public LevelChunk getChunkIfLoaded(int x, int z) {
++    @Override public LevelChunk getChunkIfLoaded(int x, int z) { // Paper - this was added in world too but keeping here for NMS ABI
+         return this.chunkSource.getChunk(x, z, false);
+     }
+ 
+diff --git a/src/main/java/net/minecraft/world/level/Level.java b/src/main/java/net/minecraft/world/level/Level.java
+index fd4403bb45bc740f1b2b22928b276773fd273e8e..c59bc0a505a9883da409734d108b7eb46ab6685f 100644
+--- a/src/main/java/net/minecraft/world/level/Level.java
++++ b/src/main/java/net/minecraft/world/level/Level.java
+@@ -298,11 +298,27 @@ public abstract class Level implements LevelAccessor, AutoCloseable {
+     }
+ 
+     @Override
+-    public FluidState getFluidIfLoaded(BlockPos blockposition) {
++    public final FluidState getFluidIfLoaded(BlockPos blockposition) {
+         ChunkAccess chunk = this.getChunkIfLoadedImmediately(blockposition.getX() >> 4, blockposition.getZ() >> 4);
+ 
+         return chunk == null ? null : chunk.getFluidState(blockposition);
+     }
++
++    public final boolean isLoadedAndInBounds(BlockPos blockposition) { // Paper - final for inline
++        return getWorldBorder().isInBounds(blockposition) && getChunkIfLoadedImmediately(blockposition.getX() >> 4, blockposition.getZ() >> 4) != null;
++    }
++
++    public LevelChunk getChunkIfLoaded(int x, int z) { // Overridden in WorldServer for ABI compat which has final
++        return ((ServerLevel) this).getChunkSource().getChunkAtIfLoadedImmediately(x, z);
++    }
++    public final LevelChunk getChunkIfLoaded(BlockPos blockposition) {
++        return ((ServerLevel) this).getChunkSource().getChunkAtIfLoadedImmediately(blockposition.getX() >> 4, blockposition.getZ() >> 4);
++    }
++
++    //  reduces need to do isLoaded before getType
++    public final BlockState getTypeIfLoadedAndInBounds(BlockPos blockposition) {
++        return getWorldBorder().isInBounds(blockposition) ? getTypeIfLoaded(blockposition) : null;
++    }
+     // Paper end
+ 
+     @Override
+diff --git a/src/main/java/net/minecraft/world/level/border/WorldBorder.java b/src/main/java/net/minecraft/world/level/border/WorldBorder.java
+index b008e3e94db7ca15ac65e1908c5298eb277851e3..66487cb57ff5043094abd7e2699fd90dcc29cb69 100644
+--- a/src/main/java/net/minecraft/world/level/border/WorldBorder.java
++++ b/src/main/java/net/minecraft/world/level/border/WorldBorder.java
+@@ -32,6 +32,7 @@ public class WorldBorder {
+ 
+     public WorldBorder() {}
+ 
++    public final boolean isInBounds(BlockPos blockposition) { return this.isWithinBounds(blockposition); } // Paper - OBFHELPER
+     public boolean isWithinBounds(BlockPos pos) {
+         return (double) (pos.getX() + 1) > this.getMinX() && (double) pos.getX() < this.getMaxX() && (double) (pos.getZ() + 1) > this.getMinZ() && (double) pos.getZ() < this.getMaxZ();
+     }

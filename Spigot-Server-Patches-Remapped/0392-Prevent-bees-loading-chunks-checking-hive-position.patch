@@ -1,0 +1,18 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: William Blake Galbreath <Blake.Galbreath@GMail.com>
+Date: Sun, 5 Jan 2020 17:24:34 -0600
+Subject: [PATCH] Prevent bees loading chunks checking hive position
+
+
+diff --git a/src/main/java/net/minecraft/world/entity/animal/Bee.java b/src/main/java/net/minecraft/world/entity/animal/Bee.java
+index b03b776ae27ad6ac5ae7bc5acea9da03ae9ae1cf..bdeb78cca6efac2c0bc8ddad6f5c1f87b4c8fbec 100644
+--- a/src/main/java/net/minecraft/world/entity/animal/Bee.java
++++ b/src/main/java/net/minecraft/world/entity/animal/Bee.java
+@@ -442,6 +442,7 @@ public class Bee extends Animal implements NeutralMob, FlyingAnimal {
+         if (!this.hasHive()) {
+             return false;
+         } else {
++            if (level.getChunkIfLoadedImmediately(hivePos.getX() >> 4, hivePos.getZ() >> 4) == null) return true; // Paper - just assume the hive is still there, no need to load the chunk(s)
+             BlockEntity tileentity = this.level.getBlockEntity(this.hivePos);
+ 
+             return tileentity != null && tileentity.getType() == BlockEntityType.BEEHIVE;
