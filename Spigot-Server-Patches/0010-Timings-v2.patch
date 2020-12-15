@@ -6,13 +6,12 @@ Subject: [PATCH] Timings v2
 
 diff --git a/src/main/java/co/aikar/timings/MinecraftTimings.java b/src/main/java/co/aikar/timings/MinecraftTimings.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..e63007d77575b069dec3fbee7f73436fbfcf4b46
+index 0000000000000000000000000000000000000000..e77eaad57d60f71609201c32236edba774379671
 --- /dev/null
 +++ b/src/main/java/co/aikar/timings/MinecraftTimings.java
-@@ -0,0 +1,153 @@
+@@ -0,0 +1,152 @@
 +package co.aikar.timings;
 +
-+import Timing;
 +import com.google.common.collect.MapMaker;
 +import net.minecraft.commands.CommandFunction;
 +import net.minecraft.network.protocol.Packet;
@@ -165,10 +164,10 @@ index 0000000000000000000000000000000000000000..e63007d77575b069dec3fbee7f73436f
 +}
 diff --git a/src/main/java/co/aikar/timings/TimingsExport.java b/src/main/java/co/aikar/timings/TimingsExport.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..94adf0275a2e7093c152cc3b8b0a5747b3a13a86
+index 0000000000000000000000000000000000000000..becf8620d6a81a8f6014936dfd3eac14b969252b
 --- /dev/null
 +++ b/src/main/java/co/aikar/timings/TimingsExport.java
-@@ -0,0 +1,380 @@
+@@ -0,0 +1,377 @@
 +/*
 + * This file is licensed under the MIT License (MIT).
 + *
@@ -230,9 +229,6 @@ index 0000000000000000000000000000000000000000..94adf0275a2e7093c152cc3b8b0a5747
 +import static co.aikar.util.JSONUtil.toArray;
 +import static co.aikar.util.JSONUtil.toArrayMapper;
 +import static co.aikar.util.JSONUtil.toObjectMapper;
-+
-+import TimingHistory;
-+import TimingsReportListener;
 +
 +@SuppressWarnings({"rawtypes", "SuppressionAnnotation"})
 +public class TimingsExport extends Thread {
@@ -551,13 +547,12 @@ index 0000000000000000000000000000000000000000..94adf0275a2e7093c152cc3b8b0a5747
 +}
 diff --git a/src/main/java/co/aikar/timings/WorldTimingsHandler.java b/src/main/java/co/aikar/timings/WorldTimingsHandler.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..79ede25e4fe7a648b1d29c49d876482a2158f892
+index 0000000000000000000000000000000000000000..0fda52841b5e1643efeda92106124998abc4e0aa
 --- /dev/null
 +++ b/src/main/java/co/aikar/timings/WorldTimingsHandler.java
-@@ -0,0 +1,120 @@
+@@ -0,0 +1,119 @@
 +package co.aikar.timings;
 +
-+import Timing;
 +import net.minecraft.server.level.ServerLevel;
 +import net.minecraft.world.level.Level;
 +import net.minecraft.world.level.storage.PrimaryLevelData;

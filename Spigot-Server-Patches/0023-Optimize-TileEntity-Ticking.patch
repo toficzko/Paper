@@ -5,10 +5,10 @@ Subject: [PATCH] Optimize TileEntity Ticking
 
 
 diff --git a/src/main/java/co/aikar/timings/TimingsExport.java b/src/main/java/co/aikar/timings/TimingsExport.java
-index 94adf0275a2e7093c152cc3b8b0a5747b3a13a86..5bcf9cefc29eb20e2cfbfb49e2b2662ec394a87e 100644
+index becf8620d6a81a8f6014936dfd3eac14b969252b..1bad91e99726e93e4bc0e3b145c59f4324e9f5fc 100644
 --- a/src/main/java/co/aikar/timings/TimingsExport.java
 +++ b/src/main/java/co/aikar/timings/TimingsExport.java
-@@ -112,7 +112,7 @@ public class TimingsExport extends Thread {
+@@ -109,7 +109,7 @@ public class TimingsExport extends Thread {
              pair("end", System.currentTimeMillis() / 1000),
              pair("online-mode", Bukkit.getServer().getOnlineMode()),
              pair("sampletime", (System.currentTimeMillis() - TimingsManager.timingStart) / 1000),
@@ -17,7 +17,7 @@ index 94adf0275a2e7093c152cc3b8b0a5747b3a13a86..5bcf9cefc29eb20e2cfbfb49e2b2662e
                  // Don't feel like obf helper'ing these, non fatal if its temp missed.
                  return ChatColor.stripColor(CraftChatMessage.fromComponent(pack.a(true)));
              }))
-@@ -151,8 +151,8 @@ public class TimingsExport extends Thread {
+@@ -148,8 +148,8 @@ public class TimingsExport extends Thread {
          );
  
          parent.put("worlds", toObjectMapper(MinecraftServer.getServer().getAllLevels(), world -> {
