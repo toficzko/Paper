@@ -6,23 +6,23 @@ Subject: [PATCH] Show 'Paper' in client crashes, server lists, and Mojang
 
 
 diff --git a/src/main/java/net/minecraft/server/Eula.java b/src/main/java/net/minecraft/server/Eula.java
-index 6762f5bd35baf1979431cac1bb6014eb9dfb80fe..e9452d5515c3d564a0104eb09e5c0a6b1bb1beb0 100644
+index 5351d25ec67257448dd5089c151ec201b6c0d261..dea1316de02749aae6703980a0922537027d1158 100644
 --- a/src/main/java/net/minecraft/server/Eula.java
 +++ b/src/main/java/net/minecraft/server/Eula.java
-@@ -71,7 +71,7 @@ public class Eula {
-                     Properties properties = new Properties();
- 
-                     properties.setProperty("eula", "false");
--                    properties.store(outputstream, "By changing the setting below to TRUE you are indicating your agreement to our EULA (https://account.mojang.com/documents/minecraft_eula).");
-+                    properties.store(outputstream, "By changing the setting below to TRUE you are indicating your agreement to our EULA (https://account.mojang.com/documents/minecraft_eula).\nYou also agree that tacos are tasty, and the best food in the world.");  // Paper - fix lag;
-                 } catch (Throwable throwable1) {
-                     throwable = throwable1;
-                     throw throwable1;
+@@ -40,7 +40,7 @@ public class Eula {
+             try (OutputStream outputStream = Files.newOutputStream(this.file)) {
+                 Properties properties = new Properties();
+                 properties.setProperty("eula", "false");
+-                properties.store(outputStream, "By changing the setting below to TRUE you are indicating your agreement to our EULA (https://account.mojang.com/documents/minecraft_eula).");
++                properties.store(outputStream, "By changing the setting below to TRUE you are indicating your agreement to our EULA (https://account.mojang.com/documents/minecraft_eula).\nYou also agree that tacos are tasty, and the best food in the world.");  // Paper - fix lag;
+             } catch (Exception var14) {
+                 LOGGER.warn("Failed to save {}", this.file, var14);
+             }
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index 2910dd40da248db94546fe05453c983d72e4e06c..133b54387d513512182351a59ed60609ba969155 100644
+index 2398f02fbdf786c2569dd7ebb59e3a4c9dc67d53..2e7f49970dedff678fdc4dd78d07b7e7dec2062c 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
-@@ -1327,7 +1327,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -1326,7 +1326,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
      }
  
      public String getServerModName() {

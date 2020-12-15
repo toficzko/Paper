@@ -42,7 +42,7 @@ index f8c13881f59ccaccf8d8e5496d2f8f49ba7d7343..b4181cfe5dbf354c4b6477b7d2b9d820
          double d4 = d3 * d3;
  
 diff --git a/src/main/java/net/minecraft/world/entity/Mob.java b/src/main/java/net/minecraft/world/entity/Mob.java
-index 8560ffa72c32b741019f4f804707cff8737f4087..c17bd27edc5272e2b3bbdbcfbb9ad3a2b9e82311 100644
+index bd9d3e358af0757239638eaa33b5625d95b727fd..2ed1029ad1e85c1a2990249e3cca7fa35944257c 100644
 --- a/src/main/java/net/minecraft/world/entity/Mob.java
 +++ b/src/main/java/net/minecraft/world/entity/Mob.java
 @@ -758,7 +758,7 @@ public abstract class Mob extends LivingEntity {
@@ -95,10 +95,10 @@ index 98f85d59bc48451ef6381a47fe341f77b9920981..10058d3c3565382faa893b79119c5caf
  
      public void tick() {
 diff --git a/src/main/java/net/minecraft/world/level/EntityGetter.java b/src/main/java/net/minecraft/world/level/EntityGetter.java
-index 7e7a58b9a9ececdcc37fc33b33703428eb1d5faf..66681b9f0e2531d3da25629e44180417b32b4d66 100644
+index 22dde8251106cc7debaea9d72e806492a1e2b21b..6e2ec025464e62aea27a0393a1780f30ac59a88c 100644
 --- a/src/main/java/net/minecraft/world/level/EntityGetter.java
 +++ b/src/main/java/net/minecraft/world/level/EntityGetter.java
-@@ -92,8 +92,9 @@ public interface EntityGetter {
+@@ -74,8 +74,9 @@ public interface EntityGetter {
          }
      }
  
@@ -107,10 +107,10 @@ index 7e7a58b9a9ececdcc37fc33b33703428eb1d5faf..66681b9f0e2531d3da25629e44180417
 +    default Player findNearbyPlayer(Entity entity, double d0, @Nullable Predicate<Entity> predicate) { return this.findNearbyPlayer(entity.getX(), entity.getY(), entity.getZ(), d0, predicate); } // Paper
 +    @Nullable default Player findNearbyPlayer(double d0, double d1, double d2, double d3, @Nullable Predicate<Entity> predicate) { return getNearestPlayer(d0, d1, d2, d3, predicate); } // Paper - OBFHELPER
 +    @Nullable default Player getNearestPlayer(double x, double y, double z, double maxDistance, @Nullable Predicate<Entity> targetPredicate) { // Paper
-         double d4 = -1.0D;
-         Player entityhuman = null;
-         Iterator iterator = this.players().iterator();
-@@ -126,6 +127,27 @@ public interface EntityGetter {
+         double d = -1.0D;
+         Player player = null;
+ 
+@@ -103,6 +104,27 @@ public interface EntityGetter {
          return this.getNearestPlayer(x, y, z, maxDistance, predicate);
      }
  
@@ -136,8 +136,8 @@ index 7e7a58b9a9ececdcc37fc33b33703428eb1d5faf..66681b9f0e2531d3da25629e44180417
 +    // Paper end
 +
      default boolean hasNearbyAlivePlayer(double x, double y, double z, double range) {
-         Iterator iterator = this.players().iterator();
- 
+         for(Player player : this.players()) {
+             if (EntitySelector.NO_SPECTATORS.test(player) && EntitySelector.LIVING_ENTITY_STILL_ALIVE.test(player)) {
 diff --git a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
 index 0e6c20ba81e6d1d080ccc6b32476bdd8140c638f..f1b877208054f234296e18bb684af436159aeaba 100644
 --- a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java

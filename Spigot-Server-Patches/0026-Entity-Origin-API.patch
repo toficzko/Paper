@@ -5,19 +5,19 @@ Subject: [PATCH] Entity Origin API
 
 
 diff --git a/src/main/java/net/minecraft/nbt/ListTag.java b/src/main/java/net/minecraft/nbt/ListTag.java
-index ab16c01b170d259f2f28667a11aa2cb348244236..532695b95cb288699f07cb248cd74ee9c7f194d8 100644
+index c1ae8274f3dfa12edee6299b1ddaf2c1b6beca23..a6ddfaee774d402b85a197bae423bce46c4f836d 100644
 --- a/src/main/java/net/minecraft/nbt/ListTag.java
 +++ b/src/main/java/net/minecraft/nbt/ListTag.java
-@@ -190,6 +190,7 @@ public class ListTag extends CollectionTag<Tag> {
+@@ -171,6 +171,7 @@ public class ListTag extends CollectionTag<Tag> {
          return new int[0];
      }
  
 +    public final double getDoubleAt(int i) { return this.getDouble(i); } // Paper - OBFHELPER
      public double getDouble(int index) {
          if (index >= 0 && index < this.list.size()) {
-             Tag nbtbase = (Tag) this.list.get(index);
+             Tag tag = this.list.get(index);
 diff --git a/src/main/java/net/minecraft/server/level/ServerLevel.java b/src/main/java/net/minecraft/server/level/ServerLevel.java
-index cca46853aa4474369de27f0db0887ade6fc352fa..feac53db24aa173c95534796c447003a5bfbcf3b 100644
+index e0abb929f3e935189db3a73f95c068143940f2ca..d3c7c6798d4a459d8c38ab1d50109f25ededabec 100644
 --- a/src/main/java/net/minecraft/server/level/ServerLevel.java
 +++ b/src/main/java/net/minecraft/server/level/ServerLevel.java
 @@ -1238,6 +1238,11 @@ public class ServerLevel extends net.minecraft.world.level.Level implements Worl

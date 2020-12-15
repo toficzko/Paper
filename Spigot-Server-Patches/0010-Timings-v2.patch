@@ -724,7 +724,7 @@ index da922f395f0fff0881ead893c900c5b2623f48f0..b4056cabb16f38ab8d45b887d9c4bf37
 +    }
  }
 diff --git a/src/main/java/net/minecraft/commands/CommandFunction.java b/src/main/java/net/minecraft/commands/CommandFunction.java
-index d45a74902e9e432d9f2d0309266b8d2c90f15a55..fb4c4e72a61dadd69629f0c5697f53c466cc03e1 100644
+index 68f4e29e4ed2d1b69d2f03452d9451175ae6896a..218e9396cae79d6c510ea904bf622ae0a6abb24b 100644
 --- a/src/main/java/net/minecraft/commands/CommandFunction.java
 +++ b/src/main/java/net/minecraft/commands/CommandFunction.java
 @@ -15,12 +15,22 @@ import net.minecraft.server.ServerFunctionManager;

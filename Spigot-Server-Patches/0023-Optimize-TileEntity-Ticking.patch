@@ -153,7 +153,7 @@ index ac4635b76a9d09eba142af464d388373d33f4e02..260cf6ddc77638bbfda3438ed4066be9
                  int newPower = Math.max(0, Math.min(15, this.openCount));
  
 diff --git a/src/main/java/net/minecraft/world/level/block/entity/EnderChestBlockEntity.java b/src/main/java/net/minecraft/world/level/block/entity/EnderChestBlockEntity.java
-index b26337770e13c20f57a4e74282710ce697ac0d41..8f0477d9620ef71e10855bbca07f9b6984d5d794 100644
+index 303a5c172b80d9f6d6c80cb0c1f1739dd077f277..18d3c66f7024f9c7f9ea6298d548a95cdfa4029a 100644
 --- a/src/main/java/net/minecraft/world/level/block/entity/EnderChestBlockEntity.java
 +++ b/src/main/java/net/minecraft/world/level/block/entity/EnderChestBlockEntity.java
 @@ -1,11 +1,12 @@
@@ -167,17 +167,10 @@ index b26337770e13c20f57a4e74282710ce697ac0d41..8f0477d9620ef71e10855bbca07f9b69
  
 -public class EnderChestBlockEntity extends BlockEntity implements TickableBlockEntity {
 +public class EnderChestBlockEntity extends BlockEntity { // Paper - Remove ITickable
- 
      public float openness;
      public float oOpenness;
-@@ -16,18 +17,28 @@ public class EnderChestBlockEntity extends BlockEntity implements TickableBlockE
-         super(BlockEntityType.ENDER_CHEST);
-     }
- 
--    @Override
-     public void tick() {
-         if (++this.tickInterval % 20 * 4 == 0) {
-             this.level.blockEvent(this.worldPosition, Blocks.ENDER_CHEST, 1, this.openCount);
+     public int openCount;
+@@ -21,34 +22,62 @@ public class EnderChestBlockEntity extends BlockEntity implements TickableBlockE
          }
  
          this.oOpenness = this.openness;
@@ -196,20 +189,17 @@ index b26337770e13c20f57a4e74282710ce697ac0d41..8f0477d9620ef71e10855bbca07f9b69
          int j = this.worldPosition.getY();
          int k = this.worldPosition.getZ();
 -        float f = 0.1F;
-         double d0;
++        double d0;
 +        // Paper end
- 
++
          if (this.openCount > 0 && this.openness == 0.0F) {
-             double d1 = (double) i + 0.5D;
-@@ -35,28 +46,40 @@ public class EnderChestBlockEntity extends BlockEntity implements TickableBlockE
-             d0 = (double) k + 0.5D;
-             this.level.playSound((Player) null, d1, (double) j + 0.5D, d0, SoundEvents.ENDER_CHEST_OPEN, SoundSource.BLOCKS, 0.5F, this.level.random.nextFloat() * 0.1F + 0.9F);
+             double d = (double)i + 0.5D;
+             double e = (double)k + 0.5D;
+             this.level.playSound((Player)null, d, (double)j + 0.5D, e, SoundEvents.ENDER_CHEST_OPEN, SoundSource.BLOCKS, 0.5F, this.level.random.nextFloat() * 0.1F + 0.9F);
          }
 +        // Paper start
 +    }
- 
--        if (this.openCount == 0 && this.openness > 0.0F || this.openCount > 0 && this.openness < 1.0F) {
--            float f1 = this.openness;
++
 +    private void doCloseLogic() {
 +        int i = this.worldPosition.getX();
 +        int j = this.worldPosition.getY();
@@ -220,6 +210,8 @@ index b26337770e13c20f57a4e74282710ce697ac0d41..8f0477d9620ef71e10855bbca07f9b69
 +        // Paper end
 +            float f1 = this.a;
  
+-        if (this.openCount == 0 && this.openness > 0.0F || this.openCount > 0 && this.openness < 1.0F) {
+-            float g = this.openness;
 -            if (this.openCount > 0) {
 -                this.openness += 0.1F;
 +            if (this.c > 0) {
@@ -235,23 +227,27 @@ index b26337770e13c20f57a4e74282710ce697ac0d41..8f0477d9620ef71e10855bbca07f9b69
 +                this.a = 1.0F;
              }
  
-             float f2 = 0.5F;
- 
--            if (this.openness < 0.5F && f1 >= 0.5F) {
+-            float h = 0.5F;
+-            if (this.openness < 0.5F && g >= 0.5F) {
+-                double l = (double)i + 0.5D;
+-                double m = (double)k + 0.5D;
+-                this.level.playSound((Player)null, l, (double)j + 0.5D, m, SoundEvents.ENDER_CHEST_CLOSE, SoundSource.BLOCKS, 0.5F, this.level.random.nextFloat() * 0.1F + 0.9F);
+-            }
++            float f2 = 0.5F;
++
 +            if (this.a < 0.5F && f1 >= 0.5F) {
 +            // Paper start
 +            */
-                 d0 = (double) i + 0.5D;
-                 double d2 = (double) k + 0.5D;
- 
++                d0 = (double) i + 0.5D;
++                double d2 = (double) k + 0.5D;
++
 +            MCUtil.scheduleTask(10, () -> {
-                 this.level.playSound((Player) null, d0, (double) j + 0.5D, d2, SoundEvents.ENDER_CHEST_CLOSE, SoundSource.BLOCKS, 0.5F, this.level.random.nextFloat() * 0.1F + 0.9F);
--            }
++                this.level.playSound((Player) null, d0, (double) j + 0.5D, d2, SoundEvents.ENDER_CHEST_CLOSE, SoundSource.BLOCKS, 0.5F, this.level.random.nextFloat() * 0.1F + 0.9F);
 +            }, "Chest Sounds");
  
              if (this.openness < 0.0F) {
                  this.openness = 0.0F;
-@@ -84,11 +107,13 @@ public class EnderChestBlockEntity extends BlockEntity implements TickableBlockE
+@@ -74,11 +103,13 @@ public class EnderChestBlockEntity extends BlockEntity implements TickableBlockE
      public void startOpen() {
          ++this.openCount;
          this.level.blockEvent(this.worldPosition, Blocks.ENDER_CHEST, 1, this.openCount);
@@ -264,12 +260,12 @@ index b26337770e13c20f57a4e74282710ce697ac0d41..8f0477d9620ef71e10855bbca07f9b69
 +        doCloseLogic(); // Paper
      }
  
-     public boolean stillValid(Player entityhuman) {
+     public boolean stillValid(Player player) {
 diff --git a/src/main/java/net/minecraft/world/level/block/state/StateHolder.java b/src/main/java/net/minecraft/world/level/block/state/StateHolder.java
-index 60ce75c7f94c995d3753c40bc8d1ec09b4d37b1a..ac10fb9cd4701f0f6477a86bec73cb5ac6496725 100644
+index ba510b8b79304a053a9d965ced1815661949d1d4..3cb28b08a270cfb5c2f04896f33c61c1b6568801 100644
 --- a/src/main/java/net/minecraft/world/level/block/state/StateHolder.java
 +++ b/src/main/java/net/minecraft/world/level/block/state/StateHolder.java
-@@ -84,6 +84,7 @@ public abstract class StateHolder<O, S> {
+@@ -80,6 +80,7 @@ public abstract class StateHolder<O, S> {
          return Collections.unmodifiableCollection(this.values.keySet());
      }
  
