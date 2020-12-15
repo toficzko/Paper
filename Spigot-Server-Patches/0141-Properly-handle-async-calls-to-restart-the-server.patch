@@ -30,10 +30,10 @@ will have plugins and worlds saving to the disk has a high potential to result
 in corruption/dataloss.
 
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index 4c8a5d9a2f4b951bbf3cd2061b631381193ec685..7e3c069911cd8bf710ef8d00132a0d31f07ae709 100644
+index 7c07d0f64ffa7bcbba932f5cdf73afec5504c91a..ea3514899053eca4bb3ff87dc5533a9e0476b89b 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
-@@ -196,6 +196,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -195,6 +195,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
      public final Map<ResourceKey<Level>, ServerLevel> levels;
      private PlayerList playerList;
      private volatile boolean running;
@@ -41,7 +41,7 @@ index 4c8a5d9a2f4b951bbf3cd2061b631381193ec685..7e3c069911cd8bf710ef8d00132a0d31
      private boolean stopped;
      private int tickCount;
      protected final Proxy proxy;
-@@ -845,7 +846,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -844,7 +845,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
          if (this.playerList != null) {
              MinecraftServer.LOGGER.info("Saving players");
              this.playerList.saveAll();
@@ -50,7 +50,7 @@ index 4c8a5d9a2f4b951bbf3cd2061b631381193ec685..7e3c069911cd8bf710ef8d00132a0d31
              try { Thread.sleep(100); } catch (InterruptedException ex) {} // CraftBukkit - SPIGOT-625 - give server at least a chance to send packets
          }
  
-@@ -910,8 +911,13 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -909,8 +910,13 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
          return this.running;
      }
  
@@ -64,7 +64,7 @@ index 4c8a5d9a2f4b951bbf3cd2061b631381193ec685..7e3c069911cd8bf710ef8d00132a0d31
          if (flag) {
              try {
                  this.serverThread.join();
-@@ -921,6 +927,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -920,6 +926,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
          }
  
      }

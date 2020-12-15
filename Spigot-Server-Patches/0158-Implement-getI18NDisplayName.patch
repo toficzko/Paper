@@ -8,25 +8,11 @@ Currently the server only supports the English language. To override this,
 You must replace the language file embedded in the server jar.
 
 diff --git a/src/main/java/net/minecraft/locale/Language.java b/src/main/java/net/minecraft/locale/Language.java
-index 598d8611b195ef703b393add6b30d30626803c68..fd6a23b3ec6c7e5ff0f4a083d64428be59d07f37 100644
+index 731a02d29635e997d1471ee0606302edf0cd98ba..5b831e5fc414189778846e1a0a39f3e69eeffe55 100644
 --- a/src/main/java/net/minecraft/locale/Language.java
 +++ b/src/main/java/net/minecraft/locale/Language.java
-@@ -30,7 +30,7 @@ public abstract class Language {
- 
-     private static Language loadDefault() {
-         Builder<String, String> builder = ImmutableMap.builder();
--        BiConsumer biconsumer = builder::put;
-+        BiConsumer<String, String> biconsumer = builder::put; // Paper - decompile fix
- 
-         try {
-             InputStream inputstream = Language.class.getResourceAsStream("/assets/minecraft/lang/en_us.json");
-@@ -87,10 +87,12 @@ public abstract class Language {
- 
-     }
- 
-+    public static Language getInstance() { return getInstance(); } // Paper - OBFHELPER
-     public static Language getInstance() {
-         return Language.instance;
+@@ -60,6 +60,7 @@ public abstract class Language {
+         return instance;
      }
  
 +    public String translateKey(String key) { return getOrDefault(key); } // Paper - OBFHELPER

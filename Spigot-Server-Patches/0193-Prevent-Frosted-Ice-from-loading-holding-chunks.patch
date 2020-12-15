@@ -1,0 +1,31 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Aikar <aikar@aikar.co>
+Date: Sat, 10 Mar 2018 16:33:15 -0500
+Subject: [PATCH] Prevent Frosted Ice from loading/holding chunks
+
+
+diff --git a/src/main/java/net/minecraft/world/level/block/FrostedIceBlock.java b/src/main/java/net/minecraft/world/level/block/FrostedIceBlock.java
+index 526d622765d1b6d3b8bfbc64c6433c067d45fe06..064f8ccb923c006d25c5e465bb0cf23230ec31ed 100644
+--- a/src/main/java/net/minecraft/world/level/block/FrostedIceBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/FrostedIceBlock.java
+@@ -32,7 +32,8 @@ public class FrostedIceBlock extends IceBlock {
+ 
+             for(Direction direction : Direction.values()) {
+                 mutableBlockPos.setWithOffset(blockPos, direction);
+-                BlockState blockState2 = serverLevel.getBlockState(mutableBlockPos);
++                BlockState blockState2 = serverLevel.getTypeIfLoaded(mutableBlockPos); // Paper
++                if (blockState2 == null) { continue; } // Paper
+                 if (blockState2.is(this) && !this.slightlyMelt(blockState2, serverLevel, mutableBlockPos)) {
+                     serverLevel.getBlockTicks().scheduleTick(mutableBlockPos, this, Mth.nextInt(random, serverLevel.paperConfig.frostedIceDelayMin, serverLevel.paperConfig.frostedIceDelayMax)); // Paper - use configurable min/max delay
+                 }
+@@ -68,7 +69,9 @@ public class FrostedIceBlock extends IceBlock {
+ 
+         for(Direction direction : Direction.values()) {
+             mutableBlockPos.setWithOffset(pos, direction);
+-            if (world.getBlockState(mutableBlockPos).is(this)) {
++            // Paper start
++            BlockState type = world.getTypeIfLoaded(pos);
++            if (type != null && type.is(this)) { // Paper end
+                 ++i;
+                 if (i >= maxNeighbors) {
+                     return false;

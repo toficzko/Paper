@@ -39,10 +39,10 @@ index 5c3f18cfe1c7a998902267bab673d61640dffcf5..125c93e7aa0ef73c47d62671a2effcbc
      }
  
 diff --git a/src/main/java/net/minecraft/server/level/ServerChunkCache.java b/src/main/java/net/minecraft/server/level/ServerChunkCache.java
-index bdc3549c6dd701ae0bdeb2f9cbbac2529eb9d692..32bb7e3d7515062125253324436e78bb1e2114fd 100644
+index 3fb02010d43159750ea5e00a1609fbf8d6f19b50..67e69456cbaf3e4744a0d8eaef5fc834ff7896e8 100644
 --- a/src/main/java/net/minecraft/server/level/ServerChunkCache.java
 +++ b/src/main/java/net/minecraft/server/level/ServerChunkCache.java
-@@ -617,6 +617,15 @@ public class ServerChunkCache extends ChunkSource {
+@@ -615,6 +615,15 @@ public class ServerChunkCache extends ChunkSource {
              this.level.getProfiler().pop();
              //List<PlayerChunk> list = Lists.newArrayList(this.playerChunkMap.f()); // Paper
              //Collections.shuffle(list); // Paper

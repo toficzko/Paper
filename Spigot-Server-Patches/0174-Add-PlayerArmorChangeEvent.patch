@@ -5,11 +5,11 @@ Subject: [PATCH] Add PlayerArmorChangeEvent
 
 
 diff --git a/src/main/java/net/minecraft/world/entity/EquipmentSlot.java b/src/main/java/net/minecraft/world/entity/EquipmentSlot.java
-index b686b7a2faa4fbce37dcc3598b3c956661b91aaa..17cd5f525a45058ce34c66c87f9c133033bb8f4b 100644
+index accce6a8eac2016ce4aa400304dae32be7145c73..8ce4c1600befcb7b1a2e811c0cd4661b7b55a1cc 100644
 --- a/src/main/java/net/minecraft/world/entity/EquipmentSlot.java
 +++ b/src/main/java/net/minecraft/world/entity/EquipmentSlot.java
-@@ -16,6 +16,7 @@ public enum EquipmentSlot {
-         this.name = s;
+@@ -20,6 +20,7 @@ public enum EquipmentSlot {
+         this.name = name;
      }
  
 +    public EquipmentSlot.Type getType() { return this.getType(); } // Paper - OBFHELPER

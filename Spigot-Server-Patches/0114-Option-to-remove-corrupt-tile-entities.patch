@@ -19,10 +19,10 @@ index 3599aa415076525a4529664b9b9f0339b2eff730..74d0a591d3033b5ea4f2b0be8027d709
 +    }
  }
 diff --git a/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java b/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java
-index e7b5257afbafc28e23a6bd4159b8e8fdb7da9a42..a7a975a85c3e3a21324761229cd4ac2a15d412ba 100644
+index 71628bce99194044bd3a5c620c63f71d9a30ec08..28c916fb167a3352762b66cc1f67e13226429430 100644
 --- a/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java
 +++ b/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java
-@@ -678,6 +678,12 @@ public class LevelChunk implements ChunkAccess {
+@@ -671,6 +671,12 @@ public class LevelChunk implements ChunkAccess {
                              "Chunk coordinates: " + (this.chunkPos.x * 16) + "," + (this.chunkPos.z * 16));
              e.printStackTrace();
              ServerInternalException.reportInternalException(e);

@@ -57,10 +57,10 @@ index 09b1261ff46b56d7505f2a0f1ad70b1add7be151..d05eb8330b2dc1d60d17fe03ed006320
  
                  // CraftBukkit start - Fire ProjectileHitEvent
 diff --git a/src/main/java/net/minecraft/world/entity/projectile/ThrowableProjectile.java b/src/main/java/net/minecraft/world/entity/projectile/ThrowableProjectile.java
-index 0353077d206c4b077443484ad9f1fa576c0840ad..03ecdb2ad95089ce62deac891bdfaf2bf8b0b966 100644
+index 66ef26459b1afb4280b35170dc7dda105431f9a0..64f087d53cd2ab84c57da86dd9f7d1da5dd6ecdb 100644
 --- a/src/main/java/net/minecraft/world/entity/projectile/ThrowableProjectile.java
 +++ b/src/main/java/net/minecraft/world/entity/projectile/ThrowableProjectile.java
-@@ -13,6 +13,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
+@@ -12,6 +12,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
  import net.minecraft.world.level.block.entity.TheEndGatewayBlockEntity;
  import net.minecraft.world.level.block.state.BlockState;
  import net.minecraft.world.phys.BlockHitResult;
@@ -68,21 +68,21 @@ index 0353077d206c4b077443484ad9f1fa576c0840ad..03ecdb2ad95089ce62deac891bdfaf2b
  import net.minecraft.world.phys.HitResult;
  import net.minecraft.world.phys.Vec3;
  
-@@ -57,7 +58,17 @@ public abstract class ThrowableProjectile extends Projectile {
+@@ -51,7 +52,17 @@ public abstract class ThrowableProjectile extends Projectile {
          }
  
-         if (movingobjectposition.getType() != HitResult.Type.MISS && !flag) {
+         if (hitResult.getType() != HitResult.Type.MISS && !bl) {
 +            // Paper start - Call ProjectileCollideEvent
-+            if (movingobjectposition instanceof EntityHitResult) {
-+                com.destroystokyo.paper.event.entity.ProjectileCollideEvent event = org.bukkit.craftbukkit.event.CraftEventFactory.callProjectileCollideEvent(this, (EntityHitResult)movingobjectposition);
++            if (hitResult instanceof EntityHitResult) {
++                com.destroystokyo.paper.event.entity.ProjectileCollideEvent event = org.bukkit.craftbukkit.event.CraftEventFactory.callProjectileCollideEvent(this, (EntityHitResult)hitResult);
 +                if (event.isCancelled()) {
-+                    movingobjectposition = null;
++                    hitResult = null;
 +                }
 +            }
-+            if (movingobjectposition != null) {
++            if (hitResult != null) {
 +            // Paper end
-             this.onHit(movingobjectposition);
-+            } // Paper
+             this.onHit(hitResult);
++        } // Paper
          }
  
          this.checkInsideBlocks();

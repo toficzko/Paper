@@ -8,7 +8,7 @@ World checks and the Chunk Add logic are inconsistent on how Y > 256, < 0, is tr
 Keep them consistent
 
 diff --git a/src/main/java/net/minecraft/server/level/ServerLevel.java b/src/main/java/net/minecraft/server/level/ServerLevel.java
-index 17202a6114d666269e18be2acb5ebbdb681a0bbd..ab2ca75c13becda54ec13b4a31fa2e0cb0b62484 100644
+index aa4211571d94e996aa848bf707f43d94c381bdb2..afe2d996486f6dcdd4db5534c0f019a3207d6517 100644
 --- a/src/main/java/net/minecraft/server/level/ServerLevel.java
 +++ b/src/main/java/net/minecraft/server/level/ServerLevel.java
 @@ -839,7 +839,7 @@ public class ServerLevel extends net.minecraft.world.level.Level implements Worl

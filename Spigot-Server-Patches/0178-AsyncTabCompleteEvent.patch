@@ -85,13 +85,14 @@ index d8e49ad2e4834a3911cd1e47f237dd20b8c92313..1147e267119d76ac7c98febe6b3a7122
  
          return tabEvent.isCancelled() ? Collections.EMPTY_LIST : tabEvent.getCompletions();
 diff --git a/src/main/java/org/bukkit/craftbukkit/command/ConsoleCommandCompleter.java b/src/main/java/org/bukkit/craftbukkit/command/ConsoleCommandCompleter.java
-index b49de4f081c9f900cdfc90b9503579d7e707f714..fbb0ccabcafb640e9f91ba99f87c71e55a138c28 100644
+index b49de4f081c9f900cdfc90b9503579d7e707f714..cee291072087c258fd179caa482cfcd336b4f7f9 100644
 --- a/src/main/java/org/bukkit/craftbukkit/command/ConsoleCommandCompleter.java
 +++ b/src/main/java/org/bukkit/craftbukkit/command/ConsoleCommandCompleter.java
-@@ -26,6 +26,39 @@ public class ConsoleCommandCompleter implements Completer {
+@@ -26,6 +26,40 @@ public class ConsoleCommandCompleter implements Completer {
      public void complete(LineReader reader, ParsedLine line, List<Candidate> candidates) {
          final CraftServer server = this.server.server;
          final String buffer = line.line();
++        // Paper end
 +        // Async Tab Complete
 +        com.destroystokyo.paper.event.server.AsyncTabCompleteEvent event;
 +        java.util.List<String> completions = new java.util.ArrayList<>();

@@ -27,10 +27,10 @@ index 885c5a920204a31b24c7d360390eaf4177c30698..52b90ef3a145325209d3d903a2b7c9a4
          return experienceAmount * 2;
      }
 diff --git a/src/main/java/net/minecraft/world/item/enchantment/EnchantmentHelper.java b/src/main/java/net/minecraft/world/item/enchantment/EnchantmentHelper.java
-index 045f937f0b7acd73469b65897bea2ca9036acf22..c82e1b6e3ec98530099fd6452fdaaefebfd99b33 100644
+index 7f0f20d840980533409aabcb664284adee365ed9..0a82953200bea01b4cc327c6bd450613b8757841 100644
 --- a/src/main/java/net/minecraft/world/item/enchantment/EnchantmentHelper.java
 +++ b/src/main/java/net/minecraft/world/item/enchantment/EnchantmentHelper.java
-@@ -269,8 +269,8 @@ public class EnchantmentHelper {
+@@ -246,8 +246,8 @@ public class EnchantmentHelper {
          return getItemEnchantmentLevel(Enchantments.CHANNELING, stack) > 0;
      }
  
@@ -38,7 +38,7 @@ index 045f937f0b7acd73469b65897bea2ca9036acf22..c82e1b6e3ec98530099fd6452fdaaefe
 -    public static Entry<EquipmentSlot, ItemStack> getRandomItemWith(Enchantment enchantment, LivingEntity entity) {
 +    public static @javax.annotation.Nonnull ItemStack getRandomEquippedItemWithEnchant(Enchantment enchantment, LivingEntity entityliving) { Entry<EquipmentSlot, ItemStack> entry = getRandomItemWith(enchantment, entityliving); return entry != null ? entry.getValue() : ItemStack.NULL_ITEM; } // Paper - OBFHELPER
 +    @Nullable public static Entry<EquipmentSlot, ItemStack> getRandomItemWith(Enchantment enchantment, LivingEntity entity) {
-         return getRandomItemWith(enchantment, entity, (itemstack) -> {
+         return getRandomItemWith(enchantment, entity, (stack) -> {
              return true;
          });
 diff --git a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java

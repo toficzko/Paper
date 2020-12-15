@@ -5,17 +5,17 @@ Subject: [PATCH] Firework API's
 
 
 diff --git a/src/main/java/net/minecraft/nbt/CompoundTag.java b/src/main/java/net/minecraft/nbt/CompoundTag.java
-index 6a293d9e38b0f8ba48b4cce94d2fcb5b8002f27a..105a8957aef4d3e1b67a0c02bc1fd59510427b3f 100644
+index cbdb36f6cd6d69494d38aa1d9284e98930fdc0b1..13bfb8e281380a2371ee9d40c07928d0e11c8135 100644
 --- a/src/main/java/net/minecraft/nbt/CompoundTag.java
 +++ b/src/main/java/net/minecraft/nbt/CompoundTag.java
-@@ -151,6 +151,7 @@ public class CompoundTag implements Tag {
+@@ -135,6 +135,7 @@ public class CompoundTag implements Tag {
          return NbtUtils.loadUUID(this.get(key));
      }
  
 +    public final boolean hasUUID(String s) { return this.hasUUID(s); } // Paper - OBFHELPER
      public boolean hasUUID(String key) {
-         Tag nbtbase = this.get(key);
- 
+         Tag tag = this.get(key);
+         return tag != null && tag.getType() == IntArrayTag.TYPE && ((IntArrayTag)tag).getAsIntArray().length == 4;
 diff --git a/src/main/java/net/minecraft/world/entity/projectile/FireworkRocketEntity.java b/src/main/java/net/minecraft/world/entity/projectile/FireworkRocketEntity.java
 index def5138c25536c2178b5b6b43578b527193c8a6b..e64798fa736d204c1ef554e732d062469ee074b0 100644
 --- a/src/main/java/net/minecraft/world/entity/projectile/FireworkRocketEntity.java
@@ -68,29 +68,28 @@ index 8b60b9021239cb86ea7fc50f9316595b5bdeb398..cc4e0dcddd1b4534533ef23e22f54e5e
                  object = getArrow(world, shooter, crossbow, projectile);
                  if (creative || simulated != 0.0F) {
 diff --git a/src/main/java/net/minecraft/world/item/FireworkRocketItem.java b/src/main/java/net/minecraft/world/item/FireworkRocketItem.java
-index 2a130f241df099796758adc48732f5dcd662884e..eacd4837b5c2e2c75d2b8c7ca711fc35ecf385ab 100644
+index d7d3b9469bdaf3ded85ccf6ea17b77e8a01c4263..f2989c0e7fbf900366df13d0609c1a1bee9c681d 100644
 --- a/src/main/java/net/minecraft/world/item/FireworkRocketItem.java
 +++ b/src/main/java/net/minecraft/world/item/FireworkRocketItem.java
-@@ -27,6 +27,7 @@ public class FireworkRocketItem extends Item {
-             Vec3 vec3d = itemactioncontext.getClickLocation();
-             Direction enumdirection = itemactioncontext.getClickedFace();
-             FireworkRocketEntity entityfireworks = new FireworkRocketEntity(world, itemactioncontext.getPlayer(), vec3d.x + (double) enumdirection.getStepX() * 0.15D, vec3d.y + (double) enumdirection.getStepY() * 0.15D, vec3d.z + (double) enumdirection.getStepZ() * 0.15D, itemstack);
-+            entityfireworks.spawningEntity = itemactioncontext.getPlayer().getUUID(); // Paper
- 
-             world.addFreshEntity(entityfireworks);
-             itemstack.shrink(1);
-@@ -41,7 +42,11 @@ public class FireworkRocketItem extends Item {
-             ItemStack itemstack = entityhuman.getItemInHand(enumhand);
- 
-             if (!world.isClientSide) {
--                world.addFreshEntity(new FireworkRocketEntity(world, itemstack, entityhuman));
+@@ -24,6 +24,7 @@ public class FireworkRocketItem extends Item {
+             Vec3 vec3 = useOnContext.getClickLocation();
+             Direction direction = useOnContext.getClickedFace();
+             FireworkRocketEntity fireworkRocketEntity = new FireworkRocketEntity(level, useOnContext.getPlayer(), vec3.x + (double)direction.getStepX() * 0.15D, vec3.y + (double)direction.getStepY() * 0.15D, vec3.z + (double)direction.getStepZ() * 0.15D, itemStack);
++            fireworkRocketEntity.spawningEntity = useOnContext.getPlayer().getUUID(); // Paper
+             level.addFreshEntity(fireworkRocketEntity);
+             itemStack.shrink(1);
+         }
+@@ -36,6 +37,11 @@ public class FireworkRocketItem extends Item {
+             ItemStack itemStack = player.getItemInHand(interactionHand);
+             if (!level.isClientSide) {
+                 level.addFreshEntity(new FireworkRocketEntity(level, itemStack, player));
 +                // Paper start
-+                final FireworkRocketEntity entityfireworks = new FireworkRocketEntity(world, itemstack, entityhuman);
-+                entityfireworks.spawningEntity = entityhuman.getUUID();
-+                world.addFreshEntity(entityfireworks);
++                final FireworkRocketEntity entityfireworks = new FireworkRocketEntity(level, itemStack, player);
++                entityfireworks.spawningEntity = player.getUUID();
++                level.addFreshEntity(entityfireworks);
 +                // Paper end
-                 if (!entityhuman.abilities.instabuild) {
-                     itemstack.shrink(1);
+                 if (!player.abilities.instabuild) {
+                     itemStack.shrink(1);
                  }
 diff --git a/src/main/java/org/bukkit/craftbukkit/entity/CraftFirework.java b/src/main/java/org/bukkit/craftbukkit/entity/CraftFirework.java
 index 5901a53b25449430ed02a80b022f83755f83a440..192b21d39032bf8a9616a5ee2eed35c52283947a 100644
