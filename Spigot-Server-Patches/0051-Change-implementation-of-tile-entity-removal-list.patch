@@ -6,7 +6,7 @@ Subject: [PATCH] Change implementation of (tile)entity removal list
 use sets for faster removal
 
 diff --git a/src/main/java/net/minecraft/server/level/ServerLevel.java b/src/main/java/net/minecraft/server/level/ServerLevel.java
-index 8d6afc21814031ecee393882d16af5ca6aabb9fa..c42571b86340bfba333e98a8dc7d37bc772d549d 100644
+index 422e583eeb1642ec7fb2f13a8a38d3bb844943de..77a7a4cc98e71b4422993f1401c070bdf188bbaa 100644
 --- a/src/main/java/net/minecraft/server/level/ServerLevel.java
 +++ b/src/main/java/net/minecraft/server/level/ServerLevel.java
 @@ -1120,7 +1120,7 @@ public class ServerLevel extends net.minecraft.world.level.Level implements Worl

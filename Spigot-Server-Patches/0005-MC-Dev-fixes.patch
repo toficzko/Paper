@@ -57,7 +57,7 @@ index 77f102b67e066c32e2c212626bcd46cc498bfd86..9cd82e1641947aa0a5efec1e8660e740
          }).thenComparing((tickNextTickData) -> {
              return tickNextTickData.priority;
 diff --git a/src/main/java/net/minecraft/world/level/storage/loot/entries/LootPoolEntryContainer.java b/src/main/java/net/minecraft/world/level/storage/loot/entries/LootPoolEntryContainer.java
-index 935b95bb9891f52c1b32299ed937ded17acef3e0..b56c5ec5dedc97c2c4c60c7ae4b4dbbb4d403afa 100644
+index 746bdd1cca7f3b257ebef10d2f0a17a1e146ed93..888698d47d551eb160561ebc2f0547d5d88db25d 100644
 --- a/src/main/java/net/minecraft/world/level/storage/loot/entries/LootPoolEntryContainer.java
 +++ b/src/main/java/net/minecraft/world/level/storage/loot/entries/LootPoolEntryContainer.java
 @@ -4,19 +4,19 @@ import com.google.common.collect.Lists;

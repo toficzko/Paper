@@ -19,7 +19,7 @@ index 0770de735f3cf4eb46c4ffd5b76eb393ad94a166..870b50b1b981943eaba874fe26d89e11
 +    }
  }
 diff --git a/src/main/java/net/minecraft/server/level/ServerLevel.java b/src/main/java/net/minecraft/server/level/ServerLevel.java
-index d243bf1905b12ceae5dae9a1def6dd0c40258482..8d6afc21814031ecee393882d16af5ca6aabb9fa 100644
+index 1a08f6c0ad61421b6b9c65379752ea5d1c460a7a..422e583eeb1642ec7fb2f13a8a38d3bb844943de 100644
 --- a/src/main/java/net/minecraft/server/level/ServerLevel.java
 +++ b/src/main/java/net/minecraft/server/level/ServerLevel.java
 @@ -602,7 +602,7 @@ public class ServerLevel extends net.minecraft.world.level.Level implements Worl
