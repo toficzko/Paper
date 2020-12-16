@@ -87,10 +87,10 @@ index 01d7ad6778d4bbef6e07f7529f40dd9da6cd2ea8..6f0c5a2d33001f59e560ec239c0edbd3
          version = getInt("config-version", 20);
          set("config-version", 20);
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index cd4f6f18b75a4f8920d1f03be05860d2cbb1f9c9..237b2a1bdf890b96ec979d41e9ed1c61a25210bb 100644
+index 38087c9cc04600a0a0518a68c512627f36c1330a..04b578d73f4a3cfaccd0060444c83c0f26d72940 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
-@@ -211,6 +211,11 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -210,6 +210,11 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
      private int maxBuildHeight;
      private int playerIdleTimeout;
      public final long[] tickTimes; public long[] getTickTimes() { return tickTimes; } // Paper - OBFHELPER
@@ -102,7 +102,7 @@ index cd4f6f18b75a4f8920d1f03be05860d2cbb1f9c9..237b2a1bdf890b96ec979d41e9ed1c61
      @Nullable
      private KeyPair keyPair;
      @Nullable
-@@ -1313,6 +1318,12 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -1312,6 +1317,12 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
          this.averageTickTime = this.averageTickTime * 0.8F + (float) l / 1000000.0F * 0.19999999F;
          long i1 = Util.getNanos();
  
@@ -115,7 +115,7 @@ index cd4f6f18b75a4f8920d1f03be05860d2cbb1f9c9..237b2a1bdf890b96ec979d41e9ed1c61
          this.frameTimer.logFrameDuration(i1 - i);
          this.profiler.pop();
          org.spigotmc.WatchdogThread.tick(); // Spigot
-@@ -2285,4 +2296,30 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -2284,4 +2295,30 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
      public TextFilter createTextFilterForPlayer(ServerPlayer player) {
          return null;
      }

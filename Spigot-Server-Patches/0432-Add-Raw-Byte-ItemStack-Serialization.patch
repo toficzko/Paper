@@ -6,10 +6,10 @@ Subject: [PATCH] Add Raw Byte ItemStack Serialization
 Serializes using NBT which is safer for server data migrations than bukkits format.
 
 diff --git a/src/main/java/net/minecraft/nbt/NbtIo.java b/src/main/java/net/minecraft/nbt/NbtIo.java
-index fde32eb56fdc379a1dd0ff45b17b9c894564eb5f..9d2e42bc7b989f10d915b1d579d032fa9d53cfd6 100644
+index a07ba5a5bb654ce7445f337a8b8d2adf0141565a..529ab12d82f786b3cc05efc23c865766edefd3af 100644
 --- a/src/main/java/net/minecraft/nbt/NbtIo.java
 +++ b/src/main/java/net/minecraft/nbt/NbtIo.java
-@@ -50,6 +50,7 @@ public class NbtIo {
+@@ -49,6 +49,7 @@ public class NbtIo {
          return nbttagcompound;
      }
  
@@ -17,7 +17,7 @@ index fde32eb56fdc379a1dd0ff45b17b9c894564eb5f..9d2e42bc7b989f10d915b1d579d032fa
      public static CompoundTag readCompressed(InputStream stream) throws IOException {
          DataInputStream datainputstream = new DataInputStream(new BufferedInputStream(new GZIPInputStream(stream)));
          Throwable throwable = null;
-@@ -105,6 +106,7 @@ public class NbtIo {
+@@ -104,6 +105,7 @@ public class NbtIo {
  
      }
  

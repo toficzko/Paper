@@ -11,7 +11,7 @@ Vs behavior of non ticking of just overwriting state.
 We will now simply log a warning when this happens instead of crashing the server.
 
 diff --git a/src/main/java/net/minecraft/server/level/ServerLevel.java b/src/main/java/net/minecraft/server/level/ServerLevel.java
-index 291bfed1bbf4ddb0687447df3519df61cc372652..d1dfc143f672fc4d687a67623ade3f8ac35435cf 100644
+index e8704619fbdea393170c5c79cd62e28d67382094..89147754848235ec5ed7581c0d126dc81c79bf1f 100644
 --- a/src/main/java/net/minecraft/server/level/ServerLevel.java
 +++ b/src/main/java/net/minecraft/server/level/ServerLevel.java
 @@ -641,6 +641,7 @@ public class ServerLevel extends net.minecraft.world.level.Level implements Worl

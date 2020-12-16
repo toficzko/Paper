@@ -15,7 +15,7 @@ Combine that with a buggy detail of the previous implementation of
 the Dupe UUID patch, then this was the likely source of the "Ghost entities"
 
 diff --git a/src/main/java/net/minecraft/server/level/ServerLevel.java b/src/main/java/net/minecraft/server/level/ServerLevel.java
-index d1dfc143f672fc4d687a67623ade3f8ac35435cf..8b0865f8b0d680e9d399dbbfbf77549c8f6b38f9 100644
+index 89147754848235ec5ed7581c0d126dc81c79bf1f..e956b4a4220bb8bc778d16adab52fdc0b4e14a42 100644
 --- a/src/main/java/net/minecraft/server/level/ServerLevel.java
 +++ b/src/main/java/net/minecraft/server/level/ServerLevel.java
 @@ -1557,9 +1557,9 @@ public class ServerLevel extends net.minecraft.world.level.Level implements Worl

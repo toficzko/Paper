@@ -54,21 +54,27 @@ index 73c4f198acd209e6db036165b53f181f3ae04aa7..dec239049842af43cb126ff0ca36e731
      public CraftEntity getBukkitEntity() {
          if (bukkitEntity == null) {
 diff --git a/src/main/java/net/minecraft/world/level/CollisionGetter.java b/src/main/java/net/minecraft/world/level/CollisionGetter.java
-index d9e69195ee0af4dfb90bf0e8f4cc65e63f7ecf5b..1b52f2a0ce9cb847d7d57b38f4b8b6bed8de2cd9 100644
+index 96165c2d308467c6e19703304e812d9069f12284..6f6219d871e625877e3b29d48909509b80cf32bf 100644
 --- a/src/main/java/net/minecraft/world/level/CollisionGetter.java
 +++ b/src/main/java/net/minecraft/world/level/CollisionGetter.java
-@@ -54,7 +54,9 @@ public interface CollisionGetter extends BlockGetter {
+@@ -51,8 +51,13 @@ public interface CollisionGetter extends BlockGetter {
+         });
      }
  
-     default boolean noCollision(@Nullable Entity entity, AABB axisalignedbb, Predicate<Entity> predicate) {
-+        try { if (entity != null) entity.collisionLoadChunks = true; // Paper
-         return this.getCollisions(entity, axisalignedbb, predicate).allMatch(VoxelShape::isEmpty);
-+        } finally { if (entity != null) entity.collisionLoadChunks = false; } // Paper
+-    default boolean noCollision(@Nullable Entity entity, AABB aABB, Predicate<Entity> predicate) {
+-        return this.getCollisions(entity, aABB, predicate).allMatch(VoxelShape::isEmpty);
++    default boolean noCollision(@Nullable Entity entity, AABB axisalignedbb, Predicate<Entity> predicate){
++        try {
++            if (entity != null) entity.collisionLoadChunks = true; // Paper
++            return this.getCollisions(entity, axisalignedbb, predicate).allMatch(VoxelShape::isEmpty);
++        } finally {
++            if (entity != null) entity.collisionLoadChunks = false;
++        } // Paper
      }
  
-     Stream<VoxelShape> getEntityCollisions(@Nullable Entity entity, AABB axisalignedbb, Predicate<Entity> predicate);
+     Stream<VoxelShape> getEntityCollisions(@Nullable Entity entity, AABB aABB, Predicate<Entity> predicate);
 diff --git a/src/main/java/net/minecraft/world/level/CollisionSpliterator.java b/src/main/java/net/minecraft/world/level/CollisionSpliterator.java
-index 7208c61da48ce5e735810b6268490584e1d5c260..feca9ff34936686c0665ae0dbc926869087df3a7 100644
+index 56e7457787fff7b77f73a12740c2c15e6311d7fc..f6857326cdc56a6b6ff76d4ecd7c220ba2002547 100644
 --- a/src/main/java/net/minecraft/world/level/CollisionSpliterator.java
 +++ b/src/main/java/net/minecraft/world/level/CollisionSpliterator.java
 @@ -7,6 +7,9 @@ import java.util.function.Consumer;
@@ -81,9 +87,9 @@ index 7208c61da48ce5e735810b6268490584e1d5c260..feca9ff34936686c0665ae0dbc926869
  import net.minecraft.util.Mth;
  import net.minecraft.world.entity.Entity;
  import net.minecraft.world.level.block.Blocks;
-@@ -21,13 +24,13 @@ import net.minecraft.world.phys.shapes.VoxelShape;
- public class CollisionSpliterator extends AbstractSpliterator<VoxelShape> {
+@@ -20,13 +23,13 @@ import net.minecraft.world.phys.shapes.VoxelShape;
  
+ public class CollisionSpliterator extends AbstractSpliterator<VoxelShape> {
      @Nullable
 -    private final Entity source;
 +    private final Entity source; final Entity getEntity() { return this.source; } // Paper - OBFHELPER
@@ -98,9 +104,9 @@ index 7208c61da48ce5e735810b6268490584e1d5c260..feca9ff34936686c0665ae0dbc926869
      private boolean needsBorderCheck;
      private final BiPredicate<BlockState, BlockPos> predicate;
  
-@@ -64,23 +67,37 @@ public class CollisionSpliterator extends AbstractSpliterator<VoxelShape> {
+@@ -62,21 +65,37 @@ public class CollisionSpliterator extends AbstractSpliterator<VoxelShape> {
      boolean collisionCheck(Consumer<? super VoxelShape> consumer) {
-         while (true) {
+         while(true) {
              if (this.cursor.advance()) {
 -                int i = this.cursor.nextX();
 -                int j = this.cursor.nextY();
@@ -109,14 +115,12 @@ index 7208c61da48ce5e735810b6268490584e1d5c260..feca9ff34936686c0665ae0dbc926869
 +                int j = this.cursor.nextY(); final int y = j;
 +                int k = this.cursor.nextZ(); final int z = k;
                  int l = this.cursor.getNextType();
- 
                  if (l == 3) {
                      continue;
                  }
  
--                BlockGetter iblockaccess = this.getChunk(i, k);
--
--                if (iblockaccess == null) {
+-                BlockGetter blockGetter = this.getChunk(i, k);
+-                if (blockGetter == null) {
 +                // Paper start - ensure we don't load chunks
 +                Entity entity = this.getEntity();
 +                BlockPos.MutableBlockPos blockposition_mutableblockposition = this.getMutablePos();
@@ -124,12 +128,12 @@ index 7208c61da48ce5e735810b6268490584e1d5c260..feca9ff34936686c0665ae0dbc926869
 +                blockposition_mutableblockposition.setValues(x, y, z);
 +
 +                boolean isRegionLimited = this.getCollisionAccess() instanceof WorldGenRegion;
-+                BlockState iblockdata = isRegionLimited ? Blocks.VOID_AIR.defaultBlockState() : ((!far && entity instanceof ServerPlayer) || (entity != null && entity.collisionLoadChunks)
++                BlockState blockState = isRegionLimited ? Blocks.VOID_AIR.defaultBlockState() : ((!far && entity instanceof ServerPlayer) || (entity != null && entity.collisionLoadChunks)
 +                    ? this.getCollisionAccess().getBlockState(blockposition_mutableblockposition)
 +                    : this.getCollisionAccess().getTypeIfLoaded(blockposition_mutableblockposition)
 +                );
 +
-+                if (iblockdata == null) {
++                if (blockState == null) {
 +                    if (!(entity instanceof ServerPlayer) || entity.level.paperConfig.preventMovingIntoUnloadedChunks) {
 +                        VoxelShape voxelshape3 = Shapes.of(far ? entity.getBoundingBox() : new AABB(new BlockPos(x, y, z)));
 +                        consumer.accept(voxelshape3);
@@ -137,25 +141,25 @@ index 7208c61da48ce5e735810b6268490584e1d5c260..feca9ff34936686c0665ae0dbc926869
 +                    }
                      continue;
                  }
--
--                this.pos.set(i, j, k);
--                BlockState iblockdata = iblockaccess.getBlockState(this.pos);
 +                // Paper - moved up
 +                // Paper end
  
-                 if (!this.predicate.test(iblockdata, this.pos) || l == 1 && !iblockdata.hasLargeCollisionShape() || l == 2 && !iblockdata.is(Blocks.MOVING_PISTON)) {
+-                this.pos.set(i, j, k);
+-                BlockState blockState = blockGetter.getBlockState(this.pos);
+                 if (!this.predicate.test(blockState, this.pos) || l == 1 && !blockState.hasLargeCollisionShape() || l == 2 && !blockState.is(Blocks.MOVING_PISTON)) {
                      continue;
+                 }
 diff --git a/src/main/java/net/minecraft/world/phys/shapes/Shapes.java b/src/main/java/net/minecraft/world/phys/shapes/Shapes.java
-index fa2942d0b0424390daee2121f8959034c5352e0b..c14d5ebe16a693834ed218af8f737714065b2e17 100644
+index 2ffc69967b4ad30ed842583b2b3f47a8879d8ebb..cf5bce5be1049d30b5c59ecf7abb172597b8625f 100644
 --- a/src/main/java/net/minecraft/world/phys/shapes/Shapes.java
 +++ b/src/main/java/net/minecraft/world/phys/shapes/Shapes.java
-@@ -249,7 +249,8 @@ public final class Shapes {
+@@ -236,7 +236,8 @@ public final class Shapes {
  
-                             if (k2 < 3) {
-                                 blockposition_mutableblockposition.set(enumaxiscycle1, i2, j2, l1);
--                                BlockState iblockdata = world.getBlockState(blockposition_mutableblockposition);
-+                                BlockState iblockdata = world.getTypeIfLoaded(blockposition_mutableblockposition); // Paper
-+                                if (iblockdata == null) return 0.0D; // Paper
- 
-                                 if ((k2 != 1 || iblockdata.hasLargeCollisionShape()) && (k2 != 2 || iblockdata.is(Blocks.MOVING_PISTON))) {
-                                     initial = iblockdata.getCollisionShape((BlockGetter) world, blockposition_mutableblockposition, context).collide(enumdirection_enumaxis2, box.move((double) (-blockposition_mutableblockposition.getX()), (double) (-blockposition_mutableblockposition.getY()), (double) (-blockposition_mutableblockposition.getZ())), initial);
+                             if (s < 3) {
+                                 mutableBlockPos.set(axisCycle, q, r, p);
+-                                BlockState blockState = world.getBlockState(mutableBlockPos);
++                                BlockState blockState = world.getTypeIfLoaded(mutableBlockPos); // Paper
++                                if (mutableBlockPos == null) return 0.0D; // Paper
+                                 if ((s != 1 || blockState.hasLargeCollisionShape()) && (s != 2 || blockState.is(Blocks.MOVING_PISTON))) {
+                                     initial = blockState.getCollisionShape(world, mutableBlockPos, context).collide(axis3, box.move((double)(-mutableBlockPos.getX()), (double)(-mutableBlockPos.getY()), (double)(-mutableBlockPos.getZ())), initial);
+                                     if (Math.abs(initial) < 1.0E-7D) {

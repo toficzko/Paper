@@ -230,10 +230,10 @@ index 0a1f324060be0fac6cabbdd1a5b17f29e078b547..d5362c3c82be426ce472cab346b9ac3b
          while (objectbidirectionaliterator.hasNext()) {
              Entry<ChunkHolder> entry = (Entry) objectbidirectionaliterator.next();
 diff --git a/src/main/java/net/minecraft/server/level/ServerChunkCache.java b/src/main/java/net/minecraft/server/level/ServerChunkCache.java
-index c72d7a8992aec7da37868023629eeea6767bcc8a..09fbbb3d757c49d14ec0a9f108ad6f7811350127 100644
+index 72ab25e711328fba69bf8e3571a0b1db2dbe9b2b..e2a09140a2af43b56a549adb5bd25dd14214b049 100644
 --- a/src/main/java/net/minecraft/server/level/ServerChunkCache.java
 +++ b/src/main/java/net/minecraft/server/level/ServerChunkCache.java
-@@ -785,7 +785,7 @@ public class ServerChunkCache extends ChunkSource {
+@@ -783,7 +783,7 @@ public class ServerChunkCache extends ChunkSource {
                  entityPlayer.playerNaturallySpawnedEvent.callEvent();
              };
              // Paper end

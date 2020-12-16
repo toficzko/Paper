@@ -26,7 +26,7 @@ index 0bfa3ebaf7219113d8a10b707d449a6c71d0a00b..0a1f324060be0fac6cabbdd1a5b17f29
              EntityType<?> entitytypes = entity.getType();
              int i = entitytypes.clientTrackingRange() * 16;
 diff --git a/src/main/java/net/minecraft/server/level/ServerLevel.java b/src/main/java/net/minecraft/server/level/ServerLevel.java
-index 8b0865f8b0d680e9d399dbbfbf77549c8f6b38f9..61c9c1ef2dd01d9619447dfd53d2b12292434021 100644
+index e956b4a4220bb8bc778d16adab52fdc0b4e14a42..95b6b896621514ba21c08785c9448ddc57581e5f 100644
 --- a/src/main/java/net/minecraft/server/level/ServerLevel.java
 +++ b/src/main/java/net/minecraft/server/level/ServerLevel.java
 @@ -1523,7 +1523,7 @@ public class ServerLevel extends net.minecraft.world.level.Level implements Worl

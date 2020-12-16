@@ -48,10 +48,10 @@ index dbc27c179e9b5d7ab2257fcd7558515e4c64b940..211e012b3db0f0f7a599838663b22e4b
      public boolean queueHealthUpdatePacket = false;
      public net.minecraft.network.protocol.game.ClientboundSetHealthPacket queuedHealthUpdatePacket;
 diff --git a/src/main/java/net/minecraft/stats/StatType.java b/src/main/java/net/minecraft/stats/StatType.java
-index ba48795a7b7cbf4622e64273ab488e26d7a862e2..b85987910cf80b1d1a04a7b772e19200f4ce4372 100644
+index badcb435e22d60387e6371446b38908d49a108fc..dfa44d8e2f0d6365a98b923e3d73eb56e363f72d 100644
 --- a/src/main/java/net/minecraft/stats/StatType.java
 +++ b/src/main/java/net/minecraft/stats/StatType.java
-@@ -28,6 +28,7 @@ public class StatType<T> implements Iterable<Stat<T>> {
+@@ -27,6 +27,7 @@ public class StatType<T> implements Iterable<Stat<T>> {
          return this.map.values().iterator();
      }
  

@@ -8,10 +8,10 @@ faster on its own, however removing the try catch makes it
 easier to inline due to code size
 
 diff --git a/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java b/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java
-index 066616bb3199a464b6f41e20b46fc3ba9ec4a7ab..30a341bfac7c43b023ee5ad760de35e4a59cc4f6 100644
+index 76815483270615b63c7246d27acf9c45b569d09b..baaf9f6aff3a6d75abb1ad2092217283dc4f696a 100644
 --- a/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java
 +++ b/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java
-@@ -431,25 +431,29 @@ public class LevelChunk implements ChunkAccess {
+@@ -426,25 +426,29 @@ public class LevelChunk implements ChunkAccess {
      }
  
      public FluidState getFluidState(int x, int y, int z) {
@@ -53,15 +53,15 @@ index 066616bb3199a464b6f41e20b46fc3ba9ec4a7ab..30a341bfac7c43b023ee5ad760de35e4
  
      // CraftBukkit start
 diff --git a/src/main/java/net/minecraft/world/level/chunk/LevelChunkSection.java b/src/main/java/net/minecraft/world/level/chunk/LevelChunkSection.java
-index 00927dd11162fb5f6ab0d644da4a52799d0b45a0..588eba341b7a19256b0462589e45a8bdf3033afb 100644
+index 3d16111871c98ba9a3762f28fb2f8e7acc7e0734..c6f1b0c21aa04235e9e58d4e3606b5355f22570b 100644
 --- a/src/main/java/net/minecraft/world/level/chunk/LevelChunkSection.java
 +++ b/src/main/java/net/minecraft/world/level/chunk/LevelChunkSection.java
-@@ -45,7 +45,7 @@ public class LevelChunkSection {
+@@ -44,7 +44,7 @@ public class LevelChunkSection {
      }
  
      public FluidState getFluidState(int x, int y, int z) {
--        return ((BlockState) this.states.get(x, y, z)).getFluidState();
-+        return ((BlockState) this.states.get(x, y, z)).getFluidState(); // Paper - diff on change - we expect this to be effectively just getType(x, y, z).getFluid(). If this changes we need to check other patches that use IBlockData#getFluid.
+-        return this.states.get(x, y, z).getFluidState();
++        return this.states.get(x, y, z).getFluidState();// Paper - diff on change - we expect this to be effectively just getType(x, y, z).getFluid(). If this changes we need to check other patches that use IBlockData#getFluid.
      }
  
      public void acquire() {

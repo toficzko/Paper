@@ -385,10 +385,10 @@ index 0000000000000000000000000000000000000000..c3e54da4ab6440811aab2f9dd1e21880
 +    }
 +}
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index c44eb51f29668afde70d63aa4c16903397d76ba7..5d0fc5e9c92c098789923b2225a470302c99f454 100644
+index cd37ce3f8f6fb5680a9694f9b488a1c8d027850c..0d5719ffc7bdabd021cf3cbf18fa8d56d853863f 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
-@@ -210,7 +210,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -209,7 +209,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
      private String motd;
      private int maxBuildHeight;
      private int playerIdleTimeout;
@@ -413,16 +413,3 @@ index 2216992c8440471a0fef55b2baa36db51a0bfa37..c25843f2d5cf447e0fd5333a436a80b5
          jpanel.add(guistatscomponent, "North");
          jpanel.add(this.buildPlayerPanel(), "Center");
          jpanel.setBorder(new TitledBorder(new EtchedBorder(), "Stats"));
-diff --git a/src/main/java/net/minecraft/server/gui/StatsComponent.java b/src/main/java/net/minecraft/server/gui/StatsComponent.java
-index 30960738de03edf7aa8745a176b3a2be86eaf282..09414d04208a843f8d337569b53f61b34e64ed92 100644
---- a/src/main/java/net/minecraft/server/gui/StatsComponent.java
-+++ b/src/main/java/net/minecraft/server/gui/StatsComponent.java
-@@ -13,7 +13,7 @@ import net.minecraft.server.MinecraftServer;
- 
- public class StatsComponent extends JComponent {
- 
--    private static final DecimalFormat DECIMAL_FORMAT = (DecimalFormat) Util.make((Object) (new DecimalFormat("########0.000")), (decimalformat) -> {
-+    private static final DecimalFormat DECIMAL_FORMAT = (DecimalFormat) Util.make(new DecimalFormat("########0.000"), (decimalformat) -> { // Paper - decompile error
-         decimalformat.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.ROOT));
-     });
-     private final int[] values = new int[256];

@@ -889,10 +889,10 @@ index 0000000000000000000000000000000000000000..118988c39e58f28e8a2851792b9c014f
 +    }
 +}
 diff --git a/src/main/java/net/minecraft/core/BlockPos.java b/src/main/java/net/minecraft/core/BlockPos.java
-index 0b59fdfb98880744abf6425c02c62e222b9d4984..8729b4dc796286bffd143ee9e2c33bc00980857f 100644
+index 95c10a6ef060fe026a5ee5520b1e53c3e960b0b6..8866280036f7f7853b444f0635fa725fe994c4e8 100644
 --- a/src/main/java/net/minecraft/core/BlockPos.java
 +++ b/src/main/java/net/minecraft/core/BlockPos.java
-@@ -111,6 +111,7 @@ public class BlockPos extends Vec3i {
+@@ -108,6 +108,7 @@ public class BlockPos extends Vec3i {
          return x == 0 && y == 0 && z == 0 ? this : new BlockPos(this.getX() + x, this.getY() + y, this.getZ() + z);
      }
  
@@ -916,7 +916,7 @@ index e1d033714529665dd99bb2fc5eb5485a2034146b..3ff6b8a99d1ae2e3c87a7a04e6247872
                  }
              });
 diff --git a/src/main/java/net/minecraft/server/level/ServerChunkCache.java b/src/main/java/net/minecraft/server/level/ServerChunkCache.java
-index 57fe2e08e6ef9dbff689fa4eb4b7d2b8247f0e5d..c72d7a8992aec7da37868023629eeea6767bcc8a 100644
+index eb82dab9ba8b4bfd4906b4bf32952548307f0e96..72ab25e711328fba69bf8e3571a0b1db2dbe9b2b 100644
 --- a/src/main/java/net/minecraft/server/level/ServerChunkCache.java
 +++ b/src/main/java/net/minecraft/server/level/ServerChunkCache.java
 @@ -231,6 +231,13 @@ public class ServerChunkCache extends ChunkSource {
@@ -934,7 +934,7 @@ index 57fe2e08e6ef9dbff689fa4eb4b7d2b8247f0e5d..c72d7a8992aec7da37868023629eeea6
          this.level = worldserver;
          this.mainThreadProcessor = new ServerChunkCache.MainThreadExecutor(worldserver);
 diff --git a/src/main/java/net/minecraft/server/level/ServerLevel.java b/src/main/java/net/minecraft/server/level/ServerLevel.java
-index c36e8951a936095aa6010fd2eebe49c063f517c1..291bfed1bbf4ddb0687447df3519df61cc372652 100644
+index e936b31b419f06bb4b9bfac711e60a8649ae79fb..e8704619fbdea393170c5c79cd62e28d67382094 100644
 --- a/src/main/java/net/minecraft/server/level/ServerLevel.java
 +++ b/src/main/java/net/minecraft/server/level/ServerLevel.java
 @@ -292,6 +292,15 @@ public class ServerLevel extends net.minecraft.world.level.Level implements Worl
@@ -993,38 +993,37 @@ index c36e8951a936095aa6010fd2eebe49c063f517c1..291bfed1bbf4ddb0687447df3519df61
              if (this.levelData.getGameRules().getBoolean(GameRules.RULE_DAYLIGHT)) {
                  this.setDayTime(this.levelData.getDayTime() + 1L);
 diff --git a/src/main/java/net/minecraft/world/level/ChunkTickList.java b/src/main/java/net/minecraft/world/level/ChunkTickList.java
-index f41b5aab38fd204da7fe197570b47f4638cd4e88..8de83d14b8a32e13b58b173242e497ee84d8a20a 100644
+index f5d4a167654fc0319f83a738e1f51530ddf40dea..9550bbc0299d30329d6152b6fc2f6e4fc911a5ae 100644
 --- a/src/main/java/net/minecraft/world/level/ChunkTickList.java
 +++ b/src/main/java/net/minecraft/world/level/ChunkTickList.java
-@@ -9,6 +9,7 @@ import net.minecraft.core.BlockPos;
+@@ -8,6 +8,7 @@ import net.minecraft.core.BlockPos;
  import net.minecraft.nbt.CompoundTag;
  import net.minecraft.nbt.ListTag;
  import net.minecraft.resources.ResourceLocation;
 +import net.minecraft.server.MinecraftServer;
  
  public class ChunkTickList<T> implements TickList<T> {
+     private final List<ChunkTickList.ScheduledTick<T>> ticks;
+@@ -52,6 +53,7 @@ public class ChunkTickList<T> implements TickList<T> {
  
-@@ -61,6 +62,8 @@ public class ChunkTickList<T> implements TickList<T> {
-         return nbttaglist;
+         return listTag;
      }
- 
 +    private static final int MAX_TICK_DELAY = Integer.getInteger("paper.ticklist-max-tick-delay", -1).intValue(); // Paper - clean up broken entries
-+
-     public static <T> ChunkTickList<T> create(ListTag ticks, Function<T, ResourceLocation> function, Function<ResourceLocation, T> function1) {
+ 
+     public static <T> ChunkTickList<T> create(ListTag ticks, Function<T, ResourceLocation> function, Function<ResourceLocation, T> function2) {
          List<ChunkTickList.ScheduledTick<T>> list = Lists.newArrayList();
- 
-@@ -71,7 +74,14 @@ public class ChunkTickList<T> implements TickList<T> {
-             if (t0 != null) {
-                 BlockPos blockposition = new BlockPos(nbttagcompound.getInt("x"), nbttagcompound.getInt("y"), nbttagcompound.getInt("z"));
- 
--                list.add(new ChunkTickList.ScheduledTick<>(t0, blockposition, nbttagcompound.getInt("t"), TickPriority.byValue(nbttagcompound.getInt("p"))));
+@@ -61,7 +63,14 @@ public class ChunkTickList<T> implements TickList<T> {
+             T object = function2.apply(new ResourceLocation(compoundTag.getString("i")));
+             if (object != null) {
+                 BlockPos blockPos = new BlockPos(compoundTag.getInt("x"), compoundTag.getInt("y"), compoundTag.getInt("z"));
+-                list.add(new ChunkTickList.ScheduledTick<>(object, blockPos, compoundTag.getInt("t"), TickPriority.byValue(compoundTag.getInt("p"))));
 +                // Paper start - clean up broken entries
-+                int delay = nbttagcompound.getInt("t");
++                int delay = compoundTag.getInt("t");
 +                if (MAX_TICK_DELAY > 0 && delay > MAX_TICK_DELAY) {
-+                    MinecraftServer.LOGGER.warn("Dropping tick for pos " + blockposition + ", tick delay " + delay);
++                    MinecraftServer.LOGGER.warn("Dropping tick for pos " + blockPos + ", tick delay " + delay);
 +                    continue;
 +                }
-+                list.add(new ChunkTickList.ScheduledTick<>(t0, blockposition, delay, TickPriority.byValue(nbttagcompound.getInt("p"))));
++                list.add(new ChunkTickList.ScheduledTick<>(object, blockPos, delay, TickPriority.byValue(compoundTag.getInt("p"))));
 +                // Paper end - clean up broken entries
              }
          }
@@ -1176,12 +1175,12 @@ index 0cca55ecb5189dac8f07cc37b7052c5d1a4a7dcb..a1a49d93fbbb61ee78dbc8f7881c56bc
      }
  }
 diff --git a/src/main/java/net/minecraft/world/level/TickNextTickData.java b/src/main/java/net/minecraft/world/level/TickNextTickData.java
-index 7d6da4a07fea537bf14de506036c8ec5d46d6ac8..2138ff18710826f6c30e69fbf0d222bc590f1146 100644
+index 071a5824f6489dbe79b37be9822182c5373e4189..77497c7163cf236e430afced78a26e406de02a15 100644
 --- a/src/main/java/net/minecraft/world/level/TickNextTickData.java
 +++ b/src/main/java/net/minecraft/world/level/TickNextTickData.java
-@@ -6,11 +6,13 @@ import net.minecraft.core.BlockPos;
- public class TickNextTickData<T> {
+@@ -5,11 +5,13 @@ import net.minecraft.core.BlockPos;
  
+ public class TickNextTickData<T> {
      private static final java.util.concurrent.atomic.AtomicLong COUNTER = new java.util.concurrent.atomic.AtomicLong(); // Paper - async chunk loading
 -    private final T type;
 -    public final BlockPos pos;
@@ -1198,7 +1197,7 @@ index 7d6da4a07fea537bf14de506036c8ec5d46d6ac8..2138ff18710826f6c30e69fbf0d222bc
  
      public TickNextTickData(BlockPos pos, T t) {
          this(pos, t, 0L, TickPriority.NORMAL);
-@@ -22,6 +24,7 @@ public class TickNextTickData<T> {
+@@ -21,6 +23,7 @@ public class TickNextTickData<T> {
          this.type = t;
          this.triggerTick = time;
          this.priority = priority;
@@ -1206,7 +1205,7 @@ index 7d6da4a07fea537bf14de506036c8ec5d46d6ac8..2138ff18710826f6c30e69fbf0d222bc
      }
  
      public boolean equals(Object o) {
-@@ -34,19 +37,31 @@ public class TickNextTickData<T> {
+@@ -32,19 +35,31 @@ public class TickNextTickData<T> {
          }
      }
  
@@ -1220,13 +1219,13 @@ index 7d6da4a07fea537bf14de506036c8ec5d46d6ac8..2138ff18710826f6c30e69fbf0d222bc
          return this.pos.hashCode();
      }
  
--    public static <T> Comparator<Object> createTimeComparator() { // Paper - decompile fix
--        return Comparator.comparingLong((nextticklistentry) -> {
--            return ((TickNextTickData<T>) nextticklistentry).triggerTick; // Paper - decompile fix
--        }).thenComparing((nextticklistentry) -> {
--            return ((TickNextTickData<T>) nextticklistentry).priority; // Paper - decompile fix
--        }).thenComparingLong((nextticklistentry) -> {
--            return ((TickNextTickData<T>) nextticklistentry).c; // Paper - decompile fix
+-    public static <T> Comparator<TickNextTickData<T>> createTimeComparator() {
+-        return Comparator.<TickNextTickData<T>>comparingLong((tickNextTickData) -> { // Paper - decompile fix
+-            return tickNextTickData.triggerTick;
+-        }).thenComparing((tickNextTickData) -> {
+-            return tickNextTickData.priority;
+-        }).thenComparingLong((tickNextTickData) -> {
+-            return tickNextTickData.c;
 -        });
 +    // Paper start - let's not use more functional code for no reason.
 +    public static <T> Comparator<Object> comparator() { return TickNextTickData.createTimeComparator(); } // Paper - OBFHELPER
@@ -1247,13 +1246,13 @@ index 7d6da4a07fea537bf14de506036c8ec5d46d6ac8..2138ff18710826f6c30e69fbf0d222bc
      public String toString() {
          return this.type + ": " + this.pos + ", " + this.triggerTick + ", " + this.priority + ", " + this.c;
 diff --git a/src/main/java/net/minecraft/world/level/levelgen/structure/BoundingBox.java b/src/main/java/net/minecraft/world/level/levelgen/structure/BoundingBox.java
-index 76bea58d35d352ee6f3d4bd0d10af3b6d615ae2c..4288fa253668196e6c32a876f18ec496fb3abad6 100644
+index 6d3942fdd681b7c47b5a10b5c02cc94b0b02830c..1fc0c4170f15d58a6a251cbc046f35a801afb24f 100644
 --- a/src/main/java/net/minecraft/world/level/levelgen/structure/BoundingBox.java
 +++ b/src/main/java/net/minecraft/world/level/levelgen/structure/BoundingBox.java
-@@ -8,12 +8,12 @@ import net.minecraft.nbt.IntArrayTag;
+@@ -7,12 +7,12 @@ import net.minecraft.core.Vec3i;
+ import net.minecraft.nbt.IntArrayTag;
  
  public class BoundingBox {
- 
 -    public int x0;
 -    public int y0;
 -    public int z0;
@@ -1267,8 +1266,8 @@ index 76bea58d35d352ee6f3d4bd0d10af3b6d615ae2c..4288fa253668196e6c32a876f18ec496
 +    public int y1; public final int getMaxY() { return this.y1; } // Paper - OBFHELPER
 +    public int z1; public final int getMaxZ() { return this.z1; } // Paper - OBFHELPER
  
-     public BoundingBox() {}
- 
+     public BoundingBox() {
+     }
 @@ -92,6 +92,7 @@ public class BoundingBox {
          this.y1 = 512;
      }
@@ -1278,7 +1277,7 @@ index 76bea58d35d352ee6f3d4bd0d10af3b6d615ae2c..4288fa253668196e6c32a876f18ec496
          return this.x1 >= other.x0 && this.x0 <= other.x1 && this.z1 >= other.z0 && this.z0 <= other.z1 && this.y1 >= other.y0 && this.y0 <= other.y1;
      }
 @@ -126,6 +127,7 @@ public class BoundingBox {
-         this.move(baseblockposition.getX(), baseblockposition.getY(), baseblockposition.getZ());
+         this.move(vec3i.getX(), vec3i.getY(), vec3i.getZ());
      }
  
 +    public final boolean hasPoint(Vec3i baseblockposition) { return this.isInside(baseblockposition); } // Paper - OBFHELPER
