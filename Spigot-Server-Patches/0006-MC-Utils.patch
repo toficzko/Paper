@@ -3753,7 +3753,7 @@ index 616c86bbbd162a2ccc7632d8dd6a526b115d63e2..3eface0923e141d2ed5af3e5a48fc919
          super(type, world);
      }
 diff --git a/src/main/java/net/minecraft/world/entity/monster/Monster.java b/src/main/java/net/minecraft/world/entity/monster/Monster.java
-index e710cf78e421f5079ce1a62f2a80e28911863956..7ef7681331e1e04c0ded039c2a254bb954c1157a 100644
+index 6b23575d1d0070b2422294635ee21461edab6d29..3de34b1c9c0fdbce3c98d3015f693bec3ad5ad19 100644
 --- a/src/main/java/net/minecraft/world/entity/monster/Monster.java
 +++ b/src/main/java/net/minecraft/world/entity/monster/Monster.java
 @@ -25,6 +25,8 @@ import net.minecraft.world.level.LightLayer;
@@ -3918,7 +3918,7 @@ index 80223cf77d1e09203c3b30af1d192ba401280b5f..1953a23acddd2fa796b6d207810d84e1
          return (long)chunkX & 4294967295L | ((long)chunkZ & 4294967295L) << 32;
      }
 diff --git a/src/main/java/net/minecraft/world/level/EmptyBlockGetter.java b/src/main/java/net/minecraft/world/level/EmptyBlockGetter.java
-index 75ee0fc85084b9be5d9a83065d8d580d1b0a548c..65618a3cafcf4cd76fe1ca380ea39b0c743ff27a 100644
+index 345fb027de9bac3bd733b50534acba9fdac0c546..6d453ad903cb5b107cd8eb4cdb4f6cdd76ff99ce 100644
 --- a/src/main/java/net/minecraft/world/level/EmptyBlockGetter.java
 +++ b/src/main/java/net/minecraft/world/level/EmptyBlockGetter.java
 @@ -16,6 +16,18 @@ public enum EmptyBlockGetter implements BlockGetter {
@@ -4041,7 +4041,7 @@ index ace1ca056b71ee7b95527d820c9d31b4b72db5d9..a4e5ef16132a1f8d3432bfc6705fd47f
      default BlockGetter getChunkForCollisions(int chunkX, int chunkZ) {
          return this.getChunk(chunkX, chunkZ, ChunkStatus.EMPTY, false);
 diff --git a/src/main/java/net/minecraft/world/level/PathNavigationRegion.java b/src/main/java/net/minecraft/world/level/PathNavigationRegion.java
-index 7130c023f2b3ec68a5fb6995c026b8a8d5ae07bb..889f5d6f96cce07eb84d4a9b2b41c967589b712e 100644
+index 6584d9e41f7046d29abc0bc4b1f8e85d265389a9..97bea762b528ca1aa5b9c9773ac0e7c912ac641e 100644
 --- a/src/main/java/net/minecraft/world/level/PathNavigationRegion.java
 +++ b/src/main/java/net/minecraft/world/level/PathNavigationRegion.java
 @@ -4,6 +4,7 @@ import java.util.function.Predicate;
@@ -4449,7 +4449,7 @@ index b8bbf016ecdf28ba46db651e48c86468765bcfda..720d1e467c9dcf5a0e8da3b0ca7439f3
          this.acquire();
          buf.writeByte(this.bits);
 diff --git a/src/main/java/net/minecraft/world/level/chunk/ProtoChunk.java b/src/main/java/net/minecraft/world/level/chunk/ProtoChunk.java
-index 72425e4f72736b5da51edda5e2b72f0538ecde24..a7d3bb7d0340a2cbce07ba88504329ba52984157 100644
+index 6710f49aa26cdb4d3b3484ad849ccd4beb14894a..2a03ebad6fd00e344e8d272a535191e3e4a3cf52 100644
 --- a/src/main/java/net/minecraft/world/level/chunk/ProtoChunk.java
 +++ b/src/main/java/net/minecraft/world/level/chunk/ProtoChunk.java
 @@ -85,6 +85,18 @@ public class ProtoChunk implements ChunkAccess {

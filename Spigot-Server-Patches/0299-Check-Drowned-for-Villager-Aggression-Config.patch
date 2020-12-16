@@ -5,7 +5,7 @@ Subject: [PATCH] Check Drowned for Villager Aggression Config
 
 
 diff --git a/src/main/java/net/minecraft/world/entity/monster/Drowned.java b/src/main/java/net/minecraft/world/entity/monster/Drowned.java
-index 9c1663f16c505ad87c3232d7f57bf23d16a559fb..25f24e13b238b49c054f0160fb65faf45bfe8488 100644
+index 9237f1fcf8edab65890019123210ab101a5a9fc5..07c713b0ee3205bf364e480f1ea5c5bdca301ccf 100644
 --- a/src/main/java/net/minecraft/world/entity/monster/Drowned.java
 +++ b/src/main/java/net/minecraft/world/entity/monster/Drowned.java
 @@ -76,7 +76,7 @@ public class Drowned extends Zombie implements RangedAttackMob {

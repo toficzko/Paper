@@ -1,0 +1,114 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Aikar <aikar@aikar.co>
+Date: Fri, 29 May 2020 20:29:02 -0400
+Subject: [PATCH] Synchronize DataPaletteBlock instead of ReentrantLock
+
+Mojang has flaws in their logic about chunks being concurrently
+wrote to. So we constantly see crashes around multiple threads writing.
+
+Additionally, java has optimized synchronization so well that its
+in many times faster than trying to manage read wrote locks for low
+contention situations.
+
+And this is extremely a low contention situation.
+
+diff --git a/src/main/java/net/minecraft/world/level/chunk/PalettedContainer.java b/src/main/java/net/minecraft/world/level/chunk/PalettedContainer.java
+index fcc20e460ab522ca7bc61dec5af799c1077cd8ba..f82245e82d7e010b00840eda1f4393d0e26e8663 100644
+--- a/src/main/java/net/minecraft/world/level/chunk/PalettedContainer.java
++++ b/src/main/java/net/minecraft/world/level/chunk/PalettedContainer.java
+@@ -8,9 +8,6 @@ import java.util.concurrent.locks.ReentrantLock;
+ import java.util.function.Function;
+ import java.util.function.Predicate;
+ import java.util.stream.Collectors;
+-import net.minecraft.CrashReport;
+-import net.minecraft.CrashReportCategory;
+-import net.minecraft.ReportedException;
+ import net.minecraft.core.IdMapper;
+ import net.minecraft.nbt.CompoundTag;
+ import net.minecraft.nbt.ListTag;
+@@ -32,8 +29,8 @@ public class PalettedContainer<T> implements PaletteResize<T> {
+     private int bits; private int getBitsPerObject() { return this.bits; } // Paper - OBFHELPER
+     private final ReentrantLock lock = new ReentrantLock();
+ 
+-    public void acquire() {
+-        if (this.lock.isLocked() && !this.lock.isHeldByCurrentThread()) {
++    public void acquire() { /* // Paper start - disable this - use proper synchronization
++        if (this.j.isLocked() && !this.j.isHeldByCurrentThread()) {
+             String string = Thread.getAllStackTraces().keySet().stream().filter(Objects::nonNull).map((thread) -> {
+                 return thread.getName() + ": \n\tat " + (String)Arrays.stream(thread.getStackTrace()).map(Object::toString).collect(Collectors.joining("\n\tat "));
+             }).collect(Collectors.joining("\n"));
+@@ -42,12 +39,12 @@ public class PalettedContainer<T> implements PaletteResize<T> {
+             crashReportCategory.setDetail("Thread dumps", string);
+             throw new ReportedException(crashReport);
+         } else {
+-            this.lock.lock();
+-        }
++            this.j.lock();
++        } */ // Paper end
+     }
+ 
+     public void release() {
+-        this.lock.unlock();
++        //this.j.unlock(); // Paper - disable this
+     }
+ 
+     public PalettedContainer(Palette<T> fallbackPalette, IdMapper<T> idList, Function<CompoundTag, T> elementDeserializer, Function<T, CompoundTag> elementSerializer, T defaultElement) {
+@@ -82,7 +79,7 @@ public class PalettedContainer<T> implements PaletteResize<T> {
+         }
+     }
+ 
+-    public int onResize(int i, T object) {
++    public synchronized int onResize(int i, T object) {
+         this.acquire();
+         BitStorage bitStorage = this.storage;
+         Palette<T> palette = this.palette;
+@@ -101,17 +98,17 @@ public class PalettedContainer<T> implements PaletteResize<T> {
+     }
+ 
+     public T getAndSet(int x, int y, int z, T value) {
+-        this.acquire();
+-        T object = this.getAndSet(getIndex(x, y, z), value);
+-        this.release();
+-        return object;
++        //this.acquire(); // Paper - remove to reduce ops - synchronize handled below
++        return this.getAndSet(getIndex(x, y, z), value); // Paper
++        //this.release(); // Paper
++        //return object; // Paper
+     }
+ 
+     public T getAndSetUnchecked(int x, int y, int z, T value) {
+         return this.getAndSet(getIndex(x, y, z), value);
+     }
+ 
+-    protected T getAndSet(int index, T value) {
++    protected synchronized T getAndSet(int index, T value) { // Paper - synchronize - writes
+         int i = this.palette.idFor(value);
+         int j = this.storage.getAndSet(index, i);
+         T object = this.palette.valueFor(j);
+@@ -133,7 +130,7 @@ public class PalettedContainer<T> implements PaletteResize<T> {
+     }
+ 
+     public void writeDataPaletteBlock(FriendlyByteBuf packetDataSerializer) { this.write(packetDataSerializer); } // Paper - OBFHELPER
+-    public void write(FriendlyByteBuf buf) {
++    public synchronized void write(FriendlyByteBuf buf) { // Paper - synchronize
+         this.acquire();
+         buf.writeByte(this.bits);
+         this.palette.write(buf);
+@@ -141,7 +138,7 @@ public class PalettedContainer<T> implements PaletteResize<T> {
+         this.release();
+     }
+ 
+-    public void read(ListTag paletteTag, long[] data) {
++    public synchronized void read(ListTag paletteTag, long[] data) { // Paper - synchronize
+         this.acquire();
+         int i = Math.max(4, Mth.ceillog2(paletteTag.size()));
+         if (i != this.bits) {
+@@ -171,7 +168,7 @@ public class PalettedContainer<T> implements PaletteResize<T> {
+         this.release();
+     }
+ 
+-    public void write(CompoundTag compoundTag, String string, String string2) {
++    public synchronized void write(CompoundTag compoundTag, String string, String string2) { // Paper - synchronize
+         this.acquire();
+         HashMapPalette<T> hashMapPalette = new HashMapPalette<>(this.registry, this.bits, this.dummyPaletteResize, this.reader, this.writer);
+         T object = this.defaultValue;

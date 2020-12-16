@@ -58,7 +58,7 @@ index 25b0a4dea11378828950cf04208601900e58900c..c6222bced0d2367d54264ad450cccdf1
      BlockState setBlockState(BlockPos pos, BlockState state, boolean moved);
  
 diff --git a/src/main/java/net/minecraft/world/level/chunk/EmptyLevelChunk.java b/src/main/java/net/minecraft/world/level/chunk/EmptyLevelChunk.java
-index 4d6fdb1fb3cd564855c3d913be7fc45770610cbc..d91fb222699c0c4f118850814b1362c00bc52c20 100644
+index 8d36c0a5c2e6caaa957992b5f3ba0d4261aac2bb..d7958a045f403acd9a4d7e62e526271ef980beae 100644
 --- a/src/main/java/net/minecraft/world/level/chunk/EmptyLevelChunk.java
 +++ b/src/main/java/net/minecraft/world/level/chunk/EmptyLevelChunk.java
 @@ -30,7 +30,13 @@ public class EmptyLevelChunk extends LevelChunk {
@@ -77,7 +77,7 @@ index 4d6fdb1fb3cd564855c3d913be7fc45770610cbc..d91fb222699c0c4f118850814b1362c0
      }
  
 diff --git a/src/main/java/net/minecraft/world/level/chunk/ImposterProtoChunk.java b/src/main/java/net/minecraft/world/level/chunk/ImposterProtoChunk.java
-index 729f250626c1eb913e400fdb8ddafed332f4d5c7..5888d70e5a9cb19ab4c32654a4339669188b9fdd 100644
+index 029417fc099500e47f84265d629d500164698ddf..a1ccc4a93a24ddf5d27f48dd6dd8f8420c3a687c 100644
 --- a/src/main/java/net/minecraft/world/level/chunk/ImposterProtoChunk.java
 +++ b/src/main/java/net/minecraft/world/level/chunk/ImposterProtoChunk.java
 @@ -39,6 +39,11 @@ public class ImposterProtoChunk extends ProtoChunk {
@@ -90,8 +90,8 @@ index 729f250626c1eb913e400fdb8ddafed332f4d5c7..5888d70e5a9cb19ab4c32654a4339669
 +    }
 +    // Paper end
  
-     public FluidState getFluidState(BlockPos pos) {
-         return this.wrapped.getFluidState(pos);
+     public FluidState getFluidState(BlockPos blockPos) {
+         return this.wrapped.getFluidState(blockPos);
 diff --git a/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java b/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java
 index b8ce6eee78b8b1d3f3a0b51a20a401313751272a..9784bebddbca294eda8b8e4b302230cffaf25ee3 100644
 --- a/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java
@@ -170,7 +170,7 @@ index 720d1e467c9dcf5a0e8da3b0ca7439f3895d76ae..fcc20e460ab522ca7bc61dec5af799c1
  
      protected T get(int index) {
 diff --git a/src/main/java/net/minecraft/world/level/chunk/ProtoChunk.java b/src/main/java/net/minecraft/world/level/chunk/ProtoChunk.java
-index a7d3bb7d0340a2cbce07ba88504329ba52984157..23aeda96694a76b6ada98a68c3053fa846e1d723 100644
+index 2a03ebad6fd00e344e8d272a535191e3e4a3cf52..41afb80e2336f8f2548c7f78297ff81776cba271 100644
 --- a/src/main/java/net/minecraft/world/level/chunk/ProtoChunk.java
 +++ b/src/main/java/net/minecraft/world/level/chunk/ProtoChunk.java
 @@ -92,20 +92,19 @@ public class ProtoChunk implements ChunkAccess {
@@ -200,5 +200,5 @@ index a7d3bb7d0340a2cbce07ba88504329ba52984157..23aeda96694a76b6ada98a68c3053fa8
      }
 +    // Paper end
  
-     public FluidState getFluidState(BlockPos pos) {
-         int i = pos.getY();
+     public FluidState getFluidState(BlockPos blockPos) {
+         int i = blockPos.getY();

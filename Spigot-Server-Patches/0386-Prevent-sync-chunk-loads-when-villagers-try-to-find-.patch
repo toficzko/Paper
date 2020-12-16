@@ -1,0 +1,20 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Callahan <mr.callahhh@gmail.com>
+Date: Mon, 13 Jan 2020 23:47:28 -0600
+Subject: [PATCH] Prevent sync chunk loads when villagers try to find beds
+
+
+diff --git a/src/main/java/net/minecraft/world/entity/ai/behavior/SleepInBed.java b/src/main/java/net/minecraft/world/entity/ai/behavior/SleepInBed.java
+index aa84422e954cdf6b9ffdfca1a84041118c6b01b3..ebe12a8200d16765cb568e06087b915a31fb72d6 100644
+--- a/src/main/java/net/minecraft/world/entity/ai/behavior/SleepInBed.java
++++ b/src/main/java/net/minecraft/world/entity/ai/behavior/SleepInBed.java
+@@ -39,7 +39,8 @@ public class SleepInBed extends Behavior<LivingEntity> {
+                     }
+                 }
+ 
+-                BlockState blockState = serverLevel.getBlockState(globalPos.pos());
++                BlockState blockState = serverLevel.getTypeIfLoaded(globalPos.pos()); // Paper
++                if (blockState == null) { return false; } // Paper
+                 return globalPos.pos().closerThan(livingEntity.position(), 2.0D) && blockState.getBlock().is(BlockTags.BEDS) && !blockState.getValue(BedBlock.OCCUPIED);
+             }
+         }
