@@ -1,0 +1,27 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Aikar <aikar@aikar.co>
+Date: Mon, 23 Jul 2018 22:18:31 -0400
+Subject: [PATCH] Mark chunk dirty anytime entities change to guarantee it
+ saves
+
+
+diff --git a/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java b/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java
+index 28c916fb167a3352762b66cc1f67e13226429430..b75d10f6b0633f6da11c8f6462e2b5032e8bee48 100644
+--- a/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java
++++ b/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java
+@@ -554,6 +554,7 @@ public class LevelChunk implements ChunkAccess {
+         entity.zChunk = this.chunkPos.z;
+         this.entities.add(entity); // Paper - per chunk entity list
+         this.entitySlices[k].add(entity);
++        this.markUnsaved(); // Paper
+     }
+ 
+     @Override
+@@ -580,6 +581,7 @@ public class LevelChunk implements ChunkAccess {
+         if (!this.entitySlices[section].remove(entity)) {
+             return;
+         }
++        this.markUnsaved(); // Paper
+         // Paper end
+         this.entities.remove(entity); // Paper
+     }

@@ -1,0 +1,91 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Aikar <aikar@aikar.co>
+Date: Mon, 10 Sep 2018 23:56:36 -0400
+Subject: [PATCH] Prevent Mob AI Rules from Loading Chunks
+
+
+diff --git a/src/main/java/net/minecraft/world/entity/ai/goal/RemoveBlockGoal.java b/src/main/java/net/minecraft/world/entity/ai/goal/RemoveBlockGoal.java
+index 2ecae507b09f540c649976c33a8c561aadf97723..5efa9f06e8adcd0f8fb0743fc0fc0a6d9b949779 100644
+--- a/src/main/java/net/minecraft/world/entity/ai/goal/RemoveBlockGoal.java
++++ b/src/main/java/net/minecraft/world/entity/ai/goal/RemoveBlockGoal.java
+@@ -17,7 +17,6 @@ import net.minecraft.world.level.LevelAccessor;
+ import net.minecraft.world.level.LevelReader;
+ import net.minecraft.world.level.block.Block;
+ import net.minecraft.world.level.chunk.ChunkAccess;
+-import net.minecraft.world.level.chunk.ChunkStatus;
+ import net.minecraft.world.phys.Vec3;
+ // CraftBukkit start
+ import org.bukkit.craftbukkit.block.CraftBlock;
+@@ -29,11 +28,13 @@ public class RemoveBlockGoal extends MoveToBlockGoal {
+     private final Block blockToRemove;
+     private final Mob removerMob;
+     private int ticksSinceReachedGoal;
++    private Level world; // Paper
+ 
+     public RemoveBlockGoal(Block targetBlock, PathfinderMob mob, double speed, int maxYDifference) {
+         super(mob, speed, 24, maxYDifference);
+         this.blockToRemove = targetBlock;
+         this.removerMob = mob;
++        this.world = mob.level; // Paper
+     }
+ 
+     @Override
+@@ -131,7 +132,9 @@ public class RemoveBlockGoal extends MoveToBlockGoal {
+ 
+     @Nullable
+     private BlockPos getPosWithBlock(BlockPos pos, BlockGetter world) {
+-        if (world.getBlockState(pos).is(this.blockToRemove)) {
++        Block block = world.getBlockIfLoaded(pos); // Paper
++        if (block == null) return null; // Paper
++        if (block.is(this.blockToRemove)) { // Paper
+             return pos;
+         } else {
+             BlockPos[] ablockposition = new BlockPos[]{pos.below(), pos.west(), pos.east(), pos.north(), pos.south(), pos.below().below()};
+@@ -141,7 +144,7 @@ public class RemoveBlockGoal extends MoveToBlockGoal {
+             for (int j = 0; j < i; ++j) {
+                 BlockPos blockposition1 = ablockposition1[j];
+ 
+-                if (world.getBlockState(blockposition1).is(this.blockToRemove)) {
++                if (world.getBlockIfLoaded(blockposition1).is(this.blockToRemove)) { // Paper
+                     return blockposition1;
+                 }
+             }
+@@ -152,7 +155,7 @@ public class RemoveBlockGoal extends MoveToBlockGoal {
+ 
+     @Override
+     protected boolean isValidTarget(LevelReader iworldreader, BlockPos blockposition) {
+-        ChunkAccess ichunkaccess = iworldreader.getChunk(blockposition.getX() >> 4, blockposition.getZ() >> 4, ChunkStatus.FULL, false);
++        ChunkAccess ichunkaccess = iworldreader.getChunkIfLoadedImmediately(blockposition.getX() >> 4, blockposition.getZ() >> 4); // Paper
+ 
+         return ichunkaccess == null ? false : ichunkaccess.getBlockState(blockposition).is(this.blockToRemove) && ichunkaccess.getBlockState(blockposition.above()).isAir() && ichunkaccess.getBlockState(blockposition.above(2)).isAir();
+     }
+diff --git a/src/main/java/net/minecraft/world/entity/ai/util/RandomPos.java b/src/main/java/net/minecraft/world/entity/ai/util/RandomPos.java
+index 586f7c1484c3cb1cf3f3d5d5dadc50089b1c249a..474e99cd3cd01b12922228b62467904771b6a040 100644
+--- a/src/main/java/net/minecraft/world/entity/ai/util/RandomPos.java
++++ b/src/main/java/net/minecraft/world/entity/ai/util/RandomPos.java
+@@ -9,6 +9,7 @@ import net.minecraft.tags.FluidTags;
+ import net.minecraft.util.Mth;
+ import net.minecraft.world.entity.PathfinderMob;
+ import net.minecraft.world.entity.ai.navigation.PathNavigation;
++import net.minecraft.world.level.material.FluidState;
+ import net.minecraft.world.level.pathfinder.BlockPathTypes;
+ import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
+ import net.minecraft.world.phys.Vec3;
+@@ -112,6 +113,7 @@ public class RandomPos {
+                 }
+ 
+                 BlockPos blockPos4 = new BlockPos((double)j + mob.getX(), (double)k + mob.getY(), (double)l + mob.getZ());
++                if (!mob.level.hasChunkAt(blockPos4)) continue; // Paper
+                 if (blockPos4.getY() >= 0 && blockPos4.getY() <= mob.level.getMaxBuildHeight() && (!bl || mob.isWithinRestriction(blockPos4)) && (!validPositionsOnly || pathNavigation.isStableDestination(blockPos4))) {
+                     if (aboveGround) {
+                         blockPos4 = moveUpToAboveSolid(blockPos4, random.nextInt(distanceAboveGroundRange + 1) + minDistanceAboveGround, mob.level.getMaxBuildHeight(), (blockPosx) -> {
+@@ -119,7 +121,8 @@ public class RandomPos {
+                         });
+                     }
+ 
+-                    if (notInWater || !mob.level.getFluidState(blockPos4).is(FluidTags.WATER)) {
++                    FluidState fluid = mob.level.getFluidIfLoaded(blockPos4); // Paper
++                    if (notInWater || (fluid != null && !fluid.is(FluidTags.WATER))) { // Paper
+                         BlockPathTypes blockPathTypes = WalkNodeEvaluator.getBlockPathTypeStatic(mob.level, blockPos4.mutable());
+                         if (mob.getPathfindingMalus(blockPathTypes) == 0.0F) {
+                             double e = favorProvider.applyAsDouble(blockPos4);

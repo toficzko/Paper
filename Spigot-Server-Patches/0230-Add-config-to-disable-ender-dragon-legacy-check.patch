@@ -1,0 +1,43 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: BillyGalbreath <Blake.Galbreath@GMail.com>
+Date: Fri, 22 Jun 2018 10:38:31 -0500
+Subject: [PATCH] Add config to disable ender dragon legacy check
+
+
+diff --git a/src/main/java/com/destroystokyo/paper/PaperWorldConfig.java b/src/main/java/com/destroystokyo/paper/PaperWorldConfig.java
+index de80d2d874d1787335fd393f3ffed0cd36e3af9e..6e7e00678295b5b714a1be4753626e21ab469fd6 100644
+--- a/src/main/java/com/destroystokyo/paper/PaperWorldConfig.java
++++ b/src/main/java/com/destroystokyo/paper/PaperWorldConfig.java
+@@ -368,4 +368,9 @@ public class PaperWorldConfig {
+     private void shieldBlockingDelay() {
+         shieldBlockingDelay = getInt("game-mechanics.shield-blocking-delay", 5);
+     }
++
++    public boolean scanForLegacyEnderDragon = true;
++    private void scanForLegacyEnderDragon() {
++        scanForLegacyEnderDragon = getBoolean("game-mechanics.scan-for-legacy-ender-dragon", true);
++    }
+ }
+diff --git a/src/main/java/net/minecraft/world/level/dimension/end/EndDragonFight.java b/src/main/java/net/minecraft/world/level/dimension/end/EndDragonFight.java
+index 1141835328281789daa4df32f3b6279368dcca50..6fa591aea9f7ac87e201c516d670b4b0326aa619 100644
+--- a/src/main/java/net/minecraft/world/level/dimension/end/EndDragonFight.java
++++ b/src/main/java/net/minecraft/world/level/dimension/end/EndDragonFight.java
+@@ -69,13 +69,17 @@ public class EndDragonFight {
+     private boolean dragonKilled;
+     private boolean previouslyKilled;
+     public UUID dragonUUID;
+-    private boolean needsStateScanning = true;
++    private boolean needsStateScanning = true; private void setScanForLegacyFight(boolean scanForLegacyFight) { this.needsStateScanning = scanForLegacyFight; } private boolean scanForLegacyFight() { return this.needsStateScanning; } // Paper - OBFHELPER
+     public BlockPos portalLocation;
+     public DragonRespawnAnimation respawnStage;
+     private int respawnTime;
+     private List<EndCrystal> respawnCrystals;
+ 
+     public EndDragonFight(ServerLevel world, long l, CompoundTag compoundTag) {
++        // Paper start
++        setScanForLegacyFight(world.paperConfig.scanForLegacyEnderDragon);
++        if (!scanForLegacyFight()) dragonKilled = true;
++        // Paper end
+         this.level = world;
+         if (compoundTag.contains("DragonKilled", 99)) {
+             if (compoundTag.hasUUID("Dragon")) {
