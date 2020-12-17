@@ -1,0 +1,79 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Spottedleaf <spottedleaf@spottedleaf.dev>
+Date: Mon, 13 Jul 2020 06:22:54 -0700
+Subject: [PATCH] Fix AdvancementDataPlayer leak due from quitting early in
+ login
+
+Move the criterion storage to the AdvancementDataPlayer object
+itself, so the criterion object stores no references - and thus
+needs no cleanup.
+
+diff --git a/src/main/java/net/minecraft/advancements/critereon/SimpleCriterionTrigger.java b/src/main/java/net/minecraft/advancements/critereon/SimpleCriterionTrigger.java
+index e13b206ecebcb27f6102d23845599a787b21e4a8..5fb2c6bfb0ed2de9b6a3046938774eeb1442d810 100644
+--- a/src/main/java/net/minecraft/advancements/critereon/SimpleCriterionTrigger.java
++++ b/src/main/java/net/minecraft/advancements/critereon/SimpleCriterionTrigger.java
+@@ -14,27 +14,27 @@ import net.minecraft.server.level.ServerPlayer;
+ import net.minecraft.world.level.storage.loot.LootContext;
+ 
+ public abstract class SimpleCriterionTrigger<T extends AbstractCriterionTriggerInstance> implements CriterionTrigger<T> {
+-    private final Map<PlayerAdvancements, Set<CriterionTrigger.Listener<T>>> players = Maps.newIdentityHashMap();
++    //private final Map<PlayerAdvancements, Set<CriterionTrigger.Listener<T>>> players = Maps.newIdentityHashMap(); // Paper - moved into AdvancementDataPlayer to fix memory leak
+ 
+     public final void addPlayerListener(PlayerAdvancements manager, CriterionTrigger.Listener<T> listener) {
+-        this.players.computeIfAbsent(manager, (playerAdvancements) -> {
++        (manager.criterionData.computeIfAbsent(this, (playerAdvancements) -> {
+             return Sets.newHashSet();
+         }).add(listener);
+     }
+ 
+     public final void removePlayerListener(PlayerAdvancements playerAdvancements, CriterionTrigger.Listener<T> listener) {
+-        Set<CriterionTrigger.Listener<T>> set = this.players.get(playerAdvancements);
++        Set<CriterionTrigger.Listener<T>> set = (Set) playerAdvancements.criterionData.get(this); // Paper - fix AdvancementDataPlayer leak
+         if (set != null) {
+             set.remove(listener);
+             if (set.isEmpty()) {
+-                this.players.remove(playerAdvancements);
++                playerAdvancements.criterionData.remove(this); // Paper - fix AdvancementDataPlayer leak
+             }
+         }
+ 
+     }
+ 
+     public final void removePlayerListeners(PlayerAdvancements playerAdvancements) {
+-        this.players.remove(playerAdvancements);
++            playerAdvancements.criterionData.remove(this); // Paper - fix AdvancementDataPlayer leak
+     }
+ 
+     protected abstract T createInstance(JsonObject obj, EntityPredicate.Composite playerPredicate, DeserializationContext predicateDeserializer);
+@@ -46,7 +46,7 @@ public abstract class SimpleCriterionTrigger<T extends AbstractCriterionTriggerI
+ 
+     protected void trigger(ServerPlayer player, Predicate<T> tester) {
+         PlayerAdvancements playerAdvancements = player.getAdvancements();
+-        Set<CriterionTrigger.Listener<T>> set = this.players.get(playerAdvancements);
++        Set<CriterionTrigger.Listener<T>> set = (Set) playerAdvancements.criterionData.get(this); // Paper - fix AdvancementDataPlayer leak;
+         if (set != null && !set.isEmpty()) {
+             LootContext lootContext = EntityPredicate.createContext(player, player);
+             List<CriterionTrigger.Listener<T>> list = null;
+diff --git a/src/main/java/net/minecraft/server/PlayerAdvancements.java b/src/main/java/net/minecraft/server/PlayerAdvancements.java
+index 0647ee19225221e577911ea2620d8a8612a2d46c..8dd69ce58dca1dae87cb4f015acd2d0b0a42f587 100644
+--- a/src/main/java/net/minecraft/server/PlayerAdvancements.java
++++ b/src/main/java/net/minecraft/server/PlayerAdvancements.java
+@@ -39,6 +39,7 @@ import net.minecraft.advancements.Criterion;
+ import net.minecraft.advancements.CriterionProgress;
+ import net.minecraft.advancements.CriterionTrigger;
+ import net.minecraft.advancements.CriterionTriggerInstance;
++import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
+ import net.minecraft.network.chat.ChatType;
+ import net.minecraft.network.chat.TranslatableComponent;
+ import net.minecraft.network.protocol.game.ClientboundSelectAdvancementsTabPacket;
+@@ -69,6 +70,10 @@ public class PlayerAdvancements {
+     private Advancement lastSelectedTab;
+     private boolean isFirstPacket = true;
+ 
++    // Paper start - fix advancement data player leakage
++    public final Map<SimpleCriterionTrigger, Set<CriterionTrigger.Listener<?>>> criterionData = Maps.newIdentityHashMap();
++    // Paper end - fix advancement data player leakage
++
+     public PlayerAdvancements(DataFixer datafixer, PlayerList playerlist, ServerAdvancementManager advancementdataworld, File file, ServerPlayer entityplayer) {
+         this.dataFixer = datafixer;
+         this.playerList = playerlist;

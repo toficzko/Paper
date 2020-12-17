@@ -8,10 +8,10 @@ makes it so that the server keeps the last difficulty used instead
 of restoring the server.properties every single load.
 
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index 3c62c704b813523fa8ba399c0673b0f02ec12ab4..a9018f4576b042ad48dee48fe27fc9c657266a93 100644
+index 68344cfd1ed1296bbf4cbcfbcb07fe891a808827..b1de03d97162769219a448b24efdf87ccc143ccb 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
-@@ -1624,11 +1624,14 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -1623,11 +1623,14 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
          }
      }
  
@@ -21,7 +21,7 @@ index 3c62c704b813523fa8ba399c0673b0f02ec12ab4..a9018f4576b042ad48dee48fe27fc9c6
 -            this.updateMobSpawningFlags();
 -            this.getPlayerList().getPlayers().forEach(this::sendDifficultyUpdate);
 +    // Paper start - fix per world difficulty
-+    public void a(ServerLevel world, Difficulty enumdifficulty, boolean flag) {
++    public void setDifficulty(ServerLevel world, Difficulty enumdifficulty, boolean flag) {
 +        PrimaryLevelData worldData = world.worldDataServer;
 +        if (flag || !worldData.isDifficultyLocked()) {
 +            worldData.setDifficulty(worldData.isHardcore() ? Difficulty.HARD : enumdifficulty);
@@ -32,10 +32,16 @@ index 3c62c704b813523fa8ba399c0673b0f02ec12ab4..a9018f4576b042ad48dee48fe27fc9c6
      }
  
 diff --git a/src/main/java/net/minecraft/server/commands/DifficultyCommand.java b/src/main/java/net/minecraft/server/commands/DifficultyCommand.java
-index 23f46f04463bfd844e74705ef6b6b56c5abd14a6..ca48eeb78844a7b1dfd7abb13863d9134ee38ef0 100644
+index 364e3e166e4b9cc14c967104d2ce6e2131c0ce22..fe41116d4716ba4bddb0761124c36c518ca943f3 100644
 --- a/src/main/java/net/minecraft/server/commands/DifficultyCommand.java
 +++ b/src/main/java/net/minecraft/server/commands/DifficultyCommand.java
-@@ -7,6 +7,7 @@ import net.minecraft.commands.CommandSourceStack;
+@@ -1,4 +1,5 @@
+ package net.minecraft.server.commands;
++<<<<<<< found
+ 
+ import com.mojang.brigadier.CommandDispatcher;
+ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+@@ -8,6 +9,7 @@ import net.minecraft.commands.CommandSourceStack;
  import net.minecraft.commands.Commands;
  import net.minecraft.network.chat.TranslatableComponent;
  import net.minecraft.server.MinecraftServer;
@@ -43,18 +49,18 @@ index 23f46f04463bfd844e74705ef6b6b56c5abd14a6..ca48eeb78844a7b1dfd7abb13863d913
  import net.minecraft.world.Difficulty;
  
  public class DifficultyCommand {
-@@ -41,10 +42,11 @@ public class DifficultyCommand {
-     public static int setDifficulty(CommandSourceStack source, Difficulty difficulty) throws CommandSyntaxException {
-         MinecraftServer minecraftserver = source.getServer();
+@@ -35,10 +37,11 @@ public class DifficultyCommand {
  
--        if (minecraftserver.getWorldData().getDifficulty() == difficulty) {
-+        ServerLevel world = source.getLevel(); // Paper
-+        if (world.worldDataServer.getDifficulty() == difficulty) { // Paper
-             throw DifficultyCommand.ERROR_ALREADY_DIFFICULT.create(difficulty.getKey());
+     public static int setDifficulty(CommandSourceStack source, Difficulty difficulty) throws CommandSyntaxException {
+         MinecraftServer minecraftServer = source.getServer();
+-        if (minecraftServer.getWorldData().getDifficulty() == difficulty) {
++        ServerLevel level = source.getLevel(); // Paper
++        if (level.worldDataServer.getDifficulty() == difficulty) { // Paper
+             throw ERROR_ALREADY_DIFFICULT.create(difficulty.getKey());
          } else {
--            minecraftserver.setDifficulty(difficulty, true);
-+            minecraftserver.a(world, difficulty, true); // Paper
-             source.sendSuccess(new TranslatableComponent("commands.difficulty.success", new Object[]{difficulty.getDisplayName()}), true);
+-            minecraftServer.setDifficulty(difficulty, true);
++            minecraftServer.setDifficulty(level, difficulty, true); // Paper
+             source.sendSuccess(new TranslatableComponent("commands.difficulty.success", difficulty.getDisplayName()), true);
              return 0;
          }
 diff --git a/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java b/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java

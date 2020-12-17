@@ -5,27 +5,18 @@ Subject: [PATCH] Allow delegation to vanilla chunk gen
 
 
 diff --git a/src/main/java/net/minecraft/world/level/chunk/UpgradeData.java b/src/main/java/net/minecraft/world/level/chunk/UpgradeData.java
-index 3c9c949c5eb7473168b3c3211bfb5161dcfd51c1..424717223c7dc83db7219193900ab8f83623b566 100644
+index 0075e2505dfe914ad5bcdcbfdca64051d391db38..695f5dda6b79346477d27d9199974b3351c1c2ee 100644
 --- a/src/main/java/net/minecraft/world/level/chunk/UpgradeData.java
 +++ b/src/main/java/net/minecraft/world/level/chunk/UpgradeData.java
-@@ -36,7 +36,7 @@ import org.apache.logging.log4j.Logger;
- public class UpgradeData {
+@@ -32,7 +32,7 @@ import org.apache.logging.log4j.Logger;
  
+ public class UpgradeData {
      private static final Logger LOGGER = LogManager.getLogger();
 -    public static final UpgradeData EMPTY = new UpgradeData();
 +    public static final UpgradeData EMPTY = new UpgradeData(); public static UpgradeData getEmptyConverter() { return EMPTY; } // Paper - obfhelper
      private static final Direction8[] DIRECTIONS = Direction8.values();
-     private final EnumSet<Direction8> sides;
-     private final int[][] index;
-@@ -322,7 +322,7 @@ public class UpgradeData {
-                         if ((Integer) iblockdata.getValue(BlockStateProperties.DISTANCE) >= j) {
-                             generatoraccess.setBlock(blockposition, (BlockState) iblockdata.setValue(BlockStateProperties.DISTANCE, j), 18);
-                             if (i != 7) {
--                                Direction[] aenumdirection = null.f;
-+                                Direction[] aenumdirection = DIRECTIONS; // Paper - decomp fix
-                                 int k = aenumdirection.length;
- 
-                                 for (int l = 0; l < k; ++l) {
+     private final EnumSet<Direction8> sides = EnumSet.noneOf(Direction8.class);
+     private final int[][] index = new int[16][];
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 index 6e1a93d19b4f56633bdab3123a1c52a173a184cc..8e26fb40f07117caa2ab697cb1dae96046f28cf5 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java

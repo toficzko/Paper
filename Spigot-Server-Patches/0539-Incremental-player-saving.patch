@@ -25,10 +25,10 @@ index fc03df234fc641f72b4d4a79535860300006ff50..d86474a1a97597c14ea8a28444e2a5d8
 +    }
  }
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index a9018f4576b042ad48dee48fe27fc9c657266a93..64ef6471f41854499085d797caac6700bc028aa4 100644
+index b1de03d97162769219a448b24efdf87ccc143ccb..f64183008c44bf124970a0b234f0b487f42cd8c8 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
-@@ -1326,9 +1326,15 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -1325,9 +1325,15 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
          //if (autosavePeriod > 0 && this.ticks % autosavePeriod == 0) { // CraftBukkit // Paper - move down
              //MinecraftServer.LOGGER.debug("Autosave started"); // Paper
              serverAutoSave = (autosavePeriod > 0 && this.tickCount % autosavePeriod == 0); // Paper

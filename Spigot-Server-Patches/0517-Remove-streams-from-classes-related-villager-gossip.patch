@@ -5,18 +5,18 @@ Subject: [PATCH] Remove streams from classes related villager gossip
 
 
 diff --git a/src/main/java/net/minecraft/world/entity/ai/gossip/GossipContainer.java b/src/main/java/net/minecraft/world/entity/ai/gossip/GossipContainer.java
-index 0204f05d989d45c0848f810d1953adf0992ce3c2..57832c392910d22aa81ac2b4816d043dd7ac867a 100644
+index eadb7b4aaa98f1a910962a65445b94d5f068dea6..b9583904bc7e48fb291cbd34ab28318b0ef68a98 100644
 --- a/src/main/java/net/minecraft/world/entity/ai/gossip/GossipContainer.java
 +++ b/src/main/java/net/minecraft/world/entity/ai/gossip/GossipContainer.java
-@@ -9,6 +9,7 @@ import com.mojang.serialization.DynamicOps;
+@@ -8,6 +8,7 @@ import com.mojang.serialization.Dynamic;
+ import com.mojang.serialization.DynamicOps;
  import it.unimi.dsi.fastutil.objects.Object2IntMap;
- import it.unimi.dsi.fastutil.objects.Object2IntMap.Entry;
  import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 +import it.unimi.dsi.fastutil.objects.ObjectArrayList; // Paper
  import it.unimi.dsi.fastutil.objects.ObjectIterator;
+ import it.unimi.dsi.fastutil.objects.Object2IntMap.Entry;
  import java.util.Arrays;
- import java.util.Collection;
-@@ -51,8 +52,21 @@ public class GossipContainer {
+@@ -47,8 +48,21 @@ public class GossipContainer {
          });
      }
  
@@ -34,36 +34,35 @@ index 0204f05d989d45c0848f810d1953adf0992ce3c2..57832c392910d22aa81ac2b4816d043d
 +    // Paper end
 +
      private Collection<GossipContainer.GossipEntry> selectGossipsForTransfer(Random random, int count) {
--        List<GossipContainer.GossipEntry> list = (List) this.unpack().collect(Collectors.toList());
+-        List<GossipContainer.GossipEntry> list = this.unpack().collect(Collectors.toList());
 +        List<GossipContainer.GossipEntry> list = decompress(); // Paper - Remove streams from reputation
- 
          if (list.isEmpty()) {
              return Collections.emptyList();
-@@ -119,7 +133,7 @@ public class GossipContainer {
+         } else {
+@@ -108,7 +122,7 @@ public class GossipContainer {
      }
  
-     public <T> Dynamic<T> store(DynamicOps<T> dynamicops) {
--        return new Dynamic(dynamicops, dynamicops.createList(this.unpack().map((reputation_b) -> {
-+        return new Dynamic(dynamicops, dynamicops.createList(this.decompress().stream().map((reputation_b) -> {
-             return reputation_b.store(dynamicops);
+     public <T> Dynamic<T> store(DynamicOps<T> dynamicOps) {
+-        return new Dynamic<>(dynamicOps, dynamicOps.createList(this.unpack().map((gossipEntry) -> {
++        return new Dynamic<>(dynamicOps, dynamicOps.createList(this.decompress().stream().map((gossipEntry) -> { // Paper
+             return gossipEntry.store(dynamicOps);
          }).map(Dynamic::getValue)));
      }
-@@ -144,18 +158,30 @@ public class GossipContainer {
+@@ -131,17 +145,29 @@ public class GossipContainer {
+     }
  
      public static class EntityGossips { // Paper - make public
- 
--        private final Object2IntMap<GossipType> entries;
-+        private final Object2IntMap<GossipType> entries; private Object2IntMap<GossipType> getEntries() { return entries; } // Paper - OBFHELPER
+-        private final Object2IntMap<GossipType> entries = new Object2IntOpenHashMap<>();
++        private final Object2IntMap<GossipType> entries = new Object2IntOpenHashMap<>(); private Object2IntMap<GossipType> getEntries() { return entries; } // Paper - OBFHELPER
  
          public EntityGossips() { // Paper - make public - update CraftVillager setReputation on change
-             this.entries = new Object2IntOpenHashMap();
          }
  
          public int weightedValue(Predicate<GossipType> gossipTypeFilter) {
 -            return this.entries.object2IntEntrySet().stream().filter((entry) -> {
 -                return gossipTypeFilter.test(entry.getKey());
 -            }).mapToInt((entry) -> {
--                return entry.getIntValue() * ((GossipType) entry.getKey()).weight;
+-                return entry.getIntValue() * (entry.getKey()).weight;
 -            }).sum();
 +            // Paper start - Remove streams from reputation
 +            int weight = 0;
@@ -86,11 +85,11 @@ index 0204f05d989d45c0848f810d1953adf0992ce3c2..57832c392910d22aa81ac2b4816d043d
  
          public Stream<GossipContainer.GossipEntry> unpack(UUID target) {
 diff --git a/src/main/java/net/minecraft/world/entity/ai/gossip/GossipType.java b/src/main/java/net/minecraft/world/entity/ai/gossip/GossipType.java
-index 808eaaae5d534427d197c90c8e53494f4c3bfd82..c775d0df2a8f8a0fd32a8ffc26d6ea6978cbb595 100644
+index d92c9424838ab50bfa72caf7116f32dac8e2ec0e..2f9c19daaed255abf59cf62c0e3e2b9ea18b0d23 100644
 --- a/src/main/java/net/minecraft/world/entity/ai/gossip/GossipType.java
 +++ b/src/main/java/net/minecraft/world/entity/ai/gossip/GossipType.java
-@@ -11,7 +11,7 @@ public enum GossipType {
-     MAJOR_NEGATIVE("major_negative", -5, 100, 10, 10), MINOR_NEGATIVE("minor_negative", -1, 200, 20, 20), MINOR_POSITIVE("minor_positive", 1, 200, 1, 5), MAJOR_POSITIVE("major_positive", 5, 100, 0, 100), TRADING("trading", 1, 25, 2, 20);
+@@ -14,7 +14,7 @@ public enum GossipType {
+     TRADING("trading", 1, 25, 2, 20);
  
      public final String id;
 -    public final int weight;

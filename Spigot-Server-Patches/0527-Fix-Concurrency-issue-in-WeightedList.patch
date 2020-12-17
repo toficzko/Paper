@@ -1,0 +1,67 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Aikar <aikar@aikar.co>
+Date: Mon, 6 Jul 2020 18:36:41 -0400
+Subject: [PATCH] Fix Concurrency issue in WeightedList
+
+if multiple threads from worldgen sort at same time, it will crash.
+So make a copy of the list for sorting purposes.
+
+diff --git a/src/main/java/net/minecraft/world/entity/ai/behavior/GateBehavior.java b/src/main/java/net/minecraft/world/entity/ai/behavior/GateBehavior.java
+index e4628c639252e7692a6c0e42186e52a14936a90a..2f612c948422b7e067a3f1368c72466d30d72973 100644
+--- a/src/main/java/net/minecraft/world/entity/ai/behavior/GateBehavior.java
++++ b/src/main/java/net/minecraft/world/entity/ai/behavior/GateBehavior.java
+@@ -15,7 +15,7 @@ public class GateBehavior<E extends LivingEntity> extends Behavior<E> {
+     private final Set<MemoryModuleType<?>> exitErasedMemories;
+     private final GateBehavior.OrderPolicy orderPolicy;
+     private final GateBehavior.RunningPolicy runningPolicy;
+-    private final WeightedList<Behavior<? super E>> behaviors = new WeightedList<>();
++    private final WeightedList<Behavior<? super E>> behaviors = new WeightedList<>(false); // Paper - don't use a clone
+ 
+     public GateBehavior(Map<MemoryModuleType<?>, MemoryStatus> requiredMemoryState, Set<MemoryModuleType<?>> memoriesToForgetWhenStopped, GateBehavior.OrderPolicy order, GateBehavior.RunningPolicy runMode, List<Pair<Behavior<? super E>, Integer>> tasks) {
+         super(requiredMemoryState);
+diff --git a/src/main/java/net/minecraft/world/entity/ai/behavior/WeightedList.java b/src/main/java/net/minecraft/world/entity/ai/behavior/WeightedList.java
+index 036fa1344739048abe1ee08137175de58ce4665c..116edae0eb59c6650b8cdc7606b9fbe0939e1ed1 100644
+--- a/src/main/java/net/minecraft/world/entity/ai/behavior/WeightedList.java
++++ b/src/main/java/net/minecraft/world/entity/ai/behavior/WeightedList.java
+@@ -14,12 +14,18 @@ import java.util.stream.Stream;
+ public class WeightedList<U> {
+     protected final List<WeightedList.WeightedEntry<U>> entries;
+     private final Random random = new Random();
++    private final boolean isUnsafe; // Paper
+ 
+-    public WeightedList() {
+-        this(Lists.newArrayList());
++    // Paper start - add useClone option
++    public WeightedList() { this(true); }
++    public WeightedList(boolean isUnsafe) {
++        this(Lists.newArrayList(), isUnsafe);
+     }
+ 
+-    private WeightedList(List<WeightedList.WeightedEntry<U>> entries) {
++    private WeightedList(List<WeightedList.WeightedEntry<U>> entries) { this(entries, true); }
++    private WeightedList(List<WeightedList.WeightedEntry<U>> entries, boolean isUnsafe) {
++        this.isUnsafe = isUnsafe;
++        // Paper end
+         this.entries = Lists.newArrayList(entries);
+     }
+ 
+@@ -39,13 +45,12 @@ public class WeightedList<U> {
+     }
+ 
+     public WeightedList<U> shuffle(Random random) {
+-        this.entries.forEach((entry) -> {
+-            entry.setRandom(random.nextFloat());
+-        });
+-        this.entries.sort(Comparator.comparingDouble((object) -> {
+-            return object.getRandWeight();
+-        }));
+-        return this;
++        // Paper start - make concurrent safe, work off a clone of the list
++        List<WeightedList.WeightedEntry<U>> list = isUnsafe ? new java.util.ArrayList<WeightedList.WeightedEntry<U>>(this.entries) : this.entries;
++        list.forEach((weightedlist_a) -> weightedlist_a.setRandom(random.nextFloat()));
++        list.sort(Comparator.comparingDouble(WeightedEntry::getRandWeight));
++        return isUnsafe ? new WeightedList<>(list, isUnsafe) : this;
++        // Paper end
+     }
+ 
+     public boolean isEmpty() {

@@ -5,16 +5,16 @@ Subject: [PATCH] Update itemstack legacy name and lore
 
 
 diff --git a/src/main/java/net/minecraft/nbt/StringTag.java b/src/main/java/net/minecraft/nbt/StringTag.java
-index 3698fd1666bb898132032555d4ca544533b0b203..7bee6a09d0418bee3c9ffcd131b89bdf2f2676cd 100644
+index e13a615b410c3d702144b94b9ab921010cba4be6..f528b651a47f33ebf60a0affb942d03586d4fe44 100644
 --- a/src/main/java/net/minecraft/nbt/StringTag.java
 +++ b/src/main/java/net/minecraft/nbt/StringTag.java
-@@ -43,6 +43,7 @@ public class StringTag implements Tag {
+@@ -36,6 +36,7 @@ public class StringTag implements Tag {
          this.data = value;
      }
  
 +    public static StringTag create(String s) { return valueOf(s); } // Paper - OBFHELPER
      public static StringTag valueOf(String value) {
-         return value.isEmpty() ? StringTag.EMPTY : new StringTag(value);
+         return value.isEmpty() ? EMPTY : new StringTag(value);
      }
 diff --git a/src/main/java/net/minecraft/world/item/ItemStack.java b/src/main/java/net/minecraft/world/item/ItemStack.java
 index ff93492244e3616827aafc8c1fc2f4468065c592..b40420a5841e0a52cfdc15900683bd63dce540fc 100644

@@ -6,7 +6,7 @@ Subject: [PATCH] Paper dumpitem command
 Let's you quickly view the item in your hands NBT data
 
 diff --git a/src/main/java/com/destroystokyo/paper/PaperCommand.java b/src/main/java/com/destroystokyo/paper/PaperCommand.java
-index b5567ef9a95ae8db34ee7d096e95ecb05ffec272..aee615bcdf362353a093fe67658e7aa152c5dbac 100644
+index b99eaf8579f50a54e1de4949ad2fe0bb810906f9..8afaeb577dde7d7bf4139f5a34e8f146dc984395 100644
 --- a/src/main/java/com/destroystokyo/paper/PaperCommand.java
 +++ b/src/main/java/com/destroystokyo/paper/PaperCommand.java
 @@ -10,6 +10,7 @@ import com.google.gson.JsonObject;

@@ -26,21 +26,20 @@ index 58657dfa13b7aa02bcb52f065d8adf9fa8859ba9..d101fbb560f40db39cc95b3d171236de
              return true;
          });
 diff --git a/src/main/java/net/minecraft/world/level/CollisionSpliterator.java b/src/main/java/net/minecraft/world/level/CollisionSpliterator.java
-index feca9ff34936686c0665ae0dbc926869087df3a7..60f8585a736af5b654b8aaed89a39a8bf5e91301 100644
+index f6857326cdc56a6b6ff76d4ecd7c220ba2002547..7cce35514173d781a6bec3362372eed04a734013 100644
 --- a/src/main/java/net/minecraft/world/level/CollisionSpliterator.java
 +++ b/src/main/java/net/minecraft/world/level/CollisionSpliterator.java
-@@ -143,10 +143,10 @@ public class CollisionSpliterator extends AbstractSpliterator<VoxelShape> {
-         AABB axisalignedbb = this.source.getBoundingBox();
- 
-         if (!isBoxFullyWithinWorldBorder(worldborder, axisalignedbb)) {
--            VoxelShape voxelshape = worldborder.getCollisionShape();
--
--            if (!isOutsideBorder(voxelshape, axisalignedbb) && isCloseToBorder(voxelshape, axisalignedbb)) {
--                consumer.accept(voxelshape);
+@@ -136,9 +136,10 @@ public class CollisionSpliterator extends AbstractSpliterator<VoxelShape> {
+         WorldBorder worldBorder = this.collisionGetter.getWorldBorder();
+         AABB aABB = this.source.getBoundingBox();
+         if (!isBoxFullyWithinWorldBorder(worldBorder, aABB)) {
+-            VoxelShape voxelShape = worldBorder.getCollisionShape();
+-            if (!isOutsideBorder(voxelShape, aABB) && isCloseToBorder(voxelShape, aABB)) {
+-                consumer.accept(voxelShape);
 +            // Paper start
-+            if (worldborder.isInBounds(axisalignedbb.deflate(1.0E-7D)) && !worldborder.isInBounds(axisalignedbb.grow(1.0E-7D))) {
-+                consumer.accept(worldborder.asVoxelShape());
-+            // Paper end
++            if (worldBorder.isInBounds(aABB.deflate(1.0E-7D)) && !worldBorder.isInBounds(aABB.grow(1.0E-7D))) {
++                consumer.accept(worldBorder.asVoxelShape());
++                // Paper end
                  return true;
              }
          }
@@ -57,15 +56,15 @@ index f69a527ee095e8a09eea00e88fa31f10114b6bb8..8f000a499af2070cc1b4158fbee9c38d
          return box.maxX > this.getMinX() && box.minX < this.getMaxX() && box.maxZ > this.getMinZ() && box.minZ < this.getMaxZ();
      }
 diff --git a/src/main/java/net/minecraft/world/phys/shapes/Shapes.java b/src/main/java/net/minecraft/world/phys/shapes/Shapes.java
-index 1603eb3f7d90a4b3a028b20776566db77d09c123..f28d2126bc29fad3971a32cf85a7a7c4803b36ab 100644
+index 99e1e234b24158a61011732e2f4ec17d4d3a6e34..ac3798aa7be1a90f3c8df85d9e2bf91db7955530 100644
 --- a/src/main/java/net/minecraft/world/phys/shapes/Shapes.java
 +++ b/src/main/java/net/minecraft/world/phys/shapes/Shapes.java
-@@ -252,7 +252,7 @@ public final class Shapes {
-                                 BlockState iblockdata = world.getTypeIfLoaded(blockposition_mutableblockposition); // Paper
-                                 if (iblockdata == null) return 0.0D; // Paper
- 
--                                if ((k2 != 1 || iblockdata.hasLargeCollisionShape()) && (k2 != 2 || iblockdata.is(Blocks.MOVING_PISTON))) {
-+                                if (!iblockdata.isAir() && (k2 != 1 || iblockdata.hasLargeCollisionShape()) && (k2 != 2 || iblockdata.is(Blocks.MOVING_PISTON))) { // Paper
-                                     initial = iblockdata.getCollisionShape((BlockGetter) world, blockposition_mutableblockposition, context).collide(enumdirection_enumaxis2, box.move((double) (-blockposition_mutableblockposition.getX()), (double) (-blockposition_mutableblockposition.getY()), (double) (-blockposition_mutableblockposition.getZ())), initial);
+@@ -238,7 +238,7 @@ public final class Shapes {
+                                 mutableBlockPos.set(axisCycle, q, r, p);
+                                 BlockState blockState = world.getTypeIfLoaded(mutableBlockPos); // Paper
+                                 if (mutableBlockPos == null) return 0.0D; // Paper
+-                                if ((s != 1 || blockState.hasLargeCollisionShape()) && (s != 2 || blockState.is(Blocks.MOVING_PISTON))) {
++                                if (!blockState.isAir() && (s != 1 || blockState.hasLargeCollisionShape()) && (s != 2 || blockState.is(Blocks.MOVING_PISTON))) { // Paper
+                                     initial = blockState.getCollisionShape(world, mutableBlockPos, context).collide(axis3, box.move((double)(-mutableBlockPos.getX()), (double)(-mutableBlockPos.getY()), (double)(-mutableBlockPos.getZ())), initial);
                                      if (Math.abs(initial) < 1.0E-7D) {
                                          return 0.0D;
