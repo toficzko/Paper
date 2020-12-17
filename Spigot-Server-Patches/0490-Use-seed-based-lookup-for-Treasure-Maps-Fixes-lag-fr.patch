@@ -1,0 +1,35 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Aikar <aikar@aikar.co>
+Date: Sun, 7 Jun 2020 19:25:13 -0400
+Subject: [PATCH] Use seed based lookup for Treasure Maps - Fixes lag from
+ carto/sunken maps
+
+
+diff --git a/src/main/java/net/minecraft/server/level/ServerLevel.java b/src/main/java/net/minecraft/server/level/ServerLevel.java
+index 5ab0bc0f6656ae5eee330a7640c54acc5d2f985b..dea35f52a5ca83abc95b1fa41b843fc49a2167ae 100644
+--- a/src/main/java/net/minecraft/server/level/ServerLevel.java
++++ b/src/main/java/net/minecraft/server/level/ServerLevel.java
+@@ -413,8 +413,8 @@ public class ServerLevel extends net.minecraft.world.level.Level implements Worl
+         this.worldDataServer.setThundering(thundering);
+     }
+ 
+-    @Override
+-    public Biome getUncachedNoiseBiome(int i, int j, int k) {
++    public Biome getBiomeBySeed(int i, int j, int k) { return getUncachedNoiseBiome(i, j, k); } // Paper - OBFHELPER
++    @Override public Biome getUncachedNoiseBiome(int i, int j, int k) {
+         return this.getChunkSource().getGenerator().getBiomeSource().getNoiseBiome(i, j, k);
+     }
+ 
+diff --git a/src/main/java/net/minecraft/world/item/MapItem.java b/src/main/java/net/minecraft/world/item/MapItem.java
+index 67dc84ebaf8e2f460a4c72ac4cfb9206801fe366..b009b96d526030d04765d73914fb370594a8d068 100644
+--- a/src/main/java/net/minecraft/world/item/MapItem.java
++++ b/src/main/java/net/minecraft/world/item/MapItem.java
+@@ -252,7 +252,7 @@ public class MapItem extends ComplexItem {
+ 
+                 for (l = 0; l < 128 * i; ++l) {
+                     for (i1 = 0; i1 < 128 * i; ++i1) {
+-                        abiomebase[l * 128 * i + i1] = worldserver.getBiome(new BlockPos((j / i - 64) * i + i1, 0, (k / i - 64) * i + l));
++                        abiomebase[l * 128 * i + i1] = worldserver.getBiomeBySeed((j / i - 64) * i + i1, 0, (k / i - 64) * i + l); // Paper
+                     }
+                 }
+ 

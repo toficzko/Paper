@@ -1,0 +1,1419 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Aikar <aikar@aikar.co>
+Date: Thu, 4 Jun 2020 22:43:29 -0400
+Subject: [PATCH] Optimize Light Engine
+
+Massive update to light to improve performance and chunk loading/generation.
+
+1) Massive bit packing/unpacking optimizations and inlining.
+  A lot of performance has to do with constant packing and unpacking of bits.
+  We now inline a most bit operations, and re-use base x/y/z bits in many places.
+  This helps with cpu level processing to just do all the math at once instead
+  of having to jump in and out of function calls.
+
+  This much logic also is likely over the JVM Inline limit for JIT too.
+2) Applied a few of JellySquid's Phosphor mod optimizations such as
+  - ensuring we don't notify neighbor chunks when neighbor chunk doesn't need to be notified
+  - reduce hasLight checks in initializing light, and prob some more, they are tagged JellySquid where phosphor influence was used.
+3) Optimize hot path accesses to getting updating chunk to have less branching
+4) Optimize getBlock accesses to have less branching, and less unpacking
+5) Have a separate urgent bucket for chunk light tasks. These tasks will always cut in line over non blocking light tasks.
+6) Retain chunk priority while light tasks are enqueued. So if a task comes in at high priority but the queue is full
+   of tasks already at a lower priority, before the task was simply added to the end. Now it can cut in line to the front.
+   this applies for both urgent and non urgent tasks.
+7) Buffer non urgent tasks even if queueUpdate is called multiple times to improve efficiency.
+8) Fix NPE risk that crashes server in getting nibble data
+
+diff --git a/src/main/java/net/minecraft/server/level/ChunkHolder.java b/src/main/java/net/minecraft/server/level/ChunkHolder.java
+index ed728ba792ccb55bd1987f3bf32c7085420fbfb2..361df5329e184b4ce2b5ceb0bdc12f613d59c30e 100644
+--- a/src/main/java/net/minecraft/server/level/ChunkHolder.java
++++ b/src/main/java/net/minecraft/server/level/ChunkHolder.java
+@@ -747,6 +747,7 @@ public class ChunkHolder {
+                 ioPriority = com.destroystokyo.paper.io.PrioritizedTaskQueue.HIGH_PRIORITY;
+             }
+             chunkMap.level.asyncChunkTaskManager.raisePriority(pos.x, pos.z, ioPriority);
++            chunkMap.level.getChunkSource().getLightEngine().queue.changePriority(pos.toLong(), getCurrentPriority(), priority);
+         }
+         if (getCurrentPriority() != priority) {
+             this.onLevelChange.onLevelChange(this.pos, this::getCurrentPriority, priority, this::setPriority); // use preferred priority
+diff --git a/src/main/java/net/minecraft/server/level/ChunkMap.java b/src/main/java/net/minecraft/server/level/ChunkMap.java
+index d727bb9f35ada7212eabc5f024fa26094715bba6..b671e3427a07a58ea9548e54fd24deae4113b926 100644
+--- a/src/main/java/net/minecraft/server/level/ChunkMap.java
++++ b/src/main/java/net/minecraft/server/level/ChunkMap.java
+@@ -99,6 +99,7 @@ import net.minecraft.world.level.levelgen.structure.StructureStart;
+ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureManager;
+ import net.minecraft.world.level.storage.DimensionDataStorage;
+ import net.minecraft.world.level.storage.LevelStorageSource;
++import net.minecraft.world.level.storage.PrimaryLevelData;
+ import it.unimi.dsi.fastutil.objects.ObjectRBTreeSet; // Paper
+ import org.apache.commons.lang3.mutable.MutableBoolean;
+ import org.apache.logging.log4j.LogManager;
+@@ -328,6 +329,7 @@ public class ChunkMap extends ChunkStorage implements ChunkHolder.PlayerProvider
+     }
+     // Paper end
+ 
++    private final java.util.concurrent.ExecutorService lightThread;
+     public ChunkMap(ServerLevel worldserver, LevelStorageSource.LevelStorageAccess convertable_conversionsession, DataFixer dataFixer, StructureManager definedstructuremanager, Executor workerExecutor, BlockableEventLoop<Runnable> mainThreadExecutor, LightChunkGetter chunkProvider, ChunkGenerator chunkGenerator, ChunkProgressListener worldGenerationProgressListener, Supplier<DimensionDataStorage> supplier, int i, boolean flag) {
+         super(new File(convertable_conversionsession.getDimensionPath(worldserver.dimension()), "region"), dataFixer, flag);
+         //this.visibleChunks = this.updatingChunks.clone(); // Paper - no more cloning
+@@ -359,7 +361,15 @@ public class ChunkMap extends ChunkStorage implements ChunkHolder.PlayerProvider
+         ProcessorHandle<Runnable> mailbox = ProcessorHandle.of("main", mainThreadExecutor::tell);
+ 
+         this.progressListener = worldGenerationProgressListener;
+-        ProcessorMailbox<Runnable> lightthreaded; ProcessorMailbox<Runnable> threadedmailbox1 = lightthreaded = ProcessorMailbox.create(workerExecutor, "light"); // Paper
++        // Paper start - use light thread
++        ProcessorMailbox<Runnable> lightthreaded; ProcessorMailbox<Runnable> threadedmailbox1 = lightthreaded = ProcessorMailbox.create(lightThread = java.util.concurrent.Executors.newSingleThreadExecutor(r -> {
++            Thread thread = new Thread(r);
++            thread.setName(((PrimaryLevelData)level.getLevelData()).getLevelName() + " - Light");
++            thread.setDaemon(true);
++            thread.setPriority(Thread.NORM_PRIORITY+1);
++            return thread;
++        }), "light");
++        // Paper end
+ 
+         this.queueSorter = new ChunkTaskPriorityQueueSorter(ImmutableList.of(threadedmailbox, mailbox, threadedmailbox1), workerExecutor, Integer.MAX_VALUE);
+         this.worldgenMailbox = this.queueSorter.getProcessor(threadedmailbox, false);
+@@ -705,6 +715,7 @@ public class ChunkMap extends ChunkStorage implements ChunkHolder.PlayerProvider
+         // Paper end
+     }
+ 
++    protected final IntSupplier getPrioritySupplier(long i) { return getChunkQueueLevel(i); } // Paper - OBFHELPER
+     protected IntSupplier getChunkQueueLevel(long pos) {
+         return () -> {
+             ChunkHolder playerchunk = this.getVisibleChunkIfPresent(pos);
+@@ -832,6 +843,7 @@ public class ChunkMap extends ChunkStorage implements ChunkHolder.PlayerProvider
+     @Override
+     public void close() throws IOException {
+         try {
++            this.lightThread.shutdown(); // Paper
+             this.queueSorter.close();
+             this.level.asyncChunkTaskManager.close(true); // Paper - Required since we're closing regionfiles in the next line
+             this.poiManager.close();
+diff --git a/src/main/java/net/minecraft/server/level/SectionTracker.java b/src/main/java/net/minecraft/server/level/SectionTracker.java
+index 76a487e3b1f0667d08d6487b8785dd056e9f4041..39d212f65cbb1dddd281fd7055878726f3b0f382 100644
+--- a/src/main/java/net/minecraft/server/level/SectionTracker.java
++++ b/src/main/java/net/minecraft/server/level/SectionTracker.java
+@@ -1,6 +1,5 @@
+ package net.minecraft.server.level;
+ 
+-import net.minecraft.core.SectionPos;
+ import net.minecraft.world.level.lighting.DynamicGraphMinFixedPoint;
+ 
+ public abstract class SectionTracker extends DynamicGraphMinFixedPoint {
+@@ -13,26 +12,36 @@ public abstract class SectionTracker extends DynamicGraphMinFixedPoint {
+     }
+ 
+     protected void checkNeighborsAfterUpdate(long id, int level, boolean decrease) {
++        // Paper start
++        int x = (int) (id >> 42);
++        int y = (int) (id << 44 >> 44);
++        int z = (int) (id << 22 >> 42);
++        // Paper end
+         for(int i = -1; i <= 1; ++i) {
+             for(int j = -1; j <= 1; ++j) {
+                 for(int k = -1; k <= 1; ++k) {
+-                    long l = SectionPos.offset(id, i, j, k);
+-                    if (l != id) {
++                    if (i == 0 && j == 0 && k == 0) continue; // Paper
++                    long l = (((long) (x + i) & 4194303L) << 42) | (((long) (y + j) & 1048575L)) | (((long) (z + k) & 4194303L) << 20); // Paper
++                    //if (l != id) { // Paper - checked above
+                         this.checkNeighbor(id, l, level, decrease);
+-                    }
++                    //}// Paper
+                 }
+             }
+         }
+-
+     }
+ 
+     protected int getComputedLevel(long l, long m, int i) {
+         int j = i;
+ 
++        // Paper start
++        int x = (int) (l >> 42);
++        int y = (int) (l << 44 >> 44);
++        int z = (int) (l << 22 >> 42);
++        // Paper end
+         for(int k = -1; k <= 1; ++k) {
+             for(int n = -1; n <= 1; ++n) {
+                 for(int o = -1; o <= 1; ++o) {
+-                    long p = SectionPos.offset(l, k, n, o);
++                    long p = (((long) (x + k) & 4194303L) << 42) | (((long) (y + n) & 1048575L)) | (((long) (z + o) & 4194303L) << 20); // Paper
+                     if (p == l) {
+                         p = Long.MAX_VALUE;
+                     }
+diff --git a/src/main/java/net/minecraft/server/level/ServerChunkCache.java b/src/main/java/net/minecraft/server/level/ServerChunkCache.java
+index 96af98fa9a5081dc420ec8353da279687c1ced9e..7376be9828aa292e2efa5f6c6066292c7f9882d6 100644
+--- a/src/main/java/net/minecraft/server/level/ServerChunkCache.java
++++ b/src/main/java/net/minecraft/server/level/ServerChunkCache.java
+@@ -1071,7 +1071,7 @@ public class ServerChunkCache extends ChunkSource {
+             if (ServerChunkCache.this.runDistanceManagerUpdates()) {
+                 return true;
+             } else {
+-                ServerChunkCache.this.lightEngine.tryScheduleUpdate();
++                //ChunkProviderServer.this.lightEngine.queueUpdate(); // Paper - not needed
+                 return super.pollTask() || execChunkTask; // Paper
+             }
+         } finally {
+diff --git a/src/main/java/net/minecraft/server/level/ServerLevel.java b/src/main/java/net/minecraft/server/level/ServerLevel.java
+index dea35f52a5ca83abc95b1fa41b843fc49a2167ae..dd8df0e78f6091c04e1925f7324fcb9c4f69ddbe 100644
+--- a/src/main/java/net/minecraft/server/level/ServerLevel.java
++++ b/src/main/java/net/minecraft/server/level/ServerLevel.java
+@@ -820,6 +820,7 @@ public class ServerLevel extends net.minecraft.world.level.Level implements Worl
+             }
+             gameprofilerfiller.pop();
+             timings.chunkTicksBlocks.stopTiming(); // Paper
++            getChunkSource().getLightEngine().tryScheduleUpdate(); // Paper
+             // Paper end
+         }
+     }
+diff --git a/src/main/java/net/minecraft/server/level/ThreadedLevelLightEngine.java b/src/main/java/net/minecraft/server/level/ThreadedLevelLightEngine.java
+index 8c284a8c427331ca8819addf82cbb565b5d0163d..9deba138d945e93d000264aef364c014db74326d 100644
+--- a/src/main/java/net/minecraft/server/level/ThreadedLevelLightEngine.java
++++ b/src/main/java/net/minecraft/server/level/ThreadedLevelLightEngine.java
+@@ -1,6 +1,7 @@
+ package net.minecraft.server.level;
+ 
+ import com.mojang.datafixers.util.Pair;
++import it.unimi.dsi.fastutil.longs.Long2ObjectLinkedOpenHashMap; // Paper
+ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+ import it.unimi.dsi.fastutil.objects.ObjectList;
+ import it.unimi.dsi.fastutil.objects.ObjectListIterator;
+@@ -16,6 +17,7 @@ import net.minecraft.util.thread.ProcessorMailbox;
+ import net.minecraft.world.level.ChunkPos;
+ import net.minecraft.world.level.LightLayer;
+ import net.minecraft.world.level.chunk.ChunkAccess;
++import net.minecraft.world.level.chunk.ChunkStatus;
+ import net.minecraft.world.level.chunk.DataLayer;
+ import net.minecraft.world.level.chunk.LevelChunkSection;
+ import net.minecraft.world.level.chunk.LightChunkGetter;
+@@ -26,15 +28,149 @@ import org.apache.logging.log4j.Logger;
+ public class ThreadedLevelLightEngine extends LevelLightEngine implements AutoCloseable {
+     private static final Logger LOGGER = LogManager.getLogger();
+     private final ProcessorMailbox<Runnable> taskMailbox;
+-    private final ObjectList<Pair<ThreadedLevelLightEngine.TaskType, Runnable>> lightTasks = new ObjectArrayList<>();
+-    private final ChunkMap chunkMap;
++    // Paper start
++    private static final int MAX_PRIORITIES = ChunkMap.MAX_CHUNK_DISTANCE + 2;
++
++    private boolean isChunkLightStatus(long pair) {
++        ChunkHolder playerChunk = playerChunkMap.getVisibleChunkIfPresent(pair);
++        if (playerChunk == null) {
++            return false;
++        }
++        ChunkStatus status = ChunkHolder.getStatus(playerChunk.getTicketLevel());
++        return status != null && status.isAtLeastStatus(ChunkStatus.LIGHT);
++    }
++
++    static class ChunkLightQueue {
++        public boolean shouldFastUpdate;
++        java.util.ArrayDeque<Runnable> pre = new java.util.ArrayDeque<Runnable>();
++        java.util.ArrayDeque<Runnable> post = new java.util.ArrayDeque<Runnable>();
++
++        ChunkLightQueue(long chunk) {}
++    }
++
++    static class PendingLightTask {
++        long chunkId;
++        IntSupplier priority;
++        Runnable pre;
++        Runnable post;
++        boolean fastUpdate;
++
++        public PendingLightTask(long chunkId, IntSupplier priority, Runnable pre, Runnable post, boolean fastUpdate) {
++            this.chunkId = chunkId;
++            this.priority = priority;
++            this.pre = pre;
++            this.post = post;
++            this.fastUpdate = fastUpdate;
++        }
++    }
++
++
++    // Retain the chunks priority level for queued light tasks
++    class LightQueue {
++        private int size = 0;
++        private final Long2ObjectLinkedOpenHashMap<ChunkLightQueue>[] buckets = new Long2ObjectLinkedOpenHashMap[MAX_PRIORITIES];
++        private final java.util.concurrent.ConcurrentLinkedQueue<PendingLightTask> pendingTasks = new java.util.concurrent.ConcurrentLinkedQueue<>();
++        private final java.util.concurrent.ConcurrentLinkedQueue<Runnable> priorityChanges = new java.util.concurrent.ConcurrentLinkedQueue<>();
++
++        private LightQueue() {
++            for (int i = 0; i < buckets.length; i++) {
++                buckets[i] = new Long2ObjectLinkedOpenHashMap<>();
++            }
++        }
++
++        public void changePriority(long pair, int currentPriority, int priority) {
++            this.priorityChanges.add(() -> {
++                ChunkLightQueue remove = this.buckets[currentPriority].remove(pair);
++                if (remove != null) {
++                    ChunkLightQueue existing = this.buckets[Math.max(1, priority)].put(pair, remove);
++                    if (existing != null) {
++                        remove.pre.addAll(existing.pre);
++                        remove.post.addAll(existing.post);
++                    }
++                }
++            });
++        }
++
++        public final void addChunk(long chunkId, IntSupplier priority, Runnable pre, Runnable post) {
++            pendingTasks.add(new PendingLightTask(chunkId, priority, pre, post, true));
++            tryScheduleUpdate();
++        }
++
++        public final void add(long chunkId, IntSupplier priority, ThreadedLevelLightEngine.TaskType type, Runnable run) {
++            pendingTasks.add(new PendingLightTask(chunkId, priority, type == TaskType.PRE_UPDATE ? run : null, type == TaskType.POST_UPDATE ? run : null, false));
++        }
++        public final void add(PendingLightTask update) {
++            int priority = update.priority.getAsInt();
++            ChunkLightQueue lightQueue = this.buckets[priority].computeIfAbsent(update.chunkId, ChunkLightQueue::new);
++
++            if (update.pre != null) {
++                this.size++;
++                lightQueue.pre.add(update.pre);
++            }
++            if (update.post != null) {
++                this.size++;
++                lightQueue.post.add(update.post);
++            }
++            if (update.fastUpdate) {
++                lightQueue.shouldFastUpdate = true;
++            }
++        }
++
++        public final boolean isEmpty() {
++            return this.size == 0 && this.pendingTasks.isEmpty();
++        }
++
++        public final int size() {
++            return this.size;
++        }
++
++        public boolean poll(java.util.List<Runnable> pre, java.util.List<Runnable> post) {
++            PendingLightTask pending;
++            while ((pending = pendingTasks.poll()) != null) {
++                add(pending);
++            }
++            Runnable run;
++            while ((run = priorityChanges.poll()) != null) {
++                run.run();
++            }
++            boolean hasWork = false;
++            Long2ObjectLinkedOpenHashMap<ChunkLightQueue>[] buckets = this.buckets;
++            int priority = 0;
++            while (priority < MAX_PRIORITIES && !isEmpty()) {
++                Long2ObjectLinkedOpenHashMap<ChunkLightQueue> bucket = buckets[priority];
++                if (bucket.isEmpty()) {
++                    priority++;
++                    if (hasWork) {
++                        return true;
++                    } else {
++                        continue;
++                    }
++                }
++                ChunkLightQueue queue = bucket.removeFirst();
++                this.size -= queue.pre.size() + queue.post.size();
++                pre.addAll(queue.pre);
++                post.addAll(queue.post);
++                queue.pre.clear();
++                queue.post.clear();
++                hasWork = true;
++                if (queue.shouldFastUpdate) {
++                    return true;
++                }
++            }
++            return hasWork;
++        }
++    }
++
++    final LightQueue queue = new LightQueue();
++    // Paper end
++    private final ChunkMap chunkMap; private final ChunkMap playerChunkMap; // Paper
+     private final ProcessorHandle<ChunkTaskPriorityQueueSorter.Message<Runnable>> sorterMailbox;
+     private volatile int taskPerBatch = 5;
+     private final AtomicBoolean scheduled = new AtomicBoolean();
+ 
+     public ThreadedLevelLightEngine(LightChunkGetter chunkProvider, ChunkMap chunkStorage, boolean hasBlockLight, ProcessorMailbox<Runnable> processor, ProcessorHandle<ChunkTaskPriorityQueueSorter.Message<Runnable>> executor) {
+         super(chunkProvider, true, hasBlockLight);
+-        this.chunkMap = chunkStorage;
++        this.chunkMap = chunkStorage; this.playerChunkMap = chunkMap; // Paper
+         this.sorterMailbox = executor;
+         this.taskMailbox = processor;
+     }
+@@ -113,13 +249,9 @@ public class ThreadedLevelLightEngine extends LevelLightEngine implements AutoCl
+     }
+ 
+     private void addTask(int x, int z, IntSupplier completedLevelSupplier, ThreadedLevelLightEngine.TaskType stage, Runnable task) {
+-        this.sorterMailbox.tell(ChunkTaskPriorityQueueSorter.message(() -> {
+-            this.lightTasks.add(Pair.of(stage, task));
+-            if (this.lightTasks.size() >= this.taskPerBatch) {
+-                this.runUpdate();
+-            }
+-
+-        }, ChunkPos.asLong(x, z), completedLevelSupplier));
++        // Paper start - replace method
++        this.queue.add(ChunkPos.asLong(x, z), completedLevelSupplier, stage, task);
++        // Paper end
+     }
+ 
+     public void retainData(ChunkPos chunkPos, boolean bl) {
+@@ -134,8 +266,19 @@ public class ThreadedLevelLightEngine extends LevelLightEngine implements AutoCl
+ 
+     public CompletableFuture<ChunkAccess> lightChunk(ChunkAccess chunk, boolean excludeBlocks) {
+         ChunkPos chunkPos = chunk.getPos();
+-        chunk.setLightCorrect(false);
+-        this.addTask(chunkPos.x, chunkPos.z, ThreadedLevelLightEngine.TaskType.PRE_UPDATE, Util.name(() -> {
++        // Paper start
++        //chunk.setLightCorrect(false); // Don't need to disable this
++        long pair = chunkPos.toLong();
++        CompletableFuture<ChunkAccess> future = new CompletableFuture<>();
++        IntSupplier prioritySupplier = playerChunkMap.getPrioritySupplier(pair);
++        boolean[] skippedPre = {false};
++        this.queue.addChunk(pair, prioritySupplier, Util.name(() -> {
++            if (!isChunkLightStatus(pair)) {
++                future.complete(chunk);
++                skippedPre[0] = true;
++                return;
++            }
++            // Paper end
+             LevelChunkSection[] levelChunkSections = chunk.getSections();
+ 
+             for(int i = 0; i < 16; ++i) {
+@@ -152,53 +295,48 @@ public class ThreadedLevelLightEngine extends LevelLightEngine implements AutoCl
+                 });
+             }
+ 
+-            this.chunkMap.releaseLightTicket(chunkPos);
++            //this.chunkMap.releaseLightTicket(chunkPos);  // Paper - move into post task below
+         }, () -> {
+             return "lightChunk " + chunkPos + " " + excludeBlocks;
+-        }));
+-        return CompletableFuture.supplyAsync(() -> {
++            // Paper start  - merge the 2 together
++        }), () -> {
++            this.chunkMap.releaseLightTicket(chunkPos); // Paper - release light tickets as post task to ensure they stay loaded until fully done
++            if (skippedPre[0]) return; // Paper - future's already complete
+             chunk.setLightCorrect(true);
+             super.retainData(chunkPos, false);
+-            return chunk;
+-        }, (runnable) -> {
+-            this.addTask(chunkPos.x, chunkPos.z, ThreadedLevelLightEngine.TaskType.POST_UPDATE, runnable);
++            // Paper start
++            future.complete(chunk);
+         });
++        return future;
++        // Paper end
+     }
+ 
+     public void tryScheduleUpdate() {
+-        if ((!this.lightTasks.isEmpty() || super.hasLightWork()) && this.scheduled.compareAndSet(false, true)) {
++        if ((!this.queue.isEmpty() || super.hasLightWork()) && this.scheduled.compareAndSet(false, true)) { // Paper
+             this.taskMailbox.tell(() -> {
+                 this.runUpdate();
+                 this.scheduled.set(false);
++                tryScheduleUpdate(); // Paper - if we still have work to do, do it!
+             });
+         }
+ 
+     }
+ 
++    // Paper start - replace impl
++    private final java.util.List<Runnable> pre = new java.util.ArrayList<>();
++    private final java.util.List<Runnable> post = new java.util.ArrayList<>();
+     private void runUpdate() {
+-        int i = Math.min(this.lightTasks.size(), this.taskPerBatch);
+-        ObjectListIterator<Pair<ThreadedLevelLightEngine.TaskType, Runnable>> objectListIterator = this.lightTasks.iterator();
+-
+-        int j;
+-        for(j = 0; objectListIterator.hasNext() && j < i; ++j) {
+-            Pair<ThreadedLevelLightEngine.TaskType, Runnable> pair = objectListIterator.next();
+-            if (pair.getFirst() == ThreadedLevelLightEngine.TaskType.PRE_UPDATE) {
+-                pair.getSecond().run();
+-            }
++        if (queue.poll(pre, post)) {
++            pre.forEach(Runnable::run);
++            pre.clear();
++            super.runUpdates(Integer.MAX_VALUE, true, true);
++            post.forEach(Runnable::run);
++            post.clear();
++        } else {
++            // might have level updates to go still
++            super.runUpdates(Integer.MAX_VALUE, true, true);
+         }
+-
+-        objectListIterator.back(j);
+-        super.runUpdates(Integer.MAX_VALUE, true, true);
+-
+-        for(int var5 = 0; objectListIterator.hasNext() && var5 < i; ++var5) {
+-            Pair<ThreadedLevelLightEngine.TaskType, Runnable> pair2 = objectListIterator.next();
+-            if (pair2.getFirst() == ThreadedLevelLightEngine.TaskType.POST_UPDATE) {
+-                pair2.getSecond().run();
+-            }
+-
+-            objectListIterator.remove();
+-        }
+-
++        // Paper end
+     }
+ 
+     public void setTaskPerBatch(int taskBatchSize) {
+diff --git a/src/main/java/net/minecraft/util/thread/ProcessorMailbox.java b/src/main/java/net/minecraft/util/thread/ProcessorMailbox.java
+index a0ac2929ebba243727dd586daacbc79cc1b35b78..229b5d1d38e36061de0925002f8e1c832f495c36 100644
+--- a/src/main/java/net/minecraft/util/thread/ProcessorMailbox.java
++++ b/src/main/java/net/minecraft/util/thread/ProcessorMailbox.java
+@@ -46,6 +46,7 @@ public class ProcessorMailbox<T> implements ProcessorHandle<T>, AutoCloseable, R
+ 
+     }
+ 
++<<<<<<< found
+     private boolean canBeScheduled() {
+         if ((this.status.get() & 1) != 0) {
+             return false;
+@@ -107,6 +108,7 @@ public class ProcessorMailbox<T> implements ProcessorHandle<T>, AutoCloseable, R
+ 
+     }
+ 
++    public final void queue(T t0) { tell(t0); } @Override // Paper - OBFHELPER
+     public void tell(T object) {
+         this.queue.push(object);
+         this.registerForExecution();
+diff --git a/src/main/java/net/minecraft/world/level/chunk/DataLayer.java b/src/main/java/net/minecraft/world/level/chunk/DataLayer.java
+index dc42e8bd1dd785cfe34e5fb02d959c5cffed4a6d..682e34fcd33eb1eebea46c988464a422c53fe5df 100644
+--- a/src/main/java/net/minecraft/world/level/chunk/DataLayer.java
++++ b/src/main/java/net/minecraft/world/level/chunk/DataLayer.java
+@@ -10,6 +10,13 @@ import net.minecraft.server.MCUtil;
+ public class DataLayer {
+ 
+     // Paper start
++    public static final DataLayer EMPTY_NIBBLE_ARRAY = new DataLayer() {
++        @Override
++        public byte[] getData() {
++            throw new IllegalStateException();
++        }
++    };
++    public long lightCacheKey = Long.MIN_VALUE;
+     public static byte[] EMPTY_NIBBLE = new byte[2048];
+     private static final int nibbleBucketSizeMultiplier = Integer.getInteger("Paper.nibbleBucketSize", 3072);
+     private static final int maxPoolSize = Integer.getInteger("Paper.maxNibblePoolSize", (int) Math.min(6, Math.max(1, Runtime.getRuntime().maxMemory() / 1024 / 1024 / 1024)) * (nibbleBucketSizeMultiplier * 8));
+diff --git a/src/main/java/net/minecraft/world/level/lighting/BlockLightEngine.java b/src/main/java/net/minecraft/world/level/lighting/BlockLightEngine.java
+index 975ddeb715c32359722d3fad1c37b33bb20d6770..49d166dfa447fa762ef47aafadc134b48ac58872 100644
+--- a/src/main/java/net/minecraft/world/level/lighting/BlockLightEngine.java
++++ b/src/main/java/net/minecraft/world/level/lighting/BlockLightEngine.java
+@@ -22,9 +22,11 @@ public final class BlockLightEngine extends LayerLightEngine<BlockLightSectionSt
+     }
+ 
+     private int getLightEmission(long blockPos) {
+-        int i = BlockPos.getX(blockPos);
+-        int j = BlockPos.getY(blockPos);
+-        int k = BlockPos.getZ(blockPos);
++        // Paper start - inline math
++        int i = (int) (blockPos >> 38);
++        int j = (int) ((blockPos << 52) >> 52);
++        int k = (int) ((blockPos << 26) >> 38);
++        // Paper end
+         BlockGetter blockGetter = this.chunkSource.getChunkForLighting(i >> 4, k >> 4);
+         return blockGetter != null ? blockGetter.getLightEmission(this.pos.set(i, j, k)) : 0;
+     }
+@@ -37,33 +39,47 @@ public final class BlockLightEngine extends LayerLightEngine<BlockLightSectionSt
+         } else if (i >= 15) {
+             return i;
+         } else {
+-            int j = Integer.signum(BlockPos.getX(m) - BlockPos.getX(l));
+-            int k = Integer.signum(BlockPos.getY(m) - BlockPos.getY(l));
+-            int n = Integer.signum(BlockPos.getZ(m) - BlockPos.getZ(l));
++            // Paper start - reuse math - credit to JellySquid for idea
++            int jx = (int) (m >> 38);
++            int jy = (int) ((m << 52) >> 52);
++            int jz = (int) ((m << 26) >> 38);
++            int ix = (int) (l >> 38);
++            int iy = (int) ((l << 52) >> 52);
++            int iz = (int) ((l << 26) >> 38);
++            int j = Integer.signum(jx - ix);
++            int k = Integer.signum(jy - iy);
++            int n = Integer.signum(jz - iz);
++            // Paper end
+             Direction direction = Direction.fromNormal(j, k, n);
+             if (direction == null) {
+                 return 15;
+             } else {
+                 //MutableInt mutableInt = new MutableInt(); // Paper - share mutableint, single threaded
+-                BlockState blockState = this.getStateAndOpacity(m, mutableInt);
+-                if (mutableInt.getValue() >= 15) {
++                BlockState blockState = this.getBlockOptimized(jx, jy, jz, mutableInt); // Paper
++                int blockedLight = mutableInt.getValue(); // Paper
++                if (blockedLight >= 15) { // Paper
+                     return 15;
+                 } else {
+-                    BlockState blockState2 = this.getStateAndOpacity(l, (MutableInt)null);
++                    BlockState blockState2 = this.getBlockOptimized(ix, iy, iz); // Paper
+                     VoxelShape voxelShape = this.getShape(blockState2, l, direction);
+                     VoxelShape voxelShape2 = this.getShape(blockState, m, direction.getOpposite());
+-                    return Shapes.faceShapeOccludes(voxelShape, voxelShape2) ? 15 : i + Math.max(1, mutableInt.getValue());
++                    return Shapes.faceShapeOccludes(voxelShape, voxelShape2) ? 15 : i + Math.max(1, blockedLight);// Paper
+                 }
+             }
+         }
+     }
+ 
+     protected void checkNeighborsAfterUpdate(long id, int level, boolean decrease) {
+-        long l = SectionPos.blockToSection(id);
++        // Paper start - reuse unpacking, credit to JellySquid (Didn't do full optimization though)
++        int x = (int) (id >> 38);
++        int y = (int) ((id << 52) >> 52);
++        int z = (int) ((id << 26) >> 38);
++        long l = SectionPos.blockPosAsSectionLong(x, y, z);
++        // Paper end
+ 
+         for(Direction direction : DIRECTIONS) {
+-            long m = BlockPos.offset(id, direction);
+-            long n = SectionPos.blockToSection(m);
++            long m = BlockPos.getAdjacent(x, y, z, direction); // Paper
++            long n = SectionPos.getAdjacentFromBlockPos(x, y, z, direction); // Paper
+             if (l == n || this.storage.storingLightForSection(n)) {
+                 this.checkNeighbor(id, m, level, decrease);
+             }
+@@ -84,22 +100,32 @@ public final class BlockLightEngine extends LayerLightEngine<BlockLightSectionSt
+             }
+         }
+ 
+-        long n = SectionPos.blockToSection(l);
+-        DataLayer dataLayer = this.storage.getDataLayer(n, true);
++        // Paper start
++        int baseX = (int) (l >> 38);
++        int baseY = (int) ((l << 52) >> 52);
++        int baseZ = (int) ((l << 26) >> 38);
++        long n = SectionPos.blockPosAsSectionLong(baseX, baseY, baseZ);
++        DataLayer dataLayer = this.storage.updating.getUpdatingOptimized(n);
++        // Paper End
+ 
+         for(Direction direction : DIRECTIONS) {
+-            long o = BlockPos.offset(l, direction);
++            // Paper start
++            int newX = baseX + direction.getStepX();
++            int newY = baseY + direction.getStepY();
++            int newZ = baseZ + direction.getStepZ();
++            long o = BlockPos.asLong(newX, newY, newZ);
+             if (o != m) {
+-                long p = SectionPos.blockToSection(o);
++                long p = SectionPos.blockPosAsSectionLong(newX, newY, newZ);
++                // Paper end
+                 DataLayer dataLayer2;
+                 if (n == p) {
+                     dataLayer2 = dataLayer;
+                 } else {
+-                    dataLayer2 = this.storage.getDataLayer(p, true);
++                    dataLayer2 = this.storage.updating.getUpdatingOptimized(p); // Paper
+                 }
+ 
+                 if (dataLayer2 != null) {
+-                    int q = this.computeLevelFromNeighbor(o, l, this.getLevel(dataLayer2, o));
++                    int q = this.computeLevelFromNeighbor(o, l, this.getNibbleLightInverse(dataLayer2, newX, newY, newZ)); // Paper
+                     if (j > q) {
+                         j = q;
+                     }
+diff --git a/src/main/java/net/minecraft/world/level/lighting/BlockLightSectionStorage.java b/src/main/java/net/minecraft/world/level/lighting/BlockLightSectionStorage.java
+index 36aa43d29ab9b7d0337c18383134f36261f2f9a5..c63e726b34aa309824b4a68e37a3774eac70a672 100644
+--- a/src/main/java/net/minecraft/world/level/lighting/BlockLightSectionStorage.java
++++ b/src/main/java/net/minecraft/world/level/lighting/BlockLightSectionStorage.java
+@@ -1,8 +1,6 @@
+ package net.minecraft.world.level.lighting;
+ 
+ import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
+-import net.minecraft.core.BlockPos;
+-import net.minecraft.core.SectionPos;
+ import net.minecraft.world.level.LightLayer;
+ import net.minecraft.world.level.chunk.DataLayer;
+ import net.minecraft.world.level.chunk.LightChunkGetter;
+@@ -13,9 +11,14 @@ public class BlockLightSectionStorage extends LayerLightSectionStorage<BlockLigh
+     }
+ 
+     protected int getLightValue(long l) {
+-        long m = SectionPos.blockToSection(l);
+-        DataLayer dataLayer = this.getDataLayer(m, false);
+-        return dataLayer == null ? 0 : dataLayer.get(SectionPos.sectionRelative(BlockPos.getX(l)), SectionPos.sectionRelative(BlockPos.getY(l)), SectionPos.sectionRelative(BlockPos.getZ(l)));
++        // Paper start
++        int baseX = (int) (l >> 38);
++        int baseY = (int) ((l << 52) >> 52);
++        int baseZ = (int) ((l << 26) >> 38);
++        long m = (((long) (baseX >> 4) & 4194303L) << 42) | (((long) (baseY >> 4) & 1048575L)) | (((long) (baseZ >> 4) & 4194303L) << 20);
++        DataLayer nibblearray = this.updating.lookup.apply(m);
++        return nibblearray == null ? 0 : nibblearray.get(baseX & 15, baseY & 15, baseZ & 15);
++        // Paper end
+     }
+ 
+     public static final class BlockDataLayerStorageMap extends DataLayerStorageMap<BlockLightSectionStorage.BlockDataLayerStorageMap> {
+diff --git a/src/main/java/net/minecraft/world/level/lighting/DataLayerStorageMap.java b/src/main/java/net/minecraft/world/level/lighting/DataLayerStorageMap.java
+index f0c04099e17fce699f32dfb2f8a20034ec0252b2..b619cb904832db69e2432a0b20d108a35ebf672b 100644
+--- a/src/main/java/net/minecraft/world/level/lighting/DataLayerStorageMap.java
++++ b/src/main/java/net/minecraft/world/level/lighting/DataLayerStorageMap.java
+@@ -6,13 +6,18 @@ import net.minecraft.server.MCUtil;
+ import net.minecraft.world.level.chunk.DataLayer;
+ 
+ public abstract class DataLayerStorageMap<M extends DataLayerStorageMap<M>> {
+-    private final long[] lastSectionKeys = new long[2];
+-    private final DataLayer[] lastSections = new DataLayer[2];
++    // private final long[] b = new long[2]; // Paper - unused
++    private final DataLayer[] lastSections = new DataLayer[]{DataLayer.EMPTY_NIBBLE_ARRAY, DataLayer.EMPTY_NIBBLE_ARRAY}; private final DataLayer[] cache = lastSections; // Paper - OBFHELPER
+     private boolean cacheEnabled;
+     protected final com.destroystokyo.paper.util.map.QueuedChangesMapLong2Object<DataLayer> map; // Paper - avoid copying light data
+     protected final boolean isVisible; // Paper - avoid copying light data
+-    java.util.function.Function<Long, DataLayer> lookup; // Paper - faster branchless lookup
+ 
++    // Paper start - faster lookups with less branching, use interface to avoid boxing instead of Function
++    public final NibbleArrayAccess lookup;
++    public interface NibbleArrayAccess {
++        DataLayer apply(long id);
++    }
++    // Paper end
+     // Paper start - avoid copying light data
+     protected DataLayerStorageMap(com.destroystokyo.paper.util.map.QueuedChangesMapLong2Object<DataLayer> data, boolean isVisible) {
+         if (isVisible) {
+@@ -20,12 +25,14 @@ public abstract class DataLayerStorageMap<M extends DataLayerStorageMap<M>> {
+         }
+         this.map = data;
+         this.isVisible = isVisible;
++        // Paper end - avoid copying light data
++        // Paper start - faster lookups with less branching
+         if (isVisible) {
+             lookup = data::getVisibleAsync;
+         } else {
+-            lookup = data::getUpdating;
++            lookup = data.getUpdatingMap()::get; // jump straight the sub map
+         }
+-        // Paper end - avoid copying light data
++        // Paper end
+         this.clearCache();
+         this.cacheEnabled = true;
+     }
+@@ -35,7 +42,9 @@ public abstract class DataLayerStorageMap<M extends DataLayerStorageMap<M>> {
+     public void copyDataLayer(long pos) {
+         if (this.isVisible) { throw new IllegalStateException("writing to visible data"); } // Paper - avoid copying light data
+         DataLayer updating = this.map.getUpdating(pos); // Paper - pool nibbles
+-        this.map.queueUpdate(pos, new DataLayer().markPoolSafe(updating.getCloneIfSet())); // Paper - avoid copying light data - pool safe clone
++        DataLayer nibblearray = new DataLayer().markPoolSafe(updating.getCloneIfSet()); // Paper
++        nibblearray.lightCacheKey = pos; // Paper
++        this.map.queueUpdate(pos, nibblearray); // Paper - avoid copying light data - pool safe clone
+         if (updating.cleaner != null) MCUtil.scheduleTask(2, updating.cleaner, "Light Engine Release"); // Paper - delay clean incase anything holding ref was still using it
+         this.clearCache();
+     }
+@@ -44,33 +53,34 @@ public abstract class DataLayerStorageMap<M extends DataLayerStorageMap<M>> {
+         return lookup.apply(chunkPos) != null; // Paper - avoid copying light data
+     }
+ 
+-    @Nullable
+-    public final DataLayer getLayer(long chunkPos) { // Paper - final
+-        if (this.cacheEnabled) {
+-            for(int i = 0; i < 2; ++i) {
+-                if (chunkPos == this.lastSectionKeys[i]) {
+-                    return this.lastSections[i];
+-                }
+-            }
+-        }
++    // Paper start - less branching as we know we are using cache and updating
++    public final DataLayer getUpdatingOptimized(final long i) { // Paper - final
++        final DataLayer[] cache = this.cache;
++        if (cache[0].lightCacheKey == i) return cache[0];
++        if (cache[1].lightCacheKey == i) return cache[1];
+ 
+-        DataLayer dataLayer = lookup.apply(chunkPos); // Paper - avoid copying light data
++        final DataLayer dataLayer = this.lookup.apply(i); // Paper - avoid copying light data
+         if (dataLayer == null) {
+             return null;
+         } else {
+-            if (this.cacheEnabled) {
+-                for(int j = 1; j > 0; --j) {
+-                    this.lastSectionKeys[j] = this.lastSectionKeys[j - 1];
+-                    this.lastSections[j] = this.lastSections[j - 1];
+-                }
+-
+-                this.lastSectionKeys[0] = chunkPos;
+-                this.lastSections[0] = dataLayer;
+-            }
+-
++            cache[1] = cache[0];
++            cache[0] = dataLayer;
+             return dataLayer;
+         }
+     }
++    // Paper end
++
++    @Nullable
++    public final DataLayer getLayer(final long chunkPos) { // Paper - final
++        // Paper start - optimize visible case or missed updating cases
++        if (this.cacheEnabled) {
++            // short circuit to optimized
++            return getUpdatingOptimized(chunkPos);
++        }
++
++        return this.lookup.apply(chunkPos);
++        // Paper end
++    }
+ 
+     @Nullable
+     public DataLayer removeLayer(long chunkPos) {
+@@ -80,13 +90,14 @@ public abstract class DataLayerStorageMap<M extends DataLayerStorageMap<M>> {
+ 
+     public void setLayer(long pos, DataLayer data) {
+         if (this.isVisible) { throw new IllegalStateException("writing to visible data"); } // Paper - avoid copying light data
++        data.lightCacheKey = pos; // Paper
+         this.map.queueUpdate(pos, data); // Paper - avoid copying light data
+     }
+ 
+     public void clearCache() {
+         for(int i = 0; i < 2; ++i) {
+-            this.lastSectionKeys[i] = Long.MAX_VALUE;
+-            this.lastSections[i] = null;
++            // this.b[i] = Long.MAX_VALUE; // Paper - Unused
++            this.lastSections[i] = DataLayer.EMPTY_NIBBLE_ARRAY; // Paper
+         }
+     }
+ 
+diff --git a/src/main/java/net/minecraft/world/level/lighting/LayerLightEngine.java b/src/main/java/net/minecraft/world/level/lighting/LayerLightEngine.java
+index 7ab70d28914ce83d5cb6b70dd97a180352128586..bb4a6a5c3d24013da552522fbbabb5f3e0d91b69 100644
+--- a/src/main/java/net/minecraft/world/level/lighting/LayerLightEngine.java
++++ b/src/main/java/net/minecraft/world/level/lighting/LayerLightEngine.java
+@@ -10,6 +10,7 @@ import net.minecraft.world.level.ChunkPos;
+ import net.minecraft.world.level.LightLayer;
+ import net.minecraft.world.level.block.Blocks;
+ import net.minecraft.world.level.block.state.BlockState;
++import net.minecraft.world.level.chunk.ChunkAccess;
+ import net.minecraft.world.level.chunk.DataLayer;
+ import net.minecraft.world.level.chunk.LightChunkGetter;
+ import net.minecraft.world.phys.shapes.Shapes;
+@@ -22,10 +23,37 @@ public abstract class LayerLightEngine<M extends DataLayerStorageMap<M>, S exten
+     protected final LightLayer layer;
+     protected final S storage;
+     private boolean runningLightUpdates;
+-    protected final BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
++    protected final BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos(); protected final BlockPos.MutableBlockPos pos = pos; // Paper
+     private final long[] lastChunkPos = new long[2];
+-    private final BlockGetter[] lastChunk = new BlockGetter[2];
++    private final ChunkAccess[] lastChunk = new ChunkAccess[2]; // Paper
+ 
++    // Paper start - see fully commented out method below (look for Bedrock)
++    // optimized method with less branching for when scenarios arent needed.
++    // avoid using mutable version if can
++    protected final BlockState getBlockOptimized(int x, int y, int z, MutableInt mutableint) {
++        ChunkAccess iblockaccess = this.getChunk(x >> 4, z >> 4);
++
++        if (iblockaccess == null) {
++            mutableint.setValue(16);
++            return Blocks.BEDROCK.defaultBlockState();
++        } else {
++            this.pos.setValues(x, y, z);
++            BlockState iblockdata = iblockaccess.getType(x, y, z);
++            mutableint.setValue(iblockdata.getLightBlock(this.chunkSource.getLevel(), this.pos));
++            return iblockdata.canOcclude() && iblockdata.useShapeForLightOcclusion() ? iblockdata : Blocks.AIR.defaultBlockState();
++        }
++    }
++    protected final BlockState getBlockOptimized(int x, int y, int z) {
++        ChunkAccess iblockaccess = this.getChunk(x >> 4, z >> 4);
++
++        if (iblockaccess == null) {
++            return Blocks.BEDROCK.defaultBlockState();
++        } else {
++            BlockState iblockdata = iblockaccess.getType(x, y, z);
++            return iblockdata.canOcclude() && iblockdata.useShapeForLightOcclusion() ? iblockdata : Blocks.AIR.defaultBlockState();
++        }
++    }
++    // Paper end
+     public LayerLightEngine(LightChunkGetter chunkProvider, LightLayer type, S lightStorage) {
+         super(16, 256, 8192);
+         this.chunkSource = chunkProvider;
+@@ -43,7 +71,7 @@ public abstract class LayerLightEngine<M extends DataLayerStorageMap<M>, S exten
+     }
+ 
+     @Nullable
+-    private BlockGetter getChunk(int chunkX, int chunkZ) {
++    private ChunkAccess getChunk(int chunkX, int chunkZ) {// Paper
+         long l = ChunkPos.asLong(chunkX, chunkZ);
+ 
+         for(int i = 0; i < 2; ++i) {
+@@ -52,7 +80,7 @@ public abstract class LayerLightEngine<M extends DataLayerStorageMap<M>, S exten
+             }
+         }
+ 
+-        BlockGetter blockGetter = this.chunkSource.getChunkForLighting(chunkX, chunkZ);
++        ChunkAccess blockGetter = (ChunkAccess)this.chunkSource.getChunkForLighting(chunkX, chunkZ); // Paper
+ 
+         for(int j = 1; j > 0; --j) {
+             this.lastChunkPos[j] = this.lastChunkPos[j - 1];
+@@ -69,35 +97,39 @@ public abstract class LayerLightEngine<M extends DataLayerStorageMap<M>, S exten
+         Arrays.fill(this.lastChunk, (Object)null);
+     }
+ 
+-    protected BlockState getStateAndOpacity(long pos, @Nullable MutableInt mutableInt) {
+-        if (pos == Long.MAX_VALUE) {
+-            if (mutableInt != null) {
+-                mutableInt.setValue(0);
+-            }
+-
+-            return Blocks.AIR.defaultBlockState();
+-        } else {
+-            int i = SectionPos.blockToSectionCoord(BlockPos.getX(pos));
+-            int j = SectionPos.blockToSectionCoord(BlockPos.getZ(pos));
+-            BlockGetter blockGetter = this.getChunk(i, j);
+-            if (blockGetter == null) {
+-                if (mutableInt != null) {
+-                    mutableInt.setValue(16);
+-                }
+-
+-                return Blocks.BEDROCK.defaultBlockState();
+-            } else {
+-                this.pos.set(pos);
+-                BlockState blockState = blockGetter.getBlockState(this.pos);
+-                boolean bl = blockState.canOcclude() && blockState.useShapeForLightOcclusion();
+-                if (mutableInt != null) {
+-                    mutableInt.setValue(blockState.getLightBlock(this.chunkSource.getLevel(), this.pos));
+-                }
+-
+-                return bl ? blockState : Blocks.AIR.defaultBlockState();
+-            }
+-        }
+-    }
++    // Paper start - comment out, see getBlockOptimized
++//    protected IBlockData a(long i, @Nullable MutableInt mutableint) {
++//        if (i == Long.MAX_VALUE) {
++//            if (mutableint != null) {
++//                mutableint.setValue(0);
++//            }
++//
++//            return Blocks.AIR.getBlockData();
++//        } else {
++//            int j = SectionPosition.a(BlockPosition.b(i));
++//            int k = SectionPosition.a(BlockPosition.d(i));
++//            IBlockAccess iblockaccess = this.a(j, k);
++//
++//            if (iblockaccess == null) {
++//                if (mutableint != null) {
++//                    mutableint.setValue(16);
++//                }
++//
++//                return Blocks.BEDROCK.getBlockData();
++//            } else {
++//                this.d.g(i);
++//                IBlockData iblockdata = iblockaccess.getType(this.d);
++//                boolean flag = iblockdata.l() && iblockdata.e();
++//
++//                if (mutableint != null) {
++//                    mutableint.setValue(iblockdata.b(this.a.getWorld(), (BlockPosition) this.d));
++//                }
++//
++//                return flag ? iblockdata : Blocks.AIR.getBlockData();
++//            }
++//        }
++//    }
++    // Paper end
+ 
+     protected VoxelShape getShape(BlockState world, long pos, Direction facing) {
+         return world.canOcclude() ? world.getFaceOcclusionShape(this.chunkSource.getLevel(), this.pos.set(pos), facing) : Shapes.empty();
+@@ -127,8 +159,9 @@ public abstract class LayerLightEngine<M extends DataLayerStorageMap<M>, S exten
+         return l == Long.MAX_VALUE ? 0 : 15 - this.storage.getStoredLevel(l);
+     }
+ 
++    protected int getNibbleLightInverse(DataLayer nibblearray, int x, int y, int z) { return 15 - nibblearray.get(x & 15, y & 15, z & 15); } // Paper - x/y/z version of below
+     protected int getLevel(DataLayer section, long blockPos) {
+-        return 15 - section.get(SectionPos.sectionRelative(BlockPos.getX(blockPos)), SectionPos.sectionRelative(BlockPos.getY(blockPos)), SectionPos.sectionRelative(BlockPos.getZ(blockPos)));
++        return 15 - section.get((int) (blockPos >> 38) & 15, (int) ((blockPos << 52) >> 52) & 15, (int) ((blockPos << 26) >> 38) & 15); // Paper
+     }
+ 
+     protected void setLevel(long id, int level) {
+diff --git a/src/main/java/net/minecraft/world/level/lighting/LayerLightSectionStorage.java b/src/main/java/net/minecraft/world/level/lighting/LayerLightSectionStorage.java
+index 029faf4fd8837344f3472268606b89288faf8e37..94b4dd9d1306908c95c3ec0dbcd720ad2d6937ec 100644
+--- a/src/main/java/net/minecraft/world/level/lighting/LayerLightSectionStorage.java
++++ b/src/main/java/net/minecraft/world/level/lighting/LayerLightSectionStorage.java
+@@ -26,9 +26,9 @@ public abstract class LayerLightSectionStorage<M extends DataLayerStorageMap<M>>
+     protected final LongSet toMarkNoData = new LongOpenHashSet();
+     protected final LongSet toMarkData = new LongOpenHashSet();
+     protected volatile M visibleSectionData; protected final Object visibleUpdateLock = new Object(); // Paper - diff on change, should be "visible" - force compile fail on usage change
+-    protected final M updatingSectionData; // Paper - diff on change, should be "updating"
++    protected final M updatingSectionData; protected final M updating; // Paper - diff on change, should be "updating"
+     protected final LongSet changedSections = new LongOpenHashSet();
+-    protected final LongSet sectionsAffectedByLightUpdates = new LongOpenHashSet();
++    protected final LongSet sectionsAffectedByLightUpdates = new LongOpenHashSet(); LongSet dirty = sectionsAffectedByLightUpdates; // Paper - OBFHELPER
+     protected final Long2ObjectMap<DataLayer> queuedSections = Long2ObjectMaps.synchronize(new Long2ObjectOpenHashMap<>());
+     private final LongSet untrustedSections = new LongOpenHashSet();
+     private final LongSet columnsToRetainQueuedDataFor = new LongOpenHashSet();
+@@ -36,33 +36,33 @@ public abstract class LayerLightSectionStorage<M extends DataLayerStorageMap<M>>
+     protected volatile boolean hasToRemove;
+ 
+     protected LayerLightSectionStorage(LightLayer lightType, LightChunkGetter chunkProvider, M lightData) {
+-        super(3, 16, 256);
++        super(3, 256, 256); // Paper - bump expected size of level sets to improve collisions and reduce rehashing (seen a lot of it)
+         this.layer = lightType;
+         this.chunkSource = chunkProvider;
+-        this.updatingSectionData = lightData;
++        this.updatingSectionData = lightData; updating = lightData; // Paper
+         this.visibleSectionData = lightData.copy(); // Paper - avoid copying light data
+         this.visibleSectionData.disableCache(); // Paper - avoid copying light data
+     }
+ 
+-    protected boolean storingLightForSection(long sectionPos) {
+-        return this.getDataLayer(sectionPos, true) != null;
++    protected final boolean storingLightForSection(long sectionPos) { // Paper - final to help inlining
++        return this.updating.getUpdatingOptimized(sectionPos) != null; // Paper - inline to avoid branching
+     }
+ 
+     @Nullable
+     protected DataLayer getDataLayer(long sectionPos, boolean cached) {
+         // Paper start - avoid copying light data
+         if (cached) {
+-            return this.getDataLayer(this.updatingSectionData, sectionPos);
++            return this.updating.getUpdatingOptimized(sectionPos);
+         } else {
+             synchronized (this.visibleUpdateLock) {
+-                return this.getDataLayer(this.visibleSectionData, sectionPos);
++                return this.visibleSectionData.lookup.apply(sectionPos);
+             }
+         }
+         // Paper end - avoid copying light data
+     }
+ 
+     @Nullable
+-    protected DataLayer getDataLayer(M storage, long sectionPos) {
++    protected final DataLayer getDataLayer(M storage, long sectionPos) { // Paper
+         return storage.getLayer(sectionPos);
+     }
+ 
+@@ -75,24 +75,58 @@ public abstract class LayerLightSectionStorage<M extends DataLayerStorageMap<M>>
+     protected abstract int getLightValue(long blockPos);
+ 
+     protected int getStoredLevel(long blockPos) {
+-        long l = SectionPos.blockToSection(blockPos);
+-        DataLayer dataLayer = this.getDataLayer(l, true);
+-        return dataLayer.get(SectionPos.sectionRelative(BlockPos.getX(blockPos)), SectionPos.sectionRelative(BlockPos.getY(blockPos)), SectionPos.sectionRelative(BlockPos.getZ(blockPos)));
++        // Paper start - reuse and inline math, use Optimized Updating path
++        final int x = (int) (blockPos >> 38);
++        final int y = (int) ((blockPos << 52) >> 52);
++        final int z = (int) ((blockPos << 26) >> 38);
++        long l = SectionPos.blockPosAsSectionLong(x, y, z);
++        DataLayer dataLayer = this.updating.getUpdatingOptimized(l);
++        //  BUG: Sometimes returns null and crashes, try to recover, but to prevent crash just return no light.
++        if (dataLayer == null) {
++            dataLayer = this.visibleSectionData.lookup.apply(l);
++        }
++        if (dataLayer == null) {
++            System.err.println("Null nibble, preventing crash " + BlockPos.of(blockPos));
++            return 0;
++        }
++
++        return dataLayer.get(x & 15, y & 15, z & 15); // Paper - inline operations
++        // Paper end
+     }
+ 
+     protected void setStoredLevel(long blockPos, int value) {
+-        long l = SectionPos.blockToSection(blockPos);
++        // Paper start - cache part of the math done in loop below
++        int x = (int) (blockPos >> 38);
++        int y = (int) ((blockPos << 52) >> 52);
++        int z = (int) ((blockPos << 26) >> 38);
++        long l = SectionPos.blockPosAsSectionLong(x, y, z);
++        // Paper end
++
+         if (this.changedSections.add(l)) {
+             this.updatingSectionData.copyDataLayer(l);
+         }
+ 
+         DataLayer dataLayer = this.getDataLayer(l, true);
+         dataLayer.set(SectionPos.sectionRelative(BlockPos.getX(blockPos)), SectionPos.sectionRelative(BlockPos.getY(blockPos)), SectionPos.sectionRelative(BlockPos.getZ(blockPos)), value);
+-
+-        for(int i = -1; i <= 1; ++i) {
+-            for(int j = -1; j <= 1; ++j) {
+-                for(int k = -1; k <= 1; ++k) {
+-                    this.sectionsAffectedByLightUpdates.add(SectionPos.blockToSection(BlockPos.offset(blockPos, j, k, i)));
++        dataLayer.set(x & 15, y & 15, z & 15, value); // Paper - use already calculated x/y/z
++
++        // Paper start - credit to JellySquid for a major optimization here:
++        /*
++         * An extremely important optimization is made here in regards to adding items to the pending notification set. The
++         * original implementation attempts to add the coordinate of every chunk which contains a neighboring block position
++         * even though a huge number of loop iterations will simply map to block positions within the same updating chunk.
++         *
++         * Our implementation here avoids this by pre-calculating the min/max chunk coordinates so we can iterate over only
++         * the relevant chunk positions once. This reduces what would always be 27 iterations to just 1-8 iterations.
++         *
++         * @reason Use faster implementation
++         * @author JellySquid
++         */
++        for (int z2 = (z - 1) >> 4; z2 <= (z + 1) >> 4; ++z2) {
++            for (int x2 = (x - 1) >> 4; x2 <= (x + 1) >> 4; ++x2) {
++                for (int y2 = (y - 1) >> 4; y2 <= (y + 1) >> 4; ++y2) {
++                    this.dirty.add(SectionPos.asLong(x2, y2, z2));
++                    // Paper end
+                 }
+             }
+         }
+@@ -130,17 +164,23 @@ public abstract class LayerLightSectionStorage<M extends DataLayerStorageMap<M>>
+         }
+ 
+         if (i >= 2 && level != 2) {
+-            if (this.toRemove.contains(id)) {
+-                this.toRemove.remove(id);
+-            } else {
++            if (!this.toRemove.remove(id)) {// Paper - remove useless contains - credit to JellySquid
++                //this.toRemove.remove(id);// Paper
++            //} else { // Paper
+                 this.updatingSectionData.setLayer(id, this.createDataLayer(id));
+                 this.changedSections.add(id);
+                 this.onNodeAdded(id);
+ 
+-                for(int j = -1; j <= 1; ++j) {
+-                    for(int k = -1; k <= 1; ++k) {
+-                        for(int l = -1; l <= 1; ++l) {
+-                            this.sectionsAffectedByLightUpdates.add(SectionPos.blockToSection(BlockPos.offset(id, k, l, j)));
++                // Paper start - reuse x/y/z and only notify valid chunks - Credit to JellySquid (See above method for notes)
++                int x = (int) (id >> 38);
++                int y = (int) ((id << 52) >> 52);
++                int z = (int) ((id << 26) >> 38);
++
++                for (int z2 = (z - 1) >> 4; z2 <= (z + 1) >> 4; ++z2) {
++                    for (int x2 = (x - 1) >> 4; x2 <= (x + 1) >> 4; ++x2) {
++                        for (int y2 = (y - 1) >> 4; y2 <= (y + 1) >> 4; ++y2) {
++                            this.dirty.add(SectionPos.asLong(x2, y2, z2));
++                            // Paper end
+                         }
+                     }
+                 }
+@@ -165,9 +205,9 @@ public abstract class LayerLightSectionStorage<M extends DataLayerStorageMap<M>>
+                 return SectionPos.blockToSection(mx) == sectionPos;
+             });
+         } else {
+-            int i = SectionPos.sectionToBlockCoord(SectionPos.x(sectionPos));
+-            int j = SectionPos.sectionToBlockCoord(SectionPos.y(sectionPos));
+-            int k = SectionPos.sectionToBlockCoord(SectionPos.z(sectionPos));
++            int i = (int) (sectionPos >> 42) << 4; // Paper - inline
++            int j = (int) (sectionPos << 44 >> 44) << 4; // Paper - inline
++            int k = (int) (sectionPos << 22 >> 42) << 4; // Paper - inline
+ 
+             for(int l = 0; l < 16; ++l) {
+                 for(int m = 0; m < 16; ++m) {
+@@ -209,11 +249,12 @@ public abstract class LayerLightSectionStorage<M extends DataLayerStorageMap<M>>
+             this.toRemove.clear();
+             this.hasToRemove = false;
+ 
++            DataLayer test = null; // Paper
+             for(Entry<DataLayer> entry : this.queuedSections.long2ObjectEntrySet()) {
+                 long n = entry.getLongKey();
+-                if (this.storingLightForSection(n)) {
++                if ((test = this.updating.getUpdatingOptimized(n)) != null) { // Paper - dont look up nibble twice
+                     DataLayer dataLayer3 = entry.getValue();
+-                    if (this.updatingSectionData.getLayer(n) != dataLayer3) {
++                    if (test != dataLayer3) { // Paper
+                         this.clearQueuedSectionBlocks(lightProvider, n);
+                         this.updatingSectionData.setLayer(n, dataLayer3);
+                         this.changedSections.add(n);
+@@ -248,12 +289,17 @@ public abstract class LayerLightSectionStorage<M extends DataLayerStorageMap<M>>
+ 
+     private void checkEdgesForSection(LayerLightEngine<M, ?> lightProvider, long sectionPos) {
+         if (this.storingLightForSection(sectionPos)) {
+-            int i = SectionPos.sectionToBlockCoord(SectionPos.x(sectionPos));
+-            int j = SectionPos.sectionToBlockCoord(SectionPos.y(sectionPos));
+-            int k = SectionPos.sectionToBlockCoord(SectionPos.z(sectionPos));
++            // Paper start
++            int secX = (int) (sectionPos >> 42);
++            int secY = (int) (sectionPos << 44 >> 44);
++            int secZ = (int) (sectionPos << 22 >> 42);
++            int i = secX << 4; // baseX
++            int j = secY << 4; // baseY
++            int k = secZ << 4; // baseZ
++            // Paper end
+ 
+             for(Direction direction : DIRECTIONS) {
+-                long l = SectionPos.offset(sectionPos, direction);
++                long l = SectionPos.getAdjacentFromSectionPos(secX, secY, secZ, direction); // Paper - avoid extra unpacking
+                 if (!this.queuedSections.containsKey(l) && this.storingLightForSection(l)) {
+                     for(int m = 0; m < 16; ++m) {
+                         for(int n = 0; n < 16; ++n) {
+diff --git a/src/main/java/net/minecraft/world/level/lighting/SkyLightEngine.java b/src/main/java/net/minecraft/world/level/lighting/SkyLightEngine.java
+index 29f183c5c65a0751f36c20f5cee6fba9991e1f9c..160ef238d4a3b47c517be0083586c5bd5604fbbd 100644
+--- a/src/main/java/net/minecraft/world/level/lighting/SkyLightEngine.java
++++ b/src/main/java/net/minecraft/world/level/lighting/SkyLightEngine.java
+@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
+ import net.minecraft.core.Direction;
+ import net.minecraft.core.SectionPos;
+ import net.minecraft.world.level.LightLayer;
++import net.minecraft.world.level.block.Blocks;
+ import net.minecraft.world.level.block.state.BlockState;
+ import net.minecraft.world.level.chunk.DataLayer;
+ import net.minecraft.world.level.chunk.LightChunkGetter;
+@@ -35,21 +36,26 @@ public final class SkyLightEngine extends LayerLightEngine<SkyLightSectionStorag
+             if (i >= 15) {
+                 return i;
+             } else {
+-                //MutableInt mutableInt = new MutableInt(); // Paper - share mutableint, single threaded
+-                BlockState blockState = this.getStateAndOpacity(m, mutableInt);
+-                if (mutableInt.getValue() >= 15) {
++                //MutableInt mutableint = new MutableInt(); // Paper - share mutableint, single threaded
++                // Paper start - use x/y/z and optimized block lookup
++                int jx = (int) (m >> 38);
++                int jy = (int) ((m << 52) >> 52);
++                int jz = (int) ((m << 26) >> 38);
++                BlockState blockState = this.getBlockOptimized(jx, jy, jz, mutableInt);
++                int blockedLight = mutableInt.getValue();
++                if (blockedLight >= 15) {
++                    // Paper end
+                     return 15;
+                 } else {
+-                    int j = BlockPos.getX(l);
+-                    int k = BlockPos.getY(l);
+-                    int n = BlockPos.getZ(l);
+-                    int o = BlockPos.getX(m);
+-                    int p = BlockPos.getY(m);
+-                    int q = BlockPos.getZ(m);
+-                    boolean bl = j == o && n == q;
+-                    int r = Integer.signum(o - j);
+-                    int s = Integer.signum(p - k);
+-                    int t = Integer.signum(q - n);
++                    // Paper start - inline math
++                    int ix = (int) (i >> 38);
++                    int iy = (int) ((i << 52) >> 52);
++                    int iz = (int) ((i << 26) >> 38);
++                    boolean bl = ix == jx && iz == jz;
++                    int r = Integer.signum(jx - ix);
++                    int s = Integer.signum(jy - iy);
++                    int t = Integer.signum(jz - iz);
++                    // Paper end
+                     Direction direction;
+                     if (l == Long.MAX_VALUE) {
+                         direction = Direction.DOWN;
+@@ -57,7 +63,7 @@ public final class SkyLightEngine extends LayerLightEngine<SkyLightSectionStorag
+                         direction = Direction.fromNormal(r, s, t);
+                     }
+ 
+-                    BlockState blockState2 = this.getStateAndOpacity(l, (MutableInt)null);
++                    BlockState blockState2 = l == Long.MAX_VALUE ? Blocks.AIR.defaultBlockState() : this.getBlockOptimized(ix, iy, iz); // Paper
+                     if (direction != null) {
+                         VoxelShape voxelShape = this.getShape(blockState2, l, direction);
+                         VoxelShape voxelShape2 = this.getShape(blockState, m, direction.getOpposite());
+@@ -82,18 +88,22 @@ public final class SkyLightEngine extends LayerLightEngine<SkyLightSectionStorag
+                         }
+                     }
+ 
+-                    boolean bl2 = l == Long.MAX_VALUE || bl && k > p;
+-                    return bl2 && i == 0 && mutableInt.getValue() == 0 ? 0 : i + Math.max(1, mutableInt.getValue());
++                    boolean bl2 = l == Long.MAX_VALUE || bl && iy > jy; // Paper rename vars to iy > jy
++                    return bl2 && i == 0 && blockedLight == 0 ? 0 : i + Math.max(1, blockedLight); // Paper
+                 }
+             }
+         }
+     }
+ 
+     protected void checkNeighborsAfterUpdate(long id, int level, boolean decrease) {
+-        long l = SectionPos.blockToSection(id);
+-        int i = BlockPos.getY(id);
+-        int j = SectionPos.sectionRelative(i);
+-        int k = SectionPos.blockToSectionCoord(i);
++        // Paper start
++        int baseX = (int) (id >> 38);
++        int baseY = (int) ((id << 52) >> 52);
++        int baseZ = (int) ((id << 26) >> 38);
++        long l = SectionPos.blockPosAsSectionLong(baseX, baseY, baseZ);
++        int j = baseY & 15;
++        int k = baseY >> 4;
++        // Paper end
+         int m;
+         if (j != 0) {
+             m = 0;
+@@ -105,14 +115,15 @@ public final class SkyLightEngine extends LayerLightEngine<SkyLightSectionStorag
+             m = n;
+         }
+ 
+-        long p = BlockPos.offset(id, 0, -1 - m * 16, 0);
+-        long q = SectionPos.blockToSection(p);
++        int newBaseY = baseY + (-1 - m * 16); // Paper
++        long p = BlockPos.asLong(baseX, newBaseY, baseZ); // Paper
++        long q = SectionPos.blockPosAsSectionLong(baseX, newBaseY, baseZ); // Paper
+         if (l == q || this.storage.storingLightForSection(q)) {
+             this.checkNeighbor(id, p, level, decrease);
+         }
+ 
+-        long r = BlockPos.offset(id, Direction.UP);
+-        long s = SectionPos.blockToSection(r);
++        long r = BlockPos.asLong(baseX, baseY + 1, baseZ); // Paper
++        long s = SectionPos.blockPosAsSectionLong(baseX, baseY + 1, baseZ); // Paper
+         if (l == s || this.storage.storingLightForSection(s)) {
+             this.checkNeighbor(id, r, level, decrease);
+         }
+@@ -121,8 +132,8 @@ public final class SkyLightEngine extends LayerLightEngine<SkyLightSectionStorag
+             int t = 0;
+ 
+             while(true) {
+-                long u = BlockPos.offset(id, direction.getStepX(), -t, direction.getStepZ());
+-                long v = SectionPos.blockToSection(u);
++                long u = BlockPos.asLong(baseX + direction.getStepX(), baseY - t, baseZ + direction.getStepZ()); // Paper
++                long v = SectionPos.blockPosAsSectionLong(baseX + direction.getStepX(), baseY - t, baseZ + direction.getStepZ()); // Paper
+                 if (l == v) {
+                     this.checkNeighbor(id, u, level, decrease);
+                     break;
+@@ -140,6 +151,22 @@ public final class SkyLightEngine extends LayerLightEngine<SkyLightSectionStorag
+         }
+ 
+     }
++//||||||| expected
++//        long j1 = SectionPos.blockToSection(i);
++//        DataLayer nibblearray = ((SkyLightSectionStorage) this.storage).getDataLayer(j1, true);
++//        Direction[] aenumdirection = SkyLightEngine.DIRECTIONS;
++//        int k1 = aenumdirection.length;
++//=======
++//        // Paper start
++//        int baseX = (int) (i >> 38);
++//        int baseY = (int) ((i << 52) >> 52);
++//        int baseZ = (int) ((i << 26) >> 38);
++//        long j1 = SectionPos.blockPosAsSectionLong(baseX, baseY, baseZ);
++//        DataLayer nibblearray = this.storage.updating.getUpdatingOptimized(j1);
++//        // Paper end
++//        Direction[] aenumdirection = SkyLightEngine.DIRECTIONS;
++//        int k1 = aenumdirection.length;
++//>>>>>>> replacement
+ 
+     protected int getComputedLevel(long l, long m, int i) {
+         int j = i;
+@@ -154,22 +181,32 @@ public final class SkyLightEngine extends LayerLightEngine<SkyLightSectionStorag
+             }
+         }
+ 
+-        long n = SectionPos.blockToSection(l);
+-        DataLayer dataLayer = this.storage.getDataLayer(n, true);
++        // Paper start
++        int baseX = (int) (l >> 38);
++        int baseY = (int) ((l << 52) >> 52);
++        int baseZ = (int) ((l << 26) >> 38);
++        long n = SectionPos.blockPosAsSectionLong(baseX, baseY, baseZ);
++        DataLayer dataLayer = this.storage.updating.getUpdatingOptimized(n);
++        // Paper end
+ 
+         for(Direction direction : DIRECTIONS) {
+-            long o = BlockPos.offset(l, direction);
+-            long p = SectionPos.blockToSection(o);
++            // Paper start
++            int newX = baseX + direction.getStepX();
++            int newY = baseY + direction.getStepY();
++            int newZ = baseZ + direction.getStepZ();
++            long o = BlockPos.asLong(newX, newY, newZ);
++            long p = SectionPos.blockPosAsSectionLong(newX, newY, newZ);
++            // Paper end
+             DataLayer dataLayer2;
+             if (n == p) {
+                 dataLayer2 = dataLayer;
+             } else {
+-                dataLayer2 = this.storage.getDataLayer(p, true);
++                dataLayer2 = this.storage.updating.getUpdatingOptimized(p); // Paper
+             }
+ 
+             if (dataLayer2 != null) {
+                 if (o != m) {
+-                    int q = this.computeLevelFromNeighbor(o, l, this.getLevel(dataLayer2, o));
++                    int q = this.computeLevelFromNeighbor(o, l, this.getNibbleLightInverse(dataLayer2, newX, newY, newZ)); // Paper
+                     if (j > q) {
+                         j = q;
+                     }
+@@ -183,7 +220,7 @@ public final class SkyLightEngine extends LayerLightEngine<SkyLightSectionStorag
+                     p = SectionPos.offset(p, Direction.UP);
+                 }
+ 
+-                DataLayer dataLayer4 = this.storage.getDataLayer(p, true);
++                DataLayer dataLayer4 = this.storage.updating.getUpdatingOptimized(p); // Paper
+                 if (o != m) {
+                     int r;
+                     if (dataLayer4 != null) {
+diff --git a/src/main/java/net/minecraft/world/level/lighting/SkyLightSectionStorage.java b/src/main/java/net/minecraft/world/level/lighting/SkyLightSectionStorage.java
+index ce163bc69a830e62b6459fb9e1c8eb462e00ac23..20b56ca00c3a9ce3064d249523fc7a535ff0c1d9 100644
+--- a/src/main/java/net/minecraft/world/level/lighting/SkyLightSectionStorage.java
++++ b/src/main/java/net/minecraft/world/level/lighting/SkyLightSectionStorage.java
+@@ -25,7 +25,12 @@ public class SkyLightSectionStorage extends LayerLightSectionStorage<SkyLightSec
+     }
+ 
+     protected int getLightValue(long l) {
+-        long m = SectionPos.blockToSection(l);
++        // Paper start
++        int baseX = (int) (l >> 38);
++        int baseY = (int) ((l << 52) >> 52);
++        int baseZ = (int) ((l << 26) >> 38);
++        long m = SectionPos.blockPosAsSectionLong(baseX, baseY, baseZ);
++        // Paper end
+         int i = SectionPos.y(m);
+         synchronized (this.visibleUpdateLock) { // Paper - avoid copying light data
+         SkyLightSectionStorage.SkyDataLayerStorageMap skyDataLayerStorageMap = this.visibleSectionData; // Paper - avoid copying light data - must be after lock acquire
+@@ -44,7 +49,7 @@ public class SkyLightSectionStorage extends LayerLightSectionStorage<SkyLightSec
+                 }
+             }
+ 
+-            return dataLayer.get(SectionPos.sectionRelative(BlockPos.getX(l)), SectionPos.sectionRelative(BlockPos.getY(l)), SectionPos.sectionRelative(BlockPos.getZ(l)));
++            return dataLayer.get(baseX & 15, (int) ((l << 52) >> 52) & 15, (int) baseZ & 15); // Paper - y changed above
+         } else {
+             return 15;
+         }
+@@ -147,7 +152,7 @@ public class SkyLightSectionStorage extends LayerLightSectionStorage<SkyLightSec
+             int i = (this.updatingSectionData).otherData.getUpdating(SectionPos.getZeroNode(sectionPos)); // Paper - avoid copying light data
+             if (i != (this.updatingSectionData).currentLowestY && SectionPos.y(l) < i) {
+                 DataLayer dataLayer2;
+-                while((dataLayer2 = this.getDataLayer(l, true)) == null) {
++                while((dataLayer2 =  this.updating.getUpdatingOptimized(l)) == null) { // Paper
+                     l = SectionPos.offset(l, Direction.UP);
+                 }
+ 
+@@ -163,6 +168,9 @@ public class SkyLightSectionStorage extends LayerLightSectionStorage<SkyLightSec
+         if (doSkylight) {
+             if (!this.sectionsToAddSourcesTo.isEmpty()) {
+                 for(long l : this.sectionsToAddSourcesTo) {
++                    int baseX = (int) (l >> 42) << 4; // Paper
++                    int baseY = (int) (l << 44 >> 44) << 4; // Paper
++                    int baseZ = (int) (l << 22 >> 42) << 4; // Paper
+                     int i = this.getLevel(l);
+                     if (i != 2 && !this.sectionsToRemoveSourcesFrom.contains(l) && this.sectionsWithSources.add(l)) {
+                         if (i == 1) {
+@@ -171,13 +179,13 @@ public class SkyLightSectionStorage extends LayerLightSectionStorage<SkyLightSec
+                                 this.updatingSectionData.copyDataLayer(l);
+                             }
+ 
+-                            Arrays.fill(this.getDataLayer(l, true).asBytesPoolSafe(), (byte)-1); // Paper
+-                            int j = SectionPos.sectionToBlockCoord(SectionPos.x(l));
+-                            int k = SectionPos.sectionToBlockCoord(SectionPos.y(l));
+-                            int m = SectionPos.sectionToBlockCoord(SectionPos.z(l));
++                            Arrays.fill(this.updating.getUpdatingOptimized(l).asBytesPoolSafe(), (byte)-1); // Paper - use optimized
++                            int j = baseX; // Paper
++                            int k = baseY; // Paper
++                            int m = baseZ; // Paper
+ 
+                             for(Direction direction : HORIZONTALS) {
+-                                long n = SectionPos.offset(l, direction);
++                                long n = SectionPos.getAdjacentFromBlockPos(baseX, baseY, baseZ, direction); // Paper
+                                 if ((this.sectionsToRemoveSourcesFrom.contains(n) || !this.sectionsWithSources.contains(n) && !this.sectionsToAddSourcesTo.contains(n)) && this.storingLightForSection(n)) {
+                                     for(int o = 0; o < 16; ++o) {
+                                         for(int p = 0; p < 16; ++p) {
+@@ -209,15 +217,15 @@ public class SkyLightSectionStorage extends LayerLightSectionStorage<SkyLightSec
+ 
+                             for(int y = 0; y < 16; ++y) {
+                                 for(int z = 0; z < 16; ++z) {
+-                                    long aa = BlockPos.asLong(SectionPos.sectionToBlockCoord(SectionPos.x(l)) + y, SectionPos.sectionToBlockCoord(SectionPos.y(l)), SectionPos.sectionToBlockCoord(SectionPos.z(l)) + z);
+-                                    long ab = BlockPos.asLong(SectionPos.sectionToBlockCoord(SectionPos.x(l)) + y, SectionPos.sectionToBlockCoord(SectionPos.y(l)) - 1, SectionPos.sectionToBlockCoord(SectionPos.z(l)) + z);
++                                    long aa = BlockPos.asLong(baseX + y, baseY, baseZ + z); // Paper
++                                    long ab = BlockPos.asLong(baseX + y, baseY - 1, baseZ + z); // Paper
+                                     lightProvider.checkEdge(aa, ab, lightProvider.computeLevelFromNeighbor(aa, ab, 0), true);
+                                 }
+                             }
+                         } else {
+                             for(int ac = 0; ac < 16; ++ac) {
+                                 for(int ad = 0; ad < 16; ++ad) {
+-                                    long ae = BlockPos.asLong(SectionPos.sectionToBlockCoord(SectionPos.x(l)) + ac, SectionPos.sectionToBlockCoord(SectionPos.y(l)) + 16 - 1, SectionPos.sectionToBlockCoord(SectionPos.z(l)) + ad);
++                                    long ae = BlockPos.asLong(baseX + ac, baseY + 16 - 1, baseZ + ad); // Paper
+                                     lightProvider.checkEdge(Long.MAX_VALUE, ae, 0, true);
+                                 }
+                             }
+@@ -229,11 +237,14 @@ public class SkyLightSectionStorage extends LayerLightSectionStorage<SkyLightSec
+             this.sectionsToAddSourcesTo.clear();
+             if (!this.sectionsToRemoveSourcesFrom.isEmpty()) {
+                 for(long af : this.sectionsToRemoveSourcesFrom) {
++                    int baseX = (int) (af >> 42) << 4; // Paper
++                    int baseY = (int) (af << 44 >> 44) << 4; // Paper
++                    int baseZ = (int) (af << 22 >> 42) << 4; // Paper
+                     if (this.sectionsWithSources.remove(af) && this.storingLightForSection(af)) {
+                         for(int ag = 0; ag < 16; ++ag) {
+                             for(int ah = 0; ah < 16; ++ah) {
+-                                long ai = BlockPos.asLong(SectionPos.sectionToBlockCoord(SectionPos.x(af)) + ag, SectionPos.sectionToBlockCoord(SectionPos.y(af)) + 16 - 1, SectionPos.sectionToBlockCoord(SectionPos.z(af)) + ah);
+-                                lightProvider.checkEdge(Long.MAX_VALUE, ai, 15, false);
++                                long ai = BlockPos.asLong(baseX + ag, baseY + 16 - 1, baseZ + ah); // Paper
++                                lightProvider.checkEdge(Long.MAX_VALUE, ai, 15, false); // Paper
+                             }
+                         }
+                     }

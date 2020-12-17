@@ -1,0 +1,152 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Mariell Hoversholm <proximyst@proximyst.com>
+Date: Wed, 22 Apr 2020 23:29:20 +0200
+Subject: [PATCH] Add villager reputation API
+
+
+diff --git a/src/main/java/com/destroystokyo/paper/entity/villager/ReputationConstructor.java b/src/main/java/com/destroystokyo/paper/entity/villager/ReputationConstructor.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..c6072615e95bf51c83b2f728fc3288a7043a89af
+--- /dev/null
++++ b/src/main/java/com/destroystokyo/paper/entity/villager/ReputationConstructor.java
+@@ -0,0 +1,11 @@
++package com.destroystokyo.paper.entity.villager;
++// Must have own package due to package-level constructor.
++
++import Reputation;
++
++public final class ReputationConstructor {
++    // Abuse the package-level constructor.
++    public static Reputation construct(int[] values) {
++        return new Reputation(values);
++    }
++}
+diff --git a/src/main/java/net/minecraft/world/entity/ai/gossip/GossipContainer.java b/src/main/java/net/minecraft/world/entity/ai/gossip/GossipContainer.java
+index 54374d8b1e631d4627c29acfceb50ae5f635669a..eadb7b4aaa98f1a910962a65445b94d5f068dea6 100644
+--- a/src/main/java/net/minecraft/world/entity/ai/gossip/GossipContainer.java
++++ b/src/main/java/net/minecraft/world/entity/ai/gossip/GossipContainer.java
+@@ -26,7 +26,7 @@ import net.minecraft.Util;
+ import net.minecraft.core.SerializableUUID;
+ 
+ public class GossipContainer {
+-    private final Map<UUID, GossipContainer.EntityGossips> gossips = Maps.newHashMap();
++    private final Map<UUID, GossipContainer.EntityGossips> gossips = Maps.newHashMap(); public Map<UUID, GossipContainer.EntityGossips> getReputations() { return this.gossips; } // Paper - add getter for reputations
+ 
+     public void decay() {
+         Iterator<GossipContainer.EntityGossips> iterator = this.gossips.values().iterator();
+@@ -130,10 +130,10 @@ public class GossipContainer {
+         return i > type.max ? Math.max(type.max, left) : i;
+     }
+ 
+-    static class EntityGossips {
++    public static class EntityGossips { // Paper - make public
+         private final Object2IntMap<GossipType> entries = new Object2IntOpenHashMap<>();
+ 
+-        private EntityGossips() {
++        public EntityGossips() { // Paper - make public - update CraftVillager setReputation on change
+         }
+ 
+         public int weightedValue(Predicate<GossipType> gossipTypeFilter) {
+@@ -184,6 +184,28 @@ public class GossipContainer {
+         public void remove(GossipType gossipType) {
+             this.entries.removeInt(gossipType);
+         }
++
++        // Paper start - Add villager reputation API
++        private static final com.destroystokyo.paper.entity.villager.ReputationType[] REPUTATION_TYPES = com.destroystokyo.paper.entity.villager.ReputationType.values();
++        public com.destroystokyo.paper.entity.villager.Reputation getPaperReputation() {
++            int[] reputation = new int[REPUTATION_TYPES.length];
++            reputation[com.destroystokyo.paper.entity.villager.ReputationType.MAJOR_NEGATIVE.ordinal()] = entries.getOrDefault(GossipType.MAJOR_NEGATIVE, 0);
++            reputation[com.destroystokyo.paper.entity.villager.ReputationType.MAJOR_POSITIVE.ordinal()] = entries.getOrDefault(GossipType.MAJOR_POSITIVE, 0);
++            reputation[com.destroystokyo.paper.entity.villager.ReputationType.MINOR_NEGATIVE.ordinal()] = entries.getOrDefault(GossipType.MINOR_NEGATIVE, 0);
++            reputation[com.destroystokyo.paper.entity.villager.ReputationType.MINOR_POSITIVE.ordinal()] = entries.getOrDefault(GossipType.MINOR_POSITIVE, 0);
++            reputation[com.destroystokyo.paper.entity.villager.ReputationType.TRADING.ordinal()] = entries.getOrDefault(GossipType.TRADING, 0);
++            return com.destroystokyo.paper.entity.villager.ReputationConstructor.construct(reputation);
++        }
++
++        public void assignFromPaperReputation(com.destroystokyo.paper.entity.villager.Reputation rep) {
++            int val;
++            if ((val = rep.getReputation(com.destroystokyo.paper.entity.villager.ReputationType.MAJOR_NEGATIVE)) != 0) this.entries.put(GossipType.MAJOR_NEGATIVE, val);
++            if ((val = rep.getReputation(com.destroystokyo.paper.entity.villager.ReputationType.MAJOR_POSITIVE)) != 0) this.entries.put(GossipType.MAJOR_POSITIVE, val);
++            if ((val = rep.getReputation(com.destroystokyo.paper.entity.villager.ReputationType.MINOR_NEGATIVE)) != 0) this.entries.put(GossipType.MINOR_NEGATIVE, val);
++            if ((val = rep.getReputation(com.destroystokyo.paper.entity.villager.ReputationType.MINOR_POSITIVE)) != 0) this.entries.put(GossipType.MINOR_POSITIVE, val);
++            if ((val = rep.getReputation(com.destroystokyo.paper.entity.villager.ReputationType.TRADING)) != 0) this.entries.put(GossipType.TRADING, val);
++        }
++        // Paper end
+     }
+ 
+     static class GossipEntry {
+diff --git a/src/main/java/net/minecraft/world/entity/npc/Villager.java b/src/main/java/net/minecraft/world/entity/npc/Villager.java
+index c674c49ad4f815b5ce086f1b2555d58441111aaf..8808ab660538cfa2c302877c36046f0f3de22ffa 100644
+--- a/src/main/java/net/minecraft/world/entity/npc/Villager.java
++++ b/src/main/java/net/minecraft/world/entity/npc/Villager.java
+@@ -1016,6 +1016,7 @@ public class Villager extends AbstractVillager implements ReputationEventHandler
+         this.numberOfRestocksToday = 0;
+     }
+ 
++    public GossipContainer getReputation() { return this.getGossips(); } // Paper - OBFHELPER
+     public GossipContainer getGossips() {
+         return this.gossips;
+     }
+diff --git a/src/main/java/org/bukkit/craftbukkit/entity/CraftVillager.java b/src/main/java/org/bukkit/craftbukkit/entity/CraftVillager.java
+index 04a4d4e270cc9ec7caffcb3225da444484bbdb30..4967b53d3985d9b205b5b4ea1eab29325b2cc1c5 100644
+--- a/src/main/java/org/bukkit/craftbukkit/entity/CraftVillager.java
++++ b/src/main/java/org/bukkit/craftbukkit/entity/CraftVillager.java
+@@ -1,7 +1,11 @@
+ package org.bukkit.craftbukkit.entity;
+ 
++import com.destroystokyo.paper.entity.villager.Reputation; // Paper
+ import com.google.common.base.Preconditions;
++import com.google.common.collect.Maps; // Paper
+ import java.util.Locale;
++import java.util.Map; // Paper
++import java.util.UUID; // Paper
+ import net.minecraft.core.BlockPos;
+ import net.minecraft.core.Registry;
+ import net.minecraft.world.entity.npc.VillagerProfession;
+@@ -123,4 +127,45 @@ public class CraftVillager extends CraftAbstractVillager implements Villager {
+     public static VillagerProfession bukkitToNmsProfession(Profession bukkit) {
+         return Registry.VILLAGER_PROFESSION.get(CraftNamespacedKey.toMinecraft(bukkit.getKey()));
+     }
++
++    // Paper start - Add villager reputation API
++    @Override
++    public Reputation getReputation(UUID uniqueId) {
++        net.minecraft.world.entity.ai.gossip.GossipContainer.EntityGossips rep = getHandle().getReputation().getReputations().get(uniqueId);
++        if (rep == null) {
++            return new Reputation(Maps.newHashMap());
++        }
++
++        return rep.getPaperReputation();
++    }
++
++    @Override
++    public Map<UUID, Reputation> getReputations() {
++        return getHandle().getReputation().getReputations().entrySet()
++            .stream()
++            .collect(java.util.stream.Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().getPaperReputation()));
++    }
++
++    @Override
++    public void setReputation(UUID uniqueId, Reputation reputation) {
++        net.minecraft.world.entity.ai.gossip.GossipContainer.EntityGossips nmsReputation =
++            getHandle().getReputation().getReputations().computeIfAbsent(
++                uniqueId,
++                key -> new net.minecraft.world.entity.ai.gossip.GossipContainer.EntityGossips()
++            );
++        nmsReputation.assignFromPaperReputation(reputation);
++    }
++
++    @Override
++    public void setReputations(Map<UUID, Reputation> reputations) {
++        for (Map.Entry<UUID, Reputation> entry : reputations.entrySet()) {
++            setReputation(entry.getKey(), entry.getValue());
++        }
++    }
++
++    @Override
++    public void clearReputations() {
++        getHandle().getReputation().getReputations().clear();
++    }
++    // Paper end
+ }

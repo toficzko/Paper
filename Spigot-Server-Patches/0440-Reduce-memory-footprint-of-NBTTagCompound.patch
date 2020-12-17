@@ -1,0 +1,58 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Spottedleaf <spottedleaf@spottedleaf.dev>
+Date: Mon, 6 Apr 2020 17:39:25 -0700
+Subject: [PATCH] Reduce memory footprint of NBTTagCompound
+
+Fastutil maps are going to have a lower memory footprint - which
+is important because we clone chunk data after reading it for safety.
+So, reduce the impact of the clone on GC.
+
+diff --git a/src/main/java/net/minecraft/nbt/CompoundTag.java b/src/main/java/net/minecraft/nbt/CompoundTag.java
+index 13bfb8e281380a2371ee9d40c07928d0e11c8135..c103d16380ad9f22278c929a66ed605c5e48fefa 100644
+--- a/src/main/java/net/minecraft/nbt/CompoundTag.java
++++ b/src/main/java/net/minecraft/nbt/CompoundTag.java
+@@ -25,6 +25,7 @@ import net.minecraft.ReportedException;
+ import net.minecraft.network.chat.Component;
+ import net.minecraft.network.chat.MutableComponent;
+ import net.minecraft.network.chat.TextComponent;
++import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap; // Paper
+ import org.apache.logging.log4j.LogManager;
+ import org.apache.logging.log4j.Logger;
+ 
+@@ -43,7 +44,7 @@ public class CompoundTag implements Tag {
+             if (i > 512) {
+                 throw new RuntimeException("Tried to read NBT tag with too high complexity, depth > 512");
+             } else {
+-                Map<String, Tag> map = Maps.newHashMap();
++                Object2ObjectOpenHashMap<String, Tag> map = new Object2ObjectOpenHashMap<>(8, 0.8f); // Paper - reduce memory footprint of NBTTagCompound
+ 
+                 byte b;
+                 while((b = CompoundTag.readNamedTagType(dataInput, nbtAccounter)) != 0) {
+@@ -74,7 +75,7 @@ public class CompoundTag implements Tag {
+     }
+ 
+     public CompoundTag() {
+-        this(Maps.newHashMap());
++        this(new Object2ObjectOpenHashMap<>(8, 0.8f)); // Paper - reduce memory footprint of NBTTagCompound
+     }
+ 
+     public void write(DataOutput dataOutput) throws IOException {
+@@ -388,8 +389,16 @@ public class CompoundTag implements Tag {
+     }
+ 
+     public CompoundTag copy() {
+-        Map<String, Tag> map = Maps.newHashMap(Maps.transformValues(this.tags, Tag::copy));
+-        return new CompoundTag(map);
++        // Paper start - reduce memory footprint of NBTTagCompound
++        Object2ObjectOpenHashMap<String, Tag> ret = new Object2ObjectOpenHashMap<>(this.tags.size(), 0.8f);
++        Iterator<Map.Entry<String, Tag>> iterator = (this.tags instanceof Object2ObjectOpenHashMap) ? ((Object2ObjectOpenHashMap)this.tags).object2ObjectEntrySet().fastIterator() : this.tags.entrySet().iterator();
++        while (iterator.hasNext()) {
++            Map.Entry<String, Tag> entry = iterator.next();
++            ret.put(entry.getKey(), entry.getValue().copy());
++        }
++
++        return new CompoundTag(ret);
++        // Paper end - reduce memory footprint of NBTTagCompound
+     }
+ 
+     public boolean equals(Object o) {

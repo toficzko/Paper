@@ -1,0 +1,69 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Spottedleaf <spottedleaf@spottedleaf.dev>
+Date: Mon, 6 Apr 2020 18:10:43 -0700
+Subject: [PATCH] Remove streams from PairedQueue
+
+We shouldn't be doing stream calls just to see if the queue is
+empty. This creates loads of garbage thanks to how often it's called.
+
+diff --git a/src/main/java/net/minecraft/util/thread/StrictQueue.java b/src/main/java/net/minecraft/util/thread/StrictQueue.java
+index f270fb87878b939e2ba331cb0e40aa2365c99b2d..a59460af51cd07e55b06374e8129d40e6962f857 100644
+--- a/src/main/java/net/minecraft/util/thread/StrictQueue.java
++++ b/src/main/java/net/minecraft/util/thread/StrictQueue.java
+@@ -17,24 +17,29 @@ public interface StrictQueue<T, F> {
+     boolean isEmpty();
+ 
+     public static final class FixedPriorityQueue implements StrictQueue<StrictQueue.IntRunnable, Runnable> {
+-        private final List<Queue<Runnable>> queueList;
++        private final List<Queue<Runnable>> queueList; private final List<Queue<Runnable>> getQueues() { return this.queueList; } // Paper - OBFHELPER
+ 
+         public FixedPriorityQueue(int priorityCount) {
+-            this.queueList = IntStream.range(0, priorityCount).mapToObj((i) -> {
+-                return Queues.newConcurrentLinkedQueue();
+-            }).collect(Collectors.toList());
++            // Paper start - remove streams
++            this.queueList = new java.util.ArrayList<>(priorityCount); // queues
++            for (int j = 0; j < priorityCount; ++j) {
++                this.getQueues().add(Queues.newConcurrentLinkedQueue());
++            }
++            // Paper end - remove streams
+         }
+ 
+         @Nullable
+         public Runnable pop() {
+-            for(Queue<Runnable> queue : this.queueList) {
+-                Runnable runnable = queue.poll();
+-                if (runnable != null) {
+-                    return runnable;
++            // Paper start - remove iterator creation
++            for (int i = 0, len = this.getQueues().size(); i < len; ++i) {
++                Queue<Runnable> queue = this.getQueues().get(i);
++                Runnable ret = queue.poll();
++                if (ret != null) {
++                    return ret;
+                 }
+             }
+-
+             return null;
++            // Paper end - remove iterator creation
+         }
+ 
+         public boolean push(StrictQueue.IntRunnable intRunnable) {
+@@ -44,7 +49,16 @@ public interface StrictQueue<T, F> {
+         }
+ 
+         public boolean isEmpty() {
+-            return this.queueList.stream().allMatch(Collection::isEmpty);
++            // Paper start - remove streams
++            // why are we doing streams every time we might want to execute a task?
++            for (int i = 0, len = this.getQueues().size(); i < len; ++i) {
++                Queue<Runnable> queue = this.getQueues().get(i);
++                if (!queue.isEmpty()) {
++                    return false;
++                }
++            }
++            return true;
++            // Paper end - remove streams
+         }
+     }
+ 
