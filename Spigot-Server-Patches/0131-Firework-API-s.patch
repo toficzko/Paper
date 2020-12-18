@@ -4,18 +4,6 @@ Date: Wed, 28 Dec 2016 07:18:33 +0100
 Subject: [PATCH] Firework API's
 
 
-diff --git a/src/main/java/net/minecraft/nbt/CompoundTag.java b/src/main/java/net/minecraft/nbt/CompoundTag.java
-index 524ed3e85bb089baf62a11652b32f1745191fbcd..0dd9264baa4813999e87162597e43ee37dd17ab8 100644
---- a/src/main/java/net/minecraft/nbt/CompoundTag.java
-+++ b/src/main/java/net/minecraft/nbt/CompoundTag.java
-@@ -132,6 +132,7 @@ public class CompoundTag implements Tag {
-         return NbtUtils.loadUUID(this.get(key));
-     }
- 
-+    public final boolean hasUUID(String s) { return this.hasUUID(s); } // Paper - OBFHELPER
-     public boolean hasUUID(String key) {
-         Tag tag = this.get(key);
-         return tag != null && tag.getType() == IntArrayTag.TYPE && ((IntArrayTag)tag).getAsIntArray().length == 4;
 diff --git a/src/main/java/net/minecraft/world/entity/projectile/FireworkRocketEntity.java b/src/main/java/net/minecraft/world/entity/projectile/FireworkRocketEntity.java
 index def5138c25536c2178b5b6b43578b527193c8a6b..e64798fa736d204c1ef554e732d062469ee074b0 100644
 --- a/src/main/java/net/minecraft/world/entity/projectile/FireworkRocketEntity.java

@@ -5,7 +5,7 @@ Subject: [PATCH] PortalCreateEvent needs to know its entity
 
 
 diff --git a/src/main/java/net/minecraft/world/item/ItemStack.java b/src/main/java/net/minecraft/world/item/ItemStack.java
-index b40420a5841e0a52cfdc15900683bd63dce540fc..397e8eea8796477f2958c54a968792b15072806f 100644
+index 34cf611a0fc0820ffe05f893299383c00fbc2cc5..1d9f93e98cb264a41d1e86878b41c7526f606ad6 100644
 --- a/src/main/java/net/minecraft/world/item/ItemStack.java
 +++ b/src/main/java/net/minecraft/world/item/ItemStack.java
 @@ -367,7 +367,7 @@ public final class ItemStack {

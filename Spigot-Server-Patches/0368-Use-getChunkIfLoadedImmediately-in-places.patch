@@ -21,7 +21,7 @@ index 150c968b97c3e878f6ea20140bb09232d7e7d867..2679a3a4f4df09bb20a5ef39d0a034c1
  
      // Paper start - Asynchronous IO
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index ebfbf3648b9423b68f64a0d0a455ed03c81ea36e..6a7b1ea53655e4308e505f5092d002f16cafd47e 100644
+index e174c0cffb8501920da77855e78e238aba8cb12b..a1ab7e058eacd494f18ac0dd5d241d1db839d191 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 @@ -1228,7 +1228,7 @@ public class ServerGamePacketListenerImpl implements ServerGamePacketListener {

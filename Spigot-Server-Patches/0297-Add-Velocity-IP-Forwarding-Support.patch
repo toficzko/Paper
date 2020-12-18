@@ -141,13 +141,16 @@ index 2e313091f643026be2524fefabfdb84ca27efa66..c56e14a50c34cdefbd609546476a9b48
          int j = this.readVarInt();
  
 diff --git a/src/main/java/net/minecraft/network/protocol/login/ClientboundCustomQueryPacket.java b/src/main/java/net/minecraft/network/protocol/login/ClientboundCustomQueryPacket.java
-index 77af81f726307f460f82bf8cad1cf7c299bc0775..5fa5cda8118276e25b11f1a318355dd13a16519a 100644
+index 77af81f726307f460f82bf8cad1cf7c299bc0775..9a86123328396e082f46ba26ccb212abf4b24510 100644
 --- a/src/main/java/net/minecraft/network/protocol/login/ClientboundCustomQueryPacket.java
 +++ b/src/main/java/net/minecraft/network/protocol/login/ClientboundCustomQueryPacket.java
-@@ -10,6 +10,14 @@ public class ClientboundCustomQueryPacket implements Packet<ClientLoginPacketLis
+@@ -10,6 +10,17 @@ public class ClientboundCustomQueryPacket implements Packet<ClientLoginPacketLis
      private ResourceLocation identifier;
      private FriendlyByteBuf data;
  
++    public ClientboundCustomQueryPacket() {
++    }
++
 +    // Paper start
 +    public ClientboundCustomQueryPacket(int id, ResourceLocation channel, FriendlyByteBuf buf) {
 +        this.transactionId = id;

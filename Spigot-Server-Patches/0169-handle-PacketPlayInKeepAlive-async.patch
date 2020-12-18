@@ -15,7 +15,7 @@ also adding some additional logging in order to help work out what is causing
 random disconnections for clients.
 
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index 0ac6b1bf36d980ae1509e908484b65b99f8adcc4..d13ebf1f7a7209aa8f17d4c6195d2be6fad04a2b 100644
+index 7ea8768ea9eb7912a5c0ed9b2425420de5fa0660..c5f0051cd05e197ebe365c712a99f95f1e0c7efd 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 @@ -2763,14 +2763,18 @@ public class ServerGamePacketListenerImpl implements ServerGamePacketListener {

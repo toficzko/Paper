@@ -51,7 +51,7 @@ index fab696a9ac9e00cf0b74ea7dc8cf4e46bb3c2971..cd37ce3f8f6fb5680a9694f9b488a1c8
              this.profiler.push(() -> {
                  return worldserver + " " + worldserver.dimension().location();
 diff --git a/src/main/java/net/minecraft/world/item/ItemStack.java b/src/main/java/net/minecraft/world/item/ItemStack.java
-index 2ba99b6ab2827709944c483c3f2b98e0a739908a..6a3b321972ac026a3cc1857b144708d885944c81 100644
+index 5924f078e732fdc3d73563cf62fc772e091d9f06..5bad81ef16dc66f39c97d3dbfebd149523d90c69 100644
 --- a/src/main/java/net/minecraft/world/item/ItemStack.java
 +++ b/src/main/java/net/minecraft/world/item/ItemStack.java
 @@ -539,11 +539,12 @@ public final class ItemStack {

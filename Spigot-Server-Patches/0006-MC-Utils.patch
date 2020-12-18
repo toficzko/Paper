@@ -2960,7 +2960,7 @@ index 6064cefc339c57f6a862df3c36551720c2aeecd8..dc4954ada1c0c16db0359ed7d0525ed9
              LOGGER.info("Saving usercache.json");
              this.getProfileCache().save();
 diff --git a/src/main/java/net/minecraft/server/level/ChunkHolder.java b/src/main/java/net/minecraft/server/level/ChunkHolder.java
-index ea51de9f88df7af66e72951e31fbd3432803c0f9..b3706b05cb17fa3afb9365f3b52efa343668d75c 100644
+index ea51de9f88df7af66e72951e31fbd3432803c0f9..e5cbbbe2201f3818ab5b04e8d0f679909f9a9f0c 100644
 --- a/src/main/java/net/minecraft/server/level/ChunkHolder.java
 +++ b/src/main/java/net/minecraft/server/level/ChunkHolder.java
 @@ -43,9 +43,9 @@ public class ChunkHolder {
@@ -2985,7 +2985,7 @@ index ea51de9f88df7af66e72951e31fbd3432803c0f9..b3706b05cb17fa3afb9365f3b52efa34
      public ChunkHolder(ChunkPos pos, int level, LevelLightEngine lightingProvider, ChunkHolder.LevelChangeListener levelUpdateListener, ChunkHolder.PlayerProvider playersWatchingChunkProvider) {
          this.futures = new AtomicReferenceArray(ChunkHolder.CHUNK_STATUSES.size());
          this.fullChunkFuture = ChunkHolder.UNLOADED_LEVEL_CHUNK_FUTURE;
-@@ -76,16 +78,63 @@ public class ChunkHolder {
+@@ -76,16 +78,55 @@ public class ChunkHolder {
          this.ticketLevel = this.oldTicketLevel;
          this.queueLevel = this.oldTicketLevel;
          this.setTicketLevel(level);
@@ -3002,25 +3002,17 @@ index ea51de9f88df7af66e72951e31fbd3432803c0f9..b3706b05cb17fa3afb9365f3b52efa34
 +    }
 +
 +    @Nullable
-+    public final LevelChunk getTickingChunk() {
-+        CompletableFuture<Either<LevelChunk, ChunkHolder.ChunkLoadingFailure>> completablefuture = this.tickingChunkFuture;
-+        Either<LevelChunk, ChunkHolder.ChunkLoadingFailure> either = completablefuture.getNow(null);
-+
-+        return either == null ? null : either.left().orElse(null);
-+    }
-+
-+    @Nullable
 +    public final LevelChunk getFullReadyChunk() {
 +        CompletableFuture<Either<LevelChunk, ChunkHolder.ChunkLoadingFailure>> completablefuture = this.fullChunkFuture;
 +        Either<LevelChunk, ChunkHolder.ChunkLoadingFailure> either = completablefuture.getNow(null);
 +
 +        return either == null ? null : either.left().orElse(null);
-+    }
-+
-+    public final boolean isEntityTickingReady() {
-+        return this.isEntityTickingReady;
      }
  
++    public final boolean isEntityTickingReady() {
++        return this.isEntityTickingReady;
++    }
++
 +    public final boolean isTickingReady() {
 +        return this.isTickingReady;
 +    }
@@ -3050,7 +3042,7 @@ index ea51de9f88df7af66e72951e31fbd3432803c0f9..b3706b05cb17fa3afb9365f3b52efa34
  
      public CompletableFuture<Either<ChunkAccess, ChunkHolder.ChunkLoadingFailure>> getFutureIfPresentUnchecked(ChunkStatus leastStatus) {
          CompletableFuture<Either<ChunkAccess, ChunkHolder.ChunkLoadingFailure>> completablefuture = (CompletableFuture) this.futures.get(leastStatus.getIndex());
-@@ -97,20 +146,22 @@ public class ChunkHolder {
+@@ -97,20 +138,22 @@ public class ChunkHolder {
          return getStatus(this.ticketLevel).isOrAfter(leastStatus) ? this.getFutureIfPresentUnchecked(leastStatus) : ChunkHolder.UNLOADED_CHUNK_FUTURE;
      }
  
@@ -3077,7 +3069,7 @@ index ea51de9f88df7af66e72951e31fbd3432803c0f9..b3706b05cb17fa3afb9365f3b52efa34
          CompletableFuture<Either<LevelChunk, ChunkHolder.ChunkLoadingFailure>> completablefuture = this.getTickingChunkFuture();
          Either<LevelChunk, ChunkHolder.ChunkLoadingFailure> either = (Either) completablefuture.getNow(null); // CraftBukkit - decompile error
  
-@@ -135,7 +186,7 @@ public class ChunkHolder {
+@@ -135,7 +178,7 @@ public class ChunkHolder {
          return null;
      }
  
@@ -3086,7 +3078,7 @@ index ea51de9f88df7af66e72951e31fbd3432803c0f9..b3706b05cb17fa3afb9365f3b52efa34
          return this.chunkToSave;
      }
  
-@@ -276,11 +327,11 @@ public class ChunkHolder {
+@@ -276,11 +319,11 @@ public class ChunkHolder {
          });
      }
  
@@ -3100,7 +3092,7 @@ index ea51de9f88df7af66e72951e31fbd3432803c0f9..b3706b05cb17fa3afb9365f3b52efa34
          return this.ticketLevel;
      }
  
-@@ -351,13 +402,27 @@ public class ChunkHolder {
+@@ -351,13 +394,27 @@ public class ChunkHolder {
  
          this.wasAccessibleSinceLastSave |= flag3;
          if (!flag2 && flag3) {
@@ -3129,7 +3121,7 @@ index ea51de9f88df7af66e72951e31fbd3432803c0f9..b3706b05cb17fa3afb9365f3b52efa34
              this.updateChunkToSave(((CompletableFuture<Either<LevelChunk, ChunkHolder.ChunkLoadingFailure>>) completablefuture).thenApply((either1) -> { // CraftBukkit - decompile error
                  chunkStorage.getClass();
                  return either1.ifLeft(chunkStorage::packTicks);
-@@ -368,12 +433,24 @@ public class ChunkHolder {
+@@ -368,12 +425,24 @@ public class ChunkHolder {
          boolean flag5 = playerchunk_state1.isOrAfter(ChunkHolder.FullChunkStatus.TICKING);
  
          if (!flag4 && flag5) {
@@ -3156,7 +3148,7 @@ index ea51de9f88df7af66e72951e31fbd3432803c0f9..b3706b05cb17fa3afb9365f3b52efa34
              this.tickingChunkFuture = ChunkHolder.UNLOADED_LEVEL_CHUNK_FUTURE;
          }
  
-@@ -385,12 +462,24 @@ public class ChunkHolder {
+@@ -385,12 +454,24 @@ public class ChunkHolder {
                  throw (IllegalStateException) Util.pauseInIde((Throwable) (new IllegalStateException()));
              }
  
@@ -3263,7 +3255,7 @@ index ec2f2acace1f4370e2e5a96ed252a7c3b2659bc8..a31236f287a6f11bfdd9092d58963c89
  
      @Override
 diff --git a/src/main/java/net/minecraft/server/level/ServerChunkCache.java b/src/main/java/net/minecraft/server/level/ServerChunkCache.java
-index 9fd0018aafc11a1f56015591b342f6143400aae1..f96830c24a82e10ef36c2f370d5e59751daa8223 100644
+index 9fd0018aafc11a1f56015591b342f6143400aae1..c6cec9a5c24132677ca2395464272214489c8746 100644
 --- a/src/main/java/net/minecraft/server/level/ServerChunkCache.java
 +++ b/src/main/java/net/minecraft/server/level/ServerChunkCache.java
 @@ -21,6 +21,8 @@ import net.minecraft.Util;
@@ -3314,7 +3306,7 @@ index 9fd0018aafc11a1f56015591b342f6143400aae1..f96830c24a82e10ef36c2f370d5e5975
 +        return x & 3 | ((z & 3) << 2);
 +    }
 +
-+    void addLoadedChunk(LevelChunk chunk) {
++    public void addLoadedChunk(LevelChunk chunk) {
 +        this.loadedChunkMapSeqLock.acquireWrite();
 +        try {
 +            this.loadedChunkMap.put(chunk.coordinateKey, chunk);
@@ -3332,7 +3324,7 @@ index 9fd0018aafc11a1f56015591b342f6143400aae1..f96830c24a82e10ef36c2f370d5e5975
 +        }
 +    }
 +
-+    void removeLoadedChunk(LevelChunk chunk) {
++    public void removeLoadedChunk(LevelChunk chunk) {
 +        this.loadedChunkMapSeqLock.acquireWrite();
 +        try {
 +            this.loadedChunkMap.remove(chunk.coordinateKey);
@@ -3623,7 +3615,7 @@ index d4b3e8f77331dc00c18d2b637bd8cd27aebb8279..98e5079de58ba1cedddd59559a746903
      public BlockState getBlockState(BlockPos pos) {
          return this.getChunk(pos.getX() >> 4, pos.getZ() >> 4).getBlockState(pos);
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index e3fbfd3427c044b06cece6c27acc600a3e8c5bba..b2fa497349825914b5f0824bcd910a725b84542d 100644
+index 215499f19b76457dc9207f32976e52a1adadc876..2629ef7dc11c39ff4e004d4393b46f5f198fcf6d 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 @@ -216,9 +216,9 @@ public class ServerGamePacketListenerImpl implements ServerGamePacketListener {
@@ -3638,7 +3630,7 @@ index e3fbfd3427c044b06cece6c27acc600a3e8c5bba..b2fa497349825914b5f0824bcd910a72
 +    private long keepAliveChallenge; private void setKeepAliveID(long keepAliveID) { this.keepAliveChallenge = keepAliveID;}; private long getKeepAliveID() {return this.keepAliveChallenge; };  // Paper - OBFHELPER
      // CraftBukkit start - multithreaded fields
      private volatile int chatSpamTickCount;
-     private static final AtomicIntegerFieldUpdater chatSpamField = AtomicIntegerFieldUpdater.newUpdater(ServerGamePacketListenerImpl.class, "chatThrottle");
+     private static final AtomicIntegerFieldUpdater chatSpamField = AtomicIntegerFieldUpdater.newUpdater(ServerGamePacketListenerImpl.class, "chatSpamTickCount");
 diff --git a/src/main/java/net/minecraft/util/BitStorage.java b/src/main/java/net/minecraft/util/BitStorage.java
 index f5ead5ea04ea867116ddee29450c4999edf1a5e9..8b7b2e29cf3acab788207e7f32506cf1b1575ba5 100644
 --- a/src/main/java/net/minecraft/util/BitStorage.java
@@ -3896,7 +3888,7 @@ index 80223cf77d1e09203c3b30af1d192ba401280b5f..1953a23acddd2fa796b6d207810d84e1
          return (long)chunkX & 4294967295L | ((long)chunkZ & 4294967295L) << 32;
      }
 diff --git a/src/main/java/net/minecraft/world/level/EmptyBlockGetter.java b/src/main/java/net/minecraft/world/level/EmptyBlockGetter.java
-index 345fb027de9bac3bd733b50534acba9fdac0c546..6d453ad903cb5b107cd8eb4cdb4f6cdd76ff99ce 100644
+index 75ee0fc85084b9be5d9a83065d8d580d1b0a548c..65618a3cafcf4cd76fe1ca380ea39b0c743ff27a 100644
 --- a/src/main/java/net/minecraft/world/level/EmptyBlockGetter.java
 +++ b/src/main/java/net/minecraft/world/level/EmptyBlockGetter.java
 @@ -16,6 +16,18 @@ public enum EmptyBlockGetter implements BlockGetter {
@@ -4019,7 +4011,7 @@ index ace1ca056b71ee7b95527d820c9d31b4b72db5d9..a4e5ef16132a1f8d3432bfc6705fd47f
      default BlockGetter getChunkForCollisions(int chunkX, int chunkZ) {
          return this.getChunk(chunkX, chunkZ, ChunkStatus.EMPTY, false);
 diff --git a/src/main/java/net/minecraft/world/level/PathNavigationRegion.java b/src/main/java/net/minecraft/world/level/PathNavigationRegion.java
-index 6584d9e41f7046d29abc0bc4b1f8e85d265389a9..97bea762b528ca1aa5b9c9773ac0e7c912ac641e 100644
+index 7130c023f2b3ec68a5fb6995c026b8a8d5ae07bb..889f5d6f96cce07eb84d4a9b2b41c967589b712e 100644
 --- a/src/main/java/net/minecraft/world/level/PathNavigationRegion.java
 +++ b/src/main/java/net/minecraft/world/level/PathNavigationRegion.java
 @@ -4,6 +4,7 @@ import java.util.function.Predicate;
@@ -4427,10 +4419,10 @@ index b8bbf016ecdf28ba46db651e48c86468765bcfda..720d1e467c9dcf5a0e8da3b0ca7439f3
          this.acquire();
          buf.writeByte(this.bits);
 diff --git a/src/main/java/net/minecraft/world/level/chunk/ProtoChunk.java b/src/main/java/net/minecraft/world/level/chunk/ProtoChunk.java
-index 6710f49aa26cdb4d3b3484ad849ccd4beb14894a..2a03ebad6fd00e344e8d272a535191e3e4a3cf52 100644
+index 72425e4f72736b5da51edda5e2b72f0538ecde24..9f4de609d43fa6df79e8296f9d476f905b960152 100644
 --- a/src/main/java/net/minecraft/world/level/chunk/ProtoChunk.java
 +++ b/src/main/java/net/minecraft/world/level/chunk/ProtoChunk.java
-@@ -85,6 +85,18 @@ public class ProtoChunk implements ChunkAccess {
+@@ -85,6 +85,23 @@ public class ProtoChunk implements ChunkAccess {
  
      }
  
@@ -4441,8 +4433,13 @@ index 6710f49aa26cdb4d3b3484ad849ccd4beb14894a..2a03ebad6fd00e344e8d272a535191e3
 +    }
 +
 +    @Override
-+    public BlockState getTypeIfLoaded(BlockPos blockposition) {
-+        return this.getBlockState(blockposition);
++    public BlockState getTypeIfLoaded(BlockPos pos) {
++        return getType(pos.getX(), pos.getY(), pos.getZ());
++    }
++
++    @Override
++    public BlockState getTypeIfLoaded(BlockPos pos) {
++        return this.getBlockState(pos);
 +    }
 +    // Paper end
 +

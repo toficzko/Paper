@@ -5,7 +5,7 @@ Subject: [PATCH] Add PlayerJumpEvent
 
 
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index 47a72bb9f73444abc9208936d8a5963fad112179..0ac6b1bf36d980ae1509e908484b65b99f8adcc4 100644
+index 1ae6587c7ff75eaa6fcb3e3c7b1a321f72bb067d..7ea8768ea9eb7912a5c0ed9b2425420de5fa0660 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 @@ -1161,7 +1161,34 @@ public class ServerGamePacketListenerImpl implements ServerGamePacketListener {

@@ -85,7 +85,7 @@ index c22de059c481d676fe8f7307620fda506eca537d..accb3b69f350a8444636e8560baf1c41
  
      // Spigot start
 diff --git a/src/main/java/net/minecraft/world/level/biome/Biome.java b/src/main/java/net/minecraft/world/level/biome/Biome.java
-index a0ed778a241db2e4b8a9642802e1ef575d484e15..cf10930b03e3bbfd57dcd2387f2b3a5535114782 100644
+index b3a92496c1262733ee5ef3c1bf48c986dd125f46..fcc5aabbfe031a1152c735f42e5df86a7434a130 100644
 --- a/src/main/java/net/minecraft/world/level/biome/Biome.java
 +++ b/src/main/java/net/minecraft/world/level/biome/Biome.java
 @@ -38,6 +38,7 @@ import net.minecraft.world.level.levelgen.WorldgenRandom;
@@ -96,6 +96,17 @@ index a0ed778a241db2e4b8a9642802e1ef575d484e15..cf10930b03e3bbfd57dcd2387f2b3a55
  import net.minecraft.world.level.levelgen.surfacebuilders.ConfiguredSurfaceBuilder;
  import net.minecraft.world.level.levelgen.synth.PerlinSimplexNoise;
  import net.minecraft.world.level.material.FluidState;
+@@ -49,8 +50,8 @@ public final class Biome {
+     public static final Logger LOGGER = LogManager.getLogger();
+     public static final Codec<Biome> DIRECT_CODEC;
+     public static final Codec<Biome> NETWORK_CODEC;
+-    public static final Codec<Supplier<Biome>> CODEC = RegistryFileCodec.create(Registry.BIOME_REGISTRY, DIRECT_CODEC);
+-    public static final Codec<List<Supplier<Biome>>> LIST_CODEC = RegistryFileCodec.homogeneousList(Registry.BIOME_REGISTRY, DIRECT_CODEC);
++    public static final Codec<Supplier<Biome>> CODEC; // Paper - decomp, moved into static block
++    public static final Codec<List<Supplier<Biome>>> LIST_CODEC; // Paper - decomp, moved into static block
+     private final Map<Integer, List<StructureFeature<?>>> structuresByStep = Registry.STRUCTURE_FEATURE.stream().collect(Collectors.groupingBy((structureFeature) -> {
+         return structureFeature.step().ordinal();
+     }));
 @@ -185,9 +186,11 @@ public final class Biome {
                      int o = m << 4;
  
@@ -110,6 +121,15 @@ index a0ed778a241db2e4b8a9642802e1ef575d484e15..cf10930b03e3bbfd57dcd2387f2b3a55
                      } catch (Exception var21) {
                          CrashReport crashReport = CrashReport.forThrowable(var21, "Feature placement");
                          crashReport.addCategory("Feature").setDetail("Id", Registry.STRUCTURE_FEATURE.getKey(structureFeature)).setDetail("Description", () -> {
+@@ -290,6 +293,8 @@ public final class Biome {
+                 return new Biome(climateSettings, biomeCategory, float_, float2, biomeSpecialEffects, BiomeGenerationSettings.EMPTY, MobSpawnSettings.EMPTY);
+             });
+         });
++        CODEC = RegistryFileCodec.create(Registry.BIOME_REGISTRY, DIRECT_CODEC); // Paper - decomp, moved from above
++        LIST_CODEC = RegistryFileCodec.homogeneousList(Registry.BIOME_REGISTRY, DIRECT_CODEC); // Paper - decomp, moved from above
+     }
+ 
+     public static class BiomeBuilder {
 diff --git a/src/main/java/net/minecraft/world/level/levelgen/NoiseBasedChunkGenerator.java b/src/main/java/net/minecraft/world/level/levelgen/NoiseBasedChunkGenerator.java
 index 5ceb87537ae7827a7179ea08be67f4e40dc3162a..b9e577ceab1be007ec8215bfa5da5e3b479d0e23 100644
 --- a/src/main/java/net/minecraft/world/level/levelgen/NoiseBasedChunkGenerator.java

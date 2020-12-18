@@ -26,7 +26,7 @@ index f433b1e46b1e97fa60f1bd32a1403189217d3afd..004e1cdfeef75c79889a1a7334773ab9
 +    }
  }
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index df2493f33311a226353a3acf70c577bb5a12b508..320b88681ceafac4baa0109a6e58b6a0842da5b5 100644
+index 600bc268b5ef67af69e156284f514f289e4bccf6..12dd8d1f663081b579f74a21b9b0fa54d5778d66 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 @@ -163,6 +163,7 @@ import net.minecraft.world.phys.Vec3;

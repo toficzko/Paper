@@ -67,7 +67,7 @@ index b95f676b0476741dbf613d975ba104c4c60348d8..74d819a7cf575152cdf3fdff200c132e
              cause = cause.getCause();
          }
 diff --git a/src/main/java/net/minecraft/Util.java b/src/main/java/net/minecraft/Util.java
-index 7e550fb5e07a0c435b26088ef3560b0a558a18fe..239e42eed7ba9808bf8eda78ed3df6db93999528 100644
+index d2fbbaf014ee684bbe1960db559001735a54c71e..8597d56ab98b012bbfebd4e5f04247a417859db2 100644
 --- a/src/main/java/net/minecraft/Util.java
 +++ b/src/main/java/net/minecraft/Util.java
 @@ -126,6 +126,7 @@ public class Util {
@@ -337,7 +337,7 @@ index f569577c7368c52d6b36c0d9a21c69c130ba838e..348ed01de05680c8ddc27457dc44a79c
  
      @Override
 diff --git a/src/main/java/org/bukkit/craftbukkit/Main.java b/src/main/java/org/bukkit/craftbukkit/Main.java
-index 67331fa5463dd31e4aea3aebf6204ec5cb43d99e..45da87c75a788037b638088d9249b20b7f9b2686 100644
+index 67331fa5463dd31e4aea3aebf6204ec5cb43d99e..f69903befb3ee992c9db9672af20ed2f92ddb399 100644
 --- a/src/main/java/org/bukkit/craftbukkit/Main.java
 +++ b/src/main/java/org/bukkit/craftbukkit/Main.java
 @@ -150,6 +150,37 @@ public class Main {
@@ -422,9 +422,9 @@ index 67331fa5463dd31e4aea3aebf6204ec5cb43d99e..45da87c75a788037b638088d9249b20b
 +            tryPreloadClass("com.destroystokyo.paper.event.player.PlayerConnectionCloseEvent");
 +            tryPreloadClass("com.destroystokyo.paper.event.entity.EntityRemoveFromWorldEvent");
 +            // Minecraft, seen during saving
-+            tryPreloadClass("net.minecraft.server.LightEngineLayerEventListener$Void");
-+            tryPreloadClass("net.minecraft.server.LightEngineLayerEventListener");
-+            tryPreloadClass("net.minecraft.server.ExceptionSuppressor");
++            tryPreloadClass("net.minecraft.world.level.lighting.LayerLightEventListener$DummyLightLayerEventListener");
++            tryPreloadClass("net.minecraft.world.level.lighting.LayerLightEventListener");
++            tryPreloadClass("net.minecraft.util.ExceptionCollector");
 +            // Paper end
 +        }
 +    }

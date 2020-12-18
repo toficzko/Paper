@@ -51,7 +51,7 @@ index 96437f7f2fd60ad5ef3c2f7f3c85b24c1974a375..f40740eb654b6ddfd41172151d540a82
  
          if (this.type == ClientboundSetTitlesPacket.Type.TIMES) {
 diff --git a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
-index a2a0a276dc712a92cd33527453732c43f5d94582..25b9033dcc266add9bd38fc81310f09b0b2baa3a 100644
+index a2a0a276dc712a92cd33527453732c43f5d94582..06ee74e5b95d5be739c199e056ac80303628a266 100644
 --- a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
 @@ -1,5 +1,6 @@
@@ -70,14 +70,14 @@ index a2a0a276dc712a92cd33527453732c43f5d94582..25b9033dcc266add9bd38fc81310f09b
 +    public void setPlayerListHeaderFooter(BaseComponent[] header, BaseComponent[] footer) {
 +         if (header != null) {
 +             String headerJson = net.md_5.bungee.chat.ComponentSerializer.toString(header);
-+             playerListHeader = net.minecraft.network.chat.BaseComponent.ChatSerializer.jsonToComponent(headerJson);
++             playerListHeader = Component.Serializer.jsonToComponent(headerJson);
 +         } else {
 +             playerListHeader = null;
 +         }
 +
 +        if (footer != null) {
 +             String footerJson = net.md_5.bungee.chat.ComponentSerializer.toString(footer);
-+             playerListFooter = net.minecraft.network.chat.BaseComponent.ChatSerializer.jsonToComponent(footerJson);
++             playerListFooter = Component.Serializer.jsonToComponent(footerJson);
 +         } else {
 +             playerListFooter = null;
 +         }

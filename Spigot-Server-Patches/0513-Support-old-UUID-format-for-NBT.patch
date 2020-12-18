@@ -8,10 +8,10 @@ We have stored UUID in plenty of places that did not get DFU'd
 So just look for old format and load it if it exists.
 
 diff --git a/src/main/java/net/minecraft/nbt/CompoundTag.java b/src/main/java/net/minecraft/nbt/CompoundTag.java
-index 2171efd74d0c802ed247ede21259dc2142b990ba..57f83b7de722fc827699e64e7dc46dd8cb01183d 100644
+index cd3c3f0b93e02e9508b4b8e403e296b10450c3ba..56d4f3bb80bf1ccadbe5a9d9b1f3792b60d900b7 100644
 --- a/src/main/java/net/minecraft/nbt/CompoundTag.java
 +++ b/src/main/java/net/minecraft/nbt/CompoundTag.java
-@@ -126,15 +126,31 @@ public class CompoundTag implements Tag {
+@@ -126,14 +126,30 @@ public class CompoundTag implements Tag {
  
      public void setUUID(String prefix, UUID uuid) { putUUID(prefix, uuid); } // Paper - OBFHELPER
      public void putUUID(String key, UUID value) {
@@ -33,7 +33,6 @@ index 2171efd74d0c802ed247ede21259dc2142b990ba..57f83b7de722fc827699e64e7dc46dd8
          return NbtUtils.loadUUID(this.get(key));
      }
  
-     public final boolean hasUUID(String s) { return this.hasUUID(s); } // Paper - OBFHELPER
      public boolean hasUUID(String key) {
 +        // Paper start - support old format
 +        if (this.contains(key + "Most", 99) && this.contains(key + "Least", 99)) {
@@ -44,7 +43,7 @@ index 2171efd74d0c802ed247ede21259dc2142b990ba..57f83b7de722fc827699e64e7dc46dd8
          return tag != null && tag.getType() == IntArrayTag.TYPE && ((IntArrayTag)tag).getAsIntArray().length == 4;
      }
 diff --git a/src/main/java/net/minecraft/nbt/NbtUtils.java b/src/main/java/net/minecraft/nbt/NbtUtils.java
-index 9a89fb2677061728ed29febba9c26bdb5fb233a4..b146d9e808968f1a552fcc0f694f911a00631a28 100644
+index 9a89fb2677061728ed29febba9c26bdb5fb233a4..e44671ce71cf98c6981e906f6db6afbbf8178d48 100644
 --- a/src/main/java/net/minecraft/nbt/NbtUtils.java
 +++ b/src/main/java/net/minecraft/nbt/NbtUtils.java
 @@ -36,6 +36,11 @@ public final class NbtUtils {
@@ -53,9 +52,17 @@ index 9a89fb2677061728ed29febba9c26bdb5fb233a4..b146d9e808968f1a552fcc0f694f911a
  
 +        // Paper start - support string UUID's
 +        if (tag.contains("Id", 8)) {
-+            uuid = UUID.fromString(tag.getString("Id"));
++            uUID = UUID.fromString(tag.getString("Id"));
 +        }
 +        // Paper end
          if (tag.hasUUID("Id")) {
              uUID = tag.getUUID("Id");
          }
+@@ -239,6 +244,6 @@ public final class NbtUtils {
+     }
+ 
+     public static CompoundTag update(DataFixer fixer, DataFixTypes fixTypes, CompoundTag tag, int oldVersion, int targetVersion) {
+-        return fixer.update(fixTypes.getType(), new Dynamic<>(NbtOps.INSTANCE, tag), oldVersion, targetVersion).getValue();
++        return (CompoundTag) fixer.update(fixTypes.getType(), new Dynamic<>(NbtOps.INSTANCE, tag), oldVersion, targetVersion).getValue(); // Paper - decomp fix
+     }
+ }

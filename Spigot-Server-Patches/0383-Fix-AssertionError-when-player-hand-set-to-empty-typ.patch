@@ -7,7 +7,7 @@ Fixes an AssertionError when setting the player's item in hand to null or a new 
 Fixes GH-2718
 
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index 6a7b1ea53655e4308e505f5092d002f16cafd47e..a8cbaac2b04527145ce8e16fb8d1dc2c7f9553d1 100644
+index a1ab7e058eacd494f18ac0dd5d241d1db839d191..1227c1aa3e2c50203605b9e2bf7f0fa9e55a2636 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 @@ -1691,6 +1691,10 @@ public class ServerGamePacketListenerImpl implements ServerGamePacketListener {

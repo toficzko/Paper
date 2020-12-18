@@ -5,7 +5,7 @@ Subject: [PATCH] Reduce allocation of Vec3D by entity tracker
 
 
 diff --git a/src/main/java/net/minecraft/server/level/ChunkMap.java b/src/main/java/net/minecraft/server/level/ChunkMap.java
-index e8984c9f9136f6f0a951fda1853b98c991fb16ab..feeac296afa9e40292b7c0f373a0dd700a9862ef 100644
+index 2cd680ad4848df1c9c9b40283c7a47e7c7622255..9e5cb3b51cfde81a6bba96ae03282ae667cd3855 100644
 --- a/src/main/java/net/minecraft/server/level/ChunkMap.java
 +++ b/src/main/java/net/minecraft/server/level/ChunkMap.java
 @@ -96,7 +96,6 @@ import net.minecraft.world.level.levelgen.structure.StructureStart;
@@ -16,7 +16,7 @@ index e8984c9f9136f6f0a951fda1853b98c991fb16ab..feeac296afa9e40292b7c0f373a0dd70
  import it.unimi.dsi.fastutil.objects.ObjectRBTreeSet; // Paper
  import org.apache.commons.lang3.mutable.MutableBoolean;
  import org.apache.logging.log4j.LogManager;
-@@ -2184,9 +2183,14 @@ public class ChunkMap extends ChunkStorage implements ChunkHolder.PlayerProvider
+@@ -2225,9 +2224,14 @@ Sections go from 0..16. Now whenever a section is not empty, it can potentially
          public void updatePlayer(ServerPlayer player) {
              org.spigotmc.AsyncCatcher.catchOp("player tracker update"); // Spigot
              if (player != this.entity) {

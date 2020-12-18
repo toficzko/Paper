@@ -5,7 +5,7 @@ Subject: [PATCH] Fix SPIGOT-5824 Bukkit world-container is not used
 
 
 diff --git a/src/main/java/net/minecraft/server/Main.java b/src/main/java/net/minecraft/server/Main.java
-index 7a5f3a9bdf314a185c1cd3a75a0a63cb68ad65d1..bd161db2f0ede31661692468518bea77d9f75649 100644
+index 4faf698f7e80040717d404cb2c90a21556ebf9d8..cb562bd9abe88b9314b52517e4ee2e03aff60580 100644
 --- a/src/main/java/net/minecraft/server/Main.java
 +++ b/src/main/java/net/minecraft/server/Main.java
 @@ -116,11 +116,20 @@ public class Main {

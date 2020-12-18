@@ -48,7 +48,7 @@ index bd3c46e3c93de95afbd3264a71c5b910807408bf..44e9a56b348497684c24d6ecd3017235
                          double deltaZ = this.getZ() - player.getZ();
                          double distanceSquared = deltaX * deltaX + deltaZ * deltaZ;
 diff --git a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
-index 287d9e23a837aa4570a424bc99575a17bf52e221..bbf468693f7e7f7df0f5da4bb0541fcee51b91c9 100644
+index 2c5de228f980c75ecaecb01c54071a741341fdd2..50efd136ef0ad6d7d43114e61007a543dc15289d 100644
 --- a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
 @@ -2045,6 +2045,16 @@ public class CraftPlayer extends CraftHumanEntity implements Player {

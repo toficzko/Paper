@@ -8,10 +8,10 @@ This patch also adds a chunk status cache on region files (note that
 its only purpose is to cache the status on DISK)
 
 diff --git a/src/main/java/net/minecraft/server/level/ChunkHolder.java b/src/main/java/net/minecraft/server/level/ChunkHolder.java
-index 79b6185b5222e960379cb3e4a529914b2646fb4b..08eb06b8d511dfecbe5ee9dc0ecc5be2f39430a5 100644
+index f9ef5f8e22dac9b25d11df3fc4cbb6db310b3dd6..32ac8af8fff5a06005f5c5f973717bab5e261192 100644
 --- a/src/main/java/net/minecraft/server/level/ChunkHolder.java
 +++ b/src/main/java/net/minecraft/server/level/ChunkHolder.java
-@@ -135,6 +135,19 @@ public class ChunkHolder {
+@@ -127,6 +127,19 @@ public class ChunkHolder {
          Either<ChunkAccess, ChunkHolder.ChunkLoadingFailure> either = (Either<ChunkAccess, ChunkHolder.ChunkLoadingFailure>) statusFuture.getNow(null);
          return either == null ? null : (LevelChunk) either.left().orElse(null);
      }
@@ -108,7 +108,7 @@ index 4f2fb275ed4b75805f959d6ae4ec416eb7b33252..ec60a4ee09ce49620d3d4c9974e09627
          // Spigot start
          return isOutsideOfRange(chunkcoordintpair, false);
 diff --git a/src/main/java/net/minecraft/server/level/ServerChunkCache.java b/src/main/java/net/minecraft/server/level/ServerChunkCache.java
-index d391eae35c37a3a98c180b35c38d8198d67ecb67..76658ea215e45ec2b75033bd59d7def2059b30ed 100644
+index d7e03c913919cae477c92852735e44e3be615d04..9adda08a0a44a19026eca7cad28c2fb0401f9594 100644
 --- a/src/main/java/net/minecraft/server/level/ServerChunkCache.java
 +++ b/src/main/java/net/minecraft/server/level/ServerChunkCache.java
 @@ -57,7 +57,7 @@ public class ServerChunkCache extends ChunkSource {

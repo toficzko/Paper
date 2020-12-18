@@ -18,7 +18,7 @@ index 6f5dea4d031763a261be1e74c079474e71f6593a..3d782275ee86ecbbe9ed0c3a2faf2ef2
      private Vec3 location;
      private InteractionHand hand;
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index b1cb0d6f9dd693cc54e89a4b3c5896d992a34b34..df2493f33311a226353a3acf70c577bb5a12b508 100644
+index da1d471b4f4c19f07730172f98ab5d29d3da9c90..600bc268b5ef67af69e156284f514f289e4bccf6 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 @@ -2184,6 +2184,16 @@ public class ServerGamePacketListenerImpl implements ServerGamePacketListener {

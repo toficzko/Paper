@@ -5,7 +5,7 @@ Subject: [PATCH] Complete resource pack API
 
 
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index c5352939ae0854caefc1d459edf57a0a92285a7b..b1cb0d6f9dd693cc54e89a4b3c5896d992a34b34 100644
+index 1c5d547b1b0bb50fdf6ba3495e038dec575fc0b5..da1d471b4f4c19f07730172f98ab5d29d3da9c90 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 @@ -1596,7 +1596,11 @@ public class ServerGamePacketListenerImpl implements ServerGamePacketListener {
@@ -22,7 +22,7 @@ index c5352939ae0854caefc1d459edf57a0a92285a7b..b1cb0d6f9dd693cc54e89a4b3c5896d9
      // CraftBukkit end
  
 diff --git a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
-index 537e869648dae0f32638860f54a7568e650c03c5..ea6e49817726be0493a9aa3aa97751e443f98912 100644
+index 91f45864cc68d70ca8d3011d74a68d35bbb3ebae..162477b95f0c88a21ded5f70780cd6173a6cee5a 100644
 --- a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
 @@ -136,6 +136,10 @@ public class CraftPlayer extends CraftHumanEntity implements Player {

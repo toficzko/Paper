@@ -5,7 +5,7 @@ Subject: [PATCH] Add and implement PlayerRecipeBookClickEvent
 
 
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index dacc00b7b4f4356653d9849b3f686f183b159597..9db5be7d6296be61585b0d5bff78927e62942952 100644
+index f355798276d878af8949fb350deb6d7f3f9d13f2..9d1244dc2d266e3fa2d9db399a9ecb81ff756106 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 @@ -2746,9 +2746,15 @@ public class ServerGamePacketListenerImpl implements ServerGamePacketListener {
@@ -20,10 +20,54 @@ index dacc00b7b4f4356653d9849b3f686f183b159597..9db5be7d6296be61585b0d5bff78927e
 +                player.getBukkitEntity(), org.bukkit.craftbukkit.util.CraftNamespacedKey.fromMinecraft(packetplayinautorecipe.getRecipe()), packetplayinautorecipe.isShiftDown());
 +            if (event.callEvent()) {
 +                this.server.getRecipeManager().byKey(org.bukkit.craftbukkit.util.CraftNamespacedKey.toMinecraft(event.getRecipe())).ifPresent((irecipe) -> {
-+                    ((ContainerRecipeBook) this.player.activeContainer).a(event.isMakeAll(), irecipe, this.player);
++                    ((RecipeBookMenu) this.player.containerMenu).handlePlacement(event.isMakeAll(), irecipe, this.player);
 +                });
 +            }
 +            // Paper end
          }
      }
  
+diff --git a/src/test/java/org/bukkit/SoundTest.java b/src/test/java/org/bukkit/SoundTest.java
+index fa93eb059747ddb9c0c340f38c307a27a0cc9f57..2ab2b6840df00df135840c0349b0f21189fcfdd3 100644
+--- a/src/test/java/org/bukkit/SoundTest.java
++++ b/src/test/java/org/bukkit/SoundTest.java
+@@ -1,9 +1,11 @@
+ package org.bukkit;
+ 
++import net.minecraft.core.Registry;
++import net.minecraft.resources.ResourceLocation;
++import net.minecraft.sounds.SoundSource;
++
+ import static org.hamcrest.Matchers.*;
+ import static org.junit.Assert.*;
+-import net.minecraft.server.IRegistry;
+-import net.minecraft.server.MinecraftKey;
+ import org.bukkit.craftbukkit.CraftSound;
+ import org.bukkit.support.AbstractTestingBase;
+ import org.junit.Test;
+@@ -19,21 +21,21 @@ public class SoundTest extends AbstractTestingBase {
+ 
+     @Test
+     public void testReverse() {
+-        for (MinecraftKey effect : IRegistry.SOUND_EVENT.keySet()) {
+-            assertNotNull(effect + "", Sound.valueOf(effect.getKey().replace('.', '_').toUpperCase(java.util.Locale.ENGLISH)));
++        for (ResourceLocation effect : Registry.SOUND_EVENT.keySet()) {
++            assertNotNull(effect + "", Sound.valueOf(effect.getPath().replace('.', '_').toUpperCase(java.util.Locale.ENGLISH)));
+         }
+     }
+ 
+     @Test
+     public void testCategory() {
+         for (SoundCategory category : SoundCategory.values()) {
+-            assertNotNull(category + "", net.minecraft.server.SoundCategory.valueOf(category.name()));
++            assertNotNull(category + "", SoundSource.valueOf(category.name()));
+         }
+     }
+ 
+     @Test
+     public void testCategoryReverse() {
+-        for (net.minecraft.server.SoundCategory category : net.minecraft.server.SoundCategory.values()) {
++        for (SoundSource category : SoundSource.values()) {
+             assertNotNull(category + "", SoundCategory.valueOf(category.name()));
+         }
+     }

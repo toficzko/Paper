@@ -6,7 +6,7 @@ Subject: [PATCH] Optimize isOutsideRange to use distance maps
 Use a distance map to find the players in range quickly
 
 diff --git a/src/main/java/net/minecraft/server/level/ChunkHolder.java b/src/main/java/net/minecraft/server/level/ChunkHolder.java
-index 9062cbff7cbc65383756722cecd6962403ff26c3..52565f1f5424db100f8131e4780e83b246df6754 100644
+index 720916962236e815bbaf16cf61a58c03cebbc3a8..11621afac708b131caff3bdc5b2d157df2032d3b 100644
 --- a/src/main/java/net/minecraft/server/level/ChunkHolder.java
 +++ b/src/main/java/net/minecraft/server/level/ChunkHolder.java
 @@ -67,6 +67,18 @@ public class ChunkHolder {
@@ -299,7 +299,7 @@ index 13e3f9793186fd233e1b7fb5e0108c471324ac90..5d2a41857e05823690b1da04c54eefc3
  
      public String getDebugStatus() {
 diff --git a/src/main/java/net/minecraft/server/level/ServerChunkCache.java b/src/main/java/net/minecraft/server/level/ServerChunkCache.java
-index 80d1af99a4eea303952877926b36a145a5b326b2..2c5861c7daacbd8f44a54b0f03530f21c1d06f83 100644
+index 9724c1c9d5beea067ba4ce6a26769ed564aca3c1..bfe40ffe02007bfaa19d0fe69a5b4f83305f1ff2 100644
 --- a/src/main/java/net/minecraft/server/level/ServerChunkCache.java
 +++ b/src/main/java/net/minecraft/server/level/ServerChunkCache.java
 @@ -754,6 +754,37 @@ public class ServerChunkCache extends ChunkSource {

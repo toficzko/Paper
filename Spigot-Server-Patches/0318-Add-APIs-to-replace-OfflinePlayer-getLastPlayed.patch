@@ -106,7 +106,7 @@ index 1eeb1d1fe54eba68652be8dba52dce8ca91d948d..19aee8c6d0989bcf263e27adab42b3e6
      public Location getBedSpawnLocation() {
          CompoundTag data = getData();
 diff --git a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
-index c299c5752e04b2660878c5fe77244c93f7b92362..32d2a052acd18c6c32a6f54797c1bcb0d7fc3d0e 100644
+index caeeefa78f859c7d7fc5273d6681a982e521096f..64a1474f802b120050bc6465140a0a43dcf7fc4d 100644
 --- a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
 @@ -140,6 +140,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player {

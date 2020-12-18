@@ -5,7 +5,7 @@ Subject: [PATCH] Prevent teleporting dead entities
 
 
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index a8cbaac2b04527145ce8e16fb8d1dc2c7f9553d1..0837c0bea429f9796dc44fff842d91660adf1cf4 100644
+index 1227c1aa3e2c50203605b9e2bf7f0fa9e55a2636..73af223a017b27e88eab5879a090979baba1c15c 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 @@ -1453,6 +1453,10 @@ public class ServerGamePacketListenerImpl implements ServerGamePacketListener {

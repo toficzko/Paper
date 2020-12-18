@@ -82,7 +82,7 @@ index bb949e272802db2b5f9333f3c8cd5c021209e879..5ae6c999fac077c42e2ae4363575d017
              }
          }
 diff --git a/src/main/java/net/minecraft/world/item/ItemStack.java b/src/main/java/net/minecraft/world/item/ItemStack.java
-index 11364fd7a24ce788b26d01e711098cd2883efad9..302659166b607d9e608fd0752bf9a56f12f2c4a4 100644
+index 11364fd7a24ce788b26d01e711098cd2883efad9..1063d538aa0d8f7bb104ebe5d4f445cb84e8a2a0 100644
 --- a/src/main/java/net/minecraft/world/item/ItemStack.java
 +++ b/src/main/java/net/minecraft/world/item/ItemStack.java
 @@ -113,7 +113,7 @@ public final class ItemStack {
@@ -90,12 +90,12 @@ index 11364fd7a24ce788b26d01e711098cd2883efad9..302659166b607d9e608fd0752bf9a56f
      @Deprecated
      private Item item;
 -    private CompoundTag tag;
-+    CompoundTag tag; // Paper -> package private
++    public CompoundTag tag; // Paper -> public
      private boolean emptyCacheFlag;
      private Entity entityRepresentation;
      private BlockInWorld cachedBreakBlock;
 diff --git a/src/main/java/net/minecraft/world/level/block/entity/SkullBlockEntity.java b/src/main/java/net/minecraft/world/level/block/entity/SkullBlockEntity.java
-index a3f14ad5e2c3a46e86d390decf07650978fc7625..ccf4fc8c48a0a0e8a4cff1caa29f743b71915487 100644
+index a3f14ad5e2c3a46e86d390decf07650978fc7625..8616239669fc5f2373db8369e11aac2f24d5f2f8 100644
 --- a/src/main/java/net/minecraft/world/level/block/entity/SkullBlockEntity.java
 +++ b/src/main/java/net/minecraft/world/level/block/entity/SkullBlockEntity.java
 @@ -7,6 +7,7 @@ import com.mojang.authlib.properties.Property;
@@ -123,7 +123,7 @@ index a3f14ad5e2c3a46e86d390decf07650978fc7625..ccf4fc8c48a0a0e8a4cff1caa29f743b
 +        return cmp;
 +    }
 +
-+    static void sanitizeUUID(CompoundTag owner) {
++    public static void sanitizeUUID(CompoundTag owner) {
 +        CompoundTag properties = owner.getCompound("Properties");
 +        ListTag list = null;
 +        if (!properties.isEmpty()) {

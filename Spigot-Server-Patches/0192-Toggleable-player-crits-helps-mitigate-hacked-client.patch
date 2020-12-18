@@ -21,7 +21,7 @@ index 4571fd98a9faeb461666fc5c262a95b9e7fa04b6..924cc5b2dc7764fdf9185d32bb5c0922
      private void allChunksAreSlimeChunks() {
          allChunksAreSlimeChunks = getBoolean("all-chunks-are-slime-chunks", false);
 diff --git a/src/main/java/net/minecraft/world/entity/player/Player.java b/src/main/java/net/minecraft/world/entity/player/Player.java
-index 81cf387b802c4c938b9d05413f275a08975f042a..341a8030260069f62474d2f202e1eb44e7b19baa 100644
+index 402ce982d4feacf3cbe179b0e75e1cc41f74b1da..12914707b1674a44cfcaeffe0339e640b190b041 100644
 --- a/src/main/java/net/minecraft/world/entity/player/Player.java
 +++ b/src/main/java/net/minecraft/world/entity/player/Player.java
 @@ -1131,6 +1131,7 @@ public abstract class Player extends LivingEntity {

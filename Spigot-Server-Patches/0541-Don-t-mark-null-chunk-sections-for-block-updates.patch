@@ -5,10 +5,10 @@ Subject: [PATCH] Don't mark null chunk sections for block updates
 
 
 diff --git a/src/main/java/net/minecraft/server/level/ChunkHolder.java b/src/main/java/net/minecraft/server/level/ChunkHolder.java
-index 0c4c984617c22d65ca7bf14740d3b7eb149ba462..13a8bdcf55f2bb4096a70445cc8b9a5b9262334c 100644
+index b46f0bfd35f488a03f49220147099c7fbbed4c2f..96ffed6445d058cc95623de32e095d4ce57df1a4 100644
 --- a/src/main/java/net/minecraft/server/level/ChunkHolder.java
 +++ b/src/main/java/net/minecraft/server/level/ChunkHolder.java
-@@ -442,6 +442,7 @@ public class ChunkHolder {
+@@ -434,6 +434,7 @@ public class ChunkHolder {
                          this.broadcastBlockEntityIfNeeded(world, blockposition, iblockdata);
                      } else {
                          LevelChunkSection chunksection = chunk.getSections()[sectionposition.getY()];

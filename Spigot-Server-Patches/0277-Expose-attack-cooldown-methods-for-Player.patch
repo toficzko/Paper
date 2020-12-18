@@ -5,7 +5,7 @@ Subject: [PATCH] Expose attack cooldown methods for Player
 
 
 diff --git a/src/main/java/net/minecraft/world/entity/player/Player.java b/src/main/java/net/minecraft/world/entity/player/Player.java
-index 7ed531d8e2a1b65d440fa9b114384a245484d0ed..858da8a9d6f9fdc3bf046bed614bcd23d2018235 100644
+index 9093126c939c0e95993eff230b2b930456cc7133..f0c537c99ccbe5ca6373a71cc187ce21238d330c 100644
 --- a/src/main/java/net/minecraft/world/entity/player/Player.java
 +++ b/src/main/java/net/minecraft/world/entity/player/Player.java
 @@ -2099,6 +2099,7 @@ public abstract class Player extends LivingEntity {
@@ -17,7 +17,7 @@ index 7ed531d8e2a1b65d440fa9b114384a245484d0ed..858da8a9d6f9fdc3bf046bed614bcd23
          return (float) (1.0D / this.getAttributeValue(Attributes.ATTACK_SPEED) * 20.0D);
      }
 diff --git a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
-index 752987390407848da681a74601d870dcd56ab33b..7aa9670305e680e386755b8ca0d97a0edd8cd441 100644
+index 636c46923d4786d825f0f4692a85ad0a7aed780a..95dae0c0378867d271a51d6e409926360b50754b 100644
 --- a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
 @@ -1991,6 +1991,20 @@ public class CraftPlayer extends CraftHumanEntity implements Player {

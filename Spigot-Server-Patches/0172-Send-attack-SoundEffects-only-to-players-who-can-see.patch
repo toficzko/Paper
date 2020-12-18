@@ -6,7 +6,7 @@ Subject: [PATCH] Send attack SoundEffects only to players who can see the
 
 
 diff --git a/src/main/java/net/minecraft/world/entity/player/Player.java b/src/main/java/net/minecraft/world/entity/player/Player.java
-index 3b478ee3ba2fe19e568461d55f6d7c6d0a747276..81cf387b802c4c938b9d05413f275a08975f042a 100644
+index 45f4919384b8bba27c068e7ce28c6414d86e80e4..402ce982d4feacf3cbe179b0e75e1cc41f74b1da 100644
 --- a/src/main/java/net/minecraft/world/entity/player/Player.java
 +++ b/src/main/java/net/minecraft/world/entity/player/Player.java
 @@ -28,6 +28,7 @@ import net.minecraft.network.chat.MutableComponent;

@@ -4,6 +4,19 @@ Date: Thu, 10 Dec 2020 22:37:28 -0800
 Subject: [PATCH] Fix remap
 
 
+diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
+index e3fbfd3427c044b06cece6c27acc600a3e8c5bba..215499f19b76457dc9207f32976e52a1adadc876 100644
+--- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
++++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
+@@ -221,7 +221,7 @@ public class ServerGamePacketListenerImpl implements ServerGamePacketListener {
+     private long keepAliveChallenge;
+     // CraftBukkit start - multithreaded fields
+     private volatile int chatSpamTickCount;
+-    private static final AtomicIntegerFieldUpdater chatSpamField = AtomicIntegerFieldUpdater.newUpdater(ServerGamePacketListenerImpl.class, "chatThrottle");
++    private static final AtomicIntegerFieldUpdater chatSpamField = AtomicIntegerFieldUpdater.newUpdater(ServerGamePacketListenerImpl.class, "chatSpamTickCount");
+     // CraftBukkit end
+     private int dropSpamTickCount;
+     private final Int2ShortMap expectedAcks = new Int2ShortOpenHashMap();
 diff --git a/src/main/java/net/minecraft/world/entity/monster/Phantom.java b/src/main/java/net/minecraft/world/entity/monster/Phantom.java
 index ec0dc82d4c7924fd9fb363806fb2b0a0269a8bec..1b4794555f199c80ca3b0970710f014254da4bcc 100644
 --- a/src/main/java/net/minecraft/world/entity/monster/Phantom.java

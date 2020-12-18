@@ -144,10 +144,10 @@ index 22b8bb4a2d337336450177b0b97168a375e051c4..b99eaf8579f50a54e1de4949ad2fe0bb
          if (!SyncLoadFinder.ENABLED) {
              sender.sendMessage(ChatColor.RED + "This command requires the server startup flag '-Dpaper.debug-sync-loads=true' to be set.");
 diff --git a/src/main/java/net/minecraft/server/level/ChunkHolder.java b/src/main/java/net/minecraft/server/level/ChunkHolder.java
-index 427c8a0dbc6ba8c61541dc4bcd4f615cdf9f9083..3c9526b403e06228628b5e49e5ab8337f00f6a48 100644
+index 3c0f968ab3263c7142cade89bc710dcbb0941cbe..d1b87e56349e3e468fdbd3313eef0167b2073549 100644
 --- a/src/main/java/net/minecraft/server/level/ChunkHolder.java
 +++ b/src/main/java/net/minecraft/server/level/ChunkHolder.java
-@@ -343,6 +343,7 @@ public class ChunkHolder {
+@@ -335,6 +335,7 @@ public class ChunkHolder {
  
      }
  
@@ -156,23 +156,10 @@ index 427c8a0dbc6ba8c61541dc4bcd4f615cdf9f9083..3c9526b403e06228628b5e49e5ab8337
          // Paper start - per player view distance
          // there can be potential desync with player's last mapped section and the view distance map, so use the
 diff --git a/src/main/java/net/minecraft/server/level/ChunkMap.java b/src/main/java/net/minecraft/server/level/ChunkMap.java
-index 3954ea7d94fb4eeabfc92329408d7698d547b52f..e8984c9f9136f6f0a951fda1853b98c991fb16ab 100644
+index af54472549ea95bd169dfa1fafff7b172a41b5d4..2cd680ad4848df1c9c9b40283c7a47e7c7622255 100644
 --- a/src/main/java/net/minecraft/server/level/ChunkMap.java
 +++ b/src/main/java/net/minecraft/server/level/ChunkMap.java
-@@ -147,6 +147,12 @@ public class ChunkMap extends ChunkStorage implements ChunkHolder.PlayerProvider
-     private final ChunkTaskPriorityQueueSorter queueSorter;
-     private final ProcessorHandle<ChunkTaskPriorityQueueSorter.Message<Runnable>> worldgenMailbox;
-     final ProcessorHandle<ChunkTaskPriorityQueueSorter.Message<Runnable>> mainThreadMailbox; // Paper - private -> package private
-+    // Paper start
-+    final ProcessorHandle<ChunkTaskPriorityQueueSorter.Message<Runnable>> mailboxLight;
-+    public void addLightTask(ChunkHolder playerchunk, Runnable run) {
-+        this.mailboxLight.tell(ChunkTaskPriorityQueueSorter.message(playerchunk, run));
-+    }
-+    // Paper end
-     public final ChunkProgressListener progressListener;
-     public final ChunkMap.ChunkDistanceManager distanceManager;
-     private final AtomicInteger tickingGenerated;
-@@ -338,11 +344,12 @@ public class ChunkMap extends ChunkStorage implements ChunkHolder.PlayerProvider
+@@ -344,11 +344,12 @@ public class ChunkMap extends ChunkStorage implements ChunkHolder.PlayerProvider
          ProcessorHandle<Runnable> mailbox = ProcessorHandle.of("main", mainThreadExecutor::tell);
  
          this.progressListener = worldGenerationProgressListener;

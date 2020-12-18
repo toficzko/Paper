@@ -27,7 +27,7 @@ index d264454709375df0f32bda49de81ec548b2b5949..4f747875a2795ace79a7dab7d54d925e
          protected ChunkDistanceManager(Executor workerExecutor, Executor mainThreadExecutor) {
              super(workerExecutor, mainThreadExecutor);
 diff --git a/src/main/java/net/minecraft/server/level/ServerChunkCache.java b/src/main/java/net/minecraft/server/level/ServerChunkCache.java
-index 0e80735d216540d40c2637b1621abc82db79405b..80d1af99a4eea303952877926b36a145a5b326b2 100644
+index 286439e6564fa848c7931b644a0b3699cc6c0e40..9724c1c9d5beea067ba4ce6a26769ed564aca3c1 100644
 --- a/src/main/java/net/minecraft/server/level/ServerChunkCache.java
 +++ b/src/main/java/net/minecraft/server/level/ServerChunkCache.java
 @@ -632,7 +632,7 @@ public class ServerChunkCache extends ChunkSource {
@@ -80,7 +80,7 @@ index d09e4857b6c40410d134fa81b48e95919a7373bd..583587457790df826a8a3239a4bd1d0f
      public static final TicketType<ChunkPos> UNKNOWN = create("unknown", Comparator.comparingLong(ChunkPos::toLong), 1);
      public static final TicketType<Unit> PLUGIN = create("plugin", (a, b) -> 0); // CraftBukkit
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index 0837c0bea429f9796dc44fff842d91660adf1cf4..4c4b6e42f7081e6c99b0e9e7976078c70f490863 100644
+index 73af223a017b27e88eab5879a090979baba1c15c..20c8e46e1ecc990302134d5ed75850296a8bcb9e 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 @@ -218,6 +218,7 @@ public class ServerGamePacketListenerImpl implements ServerGamePacketListener {

@@ -9,7 +9,7 @@ growing to large sizes and preventing login.
 This now automatically cleans up the extra properties.
 
 diff --git a/src/main/java/net/minecraft/nbt/NbtUtils.java b/src/main/java/net/minecraft/nbt/NbtUtils.java
-index b146d9e808968f1a552fcc0f694f911a00631a28..c6404b836d74b17dc6d375c48b9f297eefaa65f2 100644
+index e44671ce71cf98c6981e906f6db6afbbf8178d48..042ba23a32524b5f6b7fdb31f9f35a1c9b22d413 100644
 --- a/src/main/java/net/minecraft/nbt/NbtUtils.java
 +++ b/src/main/java/net/minecraft/nbt/NbtUtils.java
 @@ -52,8 +52,8 @@ public final class NbtUtils {

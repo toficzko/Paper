@@ -37,7 +37,7 @@ index 8e9a40cbfa58e001f7d7c694ae0bf04e5b50b88d..23140e975f670da473eebd0e2de06355
      public ServerPlayer(MinecraftServer server, ServerLevel world, GameProfile profile, ServerPlayerGameMode interactionManager) {
          super(world, world.getSpawn(), world.getSharedSpawnAngle(), profile);
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index 1b6d995ba0137d3bfb9214b96ed7f3f63b7e7f0a..d6c6ee671408f409c551e87002e1d4ea5b9d4346 100644
+index 0435e6eed60302e8839682b8281e716940d06186..1a7f079529e44641e8c30abeaa7ed523dbf3f41a 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 @@ -443,6 +443,7 @@ public class ServerGamePacketListenerImpl implements ServerGamePacketListener {

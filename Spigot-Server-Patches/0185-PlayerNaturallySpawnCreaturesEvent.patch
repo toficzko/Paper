@@ -39,7 +39,7 @@ index 5c3f18cfe1c7a998902267bab673d61640dffcf5..125c93e7aa0ef73c47d62671a2effcbc
      }
  
 diff --git a/src/main/java/net/minecraft/server/level/ServerChunkCache.java b/src/main/java/net/minecraft/server/level/ServerChunkCache.java
-index 3fb02010d43159750ea5e00a1609fbf8d6f19b50..67e69456cbaf3e4744a0d8eaef5fc834ff7896e8 100644
+index d69ba25748f969f90f5eeab1136cbc9159317169..af103943d5ebc694576bb311ed2c0f99bc2b8426 100644
 --- a/src/main/java/net/minecraft/server/level/ServerChunkCache.java
 +++ b/src/main/java/net/minecraft/server/level/ServerChunkCache.java
 @@ -615,6 +615,15 @@ public class ServerChunkCache extends ChunkSource {

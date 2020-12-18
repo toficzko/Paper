@@ -5,7 +5,7 @@ Subject: [PATCH] Here's Johnny!
 
 
 diff --git a/src/main/java/net/minecraft/world/entity/monster/Vindicator.java b/src/main/java/net/minecraft/world/entity/monster/Vindicator.java
-index db235bca07ffb0e9b55a57562776ad88ef09b351..f5bdcdb42e1bc8201a290797307afb6daeea4946 100644
+index c728f023d3f496959d9af065c06efa9ace442071..1d0a4b94c340ac4a04d12fbc09d3bc8f295e0d78 100644
 --- a/src/main/java/net/minecraft/world/entity/monster/Vindicator.java
 +++ b/src/main/java/net/minecraft/world/entity/monster/Vindicator.java
 @@ -50,7 +50,7 @@ public class Vindicator extends AbstractIllager {

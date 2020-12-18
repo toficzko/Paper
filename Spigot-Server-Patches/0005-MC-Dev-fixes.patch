@@ -43,6 +43,21 @@ index 0965063b049e14ed780747a562229b3a1ee307b0..8f7739ee06f5ca8e4804f2e66ee91ca2
      }
  
      private static <T> T[] castRawArray(Object[] array) {
+diff --git a/src/main/java/net/minecraft/world/item/crafting/RecipeManager.java b/src/main/java/net/minecraft/world/item/crafting/RecipeManager.java
+index 9733a2aa80c79cf11d2ef7c8c296b50b842b6769..4f04cf38b0c507decaabc1334bbd4d89ab2317f2 100644
+--- a/src/main/java/net/minecraft/world/item/crafting/RecipeManager.java
++++ b/src/main/java/net/minecraft/world/item/crafting/RecipeManager.java
+@@ -74,9 +74,7 @@ public class RecipeManager extends SimpleJsonResourceReloadListener {
+             }
+         }
+ 
+-        this.recipes = (Map) map1.entrySet().stream().collect(ImmutableMap.toImmutableMap(Entry::getKey, (entry1) -> {
+-            return (entry1.getValue()); // CraftBukkit
+-        }));
++        this.recipes = map1.entrySet().stream().collect(ImmutableMap.toImmutableMap(Entry::getKey, Entry::getValue)); // CraftBukkit // Paper - fix verify error
+         RecipeManager.LOGGER.info("Loaded {} recipes", map1.size());
+     }
+ 
 diff --git a/src/main/java/net/minecraft/world/level/TickNextTickData.java b/src/main/java/net/minecraft/world/level/TickNextTickData.java
 index 77f102b67e066c32e2c212626bcd46cc498bfd86..9cd82e1641947aa0a5efec1e8660e740b3f12fd5 100644
 --- a/src/main/java/net/minecraft/world/level/TickNextTickData.java

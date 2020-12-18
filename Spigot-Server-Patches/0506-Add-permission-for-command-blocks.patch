@@ -18,7 +18,7 @@ index a2169250d3cd8fedeb535316e49cec50c4f7ebcd..d7cd4e5dfae5d320a078a6f231bb981b
                  return false;
              } else if (this.player.blockActionRestricted((Level) this.level, pos, this.gameModeForPlayer)) {
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index 9db5be7d6296be61585b0d5bff78927e62942952..bc3b4e1b760a196fda52b8bc2052d81bb6d382cc 100644
+index 9d1244dc2d266e3fa2d9db399a9ecb81ff756106..36e6495e19d60d54f4335b531cb1cd98d4d80215 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 @@ -792,7 +792,7 @@ public class ServerGamePacketListenerImpl implements ServerGamePacketListener {

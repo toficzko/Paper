@@ -47,7 +47,7 @@ index 0a8f582194851df165e360e9ad62fdfc7732499c..0add1ed52a75eccf3ae78a5b639c6df6
  
          completablefuture1.thenAcceptAsync((either) -> {
 diff --git a/src/main/java/net/minecraft/server/level/ServerChunkCache.java b/src/main/java/net/minecraft/server/level/ServerChunkCache.java
-index be6c0ed982e7cbe836d1248fd74b36ff90e45765..0e80735d216540d40c2637b1621abc82db79405b 100644
+index e5aa4d5bfd8a1ff1b0cdedb0ddbcf348aafbd9db..286439e6564fa848c7931b644a0b3699cc6c0e40 100644
 --- a/src/main/java/net/minecraft/server/level/ServerChunkCache.java
 +++ b/src/main/java/net/minecraft/server/level/ServerChunkCache.java
 @@ -1020,6 +1020,7 @@ public class ServerChunkCache extends ChunkSource {

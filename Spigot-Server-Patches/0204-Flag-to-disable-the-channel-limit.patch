@@ -9,7 +9,7 @@ e.g. servers which allow and support the usage of mod packs.
 provide an optional flag to disable this check, at your own risk.
 
 diff --git a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
-index 3ba586d7ef7af0447555601d8301d30f1478a8e3..d775e45049bc9d8844a76b3cf8917bbb01444de8 100644
+index 4d11bc26df228ea62a7b83b6f0f70a2729eb44f9..0462c9fb64c7a3a5a02fea3aa3060aefd70bc400 100644
 --- a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
 @@ -139,6 +139,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player {

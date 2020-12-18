@@ -29,7 +29,7 @@ index 46f072af92bfd00472d8fdd2b28b2e71e898d8e7..d7684195718beb01e6478ec585648dc4
          this.locale = packet.language;
          this.clientViewDistance = packet.viewDistance;
 diff --git a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
-index 8ba8c0f04bc14b35a1199e1b2e822ad76b231320..fef1e12532ff25dcda5d670b2ece7b5f9430b4cd 100644
+index d28dbe3748525af79ed9c14dd7191c8a762dab93..be4b02df0dbf1f5a8b6e83b42cd02f1ec2cf6f2e 100644
 --- a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
 @@ -1814,8 +1814,10 @@ public class CraftPlayer extends CraftHumanEntity implements Player {

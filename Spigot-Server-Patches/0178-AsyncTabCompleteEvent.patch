@@ -14,7 +14,7 @@ completion, such as offline players.
 Also adds isCommand and getLocation to the sync TabCompleteEvent
 
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index 08b59842b8e8c7c577111d552f70648e9a5dd60c..cb6db5357aed0e999244911049196d9970f7ed4f 100644
+index 249d10130d7addf18c463f91ac7c4e197f1caa5c..064e6e406b70279cc4de06c67aec9c3a67b0fd33 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 @@ -706,10 +706,10 @@ public class ServerGamePacketListenerImpl implements ServerGamePacketListener {

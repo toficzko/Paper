@@ -2332,14 +2332,14 @@ index 18ff6ab6bc35a0844ac9722d6ae063a474bb8318..2a60a209b12da8745341dfc4e0ea4e0a
 +    }
  }
 diff --git a/src/main/java/net/minecraft/server/Main.java b/src/main/java/net/minecraft/server/Main.java
-index 404bd064690485d483e650aa68451ab9b823a034..7a5f3a9bdf314a185c1cd3a75a0a63cb68ad65d1 100644
+index 404bd064690485d483e650aa68451ab9b823a034..4faf698f7e80040717d404cb2c90a21556ebf9d8 100644
 --- a/src/main/java/net/minecraft/server/Main.java
 +++ b/src/main/java/net/minecraft/server/Main.java
 @@ -195,6 +195,7 @@ public class Main {
  
              convertable_conversionsession.a((IRegistryCustom) iregistrycustom_dimension, (SaveData) object);
              */
-+            Class.forName("net.minecraft.server.VillagerTrades");// Paper - load this sync so it won't fail later async
++            Class.forName("net.minecraft.world.entity.npc.VillagerTrades");// Paper - load this sync so it won't fail later async
              final DedicatedServer dedicatedserver = (DedicatedServer) MinecraftServer.spin((thread) -> {
                  DedicatedServer dedicatedserver1 = new DedicatedServer(optionset, datapackconfiguration1, thread, iregistrycustom_dimension, convertable_conversionsession, resourcepackrepository, datapackresources, null, dedicatedserversettings, DataFixers.getDataFixer(), minecraftsessionservice, gameprofilerepository, usercache, LoggerChunkProgressListener::new);
  
@@ -2357,10 +2357,10 @@ index 79c7a1a433bc69133caf899e35d033887e0015e1..67845cdadd3ccb432ffd3b7f06701cae
  
      public String getLocalIp() {
 diff --git a/src/main/java/net/minecraft/server/level/ChunkHolder.java b/src/main/java/net/minecraft/server/level/ChunkHolder.java
-index b9db2fbb3399dab9375a57553063fbb34363a15c..4fe7aa5122cd17842b33e21fc5ed1da56e9417eb 100644
+index 16a28016eda415eeedfa42496b6de5d4be04339a..78faa211dec37f3c4a049af220a3ba6087cfdfed 100644
 --- a/src/main/java/net/minecraft/server/level/ChunkHolder.java
 +++ b/src/main/java/net/minecraft/server/level/ChunkHolder.java
-@@ -151,6 +151,18 @@ public class ChunkHolder {
+@@ -143,6 +143,18 @@ public class ChunkHolder {
          }
          return null;
      }
@@ -2379,7 +2379,7 @@ index b9db2fbb3399dab9375a57553063fbb34363a15c..4fe7aa5122cd17842b33e21fc5ed1da5
      // Paper end
  
      public CompletableFuture<Either<ChunkAccess, ChunkHolder.ChunkLoadingFailure>> getFutureIfPresentUnchecked(ChunkStatus leastStatus) {
-@@ -368,7 +380,7 @@ public class ChunkHolder {
+@@ -360,7 +372,7 @@ public class ChunkHolder {
          ChunkStatus chunkstatus = getStatus(this.oldTicketLevel);
          ChunkStatus chunkstatus1 = getStatus(this.ticketLevel);
          boolean flag = this.oldTicketLevel <= ChunkMap.MAX_CHUNK_DISTANCE;
@@ -2388,7 +2388,7 @@ index b9db2fbb3399dab9375a57553063fbb34363a15c..4fe7aa5122cd17842b33e21fc5ed1da5
          ChunkHolder.FullChunkStatus playerchunk_state = getFullChunkStatus(this.oldTicketLevel);
          ChunkHolder.FullChunkStatus playerchunk_state1 = getFullChunkStatus(this.ticketLevel);
          // CraftBukkit start
-@@ -404,6 +416,12 @@ public class ChunkHolder {
+@@ -396,6 +408,12 @@ public class ChunkHolder {
                  }
              });
  
@@ -2852,7 +2852,7 @@ index bba992bbefe4159e1ac11ef5cc8ad479c4506276..8b709f64c630ff0ab4aa373de1838bcd
          return this.poiManager;
      }
 diff --git a/src/main/java/net/minecraft/server/level/ServerChunkCache.java b/src/main/java/net/minecraft/server/level/ServerChunkCache.java
-index 644acba6278f94957849850acdc9b430009e0118..2ab547a6fc8a35ffdca7c6bd59fd5f72d048e467 100644
+index a5633b6f24d67b795c4f41f649301b8ac3e4942d..525939c7ac8a5849df0b14d5d2e83411f6a77035 100644
 --- a/src/main/java/net/minecraft/server/level/ServerChunkCache.java
 +++ b/src/main/java/net/minecraft/server/level/ServerChunkCache.java
 @@ -39,6 +39,7 @@ import net.minecraft.world.level.chunk.ChunkAccess;
@@ -3203,7 +3203,7 @@ index cf3ced15c9a87e7a4dbccba17c57a7b32b77566c..d09e4857b6c40410d134fa81b48e9591
      public static <T> TicketType<T> create(String name, Comparator<T> comparator) {
          return new TicketType<>(name, comparator, 0L);
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index 7a35505c069f60c77dbfd41472d95df5eba6c072..ebfbf3648b9423b68f64a0d0a455ed03c81ea36e 100644
+index 2437c72f15aff94d7a87dcee98fddb8e6108bcc4..e174c0cffb8501920da77855e78e238aba8cb12b 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 @@ -724,6 +724,13 @@ public class ServerGamePacketListenerImpl implements ServerGamePacketListener {

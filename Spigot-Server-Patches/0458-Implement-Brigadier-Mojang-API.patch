@@ -69,7 +69,7 @@ index a2051638e5c2213fcef17f00dc05f5a6dbb05d69..6562534a4a5a344331039a6a9c3c91a0
          event.getPlayer().getServer().getPluginManager().callEvent(event);
  
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index 4c4b6e42f7081e6c99b0e9e7976078c70f490863..4fc0ac8ec7facf2b3fdaa4a3dbdaffc472b1bd8a 100644
+index 20c8e46e1ecc990302134d5ed75850296a8bcb9e..cafcd6ee24369130cb08e0aae8fcf198c585d8c0 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 @@ -764,8 +764,12 @@ public class ServerGamePacketListenerImpl implements ServerGamePacketListener {

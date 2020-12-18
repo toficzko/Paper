@@ -5,7 +5,7 @@ Subject: [PATCH] Brand support
 
 
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index c2f0f9f0730f607509fdbbfec6b0cd8fd83562b9..ece8602036be2679b337e58adb273edae9a8de7a 100644
+index 70a07a885aedcbb3f156e83e5aef42fd050b0307..cfe163bd442193fca5051b7be5462173adf9035b 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 @@ -5,6 +5,7 @@ import com.google.common.primitives.Doubles;
@@ -73,7 +73,7 @@ index c2f0f9f0730f607509fdbbfec6b0cd8fd83562b9..ece8602036be2679b337e58adb273eda
          return (!this.player.joining && !this.connection.isConnected()) || this.processedDisconnect; // Paper
      }
 diff --git a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
-index 8affddc2222e68dae31de389fa47c657b665d685..660a947f0556ce6bcda02e756e61756003c76c69 100644
+index 8a77589f0ae524ba50f609264a7a29a36a170ede..1739638c167bd480e233faa73780bf60e98eace3 100644
 --- a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
 @@ -2188,6 +2188,13 @@ public class CraftPlayer extends CraftHumanEntity implements Player {

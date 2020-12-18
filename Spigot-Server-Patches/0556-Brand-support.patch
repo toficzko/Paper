@@ -5,7 +5,7 @@ Subject: [PATCH] Brand support
 
 
 diff --git a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
-index 660a947f0556ce6bcda02e756e61756003c76c69..ecac2b3bbf4fe9ecaf0dfa846a95dfd50a80ec58 100644
+index 1739638c167bd480e233faa73780bf60e98eace3..2883aa73460657a28f04d4345cf787562e544912 100644
 --- a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
 @@ -2191,7 +2191,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player {

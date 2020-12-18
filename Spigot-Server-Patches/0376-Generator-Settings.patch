@@ -42,7 +42,7 @@ index c6222bced0d2367d54264ad450cccdf1ed316ac7..15b3a1245730d5d513239c5efc28bbd5
      @Nullable
      BlockState setBlockState(BlockPos pos, BlockState state, boolean moved);
 diff --git a/src/main/java/net/minecraft/world/level/chunk/ProtoChunk.java b/src/main/java/net/minecraft/world/level/chunk/ProtoChunk.java
-index 9d601e2990185e4ff583eba5fb38dffdb921e013..5c67658a452f45804aa04bdac3af91d59211d073 100644
+index 00f2e271ea53c513c9e4642432a08c9cda0ba3ba..e41bebfc51f7452633a75247ebf893ca3b726eed 100644
 --- a/src/main/java/net/minecraft/world/level/chunk/ProtoChunk.java
 +++ b/src/main/java/net/minecraft/world/level/chunk/ProtoChunk.java
 @@ -61,7 +61,7 @@ public class ProtoChunk implements ChunkAccess {

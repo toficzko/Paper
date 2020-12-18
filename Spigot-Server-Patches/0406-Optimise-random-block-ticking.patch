@@ -71,7 +71,7 @@ index 0000000000000000000000000000000000000000..3edc8e52e06a62ce9f8cc734fd7458b3
 +    }
 +}
 diff --git a/src/main/java/net/minecraft/core/BlockPos.java b/src/main/java/net/minecraft/core/BlockPos.java
-index 59dbd59b3d7414e447cf7d5306ff253fef8cd83b..95c10a6ef060fe026a5ee5520b1e53c3e960b0b6 100644
+index 778c3b553f835ad8b1002b01ed5afc298abbfd88..b9822d9822805e93be87cbb03b8077b6cbab6f5b 100644
 --- a/src/main/java/net/minecraft/core/BlockPos.java
 +++ b/src/main/java/net/minecraft/core/BlockPos.java
 @@ -439,6 +439,7 @@ public class BlockPos extends Vec3i {

@@ -18,7 +18,7 @@ index 8b2090507304f54bacf292b13dd8b72f8dbb8c88..86ef12fcf5b28393f72793512d24f366
  
      public static <K, V> Collector<Entry<? extends K, ? extends V>, ?, Map<K, V>> toMap() {
 diff --git a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
-index fef1e12532ff25dcda5d670b2ece7b5f9430b4cd..f8f7f3323b740e8ce52193c052aea948057647b2 100644
+index be4b02df0dbf1f5a8b6e83b42cd02f1ec2cf6f2e..c0b27b6accd9b6d511dfffef4bb7385ca51ceb6c 100644
 --- a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
 @@ -242,6 +242,24 @@ public class CraftPlayer extends CraftHumanEntity implements Player {

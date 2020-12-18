@@ -17,7 +17,7 @@ index e13a615b410c3d702144b94b9ab921010cba4be6..f528b651a47f33ebf60a0affb942d035
          return value.isEmpty() ? EMPTY : new StringTag(value);
      }
 diff --git a/src/main/java/net/minecraft/world/item/ItemStack.java b/src/main/java/net/minecraft/world/item/ItemStack.java
-index ff93492244e3616827aafc8c1fc2f4468065c592..b40420a5841e0a52cfdc15900683bd63dce540fc 100644
+index 82e20894e9196a0c8a01131bb3c9dadb761d8e9b..34cf611a0fc0820ffe05f893299383c00fbc2cc5 100644
 --- a/src/main/java/net/minecraft/world/item/ItemStack.java
 +++ b/src/main/java/net/minecraft/world/item/ItemStack.java
 @@ -28,6 +28,7 @@ import net.minecraft.core.Registry;

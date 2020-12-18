@@ -164,7 +164,7 @@ index 0000000000000000000000000000000000000000..e77eaad57d60f71609201c32236edba7
 +}
 diff --git a/src/main/java/co/aikar/timings/TimingsExport.java b/src/main/java/co/aikar/timings/TimingsExport.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..becf8620d6a81a8f6014936dfd3eac14b969252b
+index 0000000000000000000000000000000000000000..a50a3c22d314f06f8aaff25da194a5e118393569
 --- /dev/null
 +++ b/src/main/java/co/aikar/timings/TimingsExport.java
 @@ -0,0 +1,377 @@
@@ -281,7 +281,7 @@ index 0000000000000000000000000000000000000000..becf8620d6a81a8f6014936dfd3eac14
 +            pair("sampletime", (System.currentTimeMillis() - TimingsManager.timingStart) / 1000),
 +            pair("datapacks", toArrayMapper(MinecraftServer.getServer().getPackRepository().getSelectedIds(), pack -> {
 +                // Don't feel like obf helper'ing these, non fatal if its temp missed.
-+                return ChatColor.stripColor(CraftChatMessage.fromComponent(pack.a(true)));
++                return ChatColor.stripColor(CraftChatMessage.fromComponent(pack.getChatLink(true)));
 +            }))
 +        );
 +        if (!TimingsManager.privacy) {
@@ -1165,7 +1165,7 @@ index a31236f287a6f11bfdd9092d58963c89a42e3950..e9b04b94e5f8d4025aaa169465cc3fff
  
      protected void broadcast(Entity entity, Packet<?> packet) {
 diff --git a/src/main/java/net/minecraft/server/level/ServerChunkCache.java b/src/main/java/net/minecraft/server/level/ServerChunkCache.java
-index f96830c24a82e10ef36c2f370d5e59751daa8223..3fb02010d43159750ea5e00a1609fbf8d6f19b50 100644
+index c6cec9a5c24132677ca2395464272214489c8746..d69ba25748f969f90f5eeab1136cbc9159317169 100644
 --- a/src/main/java/net/minecraft/server/level/ServerChunkCache.java
 +++ b/src/main/java/net/minecraft/server/level/ServerChunkCache.java
 @@ -350,11 +350,13 @@ public class ServerChunkCache extends ChunkSource {
@@ -1383,7 +1383,7 @@ index cbeccdbd43e9d234d342cb08f908666f9964903c..e0abb929f3e935189db3a73f95c06814
  
          // CraftBukkit start - moved from MinecraftServer.saveChunks
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index b2fa497349825914b5f0824bcd910a725b84542d..fc87d71433601935211d8937f76d4cd22ae716b3 100644
+index 2629ef7dc11c39ff4e004d4393b46f5f198fcf6d..5f6f5e8dda8b1e4f731cddf88630fa3c057e70de 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 @@ -207,6 +207,7 @@ import org.bukkit.inventory.CraftingInventory;

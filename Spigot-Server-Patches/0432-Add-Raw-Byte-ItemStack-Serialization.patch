@@ -26,7 +26,7 @@ index a07ba5a5bb654ce7445f337a8b8d2adf0141565a..529ab12d82f786b3cc05efc23c865766
          DataOutputStream dataoutputstream = new DataOutputStream(new BufferedOutputStream(new GZIPOutputStream(stream)));
          Throwable throwable = null;
 diff --git a/src/main/java/net/minecraft/world/item/ItemStack.java b/src/main/java/net/minecraft/world/item/ItemStack.java
-index 6a3b321972ac026a3cc1857b144708d885944c81..ff93492244e3616827aafc8c1fc2f4468065c592 100644
+index 5bad81ef16dc66f39c97d3dbfebd149523d90c69..82e20894e9196a0c8a01131bb3c9dadb761d8e9b 100644
 --- a/src/main/java/net/minecraft/world/item/ItemStack.java
 +++ b/src/main/java/net/minecraft/world/item/ItemStack.java
 @@ -197,6 +197,7 @@ public final class ItemStack {

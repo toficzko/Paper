@@ -5,7 +5,7 @@ Subject: [PATCH] ChunkMapDistance CME
 
 
 diff --git a/src/main/java/net/minecraft/server/level/ChunkHolder.java b/src/main/java/net/minecraft/server/level/ChunkHolder.java
-index b3706b05cb17fa3afb9365f3b52efa343668d75c..87e9f91113a64641d7b9d23ebbacd3235ac36f39 100644
+index e5cbbbe2201f3818ab5b04e8d0f679909f9a9f0c..7341d3ffcd7b768046dc2ee16afe249d1529a804 100644
 --- a/src/main/java/net/minecraft/server/level/ChunkHolder.java
 +++ b/src/main/java/net/minecraft/server/level/ChunkHolder.java
 @@ -42,6 +42,7 @@ public class ChunkHolder {

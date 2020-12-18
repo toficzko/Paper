@@ -22,7 +22,7 @@ index 87af6a272829cf0857ba02fc0473c5f045e6c90c..d88a20286a961132cd877c7bd84c9890
          this.broadcast.accept(packet);
          if (this.entity instanceof ServerPlayer) {
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index 40c659e7fe4374f41d4ba585e364162595bba37c..794b62a98f033afbde039eef3b992ddd6a1f3f80 100644
+index b44b822469d4f5c5d6175e617f88194fc5179f79..0ac0a602e4fb8f1d79827559c31dea5eeb6305a9 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 @@ -2273,7 +2273,14 @@ public class ServerGamePacketListenerImpl implements ServerGamePacketListener {

@@ -45,13 +45,13 @@ index ca90b768b758b9fc074daf592e2140e60a9b8841..615ef87f4fa6a91febc6ce006b00c0ab
 +    }
  }
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index 00e3ade545369ab9389c9674853e013778e81b1b..e95a7c48cb1fed5ecc32c5070a8e3f08255d5e9c 100644
+index 4c562f5902695291b5b7c8b828a269c467cce11b..9ef24852eaa4fd826bca7c2092377c1b2f9920da 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 @@ -225,6 +225,7 @@ public class ServerGamePacketListenerImpl implements ServerGamePacketListener {
      // CraftBukkit start - multithreaded fields
      private volatile int chatSpamTickCount;
-     private static final AtomicIntegerFieldUpdater chatSpamField = AtomicIntegerFieldUpdater.newUpdater(ServerGamePacketListenerImpl.class, "chatThrottle");
+     private static final AtomicIntegerFieldUpdater chatSpamField = AtomicIntegerFieldUpdater.newUpdater(ServerGamePacketListenerImpl.class, "chatSpamTickCount");
 +    private final java.util.concurrent.atomic.AtomicInteger tabSpamLimiter = new java.util.concurrent.atomic.AtomicInteger(); // Paper - configurable tab spam limits
      // CraftBukkit end
      private int dropSpamTickCount;

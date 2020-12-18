@@ -425,7 +425,7 @@ index 781a985b7a8c9fea7e1d3e999e07a5ec0c4250fb..18ff6ab6bc35a0844ac9722d6ae063a4
 +    }
  }
 diff --git a/src/main/java/net/minecraft/server/level/ChunkHolder.java b/src/main/java/net/minecraft/server/level/ChunkHolder.java
-index 87e9f91113a64641d7b9d23ebbacd3235ac36f39..79b6185b5222e960379cb3e4a529914b2646fb4b 100644
+index 7341d3ffcd7b768046dc2ee16afe249d1529a804..f9ef5f8e22dac9b25d11df3fc4cbb6db310b3dd6 100644
 --- a/src/main/java/net/minecraft/server/level/ChunkHolder.java
 +++ b/src/main/java/net/minecraft/server/level/ChunkHolder.java
 @@ -51,7 +51,7 @@ public class ChunkHolder {
@@ -451,7 +451,7 @@ index 6d63a57ac8dd916ae695aac37a2608119072668c..4f2fb275ed4b75805f959d6ae4ec416e
      private final ThreadedLevelLightEngine lightEngine;
      private final BlockableEventLoop<Runnable> mainThreadExecutor;
 diff --git a/src/main/java/net/minecraft/server/level/ServerChunkCache.java b/src/main/java/net/minecraft/server/level/ServerChunkCache.java
-index 67e69456cbaf3e4744a0d8eaef5fc834ff7896e8..d391eae35c37a3a98c180b35c38d8198d67ecb67 100644
+index af103943d5ebc694576bb311ed2c0f99bc2b8426..d7e03c913919cae477c92852735e44e3be615d04 100644
 --- a/src/main/java/net/minecraft/server/level/ServerChunkCache.java
 +++ b/src/main/java/net/minecraft/server/level/ServerChunkCache.java
 @@ -51,7 +51,7 @@ import org.apache.logging.log4j.Logger;

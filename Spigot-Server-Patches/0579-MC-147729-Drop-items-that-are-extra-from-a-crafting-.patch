@@ -5,7 +5,7 @@ Subject: [PATCH] MC-147729: Drop items that are extra from a crafting recipe
 
 
 diff --git a/src/main/java/net/minecraft/recipebook/ServerPlaceRecipe.java b/src/main/java/net/minecraft/recipebook/ServerPlaceRecipe.java
-index e45f8bb0bbeb7bdbf3b4c75195f88e0c03b02a6c..0b3137c77c6acfb61b156c88862e2b2d61619759 100644
+index e45f8bb0bbeb7bdbf3b4c75195f88e0c03b02a6c..58201b6e139e56aa7343718826d42b1e2dfce97c 100644
 --- a/src/main/java/net/minecraft/recipebook/ServerPlaceRecipe.java
 +++ b/src/main/java/net/minecraft/recipebook/ServerPlaceRecipe.java
 @@ -67,7 +67,12 @@ public class ServerPlaceRecipe<C extends Container> implements PlaceRecipe<Integ
@@ -15,7 +15,7 @@ index e45f8bb0bbeb7bdbf3b4c75195f88e0c03b02a6c..0b3137c77c6acfb61b156c88862e2b2d
 -
 +                // Paper start
 +                if (j == -1) {
-+                    this.inventory.player.drop(itemstack.copy(), false);
++                    this.inventory.player.drop(itemStack.copy(), false);
 +                    break;
 +                }
 +                // Paper end

@@ -6,7 +6,7 @@ Subject: [PATCH] Optimize BlockPosition helper methods
 Resolves #1338
 
 diff --git a/src/main/java/net/minecraft/core/BlockPos.java b/src/main/java/net/minecraft/core/BlockPos.java
-index d4c1d039cff138f1800bbdf9c7be7c9ad80b1019..59dbd59b3d7414e447cf7d5306ff253fef8cd83b 100644
+index d4c1d039cff138f1800bbdf9c7be7c9ad80b1019..778c3b553f835ad8b1002b01ed5afc298abbfd88 100644
 --- a/src/main/java/net/minecraft/core/BlockPos.java
 +++ b/src/main/java/net/minecraft/core/BlockPos.java
 @@ -117,55 +117,72 @@ public class BlockPos extends Vec3i {
@@ -96,3 +96,29 @@ index d4c1d039cff138f1800bbdf9c7be7c9ad80b1019..59dbd59b3d7414e447cf7d5306ff253f
      }
  
      public BlockPos relative(Direction direction, int i) {
+@@ -315,8 +332,8 @@ public class BlockPos extends Vec3i {
+     }
+ 
+     public static Iterable<BlockPos> betweenClosed(int startX, int startY, int startZ, int endX, int endY, int endZ) {
+-        int i = endX - startX + 1;
+-        int j = endY - startY + 1;
++        int i = endX - startX + 1;int fixI = i; // Paper - decomp
++        int j = endY - startY + 1;int fixJ = j; // Paper - decomp
+         int k = endZ - startZ + 1;
+         int l = i * j * k;
+         return () -> {
+@@ -328,10 +345,10 @@ public class BlockPos extends Vec3i {
+                     if (this.index == l) {
+                         return this.endOfData();
+                     } else {
+-                        int i = this.index % i;
+-                        int j = this.index / i;
+-                        int k = j % j;
+-                        int l = j / j;
++                        int i = this.index % fixI; // Paper - decomp
++                        int j = this.index / fixI; // Paper - decomp
++                        int k = j % fixJ; // Paper - decomp
++                        int l = j / fixJ; // Paper - decomp
+                         ++this.index;
+                         return this.cursor.set(startX + i, startY + k, startZ + l);
+                     }

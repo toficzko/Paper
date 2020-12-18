@@ -7,7 +7,7 @@ Called when a player is firing a bow and the server is choosing an arrow to use.
 Plugins can skip selection of certain arrows and control which is used.
 
 diff --git a/src/main/java/net/minecraft/world/entity/player/Player.java b/src/main/java/net/minecraft/world/entity/player/Player.java
-index f22528ecf6798febfd93c4a96e31e7c61ff8a6ef..1b62b98ab83433447a034a93741019a63d585b30 100644
+index 037105d081de4939f6a58de0d8ba774ed316c34d..30ba599154c89d2e7c44d5a8895dca267d496679 100644
 --- a/src/main/java/net/minecraft/world/entity/player/Player.java
 +++ b/src/main/java/net/minecraft/world/entity/player/Player.java
 @@ -2138,6 +2138,17 @@ public abstract class Player extends LivingEntity {

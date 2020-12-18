@@ -408,12 +408,13 @@ index 1fb7e40fbc36cf9e2b457e9bbd5a2d9b42e4c1f6..00000000000000000000000000000000
 -done
 diff --git a/build.gradle.kts b/build.gradle.kts
 new file mode 100644
-index 0000000000000000000000000000000000000000..3f1911e97bee442e5714a817c1eeb7c8d398e480
+index 0000000000000000000000000000000000000000..1e7f4e33088aa8f98e992bf45861fdbe9840fd48
 --- /dev/null
 +++ b/build.gradle.kts
-@@ -0,0 +1,63 @@
+@@ -0,0 +1,64 @@
 +import com.github.jengelman.gradle.plugins.shadow.transformers.AppendingTransformer
-+import java.time.Instant
++import java.time.LocalDateTime
++import java.time.format.DateTimeFormatter
 +
 +plugins {
 +    java
@@ -443,7 +444,7 @@ index 0000000000000000000000000000000000000000..3f1911e97bee442e5714a817c1eeb7c8
 +        attributes(mapOf(
 +            "Main-Class" to "org.bukkit.craftbukkit.Main",
 +            "Implementation-Title" to "CraftBukkit",
-+            "Implementation-Vendor" to Instant.now(),
++            "Implementation-Vendor" to DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'").format(LocalDateTime.now()),
 +            "Specification-Title" to "Bukkit",
 +            "Specification-Version" to project.version,
 +            "Specification-Vendor" to "Bukkit Team"
@@ -466,7 +467,7 @@ index 0000000000000000000000000000000000000000..3f1911e97bee442e5714a817c1eeb7c8
 +    relocate("org.bukkit.craftbukkit", "org.bukkit.craftbukkit.v$mcVersion") {
 +        exclude("org.bukkit.craftbukkit.Main*")
 +    }
-+    relocate("net.minecraft.server", "net.minecraft.server.v$mcVersion")
++//    relocate("net.minecraft.server", "net.minecraft.server.v$mcVersion")
 +    transform(AppendingTransformer::class.java) {
 +        resource = "META-INF/services/java.sql.Driver"
 +    }

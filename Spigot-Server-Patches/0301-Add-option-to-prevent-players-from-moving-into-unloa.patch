@@ -20,7 +20,7 @@ index d8afb247f180b89f89cbed0f6e6c4fcc527799ff..6f410120018f95259e9e4f504ea1b588
 +    }
  }
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index 591ca255c31eb3adecd763529832deb2b3f5a782..f33e87df6fadd7380c707c41803a450c86b5f1e0 100644
+index 0e093be2984d277bb6075a8e0e0f09933b8e5527..8070f7d738bb590b805e3cf624bc70218225e499 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 @@ -536,6 +536,13 @@ public class ServerGamePacketListenerImpl implements ServerGamePacketListener {

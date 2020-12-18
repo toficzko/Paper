@@ -19,31 +19,37 @@ Other changes:
     configuration
 
 diff --git a/build.gradle.kts b/build.gradle.kts
-index a8992a6697a6ef2241a2cec308e524d528332539..513f4ed541c1fc80031400b09ddbf2c82c8861e2 100644
+index c5f3adcf41a33fb112e323e4ecd06f5ff4e62dba..77690d190ee90762a6ea20d1405dbc010184a192 100644
 --- a/build.gradle.kts
 +++ b/build.gradle.kts
-@@ -16,7 +16,15 @@ dependencies {
+@@ -1,4 +1,5 @@
+ import com.github.jengelman.gradle.plugins.shadow.transformers.AppendingTransformer
++import com.github.jengelman.gradle.plugins.shadow.transformers.Log4j2PluginsCacheFileTransformer
+ import java.time.LocalDateTime
+ import java.time.format.DateTimeFormatter
+ 
+@@ -17,7 +18,15 @@ dependencies {
      implementation(project(":Paper-API"))
      implementation(project(":Paper-MojangAPI"))
  
 -    implementation("jline:jline:2.12.1")
 +    // terminal stuff
 +    implementation("net.minecrell:terminalconsoleappender:1.2.0")
-+    implementation("org.jline:jline-terminal-jansi:3.12.1")
++    runtimeOnly("org.jline:jline-terminal-jansi:3.12.1")
 +    // Required to add the missing Log4j2Plugins.dat file from log4j-core
 +    // which has been removed by Mojang. Without it, log4j has to classload
 +    // all its classes to check if they are plugins.
 +    // Scanning takes about 1-2 seconds so adding this speeds up the server start.
-+    runtimeOnly("org.apache.logging.log4j:log4j-core:2.8.1")
++    implementation("org.apache.logging.log4j:log4j-core:2.8.1")
 +
      implementation("org.apache.logging.log4j:log4j-iostreams:2.8.1")
      implementation("org.ow2.asm:asm:8.0.1")
      implementation("com.googlecode.json-simple:json-simple:1.1.1")
-@@ -63,6 +71,7 @@ tasks.shadowJar {
+@@ -64,6 +73,7 @@ tasks.shadowJar {
      transform(AppendingTransformer::class.java) {
          resource = "META-INF/services/java.sql.Driver"
      }
-+    // TODO add transformer com.github.edwgiz.maven_shade_plugin.log4j2_cache_transformer.PluginsCacheFileTransformer from com.github.edwgiz:maven-shade-plugin.log4j2-cachefile-transformer:2.13.1
++    transform(Log4j2PluginsCacheFileTransformer::class.java)
  }
  
  tasks.test {

@@ -26,7 +26,7 @@ index 11106a20ccc161f18c1d5491785e44bb84f8a821..7f22cdc26d26d6d937506f901a8a0ed1
 +    }
  }
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index 02b14a12716b449e46d80f954e5477b50595d437..47a72bb9f73444abc9208936d8a5963fad112179 100644
+index 981787bba37af4c3332a0b866e41628a392690eb..1ae6587c7ff75eaa6fcb3e3c7b1a321f72bb067d 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 @@ -2047,6 +2047,13 @@ public class ServerGamePacketListenerImpl implements ServerGamePacketListener {
@@ -44,7 +44,7 @@ index 02b14a12716b449e46d80f954e5477b50595d437..47a72bb9f73444abc9208936d8a5963f
              case RELEASE_SHIFT_KEY:
                  this.player.setShiftKeyDown(false);
 diff --git a/src/main/java/net/minecraft/world/entity/player/Player.java b/src/main/java/net/minecraft/world/entity/player/Player.java
-index c38fa27cfa71d2886ddda3683463f9219be7ba9a..c03b7c5a2914da8f65d5f8b2965f16643e0f30fd 100644
+index c38fa27cfa71d2886ddda3683463f9219be7ba9a..6a559af2db29c6ebb10d628c73985b439164f62c 100644
 --- a/src/main/java/net/minecraft/world/entity/player/Player.java
 +++ b/src/main/java/net/minecraft/world/entity/player/Player.java
 @@ -529,7 +529,7 @@ public abstract class Player extends LivingEntity {
@@ -56,3 +56,12 @@ index c38fa27cfa71d2886ddda3683463f9219be7ba9a..c03b7c5a2914da8f65d5f8b2965f1664
          }
  
      }
+@@ -1862,7 +1862,7 @@ public abstract class Player extends LivingEntity {
+         }
+     }
+ 
+-    protected void removeEntitiesOnShoulder() {
++    public void removeEntitiesOnShoulder() { // Paper - public
+         if (this.timeEntitySatOnShoulder + 20L < this.level.getGameTime()) {
+             // CraftBukkit start
+             if (this.spawnEntityFromShoulder(this.getShoulderEntityLeft())) {

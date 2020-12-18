@@ -2062,10 +2062,10 @@ index 0000000000000000000000000000000000000000..80155072d1004e34e04342d434cf7d75
 +}
 diff --git a/src/main/java/co/aikar/util/JSONUtil.java b/src/main/java/co/aikar/util/JSONUtil.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..190bf0598442c89c2a1c93ad7c8c1a29797304ae
+index 0000000000000000000000000000000000000000..7b0cf8a89d65f175df47a7dff0aa800ef91bc95c
 --- /dev/null
 +++ b/src/main/java/co/aikar/util/JSONUtil.java
-@@ -0,0 +1,140 @@
+@@ -0,0 +1,137 @@
 +package co.aikar.util;
 +
 +import com.google.common.base.Function;
@@ -2073,10 +2073,7 @@ index 0000000000000000000000000000000000000000..190bf0598442c89c2a1c93ad7c8c1a29
 +import com.google.common.collect.Maps;
 +import org.jetbrains.annotations.NotNull;
 +import org.jetbrains.annotations.Nullable;
-+import org.json.simple.JSONArray;
-+import org.json.simple.JSONObject;
 +
-+import java.util.ArrayList;
 +import java.util.LinkedHashMap;
 +import java.util.List;
 +import java.util.Map;

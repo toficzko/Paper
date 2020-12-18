@@ -12,7 +12,7 @@ server threads
 Allow usage of a single thread executor by not using ForkJoin so single core CPU's.
 
 diff --git a/src/main/java/net/minecraft/Util.java b/src/main/java/net/minecraft/Util.java
-index 86ef12fcf5b28393f72793512d24f3661dabcd98..7e550fb5e07a0c435b26088ef3560b0a558a18fe 100644
+index 86ef12fcf5b28393f72793512d24f3661dabcd98..d2fbbaf014ee684bbe1960db559001735a54c71e 100644
 --- a/src/main/java/net/minecraft/Util.java
 +++ b/src/main/java/net/minecraft/Util.java
 @@ -44,6 +44,7 @@ import java.util.stream.Stream;
@@ -29,8 +29,8 @@ index 86ef12fcf5b28393f72793512d24f3661dabcd98..7e550fb5e07a0c435b26088ef3560b0a
      private static final AtomicInteger WORKER_COUNT = new AtomicInteger(1);
 -    private static final ExecutorService BOOTSTRAP_EXECUTOR = makeExecutor("Bootstrap");
 -    private static final ExecutorService BACKGROUND_EXECUTOR = makeExecutor("Main");
-+    private static final ExecutorService BOOTSTRAP_EXECUTOR = a("Bootstrap", -2); // Paper - add -2 priority
-+    private static final ExecutorService BACKGROUND_EXECUTOR = a("Main", -1); // Paper - add -1 priority
++    private static final ExecutorService BOOTSTRAP_EXECUTOR = makeExecutor("Bootstrap", -2); // Paper - add -2 priority
++    private static final ExecutorService BACKGROUND_EXECUTOR = makeExecutor("Main", -1); // Paper - add -1 priority
      private static final ExecutorService IO_POOL = makeIoExecutor();
      public static LongSupplier timeSource = System::nanoTime;
      public static final UUID NIL_UUID = new UUID(0L, 0L); public static final UUID getNullUUID() {return NIL_UUID;} // Paper OBFHELPER
@@ -49,7 +49,7 @@ index 86ef12fcf5b28393f72793512d24f3661dabcd98..7e550fb5e07a0c435b26088ef3560b0a
          } else {
 -            executorService = new ForkJoinPool(i, (forkJoinPool) -> {
 -                ForkJoinWorkerThread forkJoinWorkerThread = new ForkJoinWorkerThread(forkJoinPool) {
-+            executorService = new java.util.concurrent.ThreadPoolExecutor(i, i, 0L, TimeUnit.MILLISECONDS, new java.util.concurrent.LinkedBlockingQueue<Runnable>(), target -> new ServerWorkerThread(target, s, priorityModifier));
++            executorService = new java.util.concurrent.ThreadPoolExecutor(i, i, 0L, TimeUnit.MILLISECONDS, new java.util.concurrent.LinkedBlockingQueue<Runnable>(), target -> new ServerWorkerThread(target, name, priorityModifier));
 +        }
 +        /*
                      protected void onTermination(Throwable throwable) {

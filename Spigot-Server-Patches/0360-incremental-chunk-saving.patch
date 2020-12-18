@@ -71,7 +71,7 @@ index 41373e77e54c147330f3960f359f8deb5064de33..79c7a1a433bc69133caf899e35d03388
          this.profiler.push("snooper");
          if (((DedicatedServer) this).getProperties().snooperEnabled && !this.snooper.isStarted() && this.tickCount > 100) { // Spigot
 diff --git a/src/main/java/net/minecraft/server/level/ChunkHolder.java b/src/main/java/net/minecraft/server/level/ChunkHolder.java
-index 08eb06b8d511dfecbe5ee9dc0ecc5be2f39430a5..b9db2fbb3399dab9375a57553063fbb34363a15c 100644
+index 32ac8af8fff5a06005f5c5f973717bab5e261192..16a28016eda415eeedfa42496b6de5d4be04339a 100644
 --- a/src/main/java/net/minecraft/server/level/ChunkHolder.java
 +++ b/src/main/java/net/minecraft/server/level/ChunkHolder.java
 @@ -64,6 +64,9 @@ public class ChunkHolder {
@@ -84,7 +84,7 @@ index 08eb06b8d511dfecbe5ee9dc0ecc5be2f39430a5..b9db2fbb3399dab9375a57553063fbb3
      public ChunkHolder(ChunkPos pos, int level, LevelLightEngine lightingProvider, ChunkHolder.LevelChangeListener levelUpdateListener, ChunkHolder.PlayerProvider playersWatchingChunkProvider) {
          this.futures = new AtomicReferenceArray(ChunkHolder.CHUNK_STATUSES.size());
          this.fullChunkFuture = ChunkHolder.UNLOADED_LEVEL_CHUNK_FUTURE;
-@@ -414,7 +417,19 @@ public class ChunkHolder {
+@@ -406,7 +409,19 @@ public class ChunkHolder {
          boolean flag2 = playerchunk_state.isOrAfter(ChunkHolder.FullChunkStatus.BORDER);
          boolean flag3 = playerchunk_state1.isOrAfter(ChunkHolder.FullChunkStatus.BORDER);
  
@@ -104,7 +104,7 @@ index 08eb06b8d511dfecbe5ee9dc0ecc5be2f39430a5..b9db2fbb3399dab9375a57553063fbb3
          if (!flag2 && flag3) {
              // Paper start - cache ticking ready status
              int expectCreateCount = ++this.fullChunkCreateCount;
-@@ -534,8 +549,32 @@ public class ChunkHolder {
+@@ -526,8 +541,32 @@ public class ChunkHolder {
      }
  
      public void refreshAccessibility() {
@@ -232,7 +232,7 @@ index ec60a4ee09ce49620d3d4c9974e09627c655185f..37773173aff6724bf1e2f1007319f284
                      return ChunkHolder.getFullChunkStatus(playerchunk.getTicketLevel());
                  });
 diff --git a/src/main/java/net/minecraft/server/level/ServerChunkCache.java b/src/main/java/net/minecraft/server/level/ServerChunkCache.java
-index 76658ea215e45ec2b75033bd59d7def2059b30ed..644acba6278f94957849850acdc9b430009e0118 100644
+index 9adda08a0a44a19026eca7cad28c2fb0401f9594..a5633b6f24d67b795c4f41f649301b8ac3e4942d 100644
 --- a/src/main/java/net/minecraft/server/level/ServerChunkCache.java
 +++ b/src/main/java/net/minecraft/server/level/ServerChunkCache.java
 @@ -561,6 +561,15 @@ public class ServerChunkCache extends ChunkSource {

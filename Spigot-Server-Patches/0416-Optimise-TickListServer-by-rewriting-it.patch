@@ -61,7 +61,7 @@ index 0fcabd12408a8209da5cb3332e217f98983aec02..9b1845024d16a7875ba3406da92efb00
          ConfigurationSection section;
 diff --git a/src/main/java/com/destroystokyo/paper/server/ticklist/PaperTickList.java b/src/main/java/com/destroystokyo/paper/server/ticklist/PaperTickList.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..7e3dcbe2e5f18a16d195fca9d2ce1e3b1059cb48
+index 0000000000000000000000000000000000000000..1f3657ddeacb3772c80832cda800936b3f58950a
 --- /dev/null
 +++ b/src/main/java/com/destroystokyo/paper/server/ticklist/PaperTickList.java
 @@ -0,0 +1,628 @@
@@ -334,7 +334,7 @@ index 0000000000000000000000000000000000000000..7e3dcbe2e5f18a16d195fca9d2ce1e3b
 +    private boolean warnedAboutDesync;
 +
 +    @Override
-+    protected void nextTick() {
++    public void nextTick() {
 +        ++this.currentTick;
 +        if (this.currentTick != this.world.getGameTime()) {
 +            if (!this.warnedAboutDesync) {
@@ -889,7 +889,7 @@ index 0000000000000000000000000000000000000000..118988c39e58f28e8a2851792b9c014f
 +    }
 +}
 diff --git a/src/main/java/net/minecraft/core/BlockPos.java b/src/main/java/net/minecraft/core/BlockPos.java
-index 95c10a6ef060fe026a5ee5520b1e53c3e960b0b6..8866280036f7f7853b444f0635fa725fe994c4e8 100644
+index b9822d9822805e93be87cbb03b8077b6cbab6f5b..c72719f593bc4be3fe595c2049395fe5fbd22474 100644
 --- a/src/main/java/net/minecraft/core/BlockPos.java
 +++ b/src/main/java/net/minecraft/core/BlockPos.java
 @@ -108,6 +108,7 @@ public class BlockPos extends Vec3i {
@@ -901,10 +901,10 @@ index 95c10a6ef060fe026a5ee5520b1e53c3e960b0b6..8866280036f7f7853b444f0635fa725f
          return this.offset(pos.getX(), pos.getY(), pos.getZ());
      }
 diff --git a/src/main/java/net/minecraft/server/level/ChunkHolder.java b/src/main/java/net/minecraft/server/level/ChunkHolder.java
-index 4fe7aa5122cd17842b33e21fc5ed1da56e9417eb..9062cbff7cbc65383756722cecd6962403ff26c3 100644
+index 78faa211dec37f3c4a049af220a3ba6087cfdfed..720916962236e815bbaf16cf61a58c03cebbc3a8 100644
 --- a/src/main/java/net/minecraft/server/level/ChunkHolder.java
 +++ b/src/main/java/net/minecraft/server/level/ChunkHolder.java
-@@ -488,7 +488,9 @@ public class ChunkHolder {
+@@ -480,7 +480,9 @@ public class ChunkHolder {
                      ChunkHolder.this.isTickingReady = true;
  
  
@@ -916,7 +916,7 @@ index 4fe7aa5122cd17842b33e21fc5ed1da56e9417eb..9062cbff7cbc65383756722cecd69624
                  }
              });
 diff --git a/src/main/java/net/minecraft/server/level/ServerChunkCache.java b/src/main/java/net/minecraft/server/level/ServerChunkCache.java
-index 9cab297e1bc3fcc27d8381acd741188b6576d7c1..c0129546d68a283d60f06bdd923e335f8f1e7819 100644
+index 726b6d234f463a651350265dddf1801c18a2119e..5997e27ea79ebd7602022cb131c90a4e6bc486e8 100644
 --- a/src/main/java/net/minecraft/server/level/ServerChunkCache.java
 +++ b/src/main/java/net/minecraft/server/level/ServerChunkCache.java
 @@ -231,6 +231,13 @@ public class ServerChunkCache extends ChunkSource {
@@ -993,7 +993,7 @@ index c724d7ec66c1d315a3e038dc1c5c446188d255d8..bbe3f99c2d17aa5b67a34b7708756643
              if (this.levelData.getGameRules().getBoolean(GameRules.RULE_DAYLIGHT)) {
                  this.setDayTime(this.levelData.getDayTime() + 1L);
 diff --git a/src/main/java/net/minecraft/world/level/ChunkTickList.java b/src/main/java/net/minecraft/world/level/ChunkTickList.java
-index f5d4a167654fc0319f83a738e1f51530ddf40dea..9550bbc0299d30329d6152b6fc2f6e4fc911a5ae 100644
+index f5d4a167654fc0319f83a738e1f51530ddf40dea..5f42d6d3e243f5179e6949ec69eb49fce9a93cc5 100644
 --- a/src/main/java/net/minecraft/world/level/ChunkTickList.java
 +++ b/src/main/java/net/minecraft/world/level/ChunkTickList.java
 @@ -8,6 +8,7 @@ import net.minecraft.core.BlockPos;
@@ -1004,6 +1004,15 @@ index f5d4a167654fc0319f83a738e1f51530ddf40dea..9550bbc0299d30329d6152b6fc2f6e4f
  
  public class ChunkTickList<T> implements TickList<T> {
      private final List<ChunkTickList.ScheduledTick<T>> ticks;
+@@ -15,7 +16,7 @@ public class ChunkTickList<T> implements TickList<T> {
+ 
+     public ChunkTickList(Function<T, ResourceLocation> identifierProvider, List<TickNextTickData<T>> scheduledTicks, long startTime) {
+         this(identifierProvider, scheduledTicks.stream().map((tickNextTickData) -> {
+-            return new ChunkTickList.ScheduledTick(tickNextTickData.getType(), tickNextTickData.pos, (int)(tickNextTickData.triggerTick - startTime), tickNextTickData.priority);
++            return new ChunkTickList.ScheduledTick<>(tickNextTickData.getType(), tickNextTickData.pos, (int)(tickNextTickData.triggerTick - startTime), tickNextTickData.priority); // Paper - decomp
+         }).collect(Collectors.toList()));
+     }
+ 
 @@ -52,6 +53,7 @@ public class ChunkTickList<T> implements TickList<T> {
  
          return listTag;

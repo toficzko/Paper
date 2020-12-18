@@ -17,7 +17,7 @@ from networking or during connections flood of chunk packets on slower clients,
  at the cost of dead connections being kept open for longer.
 
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index d13ebf1f7a7209aa8f17d4c6195d2be6fad04a2b..08b59842b8e8c7c577111d552f70648e9a5dd60c 100644
+index c5f0051cd05e197ebe365c712a99f95f1e0c7efd..249d10130d7addf18c463f91ac7c4e197f1caa5c 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 @@ -218,7 +218,7 @@ public class ServerGamePacketListenerImpl implements ServerGamePacketListener {

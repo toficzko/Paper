@@ -12,7 +12,7 @@ Player we will look at limiting the scope of this change. It appears to
 be unintentional in the few cases we've seen so far.
 
 diff --git a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
-index 32d2a052acd18c6c32a6f54797c1bcb0d7fc3d0e..287d9e23a837aa4570a424bc99575a17bf52e221 100644
+index 64a1474f802b120050bc6465140a0a43dcf7fc4d..2c5de228f980c75ecaecb01c54071a741341fdd2 100644
 --- a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
 @@ -2036,6 +2036,15 @@ public class CraftPlayer extends CraftHumanEntity implements Player {

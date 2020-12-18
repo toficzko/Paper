@@ -230,7 +230,7 @@ index a70907a7bbafc3c2f9edc80069e95f444129d8c8..49f868296f4b9455257dcfebc4120fe7
          while (objectbidirectionaliterator.hasNext()) {
              Entry<ChunkHolder> entry = (Entry) objectbidirectionaliterator.next();
 diff --git a/src/main/java/net/minecraft/server/level/ServerChunkCache.java b/src/main/java/net/minecraft/server/level/ServerChunkCache.java
-index c0129546d68a283d60f06bdd923e335f8f1e7819..ff4722aa268b57b9654ab5a4c4ae97aa198af6eb 100644
+index 5997e27ea79ebd7602022cb131c90a4e6bc486e8..9b8b182b73fbde7318d43c9ea96a9a5f3b140208 100644
 --- a/src/main/java/net/minecraft/server/level/ServerChunkCache.java
 +++ b/src/main/java/net/minecraft/server/level/ServerChunkCache.java
 @@ -783,7 +783,7 @@ public class ServerChunkCache extends ChunkSource {

@@ -5,7 +5,7 @@ Subject: [PATCH] Shoulder Entities Release API
 
 
 diff --git a/src/main/java/net/minecraft/world/entity/player/Player.java b/src/main/java/net/minecraft/world/entity/player/Player.java
-index c03b7c5a2914da8f65d5f8b2965f16643e0f30fd..3b478ee3ba2fe19e568461d55f6d7c6d0a747276 100644
+index 6a559af2db29c6ebb10d628c73985b439164f62c..45f4919384b8bba27c068e7ce28c6414d86e80e4 100644
 --- a/src/main/java/net/minecraft/world/entity/player/Player.java
 +++ b/src/main/java/net/minecraft/world/entity/player/Player.java
 @@ -1876,20 +1876,44 @@ public abstract class Player extends LivingEntity {

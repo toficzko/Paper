@@ -95,10 +95,20 @@ index 98f85d59bc48451ef6381a47fe341f77b9920981..10058d3c3565382faa893b79119c5caf
  
      public void tick() {
 diff --git a/src/main/java/net/minecraft/world/level/EntityGetter.java b/src/main/java/net/minecraft/world/level/EntityGetter.java
-index 22dde8251106cc7debaea9d72e806492a1e2b21b..6e2ec025464e62aea27a0393a1780f30ac59a88c 100644
+index 22dde8251106cc7debaea9d72e806492a1e2b21b..e9e1a08c88406f7e8bae3e2049e1e04c14c525f2 100644
 --- a/src/main/java/net/minecraft/world/level/EntityGetter.java
 +++ b/src/main/java/net/minecraft/world/level/EntityGetter.java
-@@ -74,8 +74,9 @@ public interface EntityGetter {
+@@ -1,6 +1,9 @@
+ package net.minecraft.world.level;
+ 
+ import com.google.common.collect.Lists;
++import org.bukkit.entity.HumanEntity;
++
++import java.util.Iterator;
+ import java.util.List;
+ import java.util.UUID;
+ import java.util.function.Predicate;
+@@ -74,8 +77,9 @@ public interface EntityGetter {
          }
      }
  
@@ -110,7 +120,7 @@ index 22dde8251106cc7debaea9d72e806492a1e2b21b..6e2ec025464e62aea27a0393a1780f30
          double d = -1.0D;
          Player player = null;
  
-@@ -103,6 +104,27 @@ public interface EntityGetter {
+@@ -103,6 +107,27 @@ public interface EntityGetter {
          return this.getNearestPlayer(x, y, z, maxDistance, predicate);
      }
  

@@ -5,7 +5,7 @@ Subject: [PATCH] Fix Player spawnParticle x/y/z precision loss
 
 
 diff --git a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
-index b89431379060f865216ad384d9d449b1b3944846..07e079b128135099d85661019bb91f546a70b25a 100644
+index 751609d893f5e10ff68a86c1e31c3f71af29c238..114ca65c227f2af0be3f482ed77651e91cf499e0 100644
 --- a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
 @@ -1951,7 +1951,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player {

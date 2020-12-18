@@ -5,7 +5,7 @@ Subject: [PATCH] Optimize TileEntity Ticking
 
 
 diff --git a/src/main/java/co/aikar/timings/TimingsExport.java b/src/main/java/co/aikar/timings/TimingsExport.java
-index becf8620d6a81a8f6014936dfd3eac14b969252b..1bad91e99726e93e4bc0e3b145c59f4324e9f5fc 100644
+index a50a3c22d314f06f8aaff25da194a5e118393569..f7fc080089f5c54b0b7cdc3baa8ed18f493ead32 100644
 --- a/src/main/java/co/aikar/timings/TimingsExport.java
 +++ b/src/main/java/co/aikar/timings/TimingsExport.java
 @@ -109,7 +109,7 @@ public class TimingsExport extends Thread {
@@ -15,7 +15,7 @@ index becf8620d6a81a8f6014936dfd3eac14b969252b..1bad91e99726e93e4bc0e3b145c59f43
 -            pair("datapacks", toArrayMapper(MinecraftServer.getServer().getPackRepository().getSelectedIds(), pack -> {
 +            pair("datapacks", toArrayMapper(MinecraftServer.getServer().getPackRepository().getSelectedPacks(), pack -> {
                  // Don't feel like obf helper'ing these, non fatal if its temp missed.
-                 return ChatColor.stripColor(CraftChatMessage.fromComponent(pack.a(true)));
+                 return ChatColor.stripColor(CraftChatMessage.fromComponent(pack.getChatLink(true)));
              }))
 @@ -148,8 +148,8 @@ public class TimingsExport extends Thread {
          );

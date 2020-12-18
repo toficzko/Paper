@@ -5,10 +5,10 @@ Subject: [PATCH] Paper build config changes
 
 
 diff --git a/build.gradle.kts b/build.gradle.kts
-index 3f1911e97bee442e5714a817c1eeb7c8d398e480..a8992a6697a6ef2241a2cec308e524d528332539 100644
+index 1e7f4e33088aa8f98e992bf45861fdbe9840fd48..c5f3adcf41a33fb112e323e4ecd06f5ff4e62dba 100644
 --- a/build.gradle.kts
 +++ b/build.gradle.kts
-@@ -14,12 +14,19 @@ repositories {
+@@ -15,12 +15,19 @@ repositories {
  
  dependencies {
      implementation(project(":Paper-API"))
@@ -28,7 +28,7 @@ index 3f1911e97bee442e5714a817c1eeb7c8d398e480..a8992a6697a6ef2241a2cec308e524d5
      testImplementation("junit:junit:4.13.1")
      testImplementation("org.hamcrest:hamcrest-library:1.3")
  }
-@@ -44,7 +51,7 @@ tasks.jar {
+@@ -45,7 +52,7 @@ tasks.jar {
  
  tasks.shadowJar {
      listOf(

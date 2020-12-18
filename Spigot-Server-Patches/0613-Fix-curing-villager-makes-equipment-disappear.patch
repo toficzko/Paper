@@ -9,7 +9,7 @@ to the ground by forcing the items to drop instead of going to the drops
 field for the EntityDeathEvent which does not fire for entity conversions.
 
 diff --git a/src/main/java/net/minecraft/world/entity/monster/ZombieVillager.java b/src/main/java/net/minecraft/world/entity/monster/ZombieVillager.java
-index 87be6ae897688cc1d43ee6c333fdc91ea41bab2d..a24c2f997af735cd26f7f2cf3d521078eeccd0d1 100644
+index 2872b1eb55110e5ed803500412b8efd2b3992a43..09b8684402e917f15d1db6676c625ecfffd6b6e2 100644
 --- a/src/main/java/net/minecraft/world/entity/monster/ZombieVillager.java
 +++ b/src/main/java/net/minecraft/world/entity/monster/ZombieVillager.java
 @@ -221,7 +221,9 @@ public class ZombieVillager extends Zombie implements VillagerDataHolder {

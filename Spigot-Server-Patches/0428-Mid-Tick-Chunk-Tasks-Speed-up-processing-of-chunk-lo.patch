@@ -147,7 +147,7 @@ index 44ce0653f8ae34a2562634e8d8a38c51f1f52e20..38087c9cc04600a0a0518a68c512627f
                  // Spigot Start
                  CrashReport crashreport;
 diff --git a/src/main/java/net/minecraft/server/level/ServerChunkCache.java b/src/main/java/net/minecraft/server/level/ServerChunkCache.java
-index ff4722aa268b57b9654ab5a4c4ae97aa198af6eb..1257c332e2c7b4bf75f360db93c846d74b83fc63 100644
+index 9b8b182b73fbde7318d43c9ea96a9a5f3b140208..6e622f96ccaf3e19b352bb12734961a15fb47afb 100644
 --- a/src/main/java/net/minecraft/server/level/ServerChunkCache.java
 +++ b/src/main/java/net/minecraft/server/level/ServerChunkCache.java
 @@ -721,6 +721,7 @@ public class ServerChunkCache extends ChunkSource {
@@ -183,6 +183,15 @@ index ff4722aa268b57b9654ab5a4c4ae97aa198af6eb..1257c332e2c7b4bf75f360db93c846d7
                          }
                      }
                  }
+@@ -931,7 +934,7 @@ public class ServerChunkCache extends ChunkSource {
+         return this.lastSpawnState;
+     }
+ 
+-    final class MainThreadExecutor extends BlockableEventLoop<Runnable> {
++    public final class MainThreadExecutor extends BlockableEventLoop<Runnable> { // Paper - public
+ 
+         private MainThreadExecutor(Level world) {
+             super("Chunk source main thread executor for " + world.dimension().location());
 @@ -963,6 +966,41 @@ public class ServerChunkCache extends ChunkSource {
              super.doRunTask(task);
          }

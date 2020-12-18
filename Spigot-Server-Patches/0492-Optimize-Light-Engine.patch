@@ -25,10 +25,10 @@ Massive update to light to improve performance and chunk loading/generation.
 8) Fix NPE risk that crashes server in getting nibble data
 
 diff --git a/src/main/java/net/minecraft/server/level/ChunkHolder.java b/src/main/java/net/minecraft/server/level/ChunkHolder.java
-index e900b2399a742f20e81fdc6d0d29cccf63730266..0c4c984617c22d65ca7bf14740d3b7eb149ba462 100644
+index 3be679e07b17b2d5edfc4993200cac98347c3e89..b46f0bfd35f488a03f49220147099c7fbbed4c2f 100644
 --- a/src/main/java/net/minecraft/server/level/ChunkHolder.java
 +++ b/src/main/java/net/minecraft/server/level/ChunkHolder.java
-@@ -746,6 +746,7 @@ public class ChunkHolder {
+@@ -738,6 +738,7 @@ public class ChunkHolder {
                  ioPriority = com.destroystokyo.paper.io.PrioritizedTaskQueue.HIGH_PRIORITY;
              }
              chunkMap.level.asyncChunkTaskManager.raisePriority(pos.x, pos.z, ioPriority);
@@ -37,7 +37,7 @@ index e900b2399a742f20e81fdc6d0d29cccf63730266..0c4c984617c22d65ca7bf14740d3b7eb
          if (getCurrentPriority() != priority) {
              this.onLevelChange.onLevelChange(this.pos, this::getCurrentPriority, priority, this::setPriority); // use preferred priority
 diff --git a/src/main/java/net/minecraft/server/level/ChunkMap.java b/src/main/java/net/minecraft/server/level/ChunkMap.java
-index 9e8fe05405b09f3b4023c2b41a425b6f2c1426a7..fd3b4c9570e8ea5782fcbfb5984185ec002df455 100644
+index 0a77bfa9abef6273549f769595960f18f9741efd..5425ae251bda55ea818ca99ed822a8bcf3a7a8e5 100644
 --- a/src/main/java/net/minecraft/server/level/ChunkMap.java
 +++ b/src/main/java/net/minecraft/server/level/ChunkMap.java
 @@ -99,6 +99,7 @@ import net.minecraft.world.level.levelgen.structure.StructureStart;
@@ -143,7 +143,7 @@ index 76a487e3b1f0667d08d6487b8785dd056e9f4041..39d212f65cbb1dddd281fd7055878726
                          p = Long.MAX_VALUE;
                      }
 diff --git a/src/main/java/net/minecraft/server/level/ServerChunkCache.java b/src/main/java/net/minecraft/server/level/ServerChunkCache.java
-index 285958284d110cdd5c9220bc361f8bc469419856..84fcb372fa4d4964fe579da1255fbf41aee63aee 100644
+index 2f9990b63ea7977dd1e127edaaec5dbca532f7cc..18d81849d625e0dc4a4f96da9edff20976ebbbeb 100644
 --- a/src/main/java/net/minecraft/server/level/ServerChunkCache.java
 +++ b/src/main/java/net/minecraft/server/level/ServerChunkCache.java
 @@ -1071,7 +1071,7 @@ public class ServerChunkCache extends ChunkSource {
@@ -458,18 +458,10 @@ index 8c284a8c427331ca8819addf82cbb565b5d0163d..9deba138d945e93d000264aef364c014
  
      public void setTaskPerBatch(int taskBatchSize) {
 diff --git a/src/main/java/net/minecraft/util/thread/ProcessorMailbox.java b/src/main/java/net/minecraft/util/thread/ProcessorMailbox.java
-index a0ac2929ebba243727dd586daacbc79cc1b35b78..229b5d1d38e36061de0925002f8e1c832f495c36 100644
+index a0ac2929ebba243727dd586daacbc79cc1b35b78..dae4cd2e9ed36b733f75202ca52fdfc17697af4f 100644
 --- a/src/main/java/net/minecraft/util/thread/ProcessorMailbox.java
 +++ b/src/main/java/net/minecraft/util/thread/ProcessorMailbox.java
-@@ -46,6 +46,7 @@ public class ProcessorMailbox<T> implements ProcessorHandle<T>, AutoCloseable, R
- 
-     }
- 
-+<<<<<<< found
-     private boolean canBeScheduled() {
-         if ((this.status.get() & 1) != 0) {
-             return false;
-@@ -107,6 +108,7 @@ public class ProcessorMailbox<T> implements ProcessorHandle<T>, AutoCloseable, R
+@@ -107,6 +107,7 @@ public class ProcessorMailbox<T> implements ProcessorHandle<T>, AutoCloseable, R
  
      }
  

@@ -264,6 +264,19 @@ index ec43595a07027750ddc3e0be1d61fa0d13ace456..7e55e7469ee3c2f855e8524ee410891d
          return this.isBaby() ? (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.5F : (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F;
      }
  
+diff --git a/src/main/java/net/minecraft/world/entity/ambient/Bat.java b/src/main/java/net/minecraft/world/entity/ambient/Bat.java
+index 0195d2d0ea5a3ff1656e6be6d33e106daf5a9ffd..30d401d82b6ac87dfa24eec17d77ea45b4533a01 100644
+--- a/src/main/java/net/minecraft/world/entity/ambient/Bat.java
++++ b/src/main/java/net/minecraft/world/entity/ambient/Bat.java
+@@ -54,7 +54,7 @@ public class Bat extends AmbientCreature {
+     }
+ 
+     @Override
+-    protected float getVoicePitch() {
++    public float getVoicePitch() { // Paper - public
+         return super.getVoicePitch() * 0.95F;
+     }
+ 
 diff --git a/src/main/java/net/minecraft/world/entity/animal/Fox.java b/src/main/java/net/minecraft/world/entity/animal/Fox.java
 index 322ff25f8ff51c96a9736fb0dd942cde71533678..34b749b8a1f5db6cc5a61079d8f2f06ccfacecc0 100644
 --- a/src/main/java/net/minecraft/world/entity/animal/Fox.java
@@ -297,6 +310,19 @@ index 322ff25f8ff51c96a9736fb0dd942cde71533678..34b749b8a1f5db6cc5a61079d8f2f06c
      }
  
      public static boolean isPathClear(Fox fox, LivingEntity chasedEntity) {
+diff --git a/src/main/java/net/minecraft/world/entity/animal/Parrot.java b/src/main/java/net/minecraft/world/entity/animal/Parrot.java
+index e5c844b74fe5e16d6f6bf628a9da858939592c66..90c2261938f5aeaf00c37e23b5bff0c834b18e2e 100644
+--- a/src/main/java/net/minecraft/world/entity/animal/Parrot.java
++++ b/src/main/java/net/minecraft/world/entity/animal/Parrot.java
+@@ -354,7 +354,7 @@ public class Parrot extends ShoulderRidingEntity implements FlyingAnimal {
+     }
+ 
+     @Override
+-    protected float getVoicePitch() {
++    public float getVoicePitch() { // Paper - public
+         return getPitch(this.random);
+     }
+ 
 diff --git a/src/main/java/net/minecraft/world/entity/animal/horse/AbstractChestedHorse.java b/src/main/java/net/minecraft/world/entity/animal/horse/AbstractChestedHorse.java
 index 18133b5c7c15f864e73ef8f02e48744b56b0d7c1..7475325f04cc8f514b5e35be0aa0a9451ed933ae 100644
 --- a/src/main/java/net/minecraft/world/entity/animal/horse/AbstractChestedHorse.java
@@ -345,8 +371,21 @@ index 13559473f4c232ca8a0a8d333c037568b7bcc205..c0677d442b735b95a4599196a2a8a559
          this.remove();
      }
  
+diff --git a/src/main/java/net/minecraft/world/entity/monster/ZombieVillager.java b/src/main/java/net/minecraft/world/entity/monster/ZombieVillager.java
+index 87be6ae897688cc1d43ee6c333fdc91ea41bab2d..2872b1eb55110e5ed803500412b8efd2b3992a43 100644
+--- a/src/main/java/net/minecraft/world/entity/monster/ZombieVillager.java
++++ b/src/main/java/net/minecraft/world/entity/monster/ZombieVillager.java
+@@ -282,7 +282,7 @@ public class ZombieVillager extends Zombie implements VillagerDataHolder {
+     }
+ 
+     @Override
+-    protected float getVoicePitch() {
++    public float getVoicePitch() { // Paper - public
+         return this.isBaby() ? (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 2.0F : (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F;
+     }
+ 
 diff --git a/src/main/java/net/minecraft/world/entity/player/Player.java b/src/main/java/net/minecraft/world/entity/player/Player.java
-index 858da8a9d6f9fdc3bf046bed614bcd23d2018235..bbe056839e2c999e1e5db5fec8db4a2fb169b73e 100644
+index f0c537c99ccbe5ca6373a71cc187ce21238d330c..ab7043cd7ecb973b18c3cc6252fdbec5ec2c8b56 100644
 --- a/src/main/java/net/minecraft/world/entity/player/Player.java
 +++ b/src/main/java/net/minecraft/world/entity/player/Player.java
 @@ -581,7 +581,7 @@ public abstract class Player extends LivingEntity {
@@ -359,7 +398,7 @@ index 858da8a9d6f9fdc3bf046bed614bcd23d2018235..bbe056839e2c999e1e5db5fec8db4a2f
  
          if (source != null) {
 diff --git a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
-index 7aa9670305e680e386755b8ca0d97a0edd8cd441..c299c5752e04b2660878c5fe77244c93f7b92362 100644
+index 95dae0c0378867d271a51d6e409926360b50754b..caeeefa78f859c7d7fc5273d6681a982e521096f 100644
 --- a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
 @@ -1782,7 +1782,15 @@ public class CraftPlayer extends CraftHumanEntity implements Player {

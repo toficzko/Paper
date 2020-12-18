@@ -98,7 +98,7 @@ index 33647a46ce4626b341c2a3e9f50d4bc78be0c9cc..720aee99e4ef8be925a276923f4b60b3
  
      // CraftBukkit start - collidable API
 diff --git a/src/main/java/net/minecraft/world/entity/ambient/Bat.java b/src/main/java/net/minecraft/world/entity/ambient/Bat.java
-index 0195d2d0ea5a3ff1656e6be6d33e106daf5a9ffd..2e4d3142db8649e40ff22690746af0506252ad03 100644
+index 30d401d82b6ac87dfa24eec17d77ea45b4533a01..f800148ed4743fe72db4d3f1e1fccde7a8e0ff0a 100644
 --- a/src/main/java/net/minecraft/world/entity/ambient/Bat.java
 +++ b/src/main/java/net/minecraft/world/entity/ambient/Bat.java
 @@ -75,7 +75,7 @@ public class Bat extends AmbientCreature {
@@ -111,7 +111,7 @@ index 0195d2d0ea5a3ff1656e6be6d33e106daf5a9ffd..2e4d3142db8649e40ff22690746af050
      }
  
 diff --git a/src/main/java/net/minecraft/world/entity/animal/Parrot.java b/src/main/java/net/minecraft/world/entity/animal/Parrot.java
-index e5c844b74fe5e16d6f6bf628a9da858939592c66..52f1774b7ccb15e60b0455e0b1e24269fe587e4b 100644
+index 90c2261938f5aeaf00c37e23b5bff0c834b18e2e..4ca9e3f430d6a5dc3a33b348a5a140bc7cc12f9e 100644
 --- a/src/main/java/net/minecraft/world/entity/animal/Parrot.java
 +++ b/src/main/java/net/minecraft/world/entity/animal/Parrot.java
 @@ -368,8 +368,8 @@ public class Parrot extends ShoulderRidingEntity implements FlyingAnimal {

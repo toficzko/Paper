@@ -4,6 +4,19 @@ Date: Tue, 17 Jul 2018 16:42:17 +0200
 Subject: [PATCH] Use asynchronous Log4j 2 loggers
 
 
+diff --git a/build.gradle.kts b/build.gradle.kts
+index 77690d190ee90762a6ea20d1405dbc010184a192..b751c94f0f8c1a32f2637a375ff1a08e1b6a9922 100644
+--- a/build.gradle.kts
++++ b/build.gradle.kts
+@@ -36,6 +36,8 @@ dependencies {
+ 
+     runtimeOnly("org.xerial:sqlite-jdbc:3.32.3")
+     runtimeOnly("mysql:mysql-connector-java:5.1.49")
++    runtimeOnly("com.lmax:disruptor:3.4.2")
++    runtimeOnly("org.apache.logging.log4j:log4j-slf4j-impl:2.8.1")
+ 
+     testImplementation("junit:junit:4.13.1")
+     testImplementation("org.hamcrest:hamcrest-library:1.3")
 diff --git a/src/main/java/com/destroystokyo/paper/log/LogFullPolicy.java b/src/main/java/com/destroystokyo/paper/log/LogFullPolicy.java
 new file mode 100644
 index 0000000000000000000000000000000000000000..db652a1f7abc80bc751fd94925abaec58ab1a563

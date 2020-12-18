@@ -14,7 +14,7 @@ big slowdown in execution but throwing an exception at same time to raise awaren
 that it is happening so that plugin authors can fix their code to stop executing commands async.
 
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index fc87d71433601935211d8937f76d4cd22ae716b3..c5352939ae0854caefc1d459edf57a0a92285a7b 100644
+index 5f6f5e8dda8b1e4f731cddf88630fa3c057e70de..1c5d547b1b0bb50fdf6ba3495e038dec575fc0b5 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 @@ -1843,6 +1843,29 @@ public class ServerGamePacketListenerImpl implements ServerGamePacketListener {

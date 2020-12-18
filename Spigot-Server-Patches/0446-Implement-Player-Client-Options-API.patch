@@ -131,7 +131,7 @@ index ae2b0d962c4469ae0ccedf58ed5b6d2f5f707c41..de32f1c16315a3158e8411ed4989dcd6
          if (getMainArm() != packet.getMainHand()) {
              PlayerChangedMainHandEvent event = new PlayerChangedMainHandEvent(getBukkitEntity(), getMainArm() == HumanoidArm.LEFT ? MainHand.LEFT : MainHand.RIGHT);
 diff --git a/src/main/java/net/minecraft/world/entity/player/Player.java b/src/main/java/net/minecraft/world/entity/player/Player.java
-index 558fa17c745cbbdf000c4eb77188d5ef1535e8a2..3b7f7d0a43af214c2cadcee69fabee323283b745 100644
+index 9843970928322bba51ac01e38fa3e195828974a6..f5286d4ee45575996df5dc1f8213af398fcf9fca 100644
 --- a/src/main/java/net/minecraft/world/entity/player/Player.java
 +++ b/src/main/java/net/minecraft/world/entity/player/Player.java
 @@ -130,7 +130,7 @@ public abstract class Player extends LivingEntity {
@@ -144,7 +144,7 @@ index 558fa17c745cbbdf000c4eb77188d5ef1535e8a2..3b7f7d0a43af214c2cadcee69fabee32
      protected static final EntityDataAccessor<CompoundTag> DATA_SHOULDER_LEFT = SynchedEntityData.defineId(Player.class, EntityDataSerializers.COMPOUND_TAG);
      protected static final EntityDataAccessor<CompoundTag> DATA_SHOULDER_RIGHT = SynchedEntityData.defineId(Player.class, EntityDataSerializers.COMPOUND_TAG);
 diff --git a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
-index bbf468693f7e7f7df0f5da4bb0541fcee51b91c9..f3572028214297dd7009724974a5a3a2b475bd40 100644
+index 50efd136ef0ad6d7d43114e61007a543dc15289d..d33c3981cd188ecb1bdc5f190de6b0fe7f4d2edd 100644
 --- a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
 @@ -1,5 +1,8 @@

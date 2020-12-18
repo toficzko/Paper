@@ -5,10 +5,10 @@ Subject: [PATCH] Don't mark dirty in invalid locations (SPIGOT-6086)
 
 
 diff --git a/src/main/java/net/minecraft/server/level/ChunkHolder.java b/src/main/java/net/minecraft/server/level/ChunkHolder.java
-index 13a8bdcf55f2bb4096a70445cc8b9a5b9262334c..192006be6de9454f8b3d2b1af4f6ce9e5a323ce0 100644
+index 96ffed6445d058cc95623de32e095d4ce57df1a4..631bd0206f9a119e3770db1d3d5358b272edf684 100644
 --- a/src/main/java/net/minecraft/server/level/ChunkHolder.java
 +++ b/src/main/java/net/minecraft/server/level/ChunkHolder.java
-@@ -381,6 +381,7 @@ public class ChunkHolder {
+@@ -373,6 +373,7 @@ public class ChunkHolder {
      }
  
      public void blockChanged(BlockPos blockposition) {
