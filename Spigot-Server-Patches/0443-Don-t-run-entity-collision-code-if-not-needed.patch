@@ -7,10 +7,10 @@ Will not run if max entity craming is disabled and
 the max collisions per entity is less than or equal to 0
 
 diff --git a/src/main/java/net/minecraft/world/entity/LivingEntity.java b/src/main/java/net/minecraft/world/entity/LivingEntity.java
-index 71e870bc42de14ec562fac75d456bdeb70524077..c4f516bf93b100c815d7878a7ac28654a5b13f46 100644
+index 5292d15dadadf8323b1269c5273da310368aa061..e3a89d713a903adf9f2715590bf209ac630417f4 100644
 --- a/src/main/java/net/minecraft/world/entity/LivingEntity.java
 +++ b/src/main/java/net/minecraft/world/entity/LivingEntity.java
-@@ -2923,10 +2923,16 @@ public abstract class LivingEntity extends Entity {
+@@ -2920,10 +2920,16 @@ public abstract class LivingEntity extends Entity {
      protected void serverAiStep() {}
  
      protected void pushEntities() {

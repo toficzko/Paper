@@ -16,7 +16,7 @@ intent to remove) and replace it with two new methods, clearly named and
 documented as to their purpose.
 
 diff --git a/src/main/java/net/minecraft/server/level/ServerPlayer.java b/src/main/java/net/minecraft/server/level/ServerPlayer.java
-index 5f02e5d4220130e8bf96a4006f1caa42da905209..973236c3980f591f11d34223cf05ac4ed52a8240 100644
+index b244ee9879b8d3eac92f271e7c4d5c32e33ddd40..81ed5024ae244d3ce212db838316a5b2409801bb 100644
 --- a/src/main/java/net/minecraft/server/level/ServerPlayer.java
 +++ b/src/main/java/net/minecraft/server/level/ServerPlayer.java
 @@ -209,6 +209,7 @@ public class ServerPlayer extends Player implements ContainerListener {
@@ -28,7 +28,7 @@ index 5f02e5d4220130e8bf96a4006f1caa42da905209..973236c3980f591f11d34223cf05ac4e
      public boolean queueHealthUpdatePacket = false;
      public net.minecraft.network.protocol.game.ClientboundSetHealthPacket queuedHealthUpdatePacket;
 diff --git a/src/main/java/net/minecraft/server/players/PlayerList.java b/src/main/java/net/minecraft/server/players/PlayerList.java
-index 3cab10ba22e04224cb5d7c4350ec4b31f2f81702..0436136585a0dcb81253c4a8f600701884aa6ab6 100644
+index 8906dbe07d20a194ac18fe0990d0aa2729e58989..97cc3908c1e6b8d282e6ed1ad7bfc7ba69db53e7 100644
 --- a/src/main/java/net/minecraft/server/players/PlayerList.java
 +++ b/src/main/java/net/minecraft/server/players/PlayerList.java
 @@ -169,6 +169,7 @@ public abstract class PlayerList {

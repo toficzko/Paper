@@ -12,7 +12,7 @@ to the client, so that it doesn't attempt to calculate them.
 This mitigates the frametime impact to a minimum (but it's still there).
 
 diff --git a/src/main/java/net/minecraft/server/level/ChunkMap.java b/src/main/java/net/minecraft/server/level/ChunkMap.java
-index 9849deb56691d3896d451d91b923f4af1b88a911..5138876c5b9e9413e09f011967ebc8709ebf863c 100644
+index feeac296afa9e40292b7c0f373a0dd700a9862ef..0a11569e0beaf771f8de171de8c76c6092417bdf 100644
 --- a/src/main/java/net/minecraft/server/level/ChunkMap.java
 +++ b/src/main/java/net/minecraft/server/level/ChunkMap.java
 @@ -86,6 +86,7 @@ import net.minecraft.world.level.chunk.ChunkGenerator;
@@ -137,7 +137,7 @@ index 9849deb56691d3896d451d91b923f4af1b88a911..5138876c5b9e9413e09f011967ebc870
          player.trackChunk(chunk.getPos(), packets[0], packets[1]);
          DebugPackets.sendPoiPacketsForChunk(this.level, chunk.getPos());
 diff --git a/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java b/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java
-index 402d630a0ddf2d186ad5b6307f18511afbce8c0f..91b7c00e68f26b80ae94732024c060c3dc55663a 100644
+index 832e307f4067ab82b3f1183ea52dd9a9dcb4bc27..0c58a5d170a251ba42ce2d89159f787e64f628f6 100644
 --- a/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java
 +++ b/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java
 @@ -275,7 +275,7 @@ public class LevelChunk implements ChunkAccess {
@@ -149,15 +149,3 @@ index 402d630a0ddf2d186ad5b6307f18511afbce8c0f..91b7c00e68f26b80ae94732024c060c3
                      for (int index = 0, len = backingSet.length; index < len; ++index) {
                          Object temp = backingSet[index];
                          if (!(temp instanceof ServerPlayer)) {
-diff --git a/src/main/java/net/minecraft/world/level/chunk/LevelChunkSection.java b/src/main/java/net/minecraft/world/level/chunk/LevelChunkSection.java
-index c6f1b0c21aa04235e9e58d4e3606b5355f22570b..3d06cc581a1ba6caaa15b58650895b6d733c94d7 100644
---- a/src/main/java/net/minecraft/world/level/chunk/LevelChunkSection.java
-+++ b/src/main/java/net/minecraft/world/level/chunk/LevelChunkSection.java
-@@ -104,6 +104,7 @@ public class LevelChunkSection {
-         return this.nonEmptyBlockCount == 0;
-     }
- 
-+    public static boolean isEmpty(@Nullable LevelChunkSection chunksection) { return isEmpty(chunksection) ; } // Paper - OBFHELPER
-     public static boolean isEmpty(@Nullable LevelChunkSection section) {
-         return section == LevelChunk.EMPTY_SECTION || section.isEmpty();
-     }

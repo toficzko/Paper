@@ -9,19 +9,19 @@ This should hopefully avoid duplicate entities ever being created
 if the entity was to end up in 2 different chunk slices
 
 diff --git a/src/main/java/net/minecraft/world/entity/Entity.java b/src/main/java/net/minecraft/world/entity/Entity.java
-index d01c909a385b1315c8087a4a3b0c9d6d99d19d52..d64d7f3c9f91730e5214ad40743bf7c4379315c1 100644
+index 12365d3cf4bb012846013b17acbbb91eb89120e6..cc300b95d19c8630ae1f5e288c33902f0ea6d59b 100644
 --- a/src/main/java/net/minecraft/world/entity/Entity.java
 +++ b/src/main/java/net/minecraft/world/entity/Entity.java
-@@ -159,6 +159,7 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
+@@ -160,6 +160,7 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
              }
          }
      };
-+    List<Entity> entitySlice = null;
++    public List<Entity> entitySlice = null;
      // Paper end
  
      public com.destroystokyo.paper.loottable.PaperLootableInventoryData lootableData; // Paper
 diff --git a/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java b/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java
-index b75d10f6b0633f6da11c8f6462e2b5032e8bee48..efc82573cbbf607835aadec1e4e9b00f08c8745c 100644
+index db25b14a64820c24ecc272b06a4c400c533a23d1..39398b7ebdad8795f76d0bc36a223464037d87fd 100644
 --- a/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java
 +++ b/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java
 @@ -27,6 +27,7 @@ import net.minecraft.core.BlockPos;
@@ -66,7 +66,7 @@ index b75d10f6b0633f6da11c8f6462e2b5032e8bee48..efc82573cbbf607835aadec1e4e9b00f
          this.markUnsaved(); // Paper
      }
  
-@@ -578,6 +599,10 @@ public class LevelChunk implements ChunkAccess {
+@@ -577,6 +598,10 @@ public class LevelChunk implements ChunkAccess {
  
          // Paper start
          if (entity.currentChunk != null && entity.currentChunk.get() == this) entity.setCurrentChunk(null);

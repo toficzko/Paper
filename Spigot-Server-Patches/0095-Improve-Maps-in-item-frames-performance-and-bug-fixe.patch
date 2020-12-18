@@ -13,10 +13,10 @@ custom renderers are in use, defaulting to the much simpler Vanilla system.
 Additionally, numerous issues to player position tracking on maps has been fixed.
 
 diff --git a/src/main/java/net/minecraft/server/level/ServerLevel.java b/src/main/java/net/minecraft/server/level/ServerLevel.java
-index 7c22d0b97336e46e789e45d1fa2afca833d33f1a..8ec289e7a6475e9bcd6beaaec0f8dd10d41fecc7 100644
+index a5375d301b14cc3fc3de5d2ec9bae903a05e3eb3..7b829c9ea3e33f443ad032e4cea122200a38ce1e 100644
 --- a/src/main/java/net/minecraft/server/level/ServerLevel.java
 +++ b/src/main/java/net/minecraft/server/level/ServerLevel.java
-@@ -1162,6 +1162,7 @@ public class ServerLevel extends net.minecraft.world.level.Level implements Worl
+@@ -1165,6 +1165,7 @@ public class ServerLevel extends net.minecraft.world.level.Level implements Worl
                          {
                              if ( iter.next().player == entity )
                              {
@@ -58,7 +58,7 @@ index e60e37f35b9eb8cbbed0f47089bc53899034a06c..c38fa27cfa71d2886ddda3683463f921
              return entityitem;
          }
 diff --git a/src/main/java/net/minecraft/world/level/saveddata/maps/MapItemSavedData.java b/src/main/java/net/minecraft/world/level/saveddata/maps/MapItemSavedData.java
-index 75be911dc55563112a5fc6fb3448366515782f11..85d33e3bc7bf372ac6414a18f2f6fc3062a4897d 100644
+index 75be911dc55563112a5fc6fb3448366515782f11..442a32b3634d045cecc584c7b6147485911fc0d4 100644
 --- a/src/main/java/net/minecraft/world/level/saveddata/maps/MapItemSavedData.java
 +++ b/src/main/java/net/minecraft/world/level/saveddata/maps/MapItemSavedData.java
 @@ -56,6 +56,7 @@ public class MapItemSavedData extends SavedData {
@@ -99,7 +99,7 @@ index 75be911dc55563112a5fc6fb3448366515782f11..85d33e3bc7bf372ac6414a18f2f6fc30
  
 +        // Paper start
 +        private void addSeenPlayers(java.util.Collection<MapDecoration> icons) {
-+            org.bukkit.entity.Player player = (org.bukkit.entity.Player) player.getBukkitEntity();
++            org.bukkit.entity.Player player = (org.bukkit.entity.Player) this.player.getBukkitEntity();
 +            MapItemSavedData.this.decorations.forEach((name, mapIcon) -> {
 +                // If this cursor is for a player check visibility with vanish system
 +                org.bukkit.entity.Player other = org.bukkit.Bukkit.getPlayerExact(name); // Spigot

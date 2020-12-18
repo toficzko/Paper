@@ -14,7 +14,7 @@ Use an ArrayDeque to store this Queue
 We make sure to also implement a pattern that is recursion safe too.
 
 diff --git a/src/main/java/net/minecraft/server/level/ChunkMap.java b/src/main/java/net/minecraft/server/level/ChunkMap.java
-index d99a8d9926055df5d834d67ab276d6792aa5a2b4..3fa48703429cfabd1b77e1a4f2d90a1b2ba676a2 100644
+index 4f747875a2795ace79a7dab7d54d925e99fe9bf0..59ae499dff00fdd23c2000fc90734a7b36edcc86 100644
 --- a/src/main/java/net/minecraft/server/level/ChunkMap.java
 +++ b/src/main/java/net/minecraft/server/level/ChunkMap.java
 @@ -160,24 +160,32 @@ public class ChunkMap extends ChunkStorage implements ChunkHolder.PlayerProvider

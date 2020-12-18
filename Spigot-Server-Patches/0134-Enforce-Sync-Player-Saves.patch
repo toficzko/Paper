@@ -7,7 +7,7 @@ Saving players async is extremely dangerous. This will force it to main
 the same way we handle async chunk loads.
 
 diff --git a/src/main/java/net/minecraft/server/players/PlayerList.java b/src/main/java/net/minecraft/server/players/PlayerList.java
-index f60e378f7c440833edf42b0246d71997322d0c81..b5f2b0a498dd1d8f03d06492d817b0b93f5b01bc 100644
+index 2016a5d4dea77c79772d1e378704c6137cb37556..dfd5a4c174f6bfb09f64b961af02f930d39adece 100644
 --- a/src/main/java/net/minecraft/server/players/PlayerList.java
 +++ b/src/main/java/net/minecraft/server/players/PlayerList.java
 @@ -54,6 +54,7 @@ import net.minecraft.network.protocol.game.ClientboundUpdateMobEffectPacket;

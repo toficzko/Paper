@@ -70,7 +70,7 @@ index 2a60a209b12da8745341dfc4e0ea4e0ac21ff828..e8434130115b2d4c4abb0cbcef13af21
              List<ChunkHolder> allChunks = new ArrayList<>(visibleChunks.values());
              List<ServerPlayer> players = world.players;
 diff --git a/src/main/java/net/minecraft/server/level/ChunkMap.java b/src/main/java/net/minecraft/server/level/ChunkMap.java
-index 0a1f324060be0fac6cabbdd1a5b17f29e078b547..d5362c3c82be426ce472cab346b9ac3b22f651dc 100644
+index a70907a7bbafc3c2f9edc80069e95f444129d8c8..49f868296f4b9455257dcfebc4120fe78aa630ca 100644
 --- a/src/main/java/net/minecraft/server/level/ChunkMap.java
 +++ b/src/main/java/net/minecraft/server/level/ChunkMap.java
 @@ -104,8 +104,33 @@ public class ChunkMap extends ChunkStorage implements ChunkHolder.PlayerProvider
@@ -107,7 +107,7 @@ index 0a1f324060be0fac6cabbdd1a5b17f29e078b547..d5362c3c82be426ce472cab346b9ac3b
 +    public final com.destroystokyo.paper.util.map.Long2ObjectLinkedOpenHashMapFastCopy<ChunkHolder> pendingVisibleChunks = new com.destroystokyo.paper.util.map.Long2ObjectLinkedOpenHashMapFastCopy<ChunkHolder>(); // Paper - this is used if the visible chunks is updated while iterating only
 +    public transient com.destroystokyo.paper.util.map.Long2ObjectLinkedOpenHashMapFastCopy<ChunkHolder> visibleChunksClone; // Paper - used for async access of visible chunks, clone and cache only when needed
      private final Long2ObjectLinkedOpenHashMap<ChunkHolder> pendingUnloads;
-     final LongSet entitiesInLevel; // Paper - private -> package
+     public final LongSet entitiesInLevel; // Paper - private -> public
      public final ServerLevel level;
 @@ -178,7 +203,7 @@ public class ChunkMap extends ChunkStorage implements ChunkHolder.PlayerProvider
  
@@ -230,7 +230,7 @@ index 0a1f324060be0fac6cabbdd1a5b17f29e078b547..d5362c3c82be426ce472cab346b9ac3b
          while (objectbidirectionaliterator.hasNext()) {
              Entry<ChunkHolder> entry = (Entry) objectbidirectionaliterator.next();
 diff --git a/src/main/java/net/minecraft/server/level/ServerChunkCache.java b/src/main/java/net/minecraft/server/level/ServerChunkCache.java
-index 72ab25e711328fba69bf8e3571a0b1db2dbe9b2b..e2a09140a2af43b56a549adb5bd25dd14214b049 100644
+index c0129546d68a283d60f06bdd923e335f8f1e7819..ff4722aa268b57b9654ab5a4c4ae97aa198af6eb 100644
 --- a/src/main/java/net/minecraft/server/level/ServerChunkCache.java
 +++ b/src/main/java/net/minecraft/server/level/ServerChunkCache.java
 @@ -783,7 +783,7 @@ public class ServerChunkCache extends ChunkSource {

@@ -6,14 +6,12 @@ Subject: [PATCH] Add villager reputation API
 
 diff --git a/src/main/java/com/destroystokyo/paper/entity/villager/ReputationConstructor.java b/src/main/java/com/destroystokyo/paper/entity/villager/ReputationConstructor.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..c6072615e95bf51c83b2f728fc3288a7043a89af
+index 0000000000000000000000000000000000000000..0f10c333d88f2e1c56a6c7f22d421084adfd3789
 --- /dev/null
 +++ b/src/main/java/com/destroystokyo/paper/entity/villager/ReputationConstructor.java
-@@ -0,0 +1,11 @@
+@@ -0,0 +1,9 @@
 +package com.destroystokyo.paper.entity.villager;
 +// Must have own package due to package-level constructor.
-+
-+import Reputation;
 +
 +public final class ReputationConstructor {
 +    // Abuse the package-level constructor.

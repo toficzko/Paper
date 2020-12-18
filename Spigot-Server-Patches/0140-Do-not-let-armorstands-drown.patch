@@ -5,18 +5,10 @@ Subject: [PATCH] Do not let armorstands drown
 
 
 diff --git a/src/main/java/net/minecraft/world/entity/LivingEntity.java b/src/main/java/net/minecraft/world/entity/LivingEntity.java
-index 514eddfea7064880f7a0d4336e0c5b76a453b4ca..24eb6139d8c2d6f3392dd10ce3fd5ab2987e7995 100644
+index 514eddfea7064880f7a0d4336e0c5b76a453b4ca..e3c2548fc776b8659f2175760d97720ccd89e2f0 100644
 --- a/src/main/java/net/minecraft/world/entity/LivingEntity.java
 +++ b/src/main/java/net/minecraft/world/entity/LivingEntity.java
-@@ -335,6 +335,7 @@ public abstract class LivingEntity extends Entity {
-         super.checkFallDamage(d0, flag, iblockdata, blockposition);
-     }
- 
-+    public boolean canBreatheUnderwater() { return this.canBreatheUnderwater(); } // Paper - OBFHELPER
-     public boolean canBreatheUnderwater() {
-         return this.getMobType() == MobType.UNDEAD;
-     }
-@@ -378,7 +379,7 @@ public abstract class LivingEntity extends Entity {
+@@ -378,7 +378,7 @@ public abstract class LivingEntity extends Entity {
  
          if (this.isAlive()) {
              if (this.isEyeInFluid((Tag) FluidTags.WATER) && !this.level.getBlockState(new BlockPos(this.getX(), this.getEyeY(), this.getZ())).is(Blocks.BUBBLE_COLUMN)) {

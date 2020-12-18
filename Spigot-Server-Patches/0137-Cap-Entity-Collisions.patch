@@ -27,10 +27,10 @@ index c221e9501998de14194bd91018efbc113308198c..11106a20ccc161f18c1d5491785e44bb
 +    }
  }
 diff --git a/src/main/java/net/minecraft/world/entity/Entity.java b/src/main/java/net/minecraft/world/entity/Entity.java
-index ac503e65c430cc1de550f03da5f618f4f1bc6890..3f2fcbcf01c6d246032a879832e41ea24257093e 100644
+index 845fc608734ddd51c7442af0c927b511a62c8e21..d30d5fa48c191865a9a5215800e84e969f0dc309 100644
 --- a/src/main/java/net/minecraft/world/entity/Entity.java
 +++ b/src/main/java/net/minecraft/world/entity/Entity.java
-@@ -270,6 +270,7 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
+@@ -271,6 +271,7 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
      public final org.spigotmc.ActivationRange.ActivationType activationType = org.spigotmc.ActivationRange.initializeEntityActivationType(this);
      public final boolean defaultActivationState;
      public long activatedTick = Integer.MIN_VALUE;

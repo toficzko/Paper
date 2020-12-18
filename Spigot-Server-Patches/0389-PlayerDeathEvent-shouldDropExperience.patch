@@ -5,7 +5,7 @@ Subject: [PATCH] PlayerDeathEvent#shouldDropExperience
 
 
 diff --git a/src/main/java/net/minecraft/server/level/ServerPlayer.java b/src/main/java/net/minecraft/server/level/ServerPlayer.java
-index 9a0717e32cf62f0880871cf57fd02aba926cb299..dbc27c179e9b5d7ab2257fcd7558515e4c64b940 100644
+index ae3db2b37d3d9cdef5e6abbad0fbd52731984b8f..62521badd3a4b24a33889c4019b4c5e5c771785b 100644
 --- a/src/main/java/net/minecraft/server/level/ServerPlayer.java
 +++ b/src/main/java/net/minecraft/server/level/ServerPlayer.java
 @@ -821,7 +821,7 @@ public class ServerPlayer extends Player implements ContainerListener {

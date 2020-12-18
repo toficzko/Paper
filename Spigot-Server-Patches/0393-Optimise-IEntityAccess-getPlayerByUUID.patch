@@ -6,7 +6,7 @@ Subject: [PATCH] Optimise IEntityAccess#getPlayerByUUID
 Use the world entity map instead of iterating over all players
 
 diff --git a/src/main/java/net/minecraft/server/level/ServerLevel.java b/src/main/java/net/minecraft/server/level/ServerLevel.java
-index 95cd7d7504db248592b5b5d6a1ad78ac28c11bf9..11140007a94d1a7b15bf6f45ff8bb545551e2110 100644
+index 14f271a1b9e50cdcf41a3a29edfeb794875065a3..8ae612efb679a94bc2f0b6693f92cd9d5f976698 100644
 --- a/src/main/java/net/minecraft/server/level/ServerLevel.java
 +++ b/src/main/java/net/minecraft/server/level/ServerLevel.java
 @@ -283,6 +283,15 @@ public class ServerLevel extends net.minecraft.world.level.Level implements Worl

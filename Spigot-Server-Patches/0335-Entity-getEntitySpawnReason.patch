@@ -10,7 +10,7 @@ persistenting Living Entity, SPAWNER for spawners,
 or DEFAULT since data was not stored.
 
 diff --git a/src/main/java/net/minecraft/server/level/ServerLevel.java b/src/main/java/net/minecraft/server/level/ServerLevel.java
-index 14993351ef88bdcc02e21e4bdab8a24b48219580..6539422f543adbe949a99f9fa78396a79f1cd1eb 100644
+index 6a04b735fb508fb6c38ffef4dc64762c73945114..e8124530c08a398759d76de327d627e82bc1d972 100644
 --- a/src/main/java/net/minecraft/server/level/ServerLevel.java
 +++ b/src/main/java/net/minecraft/server/level/ServerLevel.java
 @@ -1033,6 +1033,7 @@ public class ServerLevel extends net.minecraft.world.level.Level implements Worl
@@ -22,7 +22,7 @@ index 14993351ef88bdcc02e21e4bdab8a24b48219580..6539422f543adbe949a99f9fa78396a7
          if (entity.valid) {
              MinecraftServer.LOGGER.error("Attempted Double World add on " + entity, new Throwable());
 diff --git a/src/main/java/net/minecraft/server/players/PlayerList.java b/src/main/java/net/minecraft/server/players/PlayerList.java
-index 04cb2d7dd1007bb4ea523991d25b9e3765960b58..41b501bacf6acc3d770ddaae73031c38a39965ed 100644
+index 196f53917bf0154e4a9e8f698b1a5014df54d8e2..68db802f23c6604df10832b9d17ffda5d86a32fd 100644
 --- a/src/main/java/net/minecraft/server/players/PlayerList.java
 +++ b/src/main/java/net/minecraft/server/players/PlayerList.java
 @@ -334,7 +334,7 @@ public abstract class PlayerList {
@@ -35,7 +35,7 @@ index 04cb2d7dd1007bb4ea523991d25b9e3765960b58..41b501bacf6acc3d770ddaae73031c38
              });
  
 diff --git a/src/main/java/net/minecraft/world/entity/Entity.java b/src/main/java/net/minecraft/world/entity/Entity.java
-index 9d7cb21744e44909187c62c94ba2a623c961f414..90880a10501b1e1c64d19cdd02513d5c27504126 100644
+index 7ea4e303ff4c98d3a965e3585b963c4ae991811a..85df6af0b44f3b84b8c14ca97e2c2281b6bc6635 100644
 --- a/src/main/java/net/minecraft/world/entity/Entity.java
 +++ b/src/main/java/net/minecraft/world/entity/Entity.java
 @@ -64,6 +64,8 @@ import net.minecraft.world.InteractionHand;
@@ -47,15 +47,15 @@ index 9d7cb21744e44909187c62c94ba2a623c961f414..90880a10501b1e1c64d19cdd02513d5c
  import net.minecraft.world.entity.item.ItemEntity;
  import net.minecraft.world.entity.player.Player;
  import net.minecraft.world.entity.vehicle.Boat;
-@@ -160,6 +162,7 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
+@@ -161,6 +163,7 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
          }
      };
-     List<Entity> entitySlice = null;
+     public List<Entity> entitySlice = null;
 +    public org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason spawnReason;
      // Paper end
  
      public com.destroystokyo.paper.loottable.PaperLootableInventoryData lootableData; // Paper
-@@ -1675,6 +1678,9 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
+@@ -1676,6 +1679,9 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
              if (this.origin != null) {
                  tag.put("Paper.Origin", this.createList(origin.getX(), origin.getY(), origin.getZ()));
              }
@@ -65,7 +65,7 @@ index 9d7cb21744e44909187c62c94ba2a623c961f414..90880a10501b1e1c64d19cdd02513d5c
              // Save entity's from mob spawner status
              if (spawnedViaMobSpawner) {
                  tag.putBoolean("Paper.FromMobSpawner", true);
-@@ -1809,6 +1815,26 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
+@@ -1810,6 +1816,26 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
              }
  
              spawnedViaMobSpawner = tag.getBoolean("Paper.FromMobSpawner"); // Restore entity's from mob spawner status

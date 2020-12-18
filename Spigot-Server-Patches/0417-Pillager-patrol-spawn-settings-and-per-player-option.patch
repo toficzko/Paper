@@ -36,7 +36,7 @@ index f0f94ac2432ad79d2957b7f723fe7eb9cbd36507..1b49c214998a5a9b424472df040d634d
      private void entitiesTargetWithFollowRange() {
          entitiesTargetWithFollowRange = getBoolean("entities-target-with-follow-range", entitiesTargetWithFollowRange);
 diff --git a/src/main/java/net/minecraft/server/level/ServerPlayer.java b/src/main/java/net/minecraft/server/level/ServerPlayer.java
-index dbc27c179e9b5d7ab2257fcd7558515e4c64b940..211e012b3db0f0f7a599838663b22e4b44edc000 100644
+index 62521badd3a4b24a33889c4019b4c5e5c771785b..5db157eadb41c6dcf104168f4f54c5d7dc6527df 100644
 --- a/src/main/java/net/minecraft/server/level/ServerPlayer.java
 +++ b/src/main/java/net/minecraft/server/level/ServerPlayer.java
 @@ -211,6 +211,7 @@ public class ServerPlayer extends Player implements ContainerListener {
@@ -47,18 +47,6 @@ index dbc27c179e9b5d7ab2257fcd7558515e4c64b940..211e012b3db0f0f7a599838663b22e4b
      // Paper start - cancellable death event
      public boolean queueHealthUpdatePacket = false;
      public net.minecraft.network.protocol.game.ClientboundSetHealthPacket queuedHealthUpdatePacket;
-diff --git a/src/main/java/net/minecraft/stats/StatType.java b/src/main/java/net/minecraft/stats/StatType.java
-index badcb435e22d60387e6371446b38908d49a108fc..dfa44d8e2f0d6365a98b923e3d73eb56e363f72d 100644
---- a/src/main/java/net/minecraft/stats/StatType.java
-+++ b/src/main/java/net/minecraft/stats/StatType.java
-@@ -27,6 +27,7 @@ public class StatType<T> implements Iterable<Stat<T>> {
-         return this.map.values().iterator();
-     }
- 
-+    public final Stat<T> get(T t) { return this.get(t); }; // Paper - OBFHELPER
-     public Stat<T> get(T key) {
-         return this.get(key, StatFormatter.DEFAULT);
-     }
 diff --git a/src/main/java/net/minecraft/world/level/levelgen/PatrolSpawner.java b/src/main/java/net/minecraft/world/level/levelgen/PatrolSpawner.java
 index 4cf461a14afec91a35b4cac6f8decda663eee374..d57cc7121063596ce1130bb76f94161a7bed362c 100644
 --- a/src/main/java/net/minecraft/world/level/levelgen/PatrolSpawner.java

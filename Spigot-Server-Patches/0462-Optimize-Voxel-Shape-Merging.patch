@@ -76,10 +76,10 @@ index 8d12dc444f7d82beb3ae29ecc7447ddfaf17aa34..e2b5beccd7dffef9cca789ba2f470caa
          this.firstIndices = new IntArrayList(m);
          this.secondIndices = new IntArrayList(m);
 diff --git a/src/main/java/net/minecraft/world/phys/shapes/Shapes.java b/src/main/java/net/minecraft/world/phys/shapes/Shapes.java
-index cf5bce5be1049d30b5c59ecf7abb172597b8625f..99e1e234b24158a61011732e2f4ec17d4d3a6e34 100644
+index 457732579c10acd478241f818a21c37f4066fdd7..7cff896703c2453f34eacc24345cd0dc22642b12 100644
 --- a/src/main/java/net/minecraft/world/phys/shapes/Shapes.java
 +++ b/src/main/java/net/minecraft/world/phys/shapes/Shapes.java
-@@ -320,9 +320,22 @@ public final class Shapes {
+@@ -319,9 +319,22 @@ public final class Shapes {
      }
  
      @VisibleForTesting
@@ -103,7 +103,7 @@ index cf5bce5be1049d30b5c59ecf7abb172597b8625f..99e1e234b24158a61011732e2f4ec17d
          if (first instanceof CubePointRange && second instanceof CubePointRange) {
              long l = lcm(i, j);
              if ((long)size * l <= 256L) {
-@@ -330,19 +343,22 @@ public final class Shapes {
+@@ -329,19 +342,22 @@ public final class Shapes {
              }
          }
  

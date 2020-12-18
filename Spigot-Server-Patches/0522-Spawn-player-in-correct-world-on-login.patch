@@ -5,7 +5,7 @@ Subject: [PATCH] Spawn player in correct world on login
 
 
 diff --git a/src/main/java/net/minecraft/server/players/PlayerList.java b/src/main/java/net/minecraft/server/players/PlayerList.java
-index bd7b740a0b1619b4dd8ab592e5358b0112642e41..eaec9339b1d6cfd27148b6de0a1c80ad6d103bf3 100644
+index 76c8a7e14a97be1c97595da19ca5da3a8654fe63..68e9dcbecc10a536a4181ae8ab45429ed188af29 100644
 --- a/src/main/java/net/minecraft/server/players/PlayerList.java
 +++ b/src/main/java/net/minecraft/server/players/PlayerList.java
 @@ -196,7 +196,18 @@ public abstract class PlayerList {

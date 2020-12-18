@@ -14,7 +14,7 @@ Adds flying monsters to control ghast and phantoms
 Adds villagers as separate config
 
 diff --git a/src/main/java/net/minecraft/server/level/ServerLevel.java b/src/main/java/net/minecraft/server/level/ServerLevel.java
-index 11140007a94d1a7b15bf6f45ff8bb545551e2110..49550c09f8d71a53fcad0d0d1a686bae20580239 100644
+index 8ae612efb679a94bc2f0b6693f92cd9d5f976698..f1b88241ffafdf60a767990297979ebb08aa606a 100644
 --- a/src/main/java/net/minecraft/server/level/ServerLevel.java
 +++ b/src/main/java/net/minecraft/server/level/ServerLevel.java
 @@ -853,17 +853,17 @@ public class ServerLevel extends net.minecraft.world.level.Level implements Worl
@@ -107,7 +107,7 @@ index 11140007a94d1a7b15bf6f45ff8bb545551e2110..49550c09f8d71a53fcad0d0d1a686bae
              }
          } else {
 diff --git a/src/main/java/net/minecraft/world/entity/Entity.java b/src/main/java/net/minecraft/world/entity/Entity.java
-index 1970ad573c7edea4fa75982ed054662b540f6471..cb2c25b55055c96ff42eda8c1e3fbacbf0f9e82a 100644
+index 72fe508d4744281801467d349d1199be5ce6d050..235540ad20debaf8c7536feb8c0a0ae0f45815c3 100644
 --- a/src/main/java/net/minecraft/world/entity/Entity.java
 +++ b/src/main/java/net/minecraft/world/entity/Entity.java
 @@ -68,6 +68,7 @@ import net.minecraft.world.entity.animal.AbstractFish;
@@ -118,7 +118,7 @@ index 1970ad573c7edea4fa75982ed054662b540f6471..cb2c25b55055c96ff42eda8c1e3fbacb
  import net.minecraft.world.entity.vehicle.Boat;
  import net.minecraft.world.item.ItemStack;
  import net.minecraft.world.item.enchantment.EnchantmentHelper;
-@@ -253,7 +254,7 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
+@@ -255,7 +256,7 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
      public boolean noCulling;
      public boolean hasImpulse;
      public int portalCooldown;
@@ -127,7 +127,7 @@ index 1970ad573c7edea4fa75982ed054662b540f6471..cb2c25b55055c96ff42eda8c1e3fbacb
      protected int portalTime;
      protected BlockPos portalEntrancePos;
      private boolean invulnerable;
-@@ -277,6 +278,7 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
+@@ -279,6 +280,7 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
      public final org.spigotmc.ActivationRange.ActivationType activationType = org.spigotmc.ActivationRange.initializeEntityActivationType(this);
      public final boolean defaultActivationState;
      public long activatedTick = Integer.MIN_VALUE;
@@ -135,7 +135,7 @@ index 1970ad573c7edea4fa75982ed054662b540f6471..cb2c25b55055c96ff42eda8c1e3fbacb
      public boolean spawnedViaMobSpawner; // Paper - Yes this name is similar to above, upstream took the better one
      protected int numCollisions = 0; // Paper
      public void inactiveTick() { }
-@@ -667,6 +669,7 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
+@@ -669,6 +671,7 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
              this.setLocationFromBoundingbox();
          } else {
              if (type == MoverType.PISTON) {
@@ -143,7 +143,7 @@ index 1970ad573c7edea4fa75982ed054662b540f6471..cb2c25b55055c96ff42eda8c1e3fbacb
                  movement = this.limitPistonMovement(movement);
                  if (movement.equals(Vec3.ZERO)) {
                      return;
-@@ -679,6 +682,13 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
+@@ -681,6 +684,13 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
                  this.stuckSpeedMultiplier = Vec3.ZERO;
                  this.setDeltaMovement(Vec3.ZERO);
              }
@@ -157,7 +157,7 @@ index 1970ad573c7edea4fa75982ed054662b540f6471..cb2c25b55055c96ff42eda8c1e3fbacb
  
              movement = this.maybeBackOffFromEdge(movement, type);
              Vec3 vec3d1 = this.collide(movement);
-@@ -2009,6 +2019,7 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
+@@ -2010,6 +2020,7 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
          }
      }
  
@@ -174,7 +174,7 @@ index 1970ad573c7edea4fa75982ed054662b540f6471..cb2c25b55055c96ff42eda8c1e3fbacb
          // Paper start
          return this.pushedByWater();
 diff --git a/src/main/java/net/minecraft/world/entity/LivingEntity.java b/src/main/java/net/minecraft/world/entity/LivingEntity.java
-index 6ce3d74a7e1a4f4fd529a87a5b1735a8dffaf547..4facc16e729caf57acd907b8e57b809f2c92670a 100644
+index 58c4b82725554e91ba1c394bfae3d926b622f9f0..345cd0f65b7c885e2f362e94ed4609b253d9d2a1 100644
 --- a/src/main/java/net/minecraft/world/entity/LivingEntity.java
 +++ b/src/main/java/net/minecraft/world/entity/LivingEntity.java
 @@ -189,7 +189,7 @@ public abstract class LivingEntity extends Entity {
@@ -341,18 +341,6 @@ index b26a0e31e46c92a4201a3e34b5ce2e4fe56c22e5..9d7ea91983753f7c15ff8d19d74511c0
 +    public boolean isRunning() { return this.isRunning(); } // Paper - OBFHELPER
      public boolean isRunning() {
          return this.isRunning;
-     }
-diff --git a/src/main/java/net/minecraft/world/entity/animal/horse/Llama.java b/src/main/java/net/minecraft/world/entity/animal/horse/Llama.java
-index e319b22450ca30b3d499ce29f9d2962375e9ea8c..0c1e02a98b4b50b5d4f9d6311d11b90587913462 100644
---- a/src/main/java/net/minecraft/world/entity/animal/horse/Llama.java
-+++ b/src/main/java/net/minecraft/world/entity/animal/horse/Llama.java
-@@ -402,6 +402,7 @@ public class Llama extends AbstractChestedHorse implements RangedAttackMob {
-         return this.caravanTail != null;
-     }
- 
-+    public final boolean inCaravan() { return this.inCaravan(); } // Paper - OBFHELPER
-     public boolean inCaravan() {
-         return this.caravanHead != null;
      }
 diff --git a/src/main/java/net/minecraft/world/entity/npc/AbstractVillager.java b/src/main/java/net/minecraft/world/entity/npc/AbstractVillager.java
 index 8820939465fe39613c29d2d3530c7dce7bcf4beb..533ee604babea5d67a8c1709b884a85d5c2ca0a3 100644

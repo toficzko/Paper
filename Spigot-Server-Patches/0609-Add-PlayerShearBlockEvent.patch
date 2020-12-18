@@ -46,7 +46,7 @@ index 8d4c981b5f29a1b4a5b93ce59f2dce2eeb76b61f..13d8b91024da72a01988bf47c02b1396
                      entityhuman1.broadcastBreakEvent(hand);
                  });
 diff --git a/src/main/java/net/minecraft/world/level/block/Block.java b/src/main/java/net/minecraft/world/level/block/Block.java
-index e5e7d0467ac17fa0e3166017b06ff1ef8db02a89..552403a4da4469c5453f9a196216383735078167 100644
+index 0ae9527f6b53b268d88a5aa44cf2ade2eedb623c..3a85b93fd7e40f54504d1b9e8d1c0bf44a900e16 100644
 --- a/src/main/java/net/minecraft/world/level/block/Block.java
 +++ b/src/main/java/net/minecraft/world/level/block/Block.java
 @@ -263,13 +263,13 @@ public class Block extends BlockBehaviour implements ItemLike {

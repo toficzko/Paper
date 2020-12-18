@@ -545,7 +545,7 @@ index 0000000000000000000000000000000000000000..4f13d3ff8391793a99f067189f854078
 +    }
 +}
 diff --git a/src/main/java/net/minecraft/server/level/ChunkMap.java b/src/main/java/net/minecraft/server/level/ChunkMap.java
-index 6d54c1f3c8326ea563cf027e7fdc102b4cb27b58..fa1696bf8b6b4597b4373d7217bd0eb40c747b01 100644
+index 8b709f64c630ff0ab4aa373de1838bcd409106e3..f130ced304d8085668cc85ff0844a519aae0e989 100644
 --- a/src/main/java/net/minecraft/server/level/ChunkMap.java
 +++ b/src/main/java/net/minecraft/server/level/ChunkMap.java
 @@ -71,6 +71,7 @@ import net.minecraft.util.thread.ProcessorMailbox;
@@ -592,7 +592,7 @@ index 6d54c1f3c8326ea563cf027e7fdc102b4cb27b58..fa1696bf8b6b4597b4373d7217bd0eb4
  
      private static double euclideanDistanceSquared(ChunkPos pos, Entity entity) {
 diff --git a/src/main/java/net/minecraft/server/level/ServerChunkCache.java b/src/main/java/net/minecraft/server/level/ServerChunkCache.java
-index 26c36b4587fba3b251d90a8a2857c08074944b58..9d6ff989466ea33d7ac6ac621319949af67dd934 100644
+index 490349ac8041da2269c99ed821aa889d85c6f6e7..1d973c5c2b2d7ee9ce248819205c081f4c88a018 100644
 --- a/src/main/java/net/minecraft/server/level/ServerChunkCache.java
 +++ b/src/main/java/net/minecraft/server/level/ServerChunkCache.java
 @@ -771,7 +771,22 @@ public class ServerChunkCache extends ChunkSource {
@@ -620,7 +620,7 @@ index 26c36b4587fba3b251d90a8a2857c08074944b58..9d6ff989466ea33d7ac6ac621319949a
  
              this.lastSpawnState = spawnercreature_d;
 diff --git a/src/main/java/net/minecraft/server/level/ServerPlayer.java b/src/main/java/net/minecraft/server/level/ServerPlayer.java
-index 459849560a9ff7221cfc5bfa97ebc9076c8ff788..296a11e4951922ea7f77fc03d1f347b015d2e95e 100644
+index fa2fd390e89bf6683f23fc9f6c0c1c534c5ef3ed..88468a1d1638832cd8700f2e3833ba30be642167 100644
 --- a/src/main/java/net/minecraft/server/level/ServerPlayer.java
 +++ b/src/main/java/net/minecraft/server/level/ServerPlayer.java
 @@ -96,6 +96,7 @@ import net.minecraft.world.entity.Entity;
@@ -660,7 +660,7 @@ index 459849560a9ff7221cfc5bfa97ebc9076c8ff788..296a11e4951922ea7f77fc03d1f347b0
          return this.lastSectionPos;
      }
 diff --git a/src/main/java/net/minecraft/world/entity/EntityType.java b/src/main/java/net/minecraft/world/entity/EntityType.java
-index b9a98938e4b92530f70636b22889c4be050bc7d9..4624c21faac6f9a63f1709192e357f646ee6714d 100644
+index 60b0444b549dcefc3dbf34ec2f94c705fefda0fb..d05f60b99ece385d6035190822a28c828ea2284e 100644
 --- a/src/main/java/net/minecraft/world/entity/EntityType.java
 +++ b/src/main/java/net/minecraft/world/entity/EntityType.java
 @@ -411,6 +411,7 @@ public class EntityType<T extends Entity> {

@@ -5,7 +5,7 @@ Subject: [PATCH] Villager#resetOffers
 
 
 diff --git a/src/main/java/net/minecraft/world/entity/npc/AbstractVillager.java b/src/main/java/net/minecraft/world/entity/npc/AbstractVillager.java
-index 533ee604babea5d67a8c1709b884a85d5c2ca0a3..8db098a7c9be4b43b3514fd50d1fd105160cc7c0 100644
+index 533ee604babea5d67a8c1709b884a85d5c2ca0a3..acec9bb3d55f105aa646c1753512cfe7245e3be1 100644
 --- a/src/main/java/net/minecraft/world/entity/npc/AbstractVillager.java
 +++ b/src/main/java/net/minecraft/world/entity/npc/AbstractVillager.java
 @@ -111,6 +111,13 @@ public abstract class AbstractVillager extends AgableMob implements Npc, Merchan
@@ -22,14 +22,6 @@ index 533ee604babea5d67a8c1709b884a85d5c2ca0a3..8db098a7c9be4b43b3514fd50d1fd105
      @Override
      public MerchantOffers getOffers() {
          if (this.offers == null) {
-@@ -233,6 +240,7 @@ public abstract class AbstractVillager extends AgableMob implements Npc, Merchan
-         return this.level;
-     }
- 
-+    protected final void updateTrades() { updateTrades(); } // Paper - OBFHELPER
-     protected abstract void updateTrades();
- 
-     protected void addOffersFromItemListings(MerchantOffers recipeList, VillagerTrades.ItemListing[] pool, int count) {
 diff --git a/src/main/java/org/bukkit/craftbukkit/entity/CraftAbstractVillager.java b/src/main/java/org/bukkit/craftbukkit/entity/CraftAbstractVillager.java
 index 8ffdfe3e8229b556838eab18dcb6bfb0c05a6063..7f887e883a87f2df7ae428ffddb072724d602d62 100644
 --- a/src/main/java/org/bukkit/craftbukkit/entity/CraftAbstractVillager.java

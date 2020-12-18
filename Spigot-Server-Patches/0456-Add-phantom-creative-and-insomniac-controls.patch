@@ -42,7 +42,7 @@ index 648d9f1c303248652378a0084e455d411cbf7b58..8ce62148ebaeac9988e7c9d4b2f7ee57
      // Paper start
      public static final Predicate<Entity> affectsSpawning = (entity) -> {
 diff --git a/src/main/java/net/minecraft/world/entity/monster/Phantom.java b/src/main/java/net/minecraft/world/entity/monster/Phantom.java
-index c72348b664a3f76d130dfcd84a9d1f2730fcf12a..47710486e7b32cadee8c085d57d55c086aae3bee 100644
+index 26a4fd693d77901f612014d9899cdfd99b8197c7..856bd68f12ff775dc026746451e9115a0c1c942e 100644
 --- a/src/main/java/net/minecraft/world/entity/monster/Phantom.java
 +++ b/src/main/java/net/minecraft/world/entity/monster/Phantom.java
 @@ -261,6 +261,7 @@ public class Phantom extends FlyingMob implements Enemy {

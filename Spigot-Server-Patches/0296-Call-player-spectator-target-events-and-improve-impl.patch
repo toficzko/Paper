@@ -19,7 +19,7 @@ spectate the target entity.
 Co-authored-by: Spottedleaf <Spottedleaf@users.noreply.github.com>
 
 diff --git a/src/main/java/net/minecraft/server/level/ServerPlayer.java b/src/main/java/net/minecraft/server/level/ServerPlayer.java
-index 1fd7f86f2a67dd34d878bb1c5d89f0b93f59a3ad..7d8066948220ff2d9bf5efb409fdff5a55b3de1c 100644
+index fa35c69a21d81f06bf5cd61658ff35f46a726d91..9aad839bed6fde51b9eb79da1a3645efd3ec2f56 100644
 --- a/src/main/java/net/minecraft/server/level/ServerPlayer.java
 +++ b/src/main/java/net/minecraft/server/level/ServerPlayer.java
 @@ -1789,14 +1789,58 @@ public class ServerPlayer extends Player implements ContainerListener {

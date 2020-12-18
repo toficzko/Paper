@@ -7,10 +7,10 @@ The code following this has better support for null worlds to move
 them back to the world spawn.
 
 diff --git a/src/main/java/net/minecraft/world/entity/Entity.java b/src/main/java/net/minecraft/world/entity/Entity.java
-index f6e41d6c8f2a3215e82bb1de726d0d685f6ea03c..d6bafe36b63feb55fe027acf5a0af264d8f7b354 100644
+index cd3ab29e88767ee977de08abb2d8d0d28ab14b64..251b156366bac0e8ac077edd6c63433b6d171930 100644
 --- a/src/main/java/net/minecraft/world/entity/Entity.java
 +++ b/src/main/java/net/minecraft/world/entity/Entity.java
-@@ -1810,9 +1810,11 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
+@@ -1809,9 +1809,11 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
                      bworld = server.getWorld(worldName);
                  }
  

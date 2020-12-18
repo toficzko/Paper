@@ -5,7 +5,7 @@ Subject: [PATCH] Brand support
 
 
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index 285cba34e7b67d6f1e1a0c157b83e13165bf1a71..d00c5dc7c154ac3dfef30ac56e5cb86f9aba0fab 100644
+index c2f0f9f0730f607509fdbbfec6b0cd8fd83562b9..ece8602036be2679b337e58adb273edae9a8de7a 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 @@ -5,6 +5,7 @@ import com.google.common.primitives.Doubles;

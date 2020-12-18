@@ -5,7 +5,7 @@ Subject: [PATCH] LivingEntity#setKiller
 
 
 diff --git a/src/main/java/net/minecraft/world/entity/LivingEntity.java b/src/main/java/net/minecraft/world/entity/LivingEntity.java
-index 24eb6139d8c2d6f3392dd10ce3fd5ab2987e7995..5b93a54811edf9552107a8d459437bdbdbd71284 100644
+index e3c2548fc776b8659f2175760d97720ccd89e2f0..859346c54b60564c06dadb5603f2d3618b608c88 100644
 --- a/src/main/java/net/minecraft/world/entity/LivingEntity.java
 +++ b/src/main/java/net/minecraft/world/entity/LivingEntity.java
 @@ -177,7 +177,7 @@ public abstract class LivingEntity extends Entity {

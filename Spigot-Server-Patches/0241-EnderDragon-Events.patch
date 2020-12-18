@@ -43,17 +43,17 @@ index ce9f596bb9c96c9e84e7d1a047686936761485ff..85c53a761f3821f281ace1deb4101440
                          if (this.currentPath != null) {
                              while(!this.currentPath.isDone()) {
 diff --git a/src/main/java/net/minecraft/world/entity/projectile/DragonFireball.java b/src/main/java/net/minecraft/world/entity/projectile/DragonFireball.java
-index 98ffee8e43cc9d54b5c1dfc4624a60fb2e7b0965..318011da362dfa0a382ad450a1815f48536082d8 100644
+index 98ffee8e43cc9d54b5c1dfc4624a60fb2e7b0965..4a231c7edc631ed415ccf58d6309c274cb6a0580 100644
 --- a/src/main/java/net/minecraft/world/entity/projectile/DragonFireball.java
 +++ b/src/main/java/net/minecraft/world/entity/projectile/DragonFireball.java
 @@ -49,8 +49,10 @@ public class DragonFireball extends AbstractHurtingProjectile {
                      }
                  }
  
-+                if (new com.destroystokyo.paper.event.entity.EnderDragonFireballHitEvent((org.bukkit.entity.DragonFireball) this.getBukkitEntity(), list.stream().map(LivingEntity::getBukkitLivingEntity).collect(java.util.stream.Collectors.toList()), (org.bukkit.entity.AreaEffectCloud) entityareaeffectcloud.getBukkitEntity()).callEvent()) { // Paper
++                if (new com.destroystokyo.paper.event.entity.EnderDragonFireballHitEvent((org.bukkit.entity.DragonFireball) this.getBukkitEntity(), list.stream().map(LivingEntity::getBukkitLivingEntity).collect(java.util.stream.Collectors.toList()), (org.bukkit.entity.AreaEffectCloud) areaEffectCloud.getBukkitEntity()).callEvent()) { // Paper
                  this.level.levelEvent(2006, this.blockPosition(), this.isSilent() ? -1 : 1);
                  this.level.addFreshEntity(areaEffectCloud);
-+                } else entityareaeffectcloud.remove(); // Paper
++                } else areaEffectCloud.remove(); // Paper
                  this.remove();
              }
  

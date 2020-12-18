@@ -957,18 +957,10 @@ index 0000000000000000000000000000000000000000..19604f4d2d0cdf65cb9f164258c4435a
 +    }
 +}
 diff --git a/src/main/java/net/minecraft/world/level/Level.java b/src/main/java/net/minecraft/world/level/Level.java
-index c0c41e7b2e253e63316bb593a83dc8faff07e5a8..4a3b1bba8c762e37d7d358cd61cbf7e3e64e5bec 100644
+index c0c41e7b2e253e63316bb593a83dc8faff07e5a8..25370cc39d0984be27ed02e299ce7f6368340b7c 100644
 --- a/src/main/java/net/minecraft/world/level/Level.java
 +++ b/src/main/java/net/minecraft/world/level/Level.java
-@@ -659,6 +659,7 @@ public abstract class Level implements LevelAccessor, AutoCloseable {
- 
-     }
- 
-+    public void neighborChanged(BlockPos pos, Block blockIn, BlockPos fromPos) { neighborChanged(pos, blockIn, fromPos); } // Paper - OBFHELPER
-     public void neighborChanged(BlockPos sourcePos, Block sourceBlock, BlockPos neighborPos) {
-         if (!this.isClientSide) {
-             BlockState iblockdata = this.getBlockState(sourcePos);
-@@ -1288,6 +1289,7 @@ public abstract class Level implements LevelAccessor, AutoCloseable {
+@@ -1288,6 +1288,7 @@ public abstract class Level implements LevelAccessor, AutoCloseable {
          return this.getSignal(pos.below(), Direction.DOWN) > 0 ? true : (this.getSignal(pos.above(), Direction.UP) > 0 ? true : (this.getSignal(pos.north(), Direction.NORTH) > 0 ? true : (this.getSignal(pos.south(), Direction.SOUTH) > 0 ? true : (this.getSignal(pos.west(), Direction.WEST) > 0 ? true : this.getSignal(pos.east(), Direction.EAST) > 0))));
      }
  

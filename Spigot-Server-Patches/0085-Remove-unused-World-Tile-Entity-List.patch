@@ -6,10 +6,10 @@ Subject: [PATCH] Remove unused World Tile Entity List
 Massive hit to performance and it is completely unnecessary.
 
 diff --git a/src/main/java/net/minecraft/server/level/ServerLevel.java b/src/main/java/net/minecraft/server/level/ServerLevel.java
-index 336d5c014584d833a61a23ffbf240e5689d30c40..7c22d0b97336e46e789e45d1fa2afca833d33f1a 100644
+index b7dd76f3bc144dd4841f5d905daa60acfd294b4e..a5375d301b14cc3fc3de5d2ec9bae903a05e3eb3 100644
 --- a/src/main/java/net/minecraft/server/level/ServerLevel.java
 +++ b/src/main/java/net/minecraft/server/level/ServerLevel.java
-@@ -1703,7 +1703,7 @@ public class ServerLevel extends net.minecraft.world.level.Level implements Worl
+@@ -1706,7 +1706,7 @@ public class ServerLevel extends net.minecraft.world.level.Level implements Worl
              }
  
              bufferedwriter.write(String.format("entities: %d\n", this.entitiesById.size()));
@@ -18,7 +18,7 @@ index 336d5c014584d833a61a23ffbf240e5689d30c40..7c22d0b97336e46e789e45d1fa2afca8
              bufferedwriter.write(String.format("block_ticks: %d\n", this.getBlockTicks().size()));
              bufferedwriter.write(String.format("fluid_ticks: %d\n", this.getLiquidTicks().size()));
              bufferedwriter.write("distance_manager: " + playerchunkmap.getDistanceManager().getDebugStatus() + "\n");
-@@ -1842,7 +1842,7 @@ public class ServerLevel extends net.minecraft.world.level.Level implements Worl
+@@ -1845,7 +1845,7 @@ public class ServerLevel extends net.minecraft.world.level.Level implements Worl
  
      private void dumpBlockEntities(Writer writer) throws IOException {
          CsvOutput csvwriter = CsvOutput.builder().addColumn("x").addColumn("y").addColumn("z").addColumn("type").build(writer);

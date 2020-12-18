@@ -5,7 +5,7 @@ Subject: [PATCH] Fix SpawnChangeEvent not firing for all use-cases
 
 
 diff --git a/src/main/java/net/minecraft/server/level/ServerLevel.java b/src/main/java/net/minecraft/server/level/ServerLevel.java
-index dd8df0e78f6091c04e1925f7324fcb9c4f69ddbe..d1662961ed513bc9a0a656a637441f89034a3c75 100644
+index 7610d4b81149957414ff2c14bdf63cd64e752894..5b03322dc15bcc8e492b18bd73f0b8cdce8ffbb6 100644
 --- a/src/main/java/net/minecraft/server/level/ServerLevel.java
 +++ b/src/main/java/net/minecraft/server/level/ServerLevel.java
 @@ -1970,12 +1970,14 @@ public class ServerLevel extends net.minecraft.world.level.Level implements Worl

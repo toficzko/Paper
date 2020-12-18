@@ -7,10 +7,10 @@ Allows you to determine why an inventory was closed, enabling plugin developers
 to "confirm" things based on if it was player triggered close or not.
 
 diff --git a/src/main/java/net/minecraft/server/level/ServerLevel.java b/src/main/java/net/minecraft/server/level/ServerLevel.java
-index 2d6e67a79918ebd5d5f5b6580c631f17ff446c72..a5231678c6ee3c5b59b7fa8b1c12a1b873fa3159 100644
+index 1af19c951f582ed5418c7855e5d65d9c0c6bd3ac..d2247ce8c4c0dae5a093ea4161d5379014316935 100644
 --- a/src/main/java/net/minecraft/server/level/ServerLevel.java
 +++ b/src/main/java/net/minecraft/server/level/ServerLevel.java
-@@ -1117,7 +1117,7 @@ public class ServerLevel extends net.minecraft.world.level.Level implements Worl
+@@ -1120,7 +1120,7 @@ public class ServerLevel extends net.minecraft.world.level.Level implements Worl
          for (BlockEntity tileentity : chunk.getBlockEntities().values()) {
              if (tileentity instanceof Container) {
                  for (org.bukkit.entity.HumanEntity h : Lists.newArrayList(((Container) tileentity).getViewers())) {
@@ -19,7 +19,7 @@ index 2d6e67a79918ebd5d5f5b6580c631f17ff446c72..a5231678c6ee3c5b59b7fa8b1c12a1b8
                  }
              }
          }
-@@ -1175,7 +1175,7 @@ public class ServerLevel extends net.minecraft.world.level.Level implements Worl
+@@ -1178,7 +1178,7 @@ public class ServerLevel extends net.minecraft.world.level.Level implements Worl
          // Spigot Start
          if (entity.getBukkitEntity() instanceof org.bukkit.inventory.InventoryHolder) {
              for (org.bukkit.entity.HumanEntity h : Lists.newArrayList(((org.bukkit.inventory.InventoryHolder) entity.getBukkitEntity()).getInventory().getViewers())) {
@@ -29,7 +29,7 @@ index 2d6e67a79918ebd5d5f5b6580c631f17ff446c72..a5231678c6ee3c5b59b7fa8b1c12a1b8
          }
          // Spigot End
 diff --git a/src/main/java/net/minecraft/server/level/ServerPlayer.java b/src/main/java/net/minecraft/server/level/ServerPlayer.java
-index 20c85a5bbab30545c7735c3de5c0bf39e455709e..e473e149e13e1712133eae0b21c95d1962fb1d20 100644
+index 20c85a5bbab30545c7735c3de5c0bf39e455709e..14e9523c8af36782288ca51996a87c50e2061870 100644
 --- a/src/main/java/net/minecraft/server/level/ServerPlayer.java
 +++ b/src/main/java/net/minecraft/server/level/ServerPlayer.java
 @@ -540,7 +540,7 @@ public class ServerPlayer extends Player implements ContainerListener {
@@ -76,7 +76,7 @@ index 20c85a5bbab30545c7735c3de5c0bf39e455709e..e473e149e13e1712133eae0b21c95d19
 +        // Paper start
 +        closeContainer(org.bukkit.event.inventory.InventoryCloseEvent.Reason.UNKNOWN);
 +    }
-+    public void closeInventory(org.bukkit.event.inventory.InventoryCloseEvent.Reason reason) {
++    public void closeContainer(org.bukkit.event.inventory.InventoryCloseEvent.Reason reason) {
 +        CraftEventFactory.handleInventoryCloseEvent(this, reason); // CraftBukkit
 +        // Paper end
          this.connection.send(new ClientboundContainerClosePacket(this.containerMenu.containerId));
@@ -112,7 +112,7 @@ index 1a889a254f0f45ea85882323474b8eaa3586beb4..ccb39c679076e90afa4cb9f4d5a011e6
          this.player.doCloseContainer();
      }
 diff --git a/src/main/java/net/minecraft/server/players/PlayerList.java b/src/main/java/net/minecraft/server/players/PlayerList.java
-index 1163bb2d60860f5f0c7ba461df6f7271f74ed2ee..7e91557108925563f93dc4073fa1f1ced8466f76 100644
+index 2689283db0fd779ea31af6acc2af4596ad8db33b..0c0493fddb3aa91dab527dc755f25a1862bfd270 100644
 --- a/src/main/java/net/minecraft/server/players/PlayerList.java
 +++ b/src/main/java/net/minecraft/server/players/PlayerList.java
 @@ -494,7 +494,7 @@ public abstract class PlayerList {
@@ -125,7 +125,7 @@ index 1163bb2d60860f5f0c7ba461df6f7271f74ed2ee..7e91557108925563f93dc4073fa1f1ce
  
          PlayerQuitEvent playerQuitEvent = new PlayerQuitEvent(cserver.getPlayer(entityplayer), "\u00A7e" + entityplayer.getScoreboardName() + " left the game");
 diff --git a/src/main/java/net/minecraft/world/entity/player/Player.java b/src/main/java/net/minecraft/world/entity/player/Player.java
-index b616ea19b6026ee731635640460a6f35d3d3645e..b5f312480970d19b1ab064bac30fe4d81c207c68 100644
+index b616ea19b6026ee731635640460a6f35d3d3645e..7ed531d8e2a1b65d440fa9b114384a245484d0ed 100644
 --- a/src/main/java/net/minecraft/world/entity/player/Player.java
 +++ b/src/main/java/net/minecraft/world/entity/player/Player.java
 @@ -249,7 +249,7 @@ public abstract class Player extends LivingEntity {
@@ -142,7 +142,7 @@ index b616ea19b6026ee731635640460a6f35d3d3645e..b5f312480970d19b1ab064bac30fe4d8
      }
  
 +    // Paper start - unused code, but to keep signatures aligned
-+    public void closeInventory(org.bukkit.event.inventory.InventoryCloseEvent.Reason reason) {
++    public void closeContainer(org.bukkit.event.inventory.InventoryCloseEvent.Reason reason) {
 +        closeContainer();
 +        this.containerMenu = this.inventoryMenu;
 +    }

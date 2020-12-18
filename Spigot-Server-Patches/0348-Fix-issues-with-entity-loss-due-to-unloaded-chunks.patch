@@ -19,7 +19,7 @@ This change ensures the chunks are always loaded when entities are
 added to the world, or a valid entity moves between chunks.
 
 diff --git a/src/main/java/net/minecraft/server/level/ServerLevel.java b/src/main/java/net/minecraft/server/level/ServerLevel.java
-index 6539422f543adbe949a99f9fa78396a79f1cd1eb..44df594bc97d893e62fe4a939e29dbe90748e24e 100644
+index e8124530c08a398759d76de327d627e82bc1d972..890d32b552646252be6a87015232845f8a4a90b4 100644
 --- a/src/main/java/net/minecraft/server/level/ServerLevel.java
 +++ b/src/main/java/net/minecraft/server/level/ServerLevel.java
 @@ -846,11 +846,18 @@ public class ServerLevel extends net.minecraft.world.level.Level implements Worl

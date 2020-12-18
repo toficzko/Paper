@@ -5,7 +5,7 @@ Subject: [PATCH] MC-135506: Experience should save as Integers
 
 
 diff --git a/src/main/java/net/minecraft/world/entity/ExperienceOrb.java b/src/main/java/net/minecraft/world/entity/ExperienceOrb.java
-index 52b90ef3a145325209d3d903a2b7c9a44c332cbe..37758cff3c4a8406c2f1496ae827ecdc953cf9f4 100644
+index b89cf128c00054b3328d154a3361296d89d1945d..7c606d21db5f2307e7fefddc75282022d30ed155 100644
 --- a/src/main/java/net/minecraft/world/entity/ExperienceOrb.java
 +++ b/src/main/java/net/minecraft/world/entity/ExperienceOrb.java
 @@ -217,7 +217,7 @@ public class ExperienceOrb extends Entity {

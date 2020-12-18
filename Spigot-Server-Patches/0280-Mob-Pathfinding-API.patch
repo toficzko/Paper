@@ -7,10 +7,10 @@ Implements Pathfinding API for mobs
 
 diff --git a/src/main/java/com/destroystokyo/paper/entity/PaperPathfinder.java b/src/main/java/com/destroystokyo/paper/entity/PaperPathfinder.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..3e7971b7ca5be0442378c9e7482775e05918d0ac
+index 0000000000000000000000000000000000000000..f9b85e45983ac5bcef076e5df05c8820ca9b0cec
 --- /dev/null
 +++ b/src/main/java/com/destroystokyo/paper/entity/PaperPathfinder.java
-@@ -0,0 +1,141 @@
+@@ -0,0 +1,140 @@
 +package com.destroystokyo.paper.entity;
 +
 +import org.apache.commons.lang.Validate;
@@ -23,7 +23,6 @@ index 0000000000000000000000000000000000000000..3e7971b7ca5be0442378c9e7482775e0
 +import javax.annotation.Nullable;
 +import net.minecraft.world.level.pathfinder.Node;
 +import net.minecraft.world.level.pathfinder.Path;
-+import PathResult;
 +import java.util.ArrayList;
 +import java.util.List;
 +

@@ -74,18 +74,6 @@ index 3aa661bafec01ee10e16a577ae46339fe887c05d..a139b0615e2e99e7134b581cd1f8ae99
  
      public Connection(PacketFlow side) {
          this.receiving = side;
-diff --git a/src/main/java/net/minecraft/network/protocol/handshake/ClientIntentionPacket.java b/src/main/java/net/minecraft/network/protocol/handshake/ClientIntentionPacket.java
-index 9479e8fff3b32a80614c2d0aad8fee9c49e90388..231d44ef5e47a6fc853c7123f2394e12339efff6 100644
---- a/src/main/java/net/minecraft/network/protocol/handshake/ClientIntentionPacket.java
-+++ b/src/main/java/net/minecraft/network/protocol/handshake/ClientIntentionPacket.java
-@@ -38,6 +38,7 @@ public class ClientIntentionPacket implements Packet<ServerHandshakePacketListen
-         return this.intention;
-     }
- 
-+    public int getProtocolVersion() { return getProtocolVersion(); } // Paper - OBFHELPER
-     public int getProtocolVersion() {
-         return this.protocolVersion;
-     }
 diff --git a/src/main/java/net/minecraft/server/network/ServerHandshakePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerHandshakePacketListenerImpl.java
 index 6bed1209d842fef5643d75a55d3d48979cf335fd..49c765596e46c6ad44cbc2d24208ae9325db3d0a 100644
 --- a/src/main/java/net/minecraft/server/network/ServerHandshakePacketListenerImpl.java

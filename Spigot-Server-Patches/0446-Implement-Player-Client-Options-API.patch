@@ -85,15 +85,10 @@ index 0000000000000000000000000000000000000000..b6f4400df3d8ec7e06a996de54f8cabb
 +    }
 +}
 diff --git a/src/main/java/net/minecraft/network/protocol/game/ServerboundClientInformationPacket.java b/src/main/java/net/minecraft/network/protocol/game/ServerboundClientInformationPacket.java
-index 9ad7022fa64c69612e75545faca86ccf12566b27..8afd14f17c9c7bb51991fa7279319c9ac6a00442 100644
+index 9ad7022fa64c69612e75545faca86ccf12566b27..3db0adac3fedb3b7f39afc286c019adbe4794fc1 100644
 --- a/src/main/java/net/minecraft/network/protocol/game/ServerboundClientInformationPacket.java
 +++ b/src/main/java/net/minecraft/network/protocol/game/ServerboundClientInformationPacket.java
-@@ -36,14 +36,17 @@ public class ServerboundClientInformationPacket implements Packet<ServerGamePack
-         serverGamePacketListener.handleClientInformation(this);
-     }
- 
-+    public ChatVisiblity getChatVisibility() { return getChatVisibility(); } // Paper - OBFHELPER
-     public ChatVisiblity getChatVisibility() {
+@@ -40,10 +40,12 @@ public class ServerboundClientInformationPacket implements Packet<ServerGamePack
          return this.chatVisibility;
      }
  
@@ -107,7 +102,7 @@ index 9ad7022fa64c69612e75545faca86ccf12566b27..8afd14f17c9c7bb51991fa7279319c9a
          return this.modelCustomisation;
      }
 diff --git a/src/main/java/net/minecraft/server/level/ServerPlayer.java b/src/main/java/net/minecraft/server/level/ServerPlayer.java
-index 055e6f38cf0114493a1c904e1dcac1f0e7d47120..55f0f6cbab43e380296c15b54357982e86c10ed2 100644
+index ae2b0d962c4469ae0ccedf58ed5b6d2f5f707c41..de32f1c16315a3158e8411ed4989dcd6ce0be5d8 100644
 --- a/src/main/java/net/minecraft/server/level/ServerPlayer.java
 +++ b/src/main/java/net/minecraft/server/level/ServerPlayer.java
 @@ -2,6 +2,7 @@ package net.minecraft.server.level;
@@ -136,7 +131,7 @@ index 055e6f38cf0114493a1c904e1dcac1f0e7d47120..55f0f6cbab43e380296c15b54357982e
          if (getMainArm() != packet.getMainHand()) {
              PlayerChangedMainHandEvent event = new PlayerChangedMainHandEvent(getBukkitEntity(), getMainArm() == HumanoidArm.LEFT ? MainHand.LEFT : MainHand.RIGHT);
 diff --git a/src/main/java/net/minecraft/world/entity/player/Player.java b/src/main/java/net/minecraft/world/entity/player/Player.java
-index 10f092573bf6464424de2069cd54ef86c05f63de..a5ddae752285ba4ca0e734983f84fbc701fe0d7d 100644
+index 558fa17c745cbbdf000c4eb77188d5ef1535e8a2..3b7f7d0a43af214c2cadcee69fabee323283b745 100644
 --- a/src/main/java/net/minecraft/world/entity/player/Player.java
 +++ b/src/main/java/net/minecraft/world/entity/player/Player.java
 @@ -130,7 +130,7 @@ public abstract class Player extends LivingEntity {

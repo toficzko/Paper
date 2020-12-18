@@ -8,7 +8,7 @@ This patch also adds a chunk status cache on region files (note that
 its only purpose is to cache the status on DISK)
 
 diff --git a/src/main/java/net/minecraft/server/level/ChunkHolder.java b/src/main/java/net/minecraft/server/level/ChunkHolder.java
-index 7db28062e80ae2ca39d2c2fc6863def0e1b578fb..87eada4f3b852afdc89d0f493fddd6429558c7d8 100644
+index 79b6185b5222e960379cb3e4a529914b2646fb4b..08eb06b8d511dfecbe5ee9dc0ecc5be2f39430a5 100644
 --- a/src/main/java/net/minecraft/server/level/ChunkHolder.java
 +++ b/src/main/java/net/minecraft/server/level/ChunkHolder.java
 @@ -135,6 +135,19 @@ public class ChunkHolder {
@@ -32,7 +32,7 @@ index 7db28062e80ae2ca39d2c2fc6863def0e1b578fb..87eada4f3b852afdc89d0f493fddd642
  
      public CompletableFuture<Either<ChunkAccess, ChunkHolder.ChunkLoadingFailure>> getFutureIfPresentUnchecked(ChunkStatus leastStatus) {
 diff --git a/src/main/java/net/minecraft/server/level/ChunkMap.java b/src/main/java/net/minecraft/server/level/ChunkMap.java
-index 41975939f25eaec54b0e44cffa29d91d5ccbe1ba..788eabf01d90e8051831cdd7af517e5e4d1365ef 100644
+index 4f2fb275ed4b75805f959d6ae4ec416eb7b33252..ec60a4ee09ce49620d3d4c9974e09627c655185f 100644
 --- a/src/main/java/net/minecraft/server/level/ChunkMap.java
 +++ b/src/main/java/net/minecraft/server/level/ChunkMap.java
 @@ -87,6 +87,7 @@ import net.minecraft.world.level.chunk.ProtoChunk;
@@ -108,7 +108,7 @@ index 41975939f25eaec54b0e44cffa29d91d5ccbe1ba..788eabf01d90e8051831cdd7af517e5e
          // Spigot start
          return isOutsideOfRange(chunkcoordintpair, false);
 diff --git a/src/main/java/net/minecraft/server/level/ServerChunkCache.java b/src/main/java/net/minecraft/server/level/ServerChunkCache.java
-index 965a9bd659c44f973d03dc50cc9ec6cb6e89da2b..1e7541b29a6b6f38d0a4b562555d7e5b1ad0c8cf 100644
+index d391eae35c37a3a98c180b35c38d8198d67ecb67..76658ea215e45ec2b75033bd59d7def2059b30ed 100644
 --- a/src/main/java/net/minecraft/server/level/ServerChunkCache.java
 +++ b/src/main/java/net/minecraft/server/level/ServerChunkCache.java
 @@ -57,7 +57,7 @@ public class ServerChunkCache extends ChunkSource {
@@ -208,7 +208,7 @@ index 637274532b01bb7b4cdb7d7b1b58181b98ac7e98..9cffef2098fbfba89ddd88a45bde33c0
      @Nullable
      private LegacyStructureDataHandler legacyStructureHandler;
 diff --git a/src/main/java/net/minecraft/world/level/chunk/storage/RegionFile.java b/src/main/java/net/minecraft/world/level/chunk/storage/RegionFile.java
-index 9c9b7c4ed93cacd840163716343410aad8be1726..c04bd4dc87c54688d2560c0346fffa862bf26eb5 100644
+index 6604104ec2397baad1690b0098ea043aab28a061..aabc189a433d293d6caad6287deeba56ff144571 100644
 --- a/src/main/java/net/minecraft/world/level/chunk/storage/RegionFile.java
 +++ b/src/main/java/net/minecraft/world/level/chunk/storage/RegionFile.java
 @@ -25,6 +25,7 @@ import net.minecraft.Util;
@@ -221,7 +221,7 @@ index 9c9b7c4ed93cacd840163716343410aad8be1726..c04bd4dc87c54688d2560c0346fffa86
  
 @@ -42,6 +43,30 @@ public class RegionFile implements AutoCloseable {
      protected final RegionBitmap usedSectors;
-     public final File file; // Paper
+     public final File regionFile; // Paper
  
 +    // Paper start - Cache chunk status
 +    private final ChunkStatus[] statuses = new ChunkStatus[32 * 32];
@@ -265,7 +265,7 @@ index 9c9b7c4ed93cacd840163716343410aad8be1726..c04bd4dc87c54688d2560c0346fffa86
              this.padToFullSector();
          } finally {
 diff --git a/src/main/java/net/minecraft/world/level/chunk/storage/RegionFileStorage.java b/src/main/java/net/minecraft/world/level/chunk/storage/RegionFileStorage.java
-index 6d3e1bb20d1ab8ce5c9ea613322042d80550761a..6f1c96e4325caf6b4762700ad2286d9ea41515c9 100644
+index 90b524c5e699ca8f9f4a8d805f71196a053a9521..5bd68321b5ce27d37605b3b5b90677e620b5d3fe 100644
 --- a/src/main/java/net/minecraft/world/level/chunk/storage/RegionFileStorage.java
 +++ b/src/main/java/net/minecraft/world/level/chunk/storage/RegionFileStorage.java
 @@ -28,7 +28,14 @@ public final class RegionFileStorage implements AutoCloseable {

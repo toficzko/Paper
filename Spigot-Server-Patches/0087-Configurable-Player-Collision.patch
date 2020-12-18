@@ -65,7 +65,7 @@ index fea31fb69380705bc4fec827373c3c2e04df4638..6e89561103c90743f2608665d9bd7075
          this.server.getPluginManager().callEvent(new ServerLoadEvent(ServerLoadEvent.LoadType.STARTUP));
          this.connection.acceptConnections();
 diff --git a/src/main/java/net/minecraft/server/players/PlayerList.java b/src/main/java/net/minecraft/server/players/PlayerList.java
-index 2b8c2fb562e27da2adb404ac23f6eb65394f0386..f60e378f7c440833edf42b0246d71997322d0c81 100644
+index 2b8c2fb562e27da2adb404ac23f6eb65394f0386..2016a5d4dea77c79772d1e378704c6137cb37556 100644
 --- a/src/main/java/net/minecraft/server/players/PlayerList.java
 +++ b/src/main/java/net/minecraft/server/players/PlayerList.java
 @@ -88,6 +88,7 @@ import net.minecraft.world.level.storage.PlayerDataStorage;
@@ -80,7 +80,7 @@ index 2b8c2fb562e27da2adb404ac23f6eb65394f0386..f60e378f7c440833edf42b0246d71997
      // CraftBukkit start
      private CraftServer cserver;
      private final Map<String,ServerPlayer> playersByName = new java.util.HashMap<>();
-+    @Nullable String collideRuleTeamName; // Paper - Team name used for collideRule
++    @Nullable public String collideRuleTeamName; // Paper - Team name used for collideRule
  
      public PlayerList(MinecraftServer server, RegistryAccess.RegistryHolder registryManager, PlayerDataStorage saveHandler, int maxPlayers) {
          this.cserver = server.server = new CraftServer((DedicatedServer) server, this);

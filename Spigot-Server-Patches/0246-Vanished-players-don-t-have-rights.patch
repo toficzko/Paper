@@ -5,10 +5,10 @@ Subject: [PATCH] Vanished players don't have rights
 
 
 diff --git a/src/main/java/net/minecraft/world/entity/Entity.java b/src/main/java/net/minecraft/world/entity/Entity.java
-index a54848924fc02df03c95b24c38d28f81d1c4941f..d01c909a385b1315c8087a4a3b0c9d6d99d19d52 100644
+index 9cc3a773beabb90887551e5a8c4a9a8c850fb562..12365d3cf4bb012846013b17acbbb91eb89120e6 100644
 --- a/src/main/java/net/minecraft/world/entity/Entity.java
 +++ b/src/main/java/net/minecraft/world/entity/Entity.java
-@@ -186,7 +186,7 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
+@@ -188,7 +188,7 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
      private static double viewScale = 1.0D;
      private final EntityType<?> type;
      private int id;
@@ -129,23 +129,11 @@ index 735b3fcc5518a27b2d2a0b69ac4be182595b4ea3..39a187c0959f68a26f4825faae259940
      @Override
      public boolean isClientSide() {
          return this.isClientSide;
-diff --git a/src/main/java/net/minecraft/world/level/block/state/BlockBehaviour.java b/src/main/java/net/minecraft/world/level/block/state/BlockBehaviour.java
-index caaf8c85daf27e1183d785e46f9d296e33a3e91e..f4167600fd66b19d4633ed831c643f3b4f99d4fe 100644
---- a/src/main/java/net/minecraft/world/level/block/state/BlockBehaviour.java
-+++ b/src/main/java/net/minecraft/world/level/block/state/BlockBehaviour.java
-@@ -504,6 +504,7 @@ public abstract class BlockBehaviour {
-             return this.cache != null ? this.cache.collisionShape : this.getCollisionShape(world, pos, CollisionContext.empty());
-         }
- 
-+        public final VoxelShape getCollisionShape(BlockGetter iblockaccess, BlockPos blockposition, CollisionContext voxelshapecollision) { return this.getCollisionShape(iblockaccess, blockposition, voxelshapecollision); } // Paper - OBFHELPER
-         public VoxelShape getCollisionShape(BlockGetter world, BlockPos pos, CollisionContext context) {
-             return this.getBlock().getCollisionShape(this.asState(), world, pos, context);
-         }
 diff --git a/src/main/java/net/minecraft/world/phys/shapes/Shapes.java b/src/main/java/net/minecraft/world/phys/shapes/Shapes.java
-index 065ef351248f4454e282154db78e38d9da8e0b29..2ffc69967b4ad30ed842583b2b3f47a8879d8ebb 100644
+index 0cc920b45b89571e4eab583cf8bfa4e4a5f945aa..b7a9ad107c887274b593d5e14e5a8d48ccba9774 100644
 --- a/src/main/java/net/minecraft/world/phys/shapes/Shapes.java
 +++ b/src/main/java/net/minecraft/world/phys/shapes/Shapes.java
-@@ -42,6 +42,7 @@ public final class Shapes {
+@@ -41,6 +41,7 @@ public final class Shapes {
          return create(new AABB(xMin, yMin, zMin, xMax, yMax, zMax));
      }
  
@@ -153,7 +141,7 @@ index 065ef351248f4454e282154db78e38d9da8e0b29..2ffc69967b4ad30ed842583b2b3f47a8
      public static VoxelShape create(AABB box) {
          int i = findBits(box.minX, box.maxX);
          int j = findBits(box.minY, box.maxY);
-@@ -132,6 +133,7 @@ public final class Shapes {
+@@ -131,6 +132,7 @@ public final class Shapes {
          }
      }
  

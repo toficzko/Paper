@@ -6,7 +6,7 @@ Subject: [PATCH] Stop copy-on-write operations for updating light data
 Causes huge memory allocations + gc issues
 
 diff --git a/src/main/java/net/minecraft/world/level/lighting/BlockLightSectionStorage.java b/src/main/java/net/minecraft/world/level/lighting/BlockLightSectionStorage.java
-index d8abf43b135bd6cd66c7205658c78dbbffd204cb..36aa43d29ab9b7d0337c18383134f36261f2f9a5 100644
+index d8abf43b135bd6cd66c7205658c78dbbffd204cb..da64a65331a5bab4e2605975a2386a1455c12ced 100644
 --- a/src/main/java/net/minecraft/world/level/lighting/BlockLightSectionStorage.java
 +++ b/src/main/java/net/minecraft/world/level/lighting/BlockLightSectionStorage.java
 @@ -9,7 +9,7 @@ import net.minecraft.world.level.chunk.LightChunkGetter;
@@ -30,7 +30,7 @@ index d8abf43b135bd6cd66c7205658c78dbbffd204cb..36aa43d29ab9b7d0337c18383134f362
  
          public BlockLightSectionStorage.BlockDataLayerStorageMap copy() {
 -            return new BlockLightSectionStorage.BlockDataLayerStorageMap(this.map.clone());
-+            return new BlockDataLayerStorageMap(this.data, true); // Paper - avoid copying light data
++            return new BlockDataLayerStorageMap(this.map, true); // Paper - avoid copying light data
          }
      }
  }

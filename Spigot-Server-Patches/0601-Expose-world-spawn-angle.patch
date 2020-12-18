@@ -5,7 +5,7 @@ Subject: [PATCH] Expose world spawn angle
 
 
 diff --git a/src/main/java/net/minecraft/server/players/PlayerList.java b/src/main/java/net/minecraft/server/players/PlayerList.java
-index 1cae5f49e7a92b5eb6d60db8cf9ec83689499574..aff21d3218ce88d1c0203b118a4ef9211579d50a 100644
+index 53be9bf75b28ea6489c63d601d1829e754d8f654..40319552b85313044bfd1e3c69feecb420a766ea 100644
 --- a/src/main/java/net/minecraft/server/players/PlayerList.java
 +++ b/src/main/java/net/minecraft/server/players/PlayerList.java
 @@ -891,7 +891,7 @@ public abstract class PlayerList {
@@ -17,18 +17,6 @@ index 1cae5f49e7a92b5eb6d60db8cf9ec83689499574..aff21d3218ce88d1c0203b118a4ef921
              }
  
              Player respawnPlayer = cserver.getPlayer(entityplayer1);
-diff --git a/src/main/java/net/minecraft/world/level/storage/LevelData.java b/src/main/java/net/minecraft/world/level/storage/LevelData.java
-index a0b690ca0310aed41c69914aef371c322b931f26..947c0378abf6a10798d512874a5c25e98e818e01 100644
---- a/src/main/java/net/minecraft/world/level/storage/LevelData.java
-+++ b/src/main/java/net/minecraft/world/level/storage/LevelData.java
-@@ -11,6 +11,7 @@ public interface LevelData {
- 
-     int getZSpawn();
- 
-+    default float getSpawnAngle() { return getSpawnAngle(); } // Paper - OBFHELPER
-     float getSpawnAngle();
- 
-     long getGameTime();
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftWorld.java b/src/main/java/org/bukkit/craftbukkit/CraftWorld.java
 index 4399faf7f5a121ce5001530b75d599c8e66a1283..99d1d74bd2ffc85de6dee631c93788976bb31d3c 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftWorld.java

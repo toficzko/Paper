@@ -8,10 +8,10 @@ We have stored UUID in plenty of places that did not get DFU'd
 So just look for old format and load it if it exists.
 
 diff --git a/src/main/java/net/minecraft/nbt/CompoundTag.java b/src/main/java/net/minecraft/nbt/CompoundTag.java
-index c103d16380ad9f22278c929a66ed605c5e48fefa..4747db65d1b8db57c09a489845d4f792f657a40f 100644
+index 2171efd74d0c802ed247ede21259dc2142b990ba..57f83b7de722fc827699e64e7dc46dd8cb01183d 100644
 --- a/src/main/java/net/minecraft/nbt/CompoundTag.java
 +++ b/src/main/java/net/minecraft/nbt/CompoundTag.java
-@@ -126,6 +126,12 @@ public class CompoundTag implements Tag {
+@@ -126,15 +126,31 @@ public class CompoundTag implements Tag {
  
      public void setUUID(String prefix, UUID uuid) { putUUID(prefix, uuid); } // Paper - OBFHELPER
      public void putUUID(String key, UUID value) {
@@ -24,9 +24,6 @@ index c103d16380ad9f22278c929a66ed605c5e48fefa..4747db65d1b8db57c09a489845d4f792
          this.tags.put(key, NbtUtils.createUUID(value));
      }
  
-@@ -133,11 +139,21 @@ public class CompoundTag implements Tag {
-     @Nullable public UUID getUUID(String prefix) { return getUUID(prefix); } // Paper - OBFHELPER
-     @Nullable
      public UUID getUUID(String key) {
 +        // Paper start - support old format
 +        if (!contains(key, 11) && this.contains(key + "Most", 99) && this.contains(key + "Least", 99)) {

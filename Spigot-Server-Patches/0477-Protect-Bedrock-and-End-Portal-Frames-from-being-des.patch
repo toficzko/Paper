@@ -71,7 +71,7 @@ index 8e7b6140ad62c510321233d0d9105b1e7ca85abe..c0c41e7b2e253e63316bb593a83dc8fa
              if (blockstate == null) {
                  blockstate = CapturedBlockState.getTreeBlockState(this, blockposition, i);
 diff --git a/src/main/java/net/minecraft/world/level/block/Block.java b/src/main/java/net/minecraft/world/level/block/Block.java
-index 5b28bc4b674ac9ef3e236c955a819914cc070bf1..e5e7d0467ac17fa0e3166017b06ff1ef8db02a89 100644
+index 699266a9b616b961c5e205b875c455bc78e684bf..0ae9527f6b53b268d88a5aa44cf2ade2eedb623c 100644
 --- a/src/main/java/net/minecraft/world/level/block/Block.java
 +++ b/src/main/java/net/minecraft/world/level/block/Block.java
 @@ -63,6 +63,19 @@ public class Block extends BlockBehaviour implements ItemLike {
@@ -137,7 +137,7 @@ index 4f69b41e74c9c936178b6a1336be5cc3f2ca5fb7..9c927bcaa4e864f4e33cd5a5ae2bd2cc
  
              world.playSound((Player) null, blockposition, SoundEvents.PISTON_CONTRACT, SoundSource.BLOCKS, 0.5F, world.random.nextFloat() * 0.15F + 0.6F);
 diff --git a/src/main/java/net/minecraft/world/level/block/state/BlockBehaviour.java b/src/main/java/net/minecraft/world/level/block/state/BlockBehaviour.java
-index fcb95f7d3dd7ebe4dee36709aacbdd7d4d1dd78d..f5374c43ee04fb0f5469592fb9102e49f8f0bc19 100644
+index fbcc44c258111607568657e52e366d6e6b76ef29..195b1bc0dd734e2327847b9c0639d7105aa174ca 100644
 --- a/src/main/java/net/minecraft/world/level/block/state/BlockBehaviour.java
 +++ b/src/main/java/net/minecraft/world/level/block/state/BlockBehaviour.java
 @@ -189,7 +189,7 @@ public abstract class BlockBehaviour {

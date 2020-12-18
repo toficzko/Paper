@@ -6,7 +6,7 @@ Subject: [PATCH] Add a way to get translation keys for blocks, entities and
 
 
 diff --git a/src/main/java/net/minecraft/world/entity/EntityType.java b/src/main/java/net/minecraft/world/entity/EntityType.java
-index 4624c21faac6f9a63f1709192e357f646ee6714d..494076bccf88b496421a2596cbb87d9bab474856 100644
+index d05f60b99ece385d6035190822a28c828ea2284e..3167b19cca60306a8cee828895065b00b95ac327 100644
 --- a/src/main/java/net/minecraft/world/entity/EntityType.java
 +++ b/src/main/java/net/minecraft/world/entity/EntityType.java
 @@ -277,6 +277,7 @@ public class EntityType<T extends Entity> {

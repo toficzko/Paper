@@ -4,19 +4,6 @@ Date: Sun, 26 Jan 2020 16:30:19 -0600
 Subject: [PATCH] Bees get gravity in void. Fixes MC-167279
 
 
-diff --git a/src/main/java/net/minecraft/world/entity/ai/control/FlyingMoveControl.java b/src/main/java/net/minecraft/world/entity/ai/control/FlyingMoveControl.java
-index 66fe87a9874c79b45450ca1eaddb822ad523f962..5e23f04f0fa23eed2eaefefb1c29648d06ae7da0 100644
---- a/src/main/java/net/minecraft/world/entity/ai/control/FlyingMoveControl.java
-+++ b/src/main/java/net/minecraft/world/entity/ai/control/FlyingMoveControl.java
-@@ -14,7 +14,7 @@ public class FlyingMoveControl extends MoveControl {
-         this.hoversInPlace = noGravity;
-     }
- 
--    public void tick() {
-+    public void tick() { tick(); } public void tick() { // Paper - OBFHELPER
-         if (this.operation == MoveControl.Operation.MOVE_TO) {
-             this.operation = MoveControl.Operation.WAIT;
-             this.mob.setNoGravity(true);
 diff --git a/src/main/java/net/minecraft/world/entity/ai/control/MoveControl.java b/src/main/java/net/minecraft/world/entity/ai/control/MoveControl.java
 index c4cf80917cf63a6495dec4416ebc281fa8abbbcf..181c735ab317b4715da7a6c6938b35eb941f9606 100644
 --- a/src/main/java/net/minecraft/world/entity/ai/control/MoveControl.java

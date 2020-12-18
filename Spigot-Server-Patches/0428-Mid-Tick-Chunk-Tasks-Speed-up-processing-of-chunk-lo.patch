@@ -147,7 +147,7 @@ index 44ce0653f8ae34a2562634e8d8a38c51f1f52e20..38087c9cc04600a0a0518a68c512627f
                  // Spigot Start
                  CrashReport crashreport;
 diff --git a/src/main/java/net/minecraft/server/level/ServerChunkCache.java b/src/main/java/net/minecraft/server/level/ServerChunkCache.java
-index e2a09140a2af43b56a549adb5bd25dd14214b049..6b46c7ad6756e238504b35aeedcb01d2cae6de3a 100644
+index ff4722aa268b57b9654ab5a4c4ae97aa198af6eb..1257c332e2c7b4bf75f360db93c846d74b83fc63 100644
 --- a/src/main/java/net/minecraft/server/level/ServerChunkCache.java
 +++ b/src/main/java/net/minecraft/server/level/ServerChunkCache.java
 @@ -721,6 +721,7 @@ public class ServerChunkCache extends ChunkSource {
@@ -226,7 +226,7 @@ index e2a09140a2af43b56a549adb5bd25dd14214b049..6b46c7ad6756e238504b35aeedcb01d2
          protected boolean pollTask() {
          // CraftBukkit start - process pending Chunk loadCallback() and unloadCallback() after each run task
 diff --git a/src/main/java/net/minecraft/server/level/ServerLevel.java b/src/main/java/net/minecraft/server/level/ServerLevel.java
-index 95b6b896621514ba21c08785c9448ddc57581e5f..5fb6826a146151397a51beb1945a38b919f8719e 100644
+index aad3d08c2235442e83475f295d2f6f5380f0fd24..cffef40beb02eb918d48c7a21b7641815302cda9 100644
 --- a/src/main/java/net/minecraft/server/level/ServerLevel.java
 +++ b/src/main/java/net/minecraft/server/level/ServerLevel.java
 @@ -563,6 +563,7 @@ public class ServerLevel extends net.minecraft.world.level.Level implements Worl

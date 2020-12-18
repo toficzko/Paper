@@ -5,10 +5,10 @@ Subject: [PATCH] Entity AddTo/RemoveFrom World Events
 
 
 diff --git a/src/main/java/net/minecraft/server/level/ServerLevel.java b/src/main/java/net/minecraft/server/level/ServerLevel.java
-index 159f8cc005b63e45de435745d5f8d0484cec3640..336d5c014584d833a61a23ffbf240e5689d30c40 100644
+index de527f503822b85b560c66ea9afedd8b5dbb914a..b7dd76f3bc144dd4841f5d905daa60acfd294b4e 100644
 --- a/src/main/java/net/minecraft/server/level/ServerLevel.java
 +++ b/src/main/java/net/minecraft/server/level/ServerLevel.java
-@@ -1206,7 +1206,7 @@ public class ServerLevel extends net.minecraft.world.level.Level implements Worl
+@@ -1209,7 +1209,7 @@ public class ServerLevel extends net.minecraft.world.level.Level implements Worl
          if (entity instanceof Mob) {
              this.navigations.remove(((Mob) entity).getNavigation());
          }
@@ -17,7 +17,7 @@ index 159f8cc005b63e45de435745d5f8d0484cec3640..336d5c014584d833a61a23ffbf240e56
          entity.valid = false; // CraftBukkit
      }
  
-@@ -1244,6 +1244,7 @@ public class ServerLevel extends net.minecraft.world.level.Level implements Worl
+@@ -1247,6 +1247,7 @@ public class ServerLevel extends net.minecraft.world.level.Level implements Worl
                  entity.origin = entity.getBukkitEntity().getLocation();
              }
              // Paper end

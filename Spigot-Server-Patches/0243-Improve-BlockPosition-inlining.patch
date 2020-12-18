@@ -33,7 +33,7 @@ index ee545bc19924e9be00c93c3ee2622c5803fc5494..d4c1d039cff138f1800bbdf9c7be7c9a
          long l = 0L;
          l = l | ((long)x & PACKED_X_MASK) << X_OFFSET;
 diff --git a/src/main/java/net/minecraft/core/Vec3i.java b/src/main/java/net/minecraft/core/Vec3i.java
-index b4c19cf88e19de74fd70e035d9eb811b62d48995..8526e21316ebd9a6a70ddd65c59ab6eaccbf8756 100644
+index a8f5041c210a03a21972374e15987f683ee4efb1..9543e9f32fce4031d8b414d9dd02ab7e05d3809c 100644
 --- a/src/main/java/net/minecraft/core/Vec3i.java
 +++ b/src/main/java/net/minecraft/core/Vec3i.java
 @@ -40,7 +40,7 @@ public class Vec3i implements Comparable<Vec3i> {

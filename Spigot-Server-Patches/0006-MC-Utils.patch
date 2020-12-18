@@ -2301,22 +2301,9 @@ index 299bfe1fc186dffa7e8e0ce7ee8763b34208753c..ee545bc19924e9be00c93c3ee2622c58
              return this.set(Mth.floor(x), Mth.floor(y), Mth.floor(z));
          }
 diff --git a/src/main/java/net/minecraft/core/Vec3i.java b/src/main/java/net/minecraft/core/Vec3i.java
-index e73490bfa7b44b95037cb14d027802b2f91b16f2..2194661910d32167d635dfa63909fbd675dc90ca 100644
+index e73490bfa7b44b95037cb14d027802b2f91b16f2..a42cf2867ff945d1d607242f179086b435e0c958 100644
 --- a/src/main/java/net/minecraft/core/Vec3i.java
 +++ b/src/main/java/net/minecraft/core/Vec3i.java
-@@ -17,9 +17,9 @@ public class Vec3i implements Comparable<Vec3i> {
-         return IntStream.of(vec3i.getX(), vec3i.getY(), vec3i.getZ());
-     });
-     public static final Vec3i ZERO = new Vec3i(0, 0, 0);
--    private int x;
--    private int y;
--    private int z;
-+    private int x;public final void setX(final int x) { this.x = x; } // Paper - OBFHELPER
-+    private int y;public final void setY(final int y) { this.y = y; } // Paper - OBFHELPER
-+    private int z;public final void setZ(final int z) { this.z = z; } // Paper - OBFHELPER
- 
-     public Vec3i(int x, int y, int z) {
-         this.x = x;
 @@ -72,15 +72,15 @@ public class Vec3i implements Comparable<Vec3i> {
          return this.z;
      }
@@ -2345,7 +2332,7 @@ index e73490bfa7b44b95037cb14d027802b2f91b16f2..2194661910d32167d635dfa63909fbd6
          return this.distSqr((double)vec.getX(), (double)vec.getY(), (double)vec.getZ(), true);
      }
 diff --git a/src/main/java/net/minecraft/nbt/CompoundTag.java b/src/main/java/net/minecraft/nbt/CompoundTag.java
-index 67b461259c0e5f7c71f4f5061c03e13f807f0075..cbdb36f6cd6d69494d38aa1d9284e98930fdc0b1 100644
+index 67b461259c0e5f7c71f4f5061c03e13f807f0075..524ed3e85bb089baf62a11652b32f1745191fbcd 100644
 --- a/src/main/java/net/minecraft/nbt/CompoundTag.java
 +++ b/src/main/java/net/minecraft/nbt/CompoundTag.java
 @@ -67,7 +67,7 @@ public class CompoundTag implements Tag {
@@ -2357,20 +2344,13 @@ index 67b461259c0e5f7c71f4f5061c03e13f807f0075..cbdb36f6cd6d69494d38aa1d9284e989
  
      protected CompoundTag(Map<String, Tag> tags) {
          this.tags = tags;
-@@ -123,10 +123,14 @@ public class CompoundTag implements Tag {
+@@ -123,6 +123,7 @@ public class CompoundTag implements Tag {
          this.tags.put(key, LongTag.valueOf(value));
      }
  
 +    public void setUUID(String prefix, UUID uuid) { putUUID(prefix, uuid); } // Paper - OBFHELPER
      public void putUUID(String key, UUID value) {
          this.tags.put(key, NbtUtils.createUUID(value));
-     }
- 
-+
-+    @Nullable public UUID getUUID(String prefix) { return getUUID(prefix); } // Paper - OBFHELPER
-+    @Nullable
-     public UUID getUUID(String key) {
-         return NbtUtils.loadUUID(this.get(key));
      }
 diff --git a/src/main/java/net/minecraft/network/Connection.java b/src/main/java/net/minecraft/network/Connection.java
 index ca007d5a57f6fa4f9cf43059f595b0c612307e1b..3aa661bafec01ee10e16a577ae46339fe887c05d 100644
@@ -2980,7 +2960,7 @@ index 6064cefc339c57f6a862df3c36551720c2aeecd8..dc4954ada1c0c16db0359ed7d0525ed9
              LOGGER.info("Saving usercache.json");
              this.getProfileCache().save();
 diff --git a/src/main/java/net/minecraft/server/level/ChunkHolder.java b/src/main/java/net/minecraft/server/level/ChunkHolder.java
-index ea51de9f88df7af66e72951e31fbd3432803c0f9..f37129fdd706291de7978a8d7e836349ccd1329e 100644
+index ea51de9f88df7af66e72951e31fbd3432803c0f9..b3706b05cb17fa3afb9365f3b52efa343668d75c 100644
 --- a/src/main/java/net/minecraft/server/level/ChunkHolder.java
 +++ b/src/main/java/net/minecraft/server/level/ChunkHolder.java
 @@ -43,9 +43,9 @@ public class ChunkHolder {
@@ -3070,7 +3050,7 @@ index ea51de9f88df7af66e72951e31fbd3432803c0f9..f37129fdd706291de7978a8d7e836349
  
      public CompletableFuture<Either<ChunkAccess, ChunkHolder.ChunkLoadingFailure>> getFutureIfPresentUnchecked(ChunkStatus leastStatus) {
          CompletableFuture<Either<ChunkAccess, ChunkHolder.ChunkLoadingFailure>> completablefuture = (CompletableFuture) this.futures.get(leastStatus.getIndex());
-@@ -97,20 +146,23 @@ public class ChunkHolder {
+@@ -97,20 +146,22 @@ public class ChunkHolder {
          return getStatus(this.ticketLevel).isOrAfter(leastStatus) ? this.getFutureIfPresentUnchecked(leastStatus) : ChunkHolder.UNLOADED_CHUNK_FUTURE;
      }
  
@@ -3087,7 +3067,6 @@ index ea51de9f88df7af66e72951e31fbd3432803c0f9..f37129fdd706291de7978a8d7e836349
      }
  
 -    public CompletableFuture<Either<LevelChunk, ChunkHolder.ChunkLoadingFailure>> getFullChunkFuture() {
-+    public final CompletableFuture<Either<LevelChunk, ChunkHolder.ChunkLoadingFailure>> getFullChunkFuture() { return this.getFullChunkFuture(); } // Paper - OBFHELPER
 +    public final CompletableFuture<Either<LevelChunk, ChunkHolder.ChunkLoadingFailure>> getFullChunkFuture() { // Paper - final for inline
          return this.fullChunkFuture;
      }
@@ -3098,7 +3077,7 @@ index ea51de9f88df7af66e72951e31fbd3432803c0f9..f37129fdd706291de7978a8d7e836349
          CompletableFuture<Either<LevelChunk, ChunkHolder.ChunkLoadingFailure>> completablefuture = this.getTickingChunkFuture();
          Either<LevelChunk, ChunkHolder.ChunkLoadingFailure> either = (Either) completablefuture.getNow(null); // CraftBukkit - decompile error
  
-@@ -135,7 +187,7 @@ public class ChunkHolder {
+@@ -135,7 +186,7 @@ public class ChunkHolder {
          return null;
      }
  
@@ -3107,7 +3086,7 @@ index ea51de9f88df7af66e72951e31fbd3432803c0f9..f37129fdd706291de7978a8d7e836349
          return this.chunkToSave;
      }
  
-@@ -276,11 +328,11 @@ public class ChunkHolder {
+@@ -276,11 +327,11 @@ public class ChunkHolder {
          });
      }
  
@@ -3121,7 +3100,7 @@ index ea51de9f88df7af66e72951e31fbd3432803c0f9..f37129fdd706291de7978a8d7e836349
          return this.ticketLevel;
      }
  
-@@ -351,13 +403,27 @@ public class ChunkHolder {
+@@ -351,13 +402,27 @@ public class ChunkHolder {
  
          this.wasAccessibleSinceLastSave |= flag3;
          if (!flag2 && flag3) {
@@ -3150,7 +3129,7 @@ index ea51de9f88df7af66e72951e31fbd3432803c0f9..f37129fdd706291de7978a8d7e836349
              this.updateChunkToSave(((CompletableFuture<Either<LevelChunk, ChunkHolder.ChunkLoadingFailure>>) completablefuture).thenApply((either1) -> { // CraftBukkit - decompile error
                  chunkStorage.getClass();
                  return either1.ifLeft(chunkStorage::packTicks);
-@@ -368,12 +434,24 @@ public class ChunkHolder {
+@@ -368,12 +433,24 @@ public class ChunkHolder {
          boolean flag5 = playerchunk_state1.isOrAfter(ChunkHolder.FullChunkStatus.TICKING);
  
          if (!flag4 && flag5) {
@@ -3177,7 +3156,7 @@ index ea51de9f88df7af66e72951e31fbd3432803c0f9..f37129fdd706291de7978a8d7e836349
              this.tickingChunkFuture = ChunkHolder.UNLOADED_LEVEL_CHUNK_FUTURE;
          }
  
-@@ -385,12 +463,24 @@ public class ChunkHolder {
+@@ -385,12 +462,24 @@ public class ChunkHolder {
                  throw (IllegalStateException) Util.pauseInIde((Throwable) (new IllegalStateException()));
              }
  
@@ -3693,7 +3672,7 @@ index 128b884627bc07fd8070985926e0e30b0b1a4ef3..754c76e06adec767d61154ae064f119a
          this.pendingRunnables.add(runnable);
          LockSupport.unpark(this.getRunningThread());
 diff --git a/src/main/java/net/minecraft/world/entity/EntityType.java b/src/main/java/net/minecraft/world/entity/EntityType.java
-index 9fcbb8dc0f80d9537a7d227ffb2c053d6f5927a8..d5ee07d1bd689a0f8caae4bf1294d7b1d8c94653 100644
+index 9fcbb8dc0f80d9537a7d227ffb2c053d6f5927a8..9c7f4b3d544e0325a470aa081909c7d65315456f 100644
 --- a/src/main/java/net/minecraft/world/entity/EntityType.java
 +++ b/src/main/java/net/minecraft/world/entity/EntityType.java
 @@ -3,6 +3,7 @@ package net.minecraft.world.entity;
@@ -3704,13 +3683,12 @@ index 9fcbb8dc0f80d9537a7d227ffb2c053d6f5927a8..d5ee07d1bd689a0f8caae4bf1294d7b1
  import java.util.UUID;
  import java.util.function.Function;
  import java.util.stream.Stream;
-@@ -441,8 +442,8 @@ public class EntityType<T extends Entity> {
+@@ -441,8 +442,7 @@ public class EntityType<T extends Entity> {
          return this.dimensions.height;
      }
  
 -    @Nullable
 -    public T create(Level world) {
-+    public T create(Level world) { return this.create(world); } // Paper - OBFHELPER
 +    @Nullable public T create(Level world) { // Paper - OBFHELPER
          return this.factory.create(this, world);
      }
@@ -3766,7 +3744,7 @@ index 6b23575d1d0070b2422294635ee21461edab6d29..3de34b1c9c0fdbce3c98d3015f693bec
          super(entityType, level);
          this.xpReward = 5;
 diff --git a/src/main/java/net/minecraft/world/entity/player/Inventory.java b/src/main/java/net/minecraft/world/entity/player/Inventory.java
-index e9932b8d616e791336f730df44fe2dead91191d5..4ceb085d365196d28a0e473b07569c01cc2bade9 100644
+index e9932b8d616e791336f730df44fe2dead91191d5..21d6eed2d7b1a03d359aba4584a3b509ca603ce4 100644
 --- a/src/main/java/net/minecraft/world/entity/player/Inventory.java
 +++ b/src/main/java/net/minecraft/world/entity/player/Inventory.java
 @@ -37,7 +37,7 @@ public class Inventory implements Container, Nameable {
@@ -3774,7 +3752,7 @@ index e9932b8d616e791336f730df44fe2dead91191d5..4ceb085d365196d28a0e473b07569c01
      public final NonNullList<ItemStack> armor;
      public final NonNullList<ItemStack> offhand;
 -    private final List<NonNullList<ItemStack>> compartments;
-+    private final List<NonNullList<ItemStack>> compartments;List<NonNullList<ItemStack>> getComponents() { return compartments; } // Paper - OBFHELPER
++    private final List<NonNullList<ItemStack>> compartments; public List<NonNullList<ItemStack>> getComponents() { return compartments; } // Paper - OBFHELPER
      public int selected;
      public final Player player;
      private ItemStack carried;
@@ -4497,23 +4475,10 @@ index dfe6bd84246585de80278066dacd1bcff35fd2a3..2eef43088c9be1c54fa19f177c774bf1
      public synchronized DataInputStream getChunkDataInputStream(ChunkPos pos) throws IOException {
          int i = this.getOffset(pos);
 diff --git a/src/main/java/net/minecraft/world/phys/AABB.java b/src/main/java/net/minecraft/world/phys/AABB.java
-index d513226406fbc0c056865a1dfdc04f3f59816738..c932b4f049afeb14ac55410479a4c92b87573035 100644
+index d513226406fbc0c056865a1dfdc04f3f59816738..a301389fb516a6b4f078e8c1571f9bb93b0455bf 100644
 --- a/src/main/java/net/minecraft/world/phys/AABB.java
 +++ b/src/main/java/net/minecraft/world/phys/AABB.java
-@@ -196,10 +196,12 @@ public class AABB {
-         return this.move(vec3d.x, vec3d.y, vec3d.z);
-     }
- 
-+    public final boolean intersects(AABB axisalignedbb) { return this.intersects(axisalignedbb); } // Paper - OBFHELPER
-     public boolean intersects(AABB box) {
-         return this.intersects(box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ);
-     }
- 
-+    public final boolean intersects(double d0, double d1, double d2, double d3, double d4, double d5) { return intersects(d0, d1, d2, d3, d4, d5); } // Paper - OBFHELPER
-     public boolean intersects(double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
-         return this.minX < maxX && this.maxX > minX && this.minY < maxY && this.maxY > minY && this.minZ < maxZ && this.maxZ > minZ;
-     }
-@@ -212,6 +214,7 @@ public class AABB {
+@@ -212,6 +212,7 @@ public class AABB {
          return x >= this.minX && x < this.maxX && y >= this.minY && y < this.maxY && z >= this.minZ && z < this.maxZ;
      }
  
@@ -4522,15 +4487,10 @@ index d513226406fbc0c056865a1dfdc04f3f59816738..c932b4f049afeb14ac55410479a4c92b
          double d = this.getXsize();
          double e = this.getYsize();
 diff --git a/src/main/java/net/minecraft/world/phys/shapes/Shapes.java b/src/main/java/net/minecraft/world/phys/shapes/Shapes.java
-index 884de8256cfab271e122c40f8aaeba52ffab045e..065ef351248f4454e282154db78e38d9da8e0b29 100644
+index 884de8256cfab271e122c40f8aaeba52ffab045e..0cc920b45b89571e4eab583cf8bfa4e4a5f945aa 100644
 --- a/src/main/java/net/minecraft/world/phys/shapes/Shapes.java
 +++ b/src/main/java/net/minecraft/world/phys/shapes/Shapes.java
-@@ -28,10 +28,12 @@ public final class Shapes {
-     public static final VoxelShape INFINITY = box(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
-     private static final VoxelShape EMPTY = new ArrayVoxelShape(new BitSetDiscreteVoxelShape(0, 0, 0), (DoubleList)(new DoubleArrayList(new double[]{0.0D})), (DoubleList)(new DoubleArrayList(new double[]{0.0D})), (DoubleList)(new DoubleArrayList(new double[]{0.0D})));
- 
-+    public static final VoxelShape empty() {return empty();} // Paper - OBFHELPER
-     public static VoxelShape empty() {
+@@ -32,6 +32,7 @@ public final class Shapes {
          return EMPTY;
      }
  

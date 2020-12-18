@@ -36,7 +36,7 @@ scenario / path:
 Previously would have hopped to SERVER around 12+ times there extra.
 
 diff --git a/src/main/java/net/minecraft/server/level/ChunkHolder.java b/src/main/java/net/minecraft/server/level/ChunkHolder.java
-index cb4a1a78dfd3416f2081b8de4a68465e76cf3dcc..ed728ba792ccb55bd1987f3bf32c7085420fbfb2 100644
+index 18001a379e2a80409f539bcda238c3cbbad15a8b..e900b2399a742f20e81fdc6d0d29cccf63730266 100644
 --- a/src/main/java/net/minecraft/server/level/ChunkHolder.java
 +++ b/src/main/java/net/minecraft/server/level/ChunkHolder.java
 @@ -81,6 +81,13 @@ public class ChunkHolder {
@@ -54,7 +54,7 @@ index cb4a1a78dfd3416f2081b8de4a68465e76cf3dcc..ed728ba792ccb55bd1987f3bf32c7085
      // Paper start - no-tick view distance
      public final LevelChunk getSendingChunk() {
 diff --git a/src/main/java/net/minecraft/server/level/ChunkMap.java b/src/main/java/net/minecraft/server/level/ChunkMap.java
-index 1031730427d7400ee62bb64ce8a7c20d03eb2eca..d727bb9f35ada7212eabc5f024fa26094715bba6 100644
+index a135d7f80041b9001ed0966ccd4fabe8a7052972..9e8fe05405b09f3b4023c2b41a425b6f2c1426a7 100644
 --- a/src/main/java/net/minecraft/server/level/ChunkMap.java
 +++ b/src/main/java/net/minecraft/server/level/ChunkMap.java
 @@ -792,7 +792,7 @@ public class ChunkMap extends ChunkStorage implements ChunkHolder.PlayerProvider

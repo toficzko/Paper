@@ -49,7 +49,7 @@ index 0000000000000000000000000000000000000000..9a516520d975f52169e346adc4ec6d9d
 +    }
 +}
 diff --git a/src/main/java/net/minecraft/world/level/block/SoundType.java b/src/main/java/net/minecraft/world/level/block/SoundType.java
-index bed515fccf446a7a5c6ecafb71588883866beef0..3fbc4fa32061023168cbf167744c2df454e91a13 100644
+index bed515fccf446a7a5c6ecafb71588883866beef0..44394adbe60b5e9c4654ee2f437d465bef5909a8 100644
 --- a/src/main/java/net/minecraft/world/level/block/SoundType.java
 +++ b/src/main/java/net/minecraft/world/level/block/SoundType.java
 @@ -54,10 +54,10 @@ public class SoundType {
@@ -65,24 +65,6 @@ index bed515fccf446a7a5c6ecafb71588883866beef0..3fbc4fa32061023168cbf167744c2df4
      private final SoundEvent fallSound;
  
      public SoundType(float volume, float pitch, SoundEvent breakSound, SoundEvent stepSound, SoundEvent placeSound, SoundEvent hitSound, SoundEvent fallSound) {
-@@ -78,14 +78,17 @@ public class SoundType {
-         return this.pitch;
-     }
- 
-+    public final SoundEvent getStepSound() { return this.getStepSound(); } // Paper - OBFHELPER
-     public SoundEvent getStepSound() {
-         return this.stepSound;
-     }
- 
-+    public final SoundEvent getPlaceSound() { return this.getPlaceSound(); } // Paper - OBFHELPER
-     public SoundEvent getPlaceSound() {
-         return this.placeSound;
-     }
- 
-+    public final SoundEvent getFallSound() { return this.getFallSound(); } // Paper - OBFHELPER
-     public SoundEvent getFallSound() {
-         return this.fallSound;
-     }
 diff --git a/src/main/java/org/bukkit/craftbukkit/block/CraftBlock.java b/src/main/java/org/bukkit/craftbukkit/block/CraftBlock.java
 index 5e94885f20ea1dfd9fdb585b6c1290c7be2cb6d1..65a4435684801a4cf6e324b043fd686f0ad39396 100644
 --- a/src/main/java/org/bukkit/craftbukkit/block/CraftBlock.java

@@ -5,10 +5,10 @@ Subject: [PATCH] Add ray tracing methods to LivingEntity
 
 
 diff --git a/src/main/java/net/minecraft/world/entity/LivingEntity.java b/src/main/java/net/minecraft/world/entity/LivingEntity.java
-index e3ca6e39c720ff9153f69391800365202d236812..fd3fd034c94dd8e0a442540b4983a603cabd76d4 100644
+index aed0dab8d2bf8f8a664718860ffe48e52ad486de..ec43595a07027750ddc3e0be1d61fa0d13ace456 100644
 --- a/src/main/java/net/minecraft/world/entity/LivingEntity.java
 +++ b/src/main/java/net/minecraft/world/entity/LivingEntity.java
-@@ -3564,6 +3564,23 @@ public abstract class LivingEntity extends Entity {
+@@ -3563,6 +3563,23 @@ public abstract class LivingEntity extends Entity {
          this.broadcastBreakEvent(hand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND);
      }
      // Paper start

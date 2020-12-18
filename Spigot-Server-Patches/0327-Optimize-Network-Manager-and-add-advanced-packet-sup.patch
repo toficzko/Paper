@@ -28,7 +28,7 @@ and then catch exceptions and close if they fire.
 Part of this commit was authored by: Spottedleaf
 
 diff --git a/src/main/java/net/minecraft/network/Connection.java b/src/main/java/net/minecraft/network/Connection.java
-index f2868f55ff560c32b1572e03dbb153b8bda4d132..65ef98f2be47cc9a363b672e7c3ddcbc79978b98 100644
+index f2868f55ff560c32b1572e03dbb153b8bda4d132..0f8dc67228d207df9ee1e4fca600a0fe714d989e 100644
 --- a/src/main/java/net/minecraft/network/Connection.java
 +++ b/src/main/java/net/minecraft/network/Connection.java
 @@ -25,9 +25,14 @@ import net.minecraft.network.chat.Component;
@@ -51,7 +51,7 @@ index f2868f55ff560c32b1572e03dbb153b8bda4d132..65ef98f2be47cc9a363b672e7c3ddcbc
      public java.net.InetSocketAddress virtualHost;
      private static boolean enableExplicitFlush = Boolean.getBoolean("paper.explicit-flush");
 +    // Optimize network
-+    boolean isPending = true;
++    public boolean isPending = true;
 +    boolean queueImmunity = false;
 +    ConnectionProtocol protocol;
      // Paper end
@@ -70,7 +70,7 @@ index f2868f55ff560c32b1572e03dbb153b8bda4d132..65ef98f2be47cc9a363b672e7c3ddcbc
          this.packetListener = listener;
      }
 +    // Paper start
-+    ServerPlayer getPlayer() {
++    public ServerPlayer getPlayer() {
 +        if (packetListener instanceof ServerGamePacketListenerImpl) {
 +            return ((ServerGamePacketListenerImpl) packetListener).player;
 +        } else {

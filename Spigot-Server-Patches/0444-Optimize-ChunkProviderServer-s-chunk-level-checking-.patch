@@ -9,7 +9,7 @@ so inline where possible, and avoid the abstraction of the
 Either class.
 
 diff --git a/src/main/java/net/minecraft/server/level/ServerChunkCache.java b/src/main/java/net/minecraft/server/level/ServerChunkCache.java
-index 6b46c7ad6756e238504b35aeedcb01d2cae6de3a..50176a1571ab9c61cb5ec6ac44c5cb0e4d76e31a 100644
+index 1257c332e2c7b4bf75f360db93c846d74b83fc63..be6c0ed982e7cbe836d1248fd74b36ff90e45765 100644
 --- a/src/main/java/net/minecraft/server/level/ServerChunkCache.java
 +++ b/src/main/java/net/minecraft/server/level/ServerChunkCache.java
 @@ -24,7 +24,6 @@ import net.minecraft.network.protocol.Packet;

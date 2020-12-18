@@ -267,7 +267,7 @@ index fbd716480c7f1b36014a26320bd91e2b58e5d455..296e63d3710bf96b4e5798054327e9ee
  
      @Override
 diff --git a/src/main/java/net/minecraft/server/level/ChunkMap.java b/src/main/java/net/minecraft/server/level/ChunkMap.java
-index d5362c3c82be426ce472cab346b9ac3b22f651dc..e3109297e83c1ac46a447d86fe69e72f760ad5ad 100644
+index 49f868296f4b9455257dcfebc4120fe78aa630ca..0a8f582194851df165e360e9ad62fdfc7732499c 100644
 --- a/src/main/java/net/minecraft/server/level/ChunkMap.java
 +++ b/src/main/java/net/minecraft/server/level/ChunkMap.java
 @@ -534,6 +534,7 @@ public class ChunkMap extends ChunkStorage implements ChunkHolder.PlayerProvider
@@ -279,7 +279,7 @@ index d5362c3c82be426ce472cab346b9ac3b22f651dc..e3109297e83c1ac46a447d86fe69e72f
                  list.stream().map((playerchunk) -> {
                      CompletableFuture completablefuture;
 diff --git a/src/main/java/net/minecraft/server/players/PlayerList.java b/src/main/java/net/minecraft/server/players/PlayerList.java
-index 9573749e0fba1e2523086ca3539d0f8e515264b0..5cfa0956d4b70f9d37d638bdf8a9dbe7e813b748 100644
+index 4e19fa4b6cd0907daf0c7718c2d4ef4c36f79192..76db8a9f166c4f9da488edeeef08865d5c56c2f8 100644
 --- a/src/main/java/net/minecraft/server/players/PlayerList.java
 +++ b/src/main/java/net/minecraft/server/players/PlayerList.java
 @@ -506,7 +506,7 @@ public abstract class PlayerList {

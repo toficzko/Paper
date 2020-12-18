@@ -22,7 +22,7 @@ index e0422471776f34b8e3c753d855aa06f00cc049ec..2e9c3b45052ad641bee091ee28cc57b9
 +    }
  }
 diff --git a/src/main/java/net/minecraft/network/Connection.java b/src/main/java/net/minecraft/network/Connection.java
-index 65ef98f2be47cc9a363b672e7c3ddcbc79978b98..4dff47c3408b12e8f04048669ab4c81235e9c527 100644
+index 0f8dc67228d207df9ee1e4fca600a0fe714d989e..674e5f9eeed31b7aa530e08e78c3341b748e8176 100644
 --- a/src/main/java/net/minecraft/network/Connection.java
 +++ b/src/main/java/net/minecraft/network/Connection.java
 @@ -379,10 +379,22 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
@@ -48,3 +48,16 @@ index 65ef98f2be47cc9a363b672e7c3ddcbc79978b98..4dff47c3408b12e8f04048669ab4c812
          }
  
          if (this.packetListener instanceof ServerGamePacketListenerImpl) {
+diff --git a/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
+index a37c7cdc70107211fc9626aa7e97b73615475cc4..635633bcde0bb6fc4271c86439f156df8f4925f7 100644
+--- a/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
++++ b/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
+@@ -414,7 +414,7 @@ public class ServerLoginPacketListenerImpl implements ServerLoginPacketListener
+         return new GameProfile(uuid, profile.getName());
+     }
+ 
+-    static enum State {
++    public static enum State { // Paper - public
+ 
+         HELLO, KEY, AUTHENTICATING, NEGOTIATING, READY_TO_ACCEPT, DELAY_ACCEPT, ACCEPTED;
+ 

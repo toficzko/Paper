@@ -5,7 +5,7 @@ Subject: [PATCH] Expose attack cooldown methods for Player
 
 
 diff --git a/src/main/java/net/minecraft/world/entity/player/Player.java b/src/main/java/net/minecraft/world/entity/player/Player.java
-index b5f312480970d19b1ab064bac30fe4d81c207c68..2a263fb3a6106c108683199af0ad5d562389d7f0 100644
+index 7ed531d8e2a1b65d440fa9b114384a245484d0ed..858da8a9d6f9fdc3bf046bed614bcd23d2018235 100644
 --- a/src/main/java/net/minecraft/world/entity/player/Player.java
 +++ b/src/main/java/net/minecraft/world/entity/player/Player.java
 @@ -2099,6 +2099,7 @@ public abstract class Player extends LivingEntity {

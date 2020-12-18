@@ -5,7 +5,7 @@ Subject: [PATCH] Remove invalid mob spawner tile entities
 
 
 diff --git a/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java b/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java
-index dd501797bb2a52e2434bb868e039327bf0b3a866..440481a6aef5169d2e477cb1bc8ddbd15059ac77 100644
+index 6ffa1b979dcdcd77e1a8c0543c67026dc497bcf5..fb08998ccfeca50c61c4f5d95920ec815d26b9eb 100644
 --- a/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java
 +++ b/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java
 @@ -44,7 +44,9 @@ import net.minecraft.world.level.block.BaseEntityBlock;
@@ -18,7 +18,7 @@ index dd501797bb2a52e2434bb868e039327bf0b3a866..440481a6aef5169d2e477cb1bc8ddbd1
  import net.minecraft.world.level.block.state.BlockState;
  import net.minecraft.world.level.levelgen.DebugLevelSource;
  import net.minecraft.world.level.levelgen.Heightmap;
-@@ -640,6 +642,10 @@ public class LevelChunk implements ChunkAccess {
+@@ -639,6 +641,10 @@ public class LevelChunk implements ChunkAccess {
              }
  
              // CraftBukkit start

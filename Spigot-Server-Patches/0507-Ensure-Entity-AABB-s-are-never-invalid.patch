@@ -5,7 +5,7 @@ Subject: [PATCH] Ensure Entity AABB's are never invalid
 
 
 diff --git a/src/main/java/net/minecraft/world/entity/Entity.java b/src/main/java/net/minecraft/world/entity/Entity.java
-index 6490cc03b72e141a0bc290b4ef6acc98d1118c1a..58657dfa13b7aa02bcb52f065d8adf9fa8859ba9 100644
+index db673e00bd8729db0198b1e7f25dbea607345deb..067dffc4408f188dece4e6c9b7705b82ca6dc810 100644
 --- a/src/main/java/net/minecraft/world/entity/Entity.java
 +++ b/src/main/java/net/minecraft/world/entity/Entity.java
 @@ -67,6 +67,7 @@ import net.minecraft.world.Nameable;
@@ -25,15 +25,7 @@ index 6490cc03b72e141a0bc290b4ef6acc98d1118c1a..58657dfa13b7aa02bcb52f065d8adf9f
          if (valid) ((ServerLevel) level).updateChunkPos(this); // CraftBukkit
      }
  
-@@ -2989,6 +2990,7 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
-         return new AABB(vec3d, vec3d1);
-     }
- 
-+    public final void setBoundingBox(AABB axisalignedbb) { setBoundingBox(axisalignedbb); } // Paper - OBFHELPER
-     public void setBoundingBox(AABB boundingBox) {
-         // CraftBukkit start - block invalid bounding boxes
-         double minX = boundingBox.minX,
-@@ -3427,6 +3429,12 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
+@@ -3425,6 +3426,12 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
      }
  
      public void setPosRaw(double x, double y, double z) {

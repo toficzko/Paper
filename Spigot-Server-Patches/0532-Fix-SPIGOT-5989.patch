@@ -10,7 +10,7 @@ This fixes that by checking if the modified spawn location is
 still at a respawn anchor.
 
 diff --git a/src/main/java/net/minecraft/server/players/PlayerList.java b/src/main/java/net/minecraft/server/players/PlayerList.java
-index eaec9339b1d6cfd27148b6de0a1c80ad6d103bf3..704b79b232fdcb7f5fc4ce05134e300bc374b039 100644
+index 68e9dcbecc10a536a4181ae8ab45429ed188af29..b7b026d44c9371dce6e2a91078e6495499cfdb5e 100644
 --- a/src/main/java/net/minecraft/server/players/PlayerList.java
 +++ b/src/main/java/net/minecraft/server/players/PlayerList.java
 @@ -84,6 +84,7 @@ import net.minecraft.world.level.GameType;

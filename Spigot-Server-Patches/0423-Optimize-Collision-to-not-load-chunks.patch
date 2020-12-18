@@ -14,7 +14,7 @@ movement will load only the chunk the player enters anyways and avoids loading
 massive amounts of surrounding chunks due to large AABB lookups.
 
 diff --git a/src/main/java/net/minecraft/server/players/PlayerList.java b/src/main/java/net/minecraft/server/players/PlayerList.java
-index ad9c0116f17f9dd9a45617ca724dee19cb0b0d0b..07f8a89e4fa9236338c3145d423599618d14e24a 100644
+index 30c4fadb244b6e44d6095faf18cff5cebce8349c..7d5c198059749a37807e209540f6c318b303cdf8 100644
 --- a/src/main/java/net/minecraft/server/players/PlayerList.java
 +++ b/src/main/java/net/minecraft/server/players/PlayerList.java
 @@ -62,6 +62,7 @@ import net.minecraft.server.dedicated.DedicatedServer;
@@ -42,15 +42,16 @@ index ad9c0116f17f9dd9a45617ca724dee19cb0b0d0b..07f8a89e4fa9236338c3145d42359961
              entityplayer1.setPos(entityplayer1.getX(), entityplayer1.getY() + 1.0D, entityplayer1.getZ());
          }
 diff --git a/src/main/java/net/minecraft/world/entity/Entity.java b/src/main/java/net/minecraft/world/entity/Entity.java
-index 73c4f198acd209e6db036165b53f181f3ae04aa7..dec239049842af43cb126ff0ca36e7319dbf5c5b 100644
+index 42a9a66b87d1d8c77c0448af971077c4fbdbd56c..509e38b19da6fe6717f6b9c3a8c214406cd8a9ea 100644
 --- a/src/main/java/net/minecraft/world/entity/Entity.java
 +++ b/src/main/java/net/minecraft/world/entity/Entity.java
-@@ -171,6 +171,7 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
+@@ -171,7 +171,7 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
      private CraftEntity bukkitEntity;
  
-     ChunkMap.TrackedEntity tracker; // Paper
-+    boolean collisionLoadChunks = false; // Paper
-     Throwable addedToWorldStack; // Paper - entity debug
+     public ChunkMap.TrackedEntity tracker; // Paper
+-    boolean collisionLoadChunks = false; // Paper
++    public boolean collisionLoadChunks = false; // Paper
+     public Throwable addedToWorldStack; // Paper - entity debug
      public CraftEntity getBukkitEntity() {
          if (bukkitEntity == null) {
 diff --git a/src/main/java/net/minecraft/world/level/CollisionGetter.java b/src/main/java/net/minecraft/world/level/CollisionGetter.java
@@ -150,10 +151,10 @@ index 56e7457787fff7b77f73a12740c2c15e6311d7fc..f6857326cdc56a6b6ff76d4ecd7c220b
                      continue;
                  }
 diff --git a/src/main/java/net/minecraft/world/phys/shapes/Shapes.java b/src/main/java/net/minecraft/world/phys/shapes/Shapes.java
-index 2ffc69967b4ad30ed842583b2b3f47a8879d8ebb..cf5bce5be1049d30b5c59ecf7abb172597b8625f 100644
+index b7a9ad107c887274b593d5e14e5a8d48ccba9774..457732579c10acd478241f818a21c37f4066fdd7 100644
 --- a/src/main/java/net/minecraft/world/phys/shapes/Shapes.java
 +++ b/src/main/java/net/minecraft/world/phys/shapes/Shapes.java
-@@ -236,7 +236,8 @@ public final class Shapes {
+@@ -235,7 +235,8 @@ public final class Shapes {
  
                              if (s < 3) {
                                  mutableBlockPos.set(axisCycle, q, r, p);

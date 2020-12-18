@@ -5,7 +5,7 @@ Subject: [PATCH] Add PhantomPreSpawnEvent
 
 
 diff --git a/src/main/java/net/minecraft/world/entity/monster/Phantom.java b/src/main/java/net/minecraft/world/entity/monster/Phantom.java
-index 1b4794555f199c80ca3b0970710f014254da4bcc..c72348b664a3f76d130dfcd84a9d1f2730fcf12a 100644
+index 1b4794555f199c80ca3b0970710f014254da4bcc..26a4fd693d77901f612014d9899cdfd99b8197c7 100644
 --- a/src/main/java/net/minecraft/world/entity/monster/Phantom.java
 +++ b/src/main/java/net/minecraft/world/entity/monster/Phantom.java
 @@ -161,6 +161,11 @@ public class Phantom extends FlyingMob implements Enemy {
@@ -37,7 +37,7 @@ index 1b4794555f199c80ca3b0970710f014254da4bcc..c72348b664a3f76d130dfcd84a9d1f27
      }
  
 +    // Paper start
-+    java.util.UUID spawningEntity;
++    public java.util.UUID spawningEntity;
 +
 +    public java.util.UUID getSpawningEntity() {
 +        return spawningEntity;

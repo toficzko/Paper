@@ -21,10 +21,10 @@ index 9a8ba3b65239e2f04bc78aae94bc529db4e199cf..2eef07920d6593d71708815825054116
  
                  return true;
 diff --git a/src/main/java/net/minecraft/world/entity/ExperienceOrb.java b/src/main/java/net/minecraft/world/entity/ExperienceOrb.java
-index f932fc4f8240b48f8e518af05d1521bc8ff9cbee..3ddb0a9f15c920c9a2080f76edfda0504c1e287a 100644
+index f932fc4f8240b48f8e518af05d1521bc8ff9cbee..5eb9efcbe05547e88634ae78b26cbb6dea45e47c 100644
 --- a/src/main/java/net/minecraft/world/entity/ExperienceOrb.java
 +++ b/src/main/java/net/minecraft/world/entity/ExperienceOrb.java
-@@ -30,13 +30,63 @@ public class ExperienceOrb extends Entity {
+@@ -30,9 +30,59 @@ public class ExperienceOrb extends Entity {
      public int value;
      private Player followingPlayer;
      private int followingTime;
@@ -71,25 +71,19 @@ index f932fc4f8240b48f8e518af05d1521bc8ff9cbee..3ddb0a9f15c920c9a2080f76edfda050
 +        this(world, x, y, z, amount, null, null);
 +    }
 +
-+    public EntityExperienceOrb(Level world, double d0, double d1, double d2, int i, org.bukkit.entity.ExperienceOrb.SpawnReason reason, Entity triggerId) {
-+        this(world, d0, d1, d2, i, reason, triggerId, null);
++    public ExperienceOrb(Level world, double x, double y, double z, int amount, org.bukkit.entity.ExperienceOrb.SpawnReason reason, Entity triggerId) {
++        this(world, x, y, z, amount, reason, triggerId, null);
 +    }
 +
-+    public EntityExperienceOrb(Level world, double d0, double d1, double d2, int i, org.bukkit.entity.ExperienceOrb.SpawnReason reason, Entity triggerId, Entity sourceId) {
++    public ExperienceOrb(Level world, double x, double y, double z, int amount, org.bukkit.entity.ExperienceOrb.SpawnReason reason, Entity triggerId, Entity sourceId) {
          this(EntityType.EXPERIENCE_ORB, world);
--        this.setPos(x, y, z);
 +        this.sourceEntityId = sourceId != null ? sourceId.getUUID() : null;
 +        this.triggerEntityId = triggerId != null ? triggerId.getUUID() : null;
 +        this.spawnReason = reason != null ? reason : org.bukkit.entity.ExperienceOrb.SpawnReason.UNKNOWN;
 +        // Paper end
-+        this.setPos(d0, d1, d2);
+         this.setPos(x, y, z);
          this.yRot = (float) (this.random.nextDouble() * 360.0D);
          this.setDeltaMovement((this.random.nextDouble() * 0.20000000298023224D - 0.10000000149011612D) * 2.0D, this.random.nextDouble() * 0.2D * 2.0D, (this.random.nextDouble() * 0.20000000298023224D - 0.10000000149011612D) * 2.0D);
--        this.value = amount;
-+        this.value = i;
-     }
- 
-     public ExperienceOrb(EntityType<? extends ExperienceOrb> type, Level world) {
 @@ -167,6 +217,7 @@ public class ExperienceOrb extends Entity {
          tag.putShort("Health", (short) this.health);
          tag.putShort("Age", (short) this.age);
@@ -251,7 +245,7 @@ index 4212a20d42025a67539a49945cfa3a524bd3ec26..4458777acf19725cb4f1d2276152663e
  
                      world.levelEvent(1042, blockposition, 0);
 diff --git a/src/main/java/net/minecraft/world/level/block/Block.java b/src/main/java/net/minecraft/world/level/block/Block.java
-index 518ad1e8298557039466812d98def58608075624..acf80f4b32b70e8a01afb32526260be2b9f721c0 100644
+index 518ad1e8298557039466812d98def58608075624..f825a91ee18f216a4a63810e410bb91b02c05b3a 100644
 --- a/src/main/java/net/minecraft/world/level/block/Block.java
 +++ b/src/main/java/net/minecraft/world/level/block/Block.java
 @@ -16,6 +16,7 @@ import net.minecraft.core.NonNullList;
@@ -270,7 +264,7 @@ index 518ad1e8298557039466812d98def58608075624..acf80f4b32b70e8a01afb32526260be2
 -        if (world.getGameRules().getBoolean(GameRules.RULE_DOBLOCKDROPS)) {
 -            while (size > 0) {
 -                int j = ExperienceOrb.getExperienceValue(size);
-+    protected void dropExperience(ServerLevel worldserver, BlockPos blockposition, int i, ServerPlayer player) { // Paper
++    public void dropExperience(ServerLevel worldserver, BlockPos blockposition, int i, ServerPlayer player) { // Paper
 +        if (worldserver.getGameRules().getBoolean(GameRules.RULE_DOBLOCKDROPS)) {
 +            while (i > 0) {
 +                int j = ExperienceOrb.getExperienceValue(i);
@@ -309,17 +303,10 @@ index 562e2bcbdd1bb52b19a8ad4334bdc57b79ab0539..554ee8c839beb89955b45e2bdf8edf59
              entity = net.minecraft.world.entity.EntityType.LIGHTNING_BOLT.create(world);
          } else if (AreaEffectCloud.class.isAssignableFrom(clazz)) {
 diff --git a/src/main/java/org/bukkit/craftbukkit/entity/CraftExperienceOrb.java b/src/main/java/org/bukkit/craftbukkit/entity/CraftExperienceOrb.java
-index 3b450d97302bab30cdb975c8332b81318470503e..d5b8fd76ec3bd7d2621231480eb3e694a90aa037 100644
+index 3b450d97302bab30cdb975c8332b81318470503e..aa6b25ca8c3dde141e944a45fa70e802feb0b4d0 100644
 --- a/src/main/java/org/bukkit/craftbukkit/entity/CraftExperienceOrb.java
 +++ b/src/main/java/org/bukkit/craftbukkit/entity/CraftExperienceOrb.java
-@@ -1,5 +1,6 @@
- package org.bukkit.craftbukkit.entity;
- 
-+import SpawnReason;
- import org.bukkit.craftbukkit.CraftServer;
- import org.bukkit.entity.EntityType;
- import org.bukkit.entity.ExperienceOrb;
-@@ -19,6 +20,18 @@ public class CraftExperienceOrb extends CraftEntity implements ExperienceOrb {
+@@ -19,6 +19,18 @@ public class CraftExperienceOrb extends CraftEntity implements ExperienceOrb {
          getHandle().value = value;
      }
  

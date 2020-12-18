@@ -40,7 +40,7 @@ index fe90e7922bfceb73877388c0e6583550b93c6935..b80aaac703f28b25ae927e38431037b2
              int j = Mth.abs(blockposition.getZ() - blockposition1.getZ());
              int k = Math.max(i, j);
 diff --git a/src/main/java/net/minecraft/server/level/ServerLevel.java b/src/main/java/net/minecraft/server/level/ServerLevel.java
-index 7e27d6caac22d9017f4fccb2459eaa24d695fccc..14993351ef88bdcc02e21e4bdab8a24b48219580 100644
+index c5ae1c478ff880ba49eaa307e744f60c787bfd8d..6a04b735fb508fb6c38ffef4dc64762c73945114 100644
 --- a/src/main/java/net/minecraft/server/level/ServerLevel.java
 +++ b/src/main/java/net/minecraft/server/level/ServerLevel.java
 @@ -1639,15 +1639,17 @@ public class ServerLevel extends net.minecraft.world.level.Level implements Worl
@@ -71,7 +71,7 @@ index 7e27d6caac22d9017f4fccb2459eaa24d695fccc..14993351ef88bdcc02e21e4bdab8a24b
      public float getSharedSpawnAngle() {
          return this.levelData.getSpawnAngle();
 diff --git a/src/main/java/net/minecraft/server/level/ServerPlayer.java b/src/main/java/net/minecraft/server/level/ServerPlayer.java
-index e473e149e13e1712133eae0b21c95d1962fb1d20..361300c8bd8328a12aadac8076d6018706d7bc57 100644
+index 14e9523c8af36782288ca51996a87c50e2061870..e6609f6d7188e6206c4d7905c789a77a7d97d40d 100644
 --- a/src/main/java/net/minecraft/server/level/ServerPlayer.java
 +++ b/src/main/java/net/minecraft/server/level/ServerPlayer.java
 @@ -228,7 +228,7 @@ public class ServerPlayer extends Player implements ContainerListener {
@@ -111,7 +111,7 @@ index e473e149e13e1712133eae0b21c95d1962fb1d20..361300c8bd8328a12aadac8076d60187
              this.level = world;
              this.setPos(position.x(), position.y(), position.z());
 diff --git a/src/main/java/net/minecraft/server/players/PlayerList.java b/src/main/java/net/minecraft/server/players/PlayerList.java
-index 7e91557108925563f93dc4073fa1f1ced8466f76..2d86fe1b7524d3b476f6c11599894c556b561856 100644
+index 0c0493fddb3aa91dab527dc755f25a1862bfd270..60dc8512c57316f39b5294edc0f66462a64cca23 100644
 --- a/src/main/java/net/minecraft/server/players/PlayerList.java
 +++ b/src/main/java/net/minecraft/server/players/PlayerList.java
 @@ -812,7 +812,7 @@ public abstract class PlayerList {
@@ -146,10 +146,10 @@ index c283ea9528493fb95088870c84c6d6e3963aabb7..2633aca30601682a53b0236b94a12f0f
  
      // CraftBukkit start - Send a String
 diff --git a/src/main/java/net/minecraft/world/entity/Entity.java b/src/main/java/net/minecraft/world/entity/Entity.java
-index d90eda18d0815e79670a1e1dec3410fc328a9de5..5898222b94be7639b6797b8d2f1a553c357c5fdd 100644
+index 956494ae5e5074b8b2a5c758bb5ef4020574f83f..583ba97527296c56df423848a5c685289a79851a 100644
 --- a/src/main/java/net/minecraft/world/entity/Entity.java
 +++ b/src/main/java/net/minecraft/world/entity/Entity.java
-@@ -2680,7 +2680,7 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
+@@ -2682,7 +2682,7 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
              if (flag1) {
                  blockposition1 = ServerLevel.END_SPAWN_POINT;
              } else {

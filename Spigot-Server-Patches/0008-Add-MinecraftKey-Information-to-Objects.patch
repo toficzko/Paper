@@ -90,7 +90,7 @@ index 972318e16f2ada473add45617b08d57d615b5163..1ceba28b43e7097b7d70380e46b8d118
  
      protected abstract void readAdditionalSaveData(CompoundTag tag);
 diff --git a/src/main/java/net/minecraft/world/entity/EntityType.java b/src/main/java/net/minecraft/world/entity/EntityType.java
-index d5ee07d1bd689a0f8caae4bf1294d7b1d8c94653..461601f7d3145f67e6497047b358dccc00273560 100644
+index 9c7f4b3d544e0325a470aa081909c7d65315456f..f88c9080bbe4f5179b657d8ff17b8fb07fe7f5e4 100644
 --- a/src/main/java/net/minecraft/world/entity/EntityType.java
 +++ b/src/main/java/net/minecraft/world/entity/EntityType.java
 @@ -384,6 +384,7 @@ public class EntityType<T extends Entity> {

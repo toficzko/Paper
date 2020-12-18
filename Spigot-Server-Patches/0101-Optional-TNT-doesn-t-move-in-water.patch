@@ -45,10 +45,10 @@ index 732ea31981e7280a03bdea8f7a16c2c1a181ab02..87af6a272829cf0857ba02fc0473c5f0
      private java.util.Map<ServerPlayer, Boolean> trackedPlayerMap = null;
  
 diff --git a/src/main/java/net/minecraft/world/entity/Entity.java b/src/main/java/net/minecraft/world/entity/Entity.java
-index 8ae77d418bb7ff8011ed5b6f914f7f9f00801b20..789545c245de39d9c31f7024d4d2ec3d0734a265 100644
+index b3b31b115059bb207ccde2320ddcd8cf3719631a..85cf9da18720d05c3a858c62779b47e1de6cf4e6 100644
 --- a/src/main/java/net/minecraft/world/entity/Entity.java
 +++ b/src/main/java/net/minecraft/world/entity/Entity.java
-@@ -2762,6 +2762,11 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
+@@ -2763,6 +2763,11 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
      }
  
      public boolean isPushedByFluid() {

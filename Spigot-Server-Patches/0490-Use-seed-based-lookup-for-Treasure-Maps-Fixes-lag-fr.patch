@@ -6,7 +6,7 @@ Subject: [PATCH] Use seed based lookup for Treasure Maps - Fixes lag from
 
 
 diff --git a/src/main/java/net/minecraft/server/level/ServerLevel.java b/src/main/java/net/minecraft/server/level/ServerLevel.java
-index 5ab0bc0f6656ae5eee330a7640c54acc5d2f985b..dea35f52a5ca83abc95b1fa41b843fc49a2167ae 100644
+index 3307f15f5d49b6727846d066e01ebfa3bd582fd9..a934813eb70b3321eea9fcf9d9b560447c9e9830 100644
 --- a/src/main/java/net/minecraft/server/level/ServerLevel.java
 +++ b/src/main/java/net/minecraft/server/level/ServerLevel.java
 @@ -413,8 +413,8 @@ public class ServerLevel extends net.minecraft.world.level.Level implements Worl

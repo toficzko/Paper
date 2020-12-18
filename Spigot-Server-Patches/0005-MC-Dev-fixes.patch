@@ -57,32 +57,9 @@ index 77f102b67e066c32e2c212626bcd46cc498bfd86..9cd82e1641947aa0a5efec1e8660e740
          }).thenComparing((tickNextTickData) -> {
              return tickNextTickData.priority;
 diff --git a/src/main/java/net/minecraft/world/level/storage/loot/entries/LootPoolEntryContainer.java b/src/main/java/net/minecraft/world/level/storage/loot/entries/LootPoolEntryContainer.java
-index 935b95bb9891f52c1b32299ed937ded17acef3e0..b56c5ec5dedc97c2c4c60c7ae4b4dbbb4d403afa 100644
+index 935b95bb9891f52c1b32299ed937ded17acef3e0..a1f490f700b072a424862ee5863209da54c59cc9 100644
 --- a/src/main/java/net/minecraft/world/level/storage/loot/entries/LootPoolEntryContainer.java
 +++ b/src/main/java/net/minecraft/world/level/storage/loot/entries/LootPoolEntryContainer.java
-@@ -4,19 +4,19 @@ import com.google.common.collect.Lists;
- import com.google.gson.JsonDeserializationContext;
- import com.google.gson.JsonObject;
- import com.google.gson.JsonSerializationContext;
-+import com.sun.org.apache.xerces.internal.impl.dv.ValidationContext;
- import java.util.List;
- import java.util.function.Predicate;
- import net.minecraft.util.GsonHelper;
--import net.minecraft.world.level.storage.loot.LootContext;
--import net.minecraft.world.level.storage.loot.ValidationContext;
- import net.minecraft.world.level.storage.loot.predicates.ConditionUserBuilder;
- import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
- import net.minecraft.world.level.storage.loot.predicates.LootItemConditions;
-+import org.bukkit.loot.LootContext;
- 
- public abstract class LootPoolEntryContainer implements ComposableEntryContainer {
- 
-     protected final LootItemCondition[] conditions;
--    private final Predicate<LootContext> compositeCondition;
-+    private final Predicate<org.bukkit.loot.LootContext> compositeCondition;
- 
-     protected LootPoolEntryContainer(LootItemCondition[] conditions) {
-         this.conditions = conditions;
 @@ -42,7 +42,7 @@ public abstract class LootPoolEntryContainer implements ComposableEntryContainer
  
          // CraftBukkit start

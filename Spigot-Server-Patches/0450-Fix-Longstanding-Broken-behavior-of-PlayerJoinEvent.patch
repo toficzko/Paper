@@ -28,7 +28,7 @@ receives a deterministic result, and should no longer require 1 tick
 delays anymore.
 
 diff --git a/src/main/java/net/minecraft/server/level/ChunkMap.java b/src/main/java/net/minecraft/server/level/ChunkMap.java
-index 62bc1ceac912caa3e89b81a84c09823b103dad69..d99a8d9926055df5d834d67ab276d6792aa5a2b4 100644
+index 0add1ed52a75eccf3ae78a5b639c6df64709a330..d264454709375df0f32bda49de81ec548b2b5949 100644
 --- a/src/main/java/net/minecraft/server/level/ChunkMap.java
 +++ b/src/main/java/net/minecraft/server/level/ChunkMap.java
 @@ -1585,6 +1585,7 @@ public class ChunkMap extends ChunkStorage implements ChunkHolder.PlayerProvider
@@ -40,7 +40,7 @@ index 62bc1ceac912caa3e89b81a84c09823b103dad69..d99a8d9926055df5d834d67ab276d679
          if (!(entity instanceof EnderDragonPart)) {
              EntityType<?> entitytypes = entity.getType();
 diff --git a/src/main/java/net/minecraft/server/level/ServerPlayer.java b/src/main/java/net/minecraft/server/level/ServerPlayer.java
-index 55f0f6cbab43e380296c15b54357982e86c10ed2..df91784d4b156187c6ddd58d6deb243bf17cae36 100644
+index de32f1c16315a3158e8411ed4989dcd6ce0be5d8..bd8372adaa670e2a02b1c753cfcfe4958871bfe4 100644
 --- a/src/main/java/net/minecraft/server/level/ServerPlayer.java
 +++ b/src/main/java/net/minecraft/server/level/ServerPlayer.java
 @@ -234,6 +234,7 @@ public class ServerPlayer extends Player implements ContainerListener {
@@ -52,7 +52,7 @@ index 55f0f6cbab43e380296c15b54357982e86c10ed2..df91784d4b156187c6ddd58d6deb243b
      // CraftBukkit end
      public PlayerNaturallySpawnCreaturesEvent playerNaturallySpawnedEvent; // Paper
 diff --git a/src/main/java/net/minecraft/server/players/PlayerList.java b/src/main/java/net/minecraft/server/players/PlayerList.java
-index 71bdd933b5970c4053228d23bbb76b6ab90dac55..c50df7acdf3e6c47e7f08842fdd50b2ac3aa595c 100644
+index b743aba16386864325b467e89cfa09ac3196812c..8c82262499f574702031aab7c8acb8d80ea97a3d 100644
 --- a/src/main/java/net/minecraft/server/players/PlayerList.java
 +++ b/src/main/java/net/minecraft/server/players/PlayerList.java
 @@ -274,6 +274,12 @@ public abstract class PlayerList {

@@ -25,18 +25,6 @@ index a07ba5a5bb654ce7445f337a8b8d2adf0141565a..529ab12d82f786b3cc05efc23c865766
      public static void writeCompressed(CompoundTag tag, OutputStream stream) throws IOException {
          DataOutputStream dataoutputstream = new DataOutputStream(new BufferedOutputStream(new GZIPOutputStream(stream)));
          Throwable throwable = null;
-diff --git a/src/main/java/net/minecraft/util/datafix/DataFixers.java b/src/main/java/net/minecraft/util/datafix/DataFixers.java
-index e8f3941f7a316ec593502151b01c0918f8b0af0f..39cd996ad5cb879dff7cde56d6fb38c689b548a8 100644
---- a/src/main/java/net/minecraft/util/datafix/DataFixers.java
-+++ b/src/main/java/net/minecraft/util/datafix/DataFixers.java
-@@ -78,6 +78,7 @@ public class DataFixers {
-         return datafixerbuilder.build(Util.bootstrapExecutor());
-     }
- 
-+    public static DataFixer getDataFixer() { return getDataFixer(); } // Paper - OBFHELPER
-     public static DataFixer getDataFixer() {
-         return DataFixers.DATA_FIXER;
-     }
 diff --git a/src/main/java/net/minecraft/world/item/ItemStack.java b/src/main/java/net/minecraft/world/item/ItemStack.java
 index 6a3b321972ac026a3cc1857b144708d885944c81..ff93492244e3616827aafc8c1fc2f4468065c592 100644
 --- a/src/main/java/net/minecraft/world/item/ItemStack.java

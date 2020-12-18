@@ -19,10 +19,10 @@ index 4438d567dd779650533c7128ae8b25b8fd369836..89f6de173225315783a09aae2fe77a3e
 +    }
  }
 diff --git a/src/main/java/net/minecraft/world/entity/Entity.java b/src/main/java/net/minecraft/world/entity/Entity.java
-index e133abb75917c562596a9d02ed84e271f1dd3f9d..0f211791f75ff9d056f1dfa5fc1eab6e638f1f03 100644
+index 216ab94468c4789be20cc7edf0171e30547e7c84..42a9a66b87d1d8c77c0448af971077c4fbdbd56c 100644
 --- a/src/main/java/net/minecraft/world/entity/Entity.java
 +++ b/src/main/java/net/minecraft/world/entity/Entity.java
-@@ -280,6 +280,7 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
+@@ -282,6 +282,7 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
      public long activatedTick = Integer.MIN_VALUE;
      public boolean isTemporarilyActive = false; // Paper
      public boolean spawnedViaMobSpawner; // Paper - Yes this name is similar to above, upstream took the better one
@@ -30,7 +30,7 @@ index e133abb75917c562596a9d02ed84e271f1dd3f9d..0f211791f75ff9d056f1dfa5fc1eab6e
      protected int numCollisions = 0; // Paper
      public void inactiveTick() { }
      // Spigot end
-@@ -1695,6 +1696,9 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
+@@ -1696,6 +1697,9 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
              if (spawnedViaMobSpawner) {
                  tag.putBoolean("Paper.FromMobSpawner", true);
              }
@@ -40,7 +40,7 @@ index e133abb75917c562596a9d02ed84e271f1dd3f9d..0f211791f75ff9d056f1dfa5fc1eab6e
              // Paper end
              return tag;
          } catch (Throwable throwable) {
-@@ -1825,6 +1829,7 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
+@@ -1826,6 +1830,7 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
              }
  
              spawnedViaMobSpawner = tag.getBoolean("Paper.FromMobSpawner"); // Restore entity's from mob spawner status

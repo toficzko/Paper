@@ -5,18 +5,10 @@ Subject: [PATCH] Add LivingEntity#getTargetEntity
 
 
 diff --git a/src/main/java/net/minecraft/world/entity/Entity.java b/src/main/java/net/minecraft/world/entity/Entity.java
-index e7b5b27872689fdbb6d874be951806140a3055a5..9d7cb21744e44909187c62c94ba2a623c961f414 100644
+index 07b0283f55e4253591134ad40a61059629eebfb2..7ea4e303ff4c98d3a965e3585b963c4ae991811a 100644
 --- a/src/main/java/net/minecraft/world/entity/Entity.java
 +++ b/src/main/java/net/minecraft/world/entity/Entity.java
-@@ -1506,6 +1506,7 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
-         return this.calculateViewVector(pitch - 90.0F, yaw);
-     }
- 
-+    public final Vec3 getEyePosition(float partialTicks) { return getEyePosition(partialTicks); } // Paper - OBFHELPER
-     public final Vec3 getEyePosition(float tickDelta) {
-         if (tickDelta == 1.0F) {
-             return new Vec3(this.getX(), this.getEyeY(), this.getZ());
-@@ -2151,6 +2152,7 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
+@@ -2153,6 +2153,7 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
          return this.getPassengers().size() < 1;
      }
  
@@ -37,7 +29,7 @@ index 5f4439d7204dd3aa164ed68f2fe31260b516be75..5edee56ae4eb3d0fde7a4d1d80a1ea1d
          return !(entity instanceof Player) || !entity.isSpectator() && !((Player) entity).isCreative() && entity.level.getDifficulty() != Difficulty.PEACEFUL;
      };
 diff --git a/src/main/java/net/minecraft/world/entity/LivingEntity.java b/src/main/java/net/minecraft/world/entity/LivingEntity.java
-index b36701216688dd183d745750897c4ba0bb59484b..59d0a13b51b609a520763f3a3ed429a81b3d8d6e 100644
+index dec06a55a572d1977fe100897019e8262db8ac15..c76f71e24119e74f045387fbeeda1167071c55ef 100644
 --- a/src/main/java/net/minecraft/world/entity/LivingEntity.java
 +++ b/src/main/java/net/minecraft/world/entity/LivingEntity.java
 @@ -108,6 +108,7 @@ import net.minecraft.world.level.storage.loot.LootTable;
@@ -48,7 +40,7 @@ index b36701216688dd183d745750897c4ba0bb59484b..59d0a13b51b609a520763f3a3ed429a8
  import net.minecraft.world.phys.HitResult;
  import net.minecraft.world.phys.Vec3;
  import net.minecraft.world.scores.PlayerTeam;
-@@ -3616,6 +3617,37 @@ public abstract class LivingEntity extends Entity {
+@@ -3614,6 +3615,37 @@ public abstract class LivingEntity extends Entity {
          return level.clip(raytrace);
      }
  
@@ -87,7 +79,7 @@ index b36701216688dd183d745750897c4ba0bb59484b..59d0a13b51b609a520763f3a3ed429a8
  
      public int getShieldBlockingDelay() {
 diff --git a/src/main/java/net/minecraft/world/phys/AABB.java b/src/main/java/net/minecraft/world/phys/AABB.java
-index c932b4f049afeb14ac55410479a4c92b87573035..95c037a21a3180eac88ca6a4ae3c00fb83c7c6cd 100644
+index a301389fb516a6b4f078e8c1571f9bb93b0455bf..1f5ea0802af6821bea5a34a310ba5ecd80409a81 100644
 --- a/src/main/java/net/minecraft/world/phys/AABB.java
 +++ b/src/main/java/net/minecraft/world/phys/AABB.java
 @@ -122,6 +122,7 @@ public class AABB {
@@ -111,15 +103,7 @@ index c932b4f049afeb14ac55410479a4c92b87573035..95c037a21a3180eac88ca6a4ae3c00fb
      public AABB inflate(double x, double y, double z) {
          double d = this.minX - x;
          double e = this.minY - y;
-@@ -206,6 +213,7 @@ public class AABB {
-         return this.minX < maxX && this.maxX > minX && this.minY < maxY && this.maxY > minY && this.minZ < maxZ && this.maxZ > minZ;
-     }
- 
-+    public final boolean contains(Vec3 vec3d) { return contains(vec3d); } // Paper - OBFHELPER
-     public boolean contains(Vec3 vec) {
-         return this.contains(vec.x, vec.y, vec.z);
-     }
-@@ -238,6 +246,7 @@ public class AABB {
+@@ -236,6 +243,7 @@ public class AABB {
          return this.inflate(-value);
      }
  

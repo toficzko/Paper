@@ -30,10 +30,10 @@ index 6998ec2d7550094498649deb9028988700982e04..6babdde2910162a03b8abbcbb7db1f78
 +    }
  }
 diff --git a/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java b/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java
-index 9784bebddbca294eda8b8e4b302230cffaf25ee3..71628bce99194044bd3a5c620c63f71d9a30ec08 100644
+index 60932b67d572b5fb4c80f579ca83fd7db9d314e1..bf8d9ce115dedb1749de6aa58ff07d1c7646212a 100644
 --- a/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java
 +++ b/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java
-@@ -1011,7 +1011,7 @@ public class LevelChunk implements ChunkAccess {
+@@ -1010,7 +1010,7 @@ public class LevelChunk implements ChunkAccess {
  
      @Override
      public long getInhabitedTime() {

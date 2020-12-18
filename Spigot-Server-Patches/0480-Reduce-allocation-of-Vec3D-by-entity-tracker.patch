@@ -5,7 +5,7 @@ Subject: [PATCH] Reduce allocation of Vec3D by entity tracker
 
 
 diff --git a/src/main/java/net/minecraft/server/level/ChunkMap.java b/src/main/java/net/minecraft/server/level/ChunkMap.java
-index 316d3ea98a3370a18b689669d2788a4e20dc70bf..9849deb56691d3896d451d91b923f4af1b88a911 100644
+index e8984c9f9136f6f0a951fda1853b98c991fb16ab..feeac296afa9e40292b7c0f373a0dd700a9862ef 100644
 --- a/src/main/java/net/minecraft/server/level/ChunkMap.java
 +++ b/src/main/java/net/minecraft/server/level/ChunkMap.java
 @@ -96,7 +96,6 @@ import net.minecraft.world.level.levelgen.structure.StructureStart;

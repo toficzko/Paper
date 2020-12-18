@@ -106,7 +106,7 @@ index 8659e6391c8a0cabf044a4509d37ffd07aca49df..8203dcc6f2588be57ed78140f21a0830
  
      private void setupRecipeList(Container input, ItemStack stack) {
 diff --git a/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java b/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java
-index ee8c949e2299dc839ec02fdf6a405fb1e7e78848..5b87caa35228ca2ee61a43f7934ff177d2e8df37 100644
+index f76291f380cfd0d4f292d09336d46e0c3e1e728d..fc2ce00273c0a1fe3af979b0a35e02b19f1c12a1 100644
 --- a/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java
 +++ b/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java
 @@ -1533,19 +1533,44 @@ public class CraftEventFactory {

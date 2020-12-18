@@ -285,7 +285,7 @@ index 0000000000000000000000000000000000000000..3cf40fcddca98d39c0efccf772cc8728
 +    }
 +}
 diff --git a/src/main/java/net/minecraft/server/level/ServerChunkCache.java b/src/main/java/net/minecraft/server/level/ServerChunkCache.java
-index 58025068cee07c84aca134b56b03e4df1c6fabfc..26c36b4587fba3b251d90a8a2857c08074944b58 100644
+index 2ab547a6fc8a35ffdca7c6bd59fd5f72d048e467..490349ac8041da2269c99ed821aa889d85c6f6e7 100644
 --- a/src/main/java/net/minecraft/server/level/ServerChunkCache.java
 +++ b/src/main/java/net/minecraft/server/level/ServerChunkCache.java
 @@ -500,6 +500,7 @@ public class ServerChunkCache extends ChunkSource {
@@ -297,7 +297,7 @@ index 58025068cee07c84aca134b56b03e4df1c6fabfc..26c36b4587fba3b251d90a8a2857c080
              this.mainThreadProcessor.managedBlock(completablefuture::isDone);
                  com.destroystokyo.paper.io.chunk.ChunkTaskManager.popChunkWait(); // Paper - async chunk debug
 diff --git a/src/main/java/net/minecraft/server/level/ServerLevel.java b/src/main/java/net/minecraft/server/level/ServerLevel.java
-index 8f7b5f157c96b885ed9be5202b1d3edd225a3af8..95cd7d7504db248592b5b5d6a1ad78ac28c11bf9 100644
+index 2679a3a4f4df09bb20a5ef39d0a034c14c50043a..14f271a1b9e50cdcf41a3a29edfeb794875065a3 100644
 --- a/src/main/java/net/minecraft/server/level/ServerLevel.java
 +++ b/src/main/java/net/minecraft/server/level/ServerLevel.java
 @@ -276,6 +276,12 @@ public class ServerLevel extends net.minecraft.world.level.Level implements Worl

@@ -23,7 +23,7 @@ index 26b8820ad0a6c612172dd75956eee7e3d7ff85b2..51b6a10724fc94e37e4cfe2ac2437cdc
                      MutablePair<Integer, Map<ChunkPos, Integer>> info = list.computeIfAbsent(key, k -> MutablePair.of(0, Maps.newHashMap()));
                      ChunkPos chunk = new ChunkPos(e.xChunk, e.zChunk);
 diff --git a/src/main/java/net/minecraft/server/level/ServerLevel.java b/src/main/java/net/minecraft/server/level/ServerLevel.java
-index e038dc8b74cb441435c4e8257b40aafb6f96d101..7e27d6caac22d9017f4fccb2459eaa24d695fccc 100644
+index eb4fbb87d1253855a1e407b6f541e3e9f2ec2c88..c5ae1c478ff880ba49eaa307e744f60c787bfd8d 100644
 --- a/src/main/java/net/minecraft/server/level/ServerLevel.java
 +++ b/src/main/java/net/minecraft/server/level/ServerLevel.java
 @@ -1301,6 +1301,7 @@ public class ServerLevel extends net.minecraft.world.level.Level implements Worl
@@ -43,10 +43,10 @@ index e038dc8b74cb441435c4e8257b40aafb6f96d101..7e27d6caac22d9017f4fccb2459eaa24
      }
  
 diff --git a/src/main/java/net/minecraft/world/entity/Entity.java b/src/main/java/net/minecraft/world/entity/Entity.java
-index d64d7f3c9f91730e5214ad40743bf7c4379315c1..d90eda18d0815e79670a1e1dec3410fc328a9de5 100644
+index cc300b95d19c8630ae1f5e288c33902f0ea6d59b..956494ae5e5074b8b2a5c758bb5ef4020574f83f 100644
 --- a/src/main/java/net/minecraft/world/entity/Entity.java
 +++ b/src/main/java/net/minecraft/world/entity/Entity.java
-@@ -278,6 +278,7 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
+@@ -280,6 +280,7 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
      protected int numCollisions = 0; // Paper
      public void inactiveTick() { }
      // Spigot end
@@ -55,10 +55,10 @@ index d64d7f3c9f91730e5214ad40743bf7c4379315c1..d90eda18d0815e79670a1e1dec3410fc
      public float getBukkitYaw() {
          return this.yRot;
 diff --git a/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java b/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java
-index efc82573cbbf607835aadec1e4e9b00f08c8745c..88537c46d5d3b59a1d1986c56e2f2f271f5bddd3 100644
+index 39398b7ebdad8795f76d0bc36a223464037d87fd..598e693a49bf60024d3fdadf6e3118de0d3883e5 100644
 --- a/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java
 +++ b/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java
-@@ -853,6 +853,7 @@ public class LevelChunk implements ChunkAccess {
+@@ -852,6 +852,7 @@ public class LevelChunk implements ChunkAccess {
  
              for (int i1 = 0; i1 < l; ++i1) {
                  Entity entity1 = (Entity) list1.get(i1);
@@ -66,7 +66,7 @@ index efc82573cbbf607835aadec1e4e9b00f08c8745c..88537c46d5d3b59a1d1986c56e2f2f27
  
                  if (entity1.getBoundingBox().intersects(box) && entity1 != except) {
                      if (predicate == null || predicate.test(entity1)) {
-@@ -889,6 +890,7 @@ public class LevelChunk implements ChunkAccess {
+@@ -888,6 +889,7 @@ public class LevelChunk implements ChunkAccess {
  
              while (iterator.hasNext()) {
                  T entity = (T) iterator.next(); // CraftBukkit - decompile error
@@ -74,7 +74,7 @@ index efc82573cbbf607835aadec1e4e9b00f08c8745c..88537c46d5d3b59a1d1986c56e2f2f27
  
                  if ((type == null || entity.getType() == type) && entity.getBoundingBox().intersects(box) && predicate.test(entity)) {
                      result.add(entity);
-@@ -910,6 +912,7 @@ public class LevelChunk implements ChunkAccess {
+@@ -909,6 +911,7 @@ public class LevelChunk implements ChunkAccess {
  
              while (iterator.hasNext()) {
                  T t0 = (T) iterator.next(); // CraftBukkit - decompile error

@@ -5,10 +5,10 @@ Subject: [PATCH] Entity#fromMobSpawner()
 
 
 diff --git a/src/main/java/net/minecraft/world/entity/Entity.java b/src/main/java/net/minecraft/world/entity/Entity.java
-index 3f2fcbcf01c6d246032a879832e41ea24257093e..f92db89949e7351fde98ffe24bf0a6dfc38ae2f8 100644
+index d30d5fa48c191865a9a5215800e84e969f0dc309..54252877a8d281044224121de94a59748e1ed274 100644
 --- a/src/main/java/net/minecraft/world/entity/Entity.java
 +++ b/src/main/java/net/minecraft/world/entity/Entity.java
-@@ -270,6 +270,7 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
+@@ -271,6 +271,7 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
      public final org.spigotmc.ActivationRange.ActivationType activationType = org.spigotmc.ActivationRange.initializeEntityActivationType(this);
      public final boolean defaultActivationState;
      public long activatedTick = Integer.MIN_VALUE;
@@ -16,7 +16,7 @@ index 3f2fcbcf01c6d246032a879832e41ea24257093e..f92db89949e7351fde98ffe24bf0a6df
      protected int numCollisions = 0; // Paper
      public void inactiveTick() { }
      // Spigot end
-@@ -1667,6 +1668,10 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
+@@ -1668,6 +1669,10 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
              if (this.origin != null) {
                  tag.put("Paper.Origin", this.createList(origin.getX(), origin.getY(), origin.getZ()));
              }
@@ -27,7 +27,7 @@ index 3f2fcbcf01c6d246032a879832e41ea24257093e..f92db89949e7351fde98ffe24bf0a6df
              // Paper end
              return tag;
          } catch (Throwable throwable) {
-@@ -1795,6 +1800,8 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
+@@ -1796,6 +1801,8 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
              if (!originTag.isEmpty()) {
                  origin = new org.bukkit.Location(level.getWorld(), originTag.getDoubleAt(0), originTag.getDoubleAt(1), originTag.getDoubleAt(2));
              }

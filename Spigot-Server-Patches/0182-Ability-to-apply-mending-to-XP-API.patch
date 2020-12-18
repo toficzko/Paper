@@ -10,7 +10,7 @@ of giving the player experience points.
 Both an API To standalone mend, and apply mending logic to .giveExp has been added.
 
 diff --git a/src/main/java/net/minecraft/world/entity/ExperienceOrb.java b/src/main/java/net/minecraft/world/entity/ExperienceOrb.java
-index 885c5a920204a31b24c7d360390eaf4177c30698..52b90ef3a145325209d3d903a2b7c9a44c332cbe 100644
+index e2d89d12e7e382bf00919f9b4991c8bc08d12ae4..b89cf128c00054b3328d154a3361296d89d1945d 100644
 --- a/src/main/java/net/minecraft/world/entity/ExperienceOrb.java
 +++ b/src/main/java/net/minecraft/world/entity/ExperienceOrb.java
 @@ -264,10 +264,12 @@ public class ExperienceOrb extends Entity {

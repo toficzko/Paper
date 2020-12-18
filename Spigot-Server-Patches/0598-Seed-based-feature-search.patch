@@ -50,31 +50,16 @@ index f5db58f629a4a41eb568f9c9a6ee218dc8e56d15..fa14113945fb7351a845f8d3f333184c
          return this.z << 4;
      }
 diff --git a/src/main/java/net/minecraft/world/level/Level.java b/src/main/java/net/minecraft/world/level/Level.java
-index face881a71dc405bde4ed93e6ed03e9d760e3991..9cde9b06ea044808e7e797261811940fb3c8e2b4 100644
+index 3a351939c8bbd9f12c6ece2d4e87792790fa14a3..0928394d6b65057cd3af9d7943427ff0f00fac88 100644
 --- a/src/main/java/net/minecraft/world/level/Level.java
 +++ b/src/main/java/net/minecraft/world/level/Level.java
-@@ -1512,8 +1512,8 @@ public abstract class Level implements LevelAccessor, AutoCloseable {
+@@ -1511,7 +1511,6 @@ public abstract class Level implements LevelAccessor, AutoCloseable {
          return this.profiler;
      }
  
 -    @Override
--    public BiomeManager getBiomeManager() {
-+    public BiomeManager getBiomeManager() { return getBiomeManager(); } // Paper - OBFHELPER
-+    @Override public BiomeManager getBiomeManager() {
+     public BiomeManager getBiomeManager() {
          return this.biomeManager;
-     }
- 
-diff --git a/src/main/java/net/minecraft/world/level/biome/BiomeManager.java b/src/main/java/net/minecraft/world/level/biome/BiomeManager.java
-index b08ac55e4aa99c52481e772931742811d264b5eb..4088d25adc4ae44292083d2c05e2c9714c4f4785 100644
---- a/src/main/java/net/minecraft/world/level/biome/BiomeManager.java
-+++ b/src/main/java/net/minecraft/world/level/biome/BiomeManager.java
-@@ -22,6 +22,7 @@ public class BiomeManager {
-         return new BiomeManager(source, this.biomeZoomSeed, this.zoomer);
-     }
- 
-+    public Biome getBiome(BlockPos blockposition) { return getBiome(blockposition); } // Paper - OBFHELPER
-     public Biome getBiome(BlockPos pos) {
-         return this.zoomer.getBiome(this.biomeZoomSeed, pos.getX(), pos.getY(), pos.getZ(), this.noiseBiomeSource);
      }
 diff --git a/src/main/java/net/minecraft/world/level/levelgen/feature/StructureFeature.java b/src/main/java/net/minecraft/world/level/levelgen/feature/StructureFeature.java
 index 457ed3c8a3233b381d791d7e20b3b0c376001647..fd0444cb524214c0ace6ecf7754f4eebfdfefe26 100644

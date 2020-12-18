@@ -5,10 +5,10 @@ Subject: [PATCH] Add PlayerAttackEntityCooldownResetEvent
 
 
 diff --git a/src/main/java/net/minecraft/world/entity/LivingEntity.java b/src/main/java/net/minecraft/world/entity/LivingEntity.java
-index c4f516bf93b100c815d7878a7ac28654a5b13f46..13fadcbe9d1a034ee65c68e532b0cbabd307d9e0 100644
+index e3a89d713a903adf9f2715590bf209ac630417f4..24b4d0071940082922a302681089fb59271eca02 100644
 --- a/src/main/java/net/minecraft/world/entity/LivingEntity.java
 +++ b/src/main/java/net/minecraft/world/entity/LivingEntity.java
-@@ -1915,7 +1915,16 @@ public abstract class LivingEntity extends Entity {
+@@ -1914,7 +1914,16 @@ public abstract class LivingEntity extends Entity {
  
              EntityDamageEvent event = CraftEventFactory.handleLivingEntityDamageEvent(this, damagesource, originalDamage, hardHatModifier, blockingModifier, armorModifier, resistanceModifier, magicModifier, absorptionModifier, hardHat, blocking, armor, resistance, magic, absorption);
              if (damagesource.getEntity() instanceof net.minecraft.world.entity.player.Player) {

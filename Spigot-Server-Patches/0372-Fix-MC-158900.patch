@@ -7,7 +7,7 @@ The problem was we were checking isExpired() on the entry, but if it
 was expired at that point, then it would be null.
 
 diff --git a/src/main/java/net/minecraft/server/players/PlayerList.java b/src/main/java/net/minecraft/server/players/PlayerList.java
-index 8cbf0b32ac16b4fcafa5e77c1f21d43d976c8005..ad99c466160bb4c15cb920dc4b18ba9f0d5a7e23 100644
+index 386317e5dc7bf6ff5e1ada4c7b7c17ef55b734e1..2db79eca45f4bbe5a46941f03421a81b99719491 100644
 --- a/src/main/java/net/minecraft/server/players/PlayerList.java
 +++ b/src/main/java/net/minecraft/server/players/PlayerList.java
 @@ -606,8 +606,10 @@ public abstract class PlayerList {

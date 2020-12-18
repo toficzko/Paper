@@ -71,7 +71,7 @@ index 41373e77e54c147330f3960f359f8deb5064de33..79c7a1a433bc69133caf899e35d03388
          this.profiler.push("snooper");
          if (((DedicatedServer) this).getProperties().snooperEnabled && !this.snooper.isStarted() && this.tickCount > 100) { // Spigot
 diff --git a/src/main/java/net/minecraft/server/level/ChunkHolder.java b/src/main/java/net/minecraft/server/level/ChunkHolder.java
-index 87eada4f3b852afdc89d0f493fddd6429558c7d8..912d9f0267d5bde01c5e0b398bd273d53e61a4c3 100644
+index 08eb06b8d511dfecbe5ee9dc0ecc5be2f39430a5..b9db2fbb3399dab9375a57553063fbb34363a15c 100644
 --- a/src/main/java/net/minecraft/server/level/ChunkHolder.java
 +++ b/src/main/java/net/minecraft/server/level/ChunkHolder.java
 @@ -64,6 +64,9 @@ public class ChunkHolder {
@@ -84,7 +84,7 @@ index 87eada4f3b852afdc89d0f493fddd6429558c7d8..912d9f0267d5bde01c5e0b398bd273d5
      public ChunkHolder(ChunkPos pos, int level, LevelLightEngine lightingProvider, ChunkHolder.LevelChangeListener levelUpdateListener, ChunkHolder.PlayerProvider playersWatchingChunkProvider) {
          this.futures = new AtomicReferenceArray(ChunkHolder.CHUNK_STATUSES.size());
          this.fullChunkFuture = ChunkHolder.UNLOADED_LEVEL_CHUNK_FUTURE;
-@@ -415,7 +418,19 @@ public class ChunkHolder {
+@@ -414,7 +417,19 @@ public class ChunkHolder {
          boolean flag2 = playerchunk_state.isOrAfter(ChunkHolder.FullChunkStatus.BORDER);
          boolean flag3 = playerchunk_state1.isOrAfter(ChunkHolder.FullChunkStatus.BORDER);
  
@@ -104,7 +104,7 @@ index 87eada4f3b852afdc89d0f493fddd6429558c7d8..912d9f0267d5bde01c5e0b398bd273d5
          if (!flag2 && flag3) {
              // Paper start - cache ticking ready status
              int expectCreateCount = ++this.fullChunkCreateCount;
-@@ -535,8 +550,32 @@ public class ChunkHolder {
+@@ -534,8 +549,32 @@ public class ChunkHolder {
      }
  
      public void refreshAccessibility() {
@@ -138,7 +138,7 @@ index 87eada4f3b852afdc89d0f493fddd6429558c7d8..912d9f0267d5bde01c5e0b398bd273d5
      public void replaceProtoChunk(ImposterProtoChunk protochunkextension) {
          for (int i = 0; i < this.futures.length(); ++i) {
 diff --git a/src/main/java/net/minecraft/server/level/ChunkMap.java b/src/main/java/net/minecraft/server/level/ChunkMap.java
-index 788eabf01d90e8051831cdd7af517e5e4d1365ef..998be8a8e9e92314f9ac8d1d7134827e16022f3b 100644
+index ec60a4ee09ce49620d3d4c9974e09627c655185f..37773173aff6724bf1e2f1007319f284ac3276a8 100644
 --- a/src/main/java/net/minecraft/server/level/ChunkMap.java
 +++ b/src/main/java/net/minecraft/server/level/ChunkMap.java
 @@ -93,6 +93,7 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureMana
@@ -232,7 +232,7 @@ index 788eabf01d90e8051831cdd7af517e5e4d1365ef..998be8a8e9e92314f9ac8d1d7134827e
                      return ChunkHolder.getFullChunkStatus(playerchunk.getTicketLevel());
                  });
 diff --git a/src/main/java/net/minecraft/server/level/ServerChunkCache.java b/src/main/java/net/minecraft/server/level/ServerChunkCache.java
-index 1e7541b29a6b6f38d0a4b562555d7e5b1ad0c8cf..411df45a9cf681911387a3ca5c9133624efd46d9 100644
+index 76658ea215e45ec2b75033bd59d7def2059b30ed..644acba6278f94957849850acdc9b430009e0118 100644
 --- a/src/main/java/net/minecraft/server/level/ServerChunkCache.java
 +++ b/src/main/java/net/minecraft/server/level/ServerChunkCache.java
 @@ -561,6 +561,15 @@ public class ServerChunkCache extends ChunkSource {
@@ -252,7 +252,7 @@ index 1e7541b29a6b6f38d0a4b562555d7e5b1ad0c8cf..411df45a9cf681911387a3ca5c913362
      public void close() throws IOException {
          // CraftBukkit start
 diff --git a/src/main/java/net/minecraft/server/level/ServerLevel.java b/src/main/java/net/minecraft/server/level/ServerLevel.java
-index 6f309a552711bdcd8fc3c469fd8979905e6f4689..23054b819a5e334f8a2fef48abf4e54043f8847d 100644
+index 3ff46ee0cd96cb340ed8dcdc9cbadefa21ce4fd4..4ebd00b85bf35e4c814f8020bf5ba881ea26a882 100644
 --- a/src/main/java/net/minecraft/server/level/ServerLevel.java
 +++ b/src/main/java/net/minecraft/server/level/ServerLevel.java
 @@ -880,11 +880,43 @@ public class ServerLevel extends net.minecraft.world.level.Level implements Worl
@@ -309,7 +309,7 @@ index 6f309a552711bdcd8fc3c469fd8979905e6f4689..23054b819a5e334f8a2fef48abf4e540
          if (this.dragonFight != null) {
              this.worldDataServer.setEndDragonFightData(this.dragonFight.saveData()); // CraftBukkit
 diff --git a/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java b/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java
-index 58f5a5671a451f1b42e51e7baaf94a935bb6c243..4595e6915edbbad20c5944d8c9e15b33d1b403a0 100644
+index 86469b69db951f4590cf3faf21c77a49c43d8e13..961bc58fde8b8ba0057c972e8c2d01166225e42f 100644
 --- a/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java
 +++ b/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java
 @@ -82,7 +82,7 @@ public class LevelChunk implements ChunkAccess {

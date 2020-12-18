@@ -8,7 +8,7 @@ Sets tracking range of watermobs to animals instead of misc and simplifies code
 Also ignores Enderdragon, defaulting it to Mojang's setting
 
 diff --git a/src/main/java/net/minecraft/server/level/ChunkMap.java b/src/main/java/net/minecraft/server/level/ChunkMap.java
-index fa1696bf8b6b4597b4373d7217bd0eb40c747b01..0bfa3ebaf7219113d8a10b707d449a6c71d0a00b 100644
+index f130ced304d8085668cc85ff0844a519aae0e989..c3726bce62368d434bc505fa5c3f5f09b0af315f 100644
 --- a/src/main/java/net/minecraft/server/level/ChunkMap.java
 +++ b/src/main/java/net/minecraft/server/level/ChunkMap.java
 @@ -1786,6 +1786,7 @@ public class ChunkMap extends ChunkStorage implements ChunkHolder.PlayerProvider

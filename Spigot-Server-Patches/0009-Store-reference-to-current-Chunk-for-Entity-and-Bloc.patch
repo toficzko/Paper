@@ -8,7 +8,7 @@ This enables us a fast reference to the entities current chunk instead
 of having to look it up by hashmap lookups.
 
 diff --git a/src/main/java/net/minecraft/world/entity/Entity.java b/src/main/java/net/minecraft/world/entity/Entity.java
-index 1ceba28b43e7097b7d70380e46b8d11826c3a26b..4e300c5fbe8d413ed7de55714b49816c39faecac 100644
+index 1ceba28b43e7097b7d70380e46b8d11826c3a26b..364ef3f474690d787a6ed14793a235260d44d640 100644
 --- a/src/main/java/net/minecraft/world/entity/Entity.java
 +++ b/src/main/java/net/minecraft/world/entity/Entity.java
 @@ -87,6 +87,7 @@ import net.minecraft.world.level.block.SoundType;
@@ -32,7 +32,7 @@ index 1ceba28b43e7097b7d70380e46b8d11826c3a26b..4e300c5fbe8d413ed7de55714b49816c
      }
  
      // Paper start
-+    java.lang.ref.WeakReference<LevelChunk> currentChunk = null;
++    public java.lang.ref.WeakReference<LevelChunk> currentChunk = null;
 +
 +    public void setCurrentChunk(LevelChunk chunk) {
 +        this.currentChunk = chunk != null ? new java.lang.ref.WeakReference<>(chunk) : null;
@@ -81,7 +81,7 @@ index fdc039d50e38a8ba5249f44e697759e201a26e1b..2131560ac78fbcfc7059660221b27031
  
      @Nullable
 diff --git a/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java b/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java
-index 8e071c6869e77d9f4b240826d95795decd808f55..05c4342721d6be744f69ca08356c0314a4af67fa 100644
+index 8e071c6869e77d9f4b240826d95795decd808f55..28e489dc792ec87f4c064eac21b75aa03bc2922e 100644
 --- a/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java
 +++ b/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java
 @@ -92,11 +92,36 @@ public class LevelChunk implements ChunkAccess {
@@ -130,15 +130,7 @@ index 8e071c6869e77d9f4b240826d95795decd808f55..05c4342721d6be744f69ca08356c0314
          entity.xChunk = this.chunkPos.x;
          entity.yChunk = k;
          entity.zChunk = this.chunkPos.z;
-@@ -517,6 +543,7 @@ public class LevelChunk implements ChunkAccess {
-         ((Heightmap) this.heightmaps.get(heightmap_type)).setRawData(along);
-     }
- 
-+    public final void removeEntity(Entity entity) { this.removeEntity(entity); } // Paper - OBFHELPER
-     public void removeEntity(Entity entity) {
-         this.removeEntity(entity, entity.yChunk);
-     }
-@@ -530,7 +557,12 @@ public class LevelChunk implements ChunkAccess {
+@@ -530,7 +556,12 @@ public class LevelChunk implements ChunkAccess {
              section = this.entitySlices.length - 1;
          }
  

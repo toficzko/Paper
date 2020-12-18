@@ -176,7 +176,7 @@ index cc4147cbe77f529cc5dda0b9ba3ef71061b41169..53958bdaf365243f183ca962222cd9d5
                              }
  
 diff --git a/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java b/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java
-index 440481a6aef5169d2e477cb1bc8ddbd15059ac77..b8ce6eee78b8b1d3f3a0b51a20a401313751272a 100644
+index fb08998ccfeca50c61c4f5d95920ec815d26b9eb..fc9ca3f4c593714787b938173b8e0bae560966bb 100644
 --- a/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java
 +++ b/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java
 @@ -1,5 +1,6 @@
@@ -186,7 +186,7 @@ index 440481a6aef5169d2e477cb1bc8ddbd15059ac77..b8ce6eee78b8b1d3f3a0b51a20a40131
  import com.google.common.collect.Maps;
  import com.google.common.collect.Sets;
  import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
-@@ -647,10 +648,15 @@ public class LevelChunk implements ChunkAccess {
+@@ -646,10 +647,15 @@ public class LevelChunk implements ChunkAccess {
              this.blockEntities.remove(pos);
              // Paper end
          } else {

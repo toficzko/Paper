@@ -4,8 +4,30 @@ Date: Sun, 19 Apr 2020 04:28:29 -0400
 Subject: [PATCH] Load Chunks for Login Asynchronously
 
 
+diff --git a/src/main/java/net/minecraft/server/level/ChunkMap.java b/src/main/java/net/minecraft/server/level/ChunkMap.java
+index d264454709375df0f32bda49de81ec548b2b5949..4f747875a2795ace79a7dab7d54d925e99fe9bf0 100644
+--- a/src/main/java/net/minecraft/server/level/ChunkMap.java
++++ b/src/main/java/net/minecraft/server/level/ChunkMap.java
+@@ -1576,7 +1576,7 @@ public class ChunkMap extends ChunkStorage implements ChunkHolder.PlayerProvider
+         });
+     }
+ 
+-    protected void addEntity(Entity entity) {
++    public void addEntity(Entity entity) { // Paper - public
+         org.spigotmc.AsyncCatcher.catchOp("entity track"); // Spigot
+         // Paper start - ignore and warn about illegal addEntity calls instead of crashing server
+         if (!entity.valid || entity.level != this.level || this.entityMap.containsKey(entity.getId())) {
+@@ -1902,7 +1902,7 @@ public class ChunkMap extends ChunkStorage implements ChunkHolder.PlayerProvider
+         }
+     }
+ 
+-    class ChunkDistanceManager extends DistanceManager {
++    public class ChunkDistanceManager extends DistanceManager { // Paper - public
+ 
+         protected ChunkDistanceManager(Executor workerExecutor, Executor mainThreadExecutor) {
+             super(workerExecutor, mainThreadExecutor);
 diff --git a/src/main/java/net/minecraft/server/level/ServerChunkCache.java b/src/main/java/net/minecraft/server/level/ServerChunkCache.java
-index 2bdec2e343d341b0a8e42b45fc9d50b2883c7ae7..7d2729aa312b280cc47c90db2a98694f98873dc0 100644
+index 0e80735d216540d40c2637b1621abc82db79405b..80d1af99a4eea303952877926b36a145a5b326b2 100644
 --- a/src/main/java/net/minecraft/server/level/ServerChunkCache.java
 +++ b/src/main/java/net/minecraft/server/level/ServerChunkCache.java
 @@ -632,7 +632,7 @@ public class ServerChunkCache extends ChunkSource {
@@ -18,7 +40,7 @@ index 2bdec2e343d341b0a8e42b45fc9d50b2883c7ae7..7d2729aa312b280cc47c90db2a98694f
          boolean flag1 = this.chunkMap.promoteChunkMap();
  
 diff --git a/src/main/java/net/minecraft/server/level/ServerPlayer.java b/src/main/java/net/minecraft/server/level/ServerPlayer.java
-index df91784d4b156187c6ddd58d6deb243bf17cae36..9b9a2714201eebfaf6ff61190e36824e923733fd 100644
+index bd8372adaa670e2a02b1c753cfcfe4958871bfe4..8cd7652ace5de9e4738d805ba5a696da1e004172 100644
 --- a/src/main/java/net/minecraft/server/level/ServerPlayer.java
 +++ b/src/main/java/net/minecraft/server/level/ServerPlayer.java
 @@ -32,6 +32,7 @@ import net.minecraft.core.Vec3i;
@@ -58,14 +80,14 @@ index d09e4857b6c40410d134fa81b48e95919a7373bd..583587457790df826a8a3239a4bd1d0f
      public static final TicketType<ChunkPos> UNKNOWN = create("unknown", Comparator.comparingLong(ChunkPos::toLong), 1);
      public static final TicketType<Unit> PLUGIN = create("plugin", (a, b) -> 0); // CraftBukkit
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index 0837c0bea429f9796dc44fff842d91660adf1cf4..f603a0067fb4ed6a36b676effca5bce9670f2a82 100644
+index 0837c0bea429f9796dc44fff842d91660adf1cf4..4c4b6e42f7081e6c99b0e9e7976078c70f490863 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 @@ -218,6 +218,7 @@ public class ServerGamePacketListenerImpl implements ServerGamePacketListener {
      private static final Logger LOGGER = LogManager.getLogger();
      public final Connection connection;
      private final MinecraftServer server;
-+    Runnable playerJoinReady; // Paper
++    public Runnable playerJoinReady; // Paper
      public ServerPlayer player;
      private int tickCount;
      private long keepAliveTime = Util.getMillis(); private void setLastPing(long lastPing) { this.keepAliveTime = lastPing;}; private long getLastPing() { return this.keepAliveTime;}; // Paper - OBFHELPER
@@ -117,7 +139,7 @@ index 6645fd5b0160582ffbef6cba5daf3ba287106545..a37c7cdc70107211fc9626aa7e97b736
              if (entityplayer != null) {
                  this.state = ServerLoginPacketListenerImpl.State.DELAY_ACCEPT;
 diff --git a/src/main/java/net/minecraft/server/players/PlayerList.java b/src/main/java/net/minecraft/server/players/PlayerList.java
-index c50df7acdf3e6c47e7f08842fdd50b2ac3aa595c..0b0a6bd205b3ca0eeed5381333d73ef9457d1271 100644
+index 8c82262499f574702031aab7c8acb8d80ea97a3d..9bc41f660f8739b6c2745a8b2c4e80bb3359b8bc 100644
 --- a/src/main/java/net/minecraft/server/players/PlayerList.java
 +++ b/src/main/java/net/minecraft/server/players/PlayerList.java
 @@ -35,6 +35,7 @@ import net.minecraft.network.protocol.Packet;
@@ -201,7 +223,7 @@ index c50df7acdf3e6c47e7f08842fdd50b2ac3aa595c..0b0a6bd205b3ca0eeed5381333d73ef9
 +        });
 +    }
 +
-+    ServerPlayer getActivePlayer(UUID uuid) {
++    public ServerPlayer getActivePlayer(UUID uuid) {
 +        ServerPlayer player = this.getUUIDMap().get(uuid);
 +        return player != null ? player : pendingPlayers.get(uuid);
 +    }
@@ -389,7 +411,7 @@ index c50df7acdf3e6c47e7f08842fdd50b2ac3aa595c..0b0a6bd205b3ca0eeed5381333d73ef9
          Iterator iterator = list.iterator();
  
 diff --git a/src/main/java/net/minecraft/world/entity/Entity.java b/src/main/java/net/minecraft/world/entity/Entity.java
-index dec239049842af43cb126ff0ca36e7319dbf5c5b..f6e41d6c8f2a3215e82bb1de726d0d685f6ea03c 100644
+index 509e38b19da6fe6717f6b9c3a8c214406cd8a9ea..cd3ab29e88767ee977de08abb2d8d0d28ab14b64 100644
 --- a/src/main/java/net/minecraft/world/entity/Entity.java
 +++ b/src/main/java/net/minecraft/world/entity/Entity.java
 @@ -1374,7 +1374,7 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /

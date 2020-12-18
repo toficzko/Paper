@@ -9,7 +9,7 @@ as this is how Vanilla teleports entities.
 Cancel any pending motion when teleported.
 
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index d00c5dc7c154ac3dfef30ac56e5cb86f9aba0fab..3419aa3e98a75952894b865ae7bb604e4d2502a7 100644
+index ece8602036be2679b337e58adb273edae9a8de7a..a2ea8c973c6c95a212272384a0badd62e3016441 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 @@ -687,7 +687,7 @@ public class ServerGamePacketListenerImpl implements ServerGamePacketListener {
@@ -31,7 +31,7 @@ index d00c5dc7c154ac3dfef30ac56e5cb86f9aba0fab..3419aa3e98a75952894b865ae7bb604e
          this.player.connection.send(new ClientboundPlayerPositionPacket(d0 - d3, d1 - d4, d2 - d5, f - f2, f1 - f3, set, this.awaitingTeleport));
      }
 diff --git a/src/main/java/net/minecraft/world/entity/Entity.java b/src/main/java/net/minecraft/world/entity/Entity.java
-index c47109bdcaa5d86f6fc43a8a43b8f3c78fcbb720..10570c966d3bf5473ef2e630f5ad6d63e7c1d0fe 100644
+index aef860fe97b48d50c6c6cd1838b6b9238ec48d89..10dc5bbf6f2fcf89eb9d7dcd94c9b5c4baacb1f8 100644
 --- a/src/main/java/net/minecraft/world/entity/Entity.java
 +++ b/src/main/java/net/minecraft/world/entity/Entity.java
 @@ -146,6 +146,7 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
@@ -42,7 +42,7 @@ index c47109bdcaa5d86f6fc43a8a43b8f3c78fcbb720..10570c966d3bf5473ef2e630f5ad6d63
      static boolean isLevelAtLeast(CompoundTag tag, int level) {
          return tag.contains("Bukkit.updateLevel") && tag.getInt("Bukkit.updateLevel") >= level;
      }
-@@ -1409,6 +1410,13 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
+@@ -1407,6 +1408,13 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
      }
  
      public void moveTo(double x, double y, double z, float yaw, float pitch) {
@@ -57,10 +57,10 @@ index c47109bdcaa5d86f6fc43a8a43b8f3c78fcbb720..10570c966d3bf5473ef2e630f5ad6d63
          this.yRot = yaw;
          this.xRot = pitch;
 diff --git a/src/main/java/org/bukkit/craftbukkit/entity/CraftEntity.java b/src/main/java/org/bukkit/craftbukkit/entity/CraftEntity.java
-index 8922c2b61543375dfa7646aab6594ec8c451b6b0..cc1d7ee79679be3c5c49752de21b239678a1f53a 100644
+index ae4f3bea33e1123904dc07cfa88e564909e3296f..1f0168b09bf0b6953ad293f895b8a5213b0fec5e 100644
 --- a/src/main/java/org/bukkit/craftbukkit/entity/CraftEntity.java
 +++ b/src/main/java/org/bukkit/craftbukkit/entity/CraftEntity.java
-@@ -549,7 +549,7 @@ public abstract class CraftEntity implements org.bukkit.entity.Entity {
+@@ -552,7 +552,7 @@ public abstract class CraftEntity implements org.bukkit.entity.Entity {
          }
  
          // entity.setLocation() throws no event, and so cannot be cancelled

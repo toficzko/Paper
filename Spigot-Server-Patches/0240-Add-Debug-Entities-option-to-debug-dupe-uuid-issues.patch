@@ -27,20 +27,10 @@ index 125c93e7aa0ef73c47d62671a2effcbce67030c9..1bb4d3c1b7544c165701e19aea56b925
  
      protected void tick() {
 diff --git a/src/main/java/net/minecraft/server/level/ServerLevel.java b/src/main/java/net/minecraft/server/level/ServerLevel.java
-index 64d0a641e470c3ca18b1f165209cc989caf47871..f10d5c6720add3dd41ef142e9e032daf74bbe25c 100644
+index 0f4939f909e7de4225488e705b1319e1b84d9bf3..aa84d847435d9fdb2dfcf5e6950cf3169a18b9bd 100644
 --- a/src/main/java/net/minecraft/server/level/ServerLevel.java
 +++ b/src/main/java/net/minecraft/server/level/ServerLevel.java
-@@ -191,6 +191,9 @@ public class ServerLevel extends net.minecraft.world.level.Level implements Worl
-     public final LevelStorageSource.LevelStorageAccess convertable;
-     public final UUID uuid;
-     boolean hasPhysicsEvent = true; // Paper
-+    private static Throwable getAddToWorldStackTrace(Entity entity) {
-+        return new Throwable(entity + " Added to world at " + new java.util.Date());
-+    }
- 
-     @Override public LevelChunk getChunkIfLoaded(int x, int z) { // Paper - this was added in world too but keeping here for NMS ABI
-         return this.chunkSource.getChunk(x, z, false);
-@@ -1030,8 +1033,28 @@ public class ServerLevel extends net.minecraft.world.level.Level implements Worl
+@@ -1033,8 +1033,28 @@ public class ServerLevel extends net.minecraft.world.level.Level implements Worl
      // CraftBukkit start
      private boolean addEntity0(Entity entity, CreatureSpawnEvent.SpawnReason spawnReason) {
          org.spigotmc.AsyncCatcher.catchOp("entity add"); // Spigot
@@ -70,7 +60,7 @@ index 64d0a641e470c3ca18b1f165209cc989caf47871..f10d5c6720add3dd41ef142e9e032daf
              // WorldServer.LOGGER.warn("Tried to add entity {} but it was marked as removed already", EntityTypes.getName(entity.getEntityType())); // CraftBukkit
              return false;
          } else if (this.isUUIDUsed(entity)) {
-@@ -1229,7 +1252,24 @@ public class ServerLevel extends net.minecraft.world.level.Level implements Worl
+@@ -1232,7 +1252,24 @@ public class ServerLevel extends net.minecraft.world.level.Level implements Worl
                  }
              }
  
@@ -97,7 +87,7 @@ index 64d0a641e470c3ca18b1f165209cc989caf47871..f10d5c6720add3dd41ef142e9e032daf
              // CraftBukkit start - SPIGOT-5278
              if (entity instanceof Drowned) {
 diff --git a/src/main/java/net/minecraft/world/entity/Entity.java b/src/main/java/net/minecraft/world/entity/Entity.java
-index 2b049104614c957e5f9a4d84860e40c2b9d00211..a54848924fc02df03c95b24c38d28f81d1c4941f 100644
+index 4b65f0f673d76189a9d887230f5b1376462664d4..9cc3a773beabb90887551e5a8c4a9a8c850fb562 100644
 --- a/src/main/java/net/minecraft/world/entity/Entity.java
 +++ b/src/main/java/net/minecraft/world/entity/Entity.java
 @@ -48,6 +48,7 @@ import net.minecraft.resources.ResourceKey;
@@ -108,12 +98,13 @@ index 2b049104614c957e5f9a4d84860e40c2b9d00211..a54848924fc02df03c95b24c38d28f81
  import net.minecraft.server.level.ServerLevel;
  import net.minecraft.server.level.ServerPlayer;
  import net.minecraft.server.level.TicketType;
-@@ -163,6 +164,8 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
+@@ -164,6 +165,9 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
      public com.destroystokyo.paper.loottable.PaperLootableInventoryData lootableData; // Paper
      private CraftEntity bukkitEntity;
  
-+    ChunkMap.TrackedEntity tracker; // Paper
-+    Throwable addedToWorldStack; // Paper - entity debug
++    public ChunkMap.TrackedEntity tracker; // Paper
++    boolean collisionLoadChunks = false; // Paper
++    public Throwable addedToWorldStack; // Paper - entity debug
      public CraftEntity getBukkitEntity() {
          if (bukkitEntity == null) {
              bukkitEntity = CraftEntity.getEntity(level.getCraftServer(), this);

@@ -6,7 +6,7 @@ Subject: [PATCH] Delay unsafe actions until after entity ticking is done
 This will help prevent many cases of unregistering entities during entity ticking
 
 diff --git a/src/main/java/net/minecraft/server/level/ServerLevel.java b/src/main/java/net/minecraft/server/level/ServerLevel.java
-index 5fb6826a146151397a51beb1945a38b919f8719e..5ab0bc0f6656ae5eee330a7640c54acc5d2f985b 100644
+index cffef40beb02eb918d48c7a21b7641815302cda9..3307f15f5d49b6727846d066e01ebfa3bd582fd9 100644
 --- a/src/main/java/net/minecraft/server/level/ServerLevel.java
 +++ b/src/main/java/net/minecraft/server/level/ServerLevel.java
 @@ -172,6 +172,16 @@ public class ServerLevel extends net.minecraft.world.level.Level implements Worl

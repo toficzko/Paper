@@ -6,14 +6,15 @@ Subject: [PATCH] Use a Shared Random for Entities
 Reduces memory usage and provides ensures more randomness, Especially since a lot of garbage entity objects get created.
 
 diff --git a/src/main/java/net/minecraft/world/entity/Entity.java b/src/main/java/net/minecraft/world/entity/Entity.java
-index 6eaf41fb3c28625ce49ee40c441419526d649903..7ee4c5bb2ebf077ef2f9dba7ffcb8d493cb239b6 100644
+index d76b5b342fcbc1e5408b67bf72351e36d2c5abc2..ac2005027d056338792f8db07f53113b1cb5bd5b 100644
 --- a/src/main/java/net/minecraft/world/entity/Entity.java
 +++ b/src/main/java/net/minecraft/world/entity/Entity.java
-@@ -145,6 +145,21 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
+@@ -145,6 +145,22 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
          return tag.contains("Bukkit.updateLevel") && tag.getInt("Bukkit.updateLevel") >= level;
      }
  
 +    // Paper start
++    public boolean isQueuedForRegister = false;
 +    public static Random SHARED_RANDOM = new Random() {
 +        private boolean locked = false;
 +        @Override
@@ -31,7 +32,7 @@ index 6eaf41fb3c28625ce49ee40c441419526d649903..7ee4c5bb2ebf077ef2f9dba7ffcb8d49
      private CraftEntity bukkitEntity;
  
      public CraftEntity getBukkitEntity() {
-@@ -274,7 +289,7 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
+@@ -274,7 +290,7 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
          this.stuckSpeedMultiplier = Vec3.ZERO;
          this.nextStep = 1.0F;
          this.nextFlap = 1.0F;

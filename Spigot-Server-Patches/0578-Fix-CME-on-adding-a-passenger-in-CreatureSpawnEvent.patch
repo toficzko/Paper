@@ -5,10 +5,10 @@ Subject: [PATCH] Fix CME on adding a passenger in CreatureSpawnEvent
 
 
 diff --git a/src/main/java/net/minecraft/world/entity/Entity.java b/src/main/java/net/minecraft/world/entity/Entity.java
-index d7843dc265702d08226af3fcd81f9c506590fc0e..5a76a76dfa7ff53fe700ef379969fefe7160e969 100644
+index 98aba47acf7689fc279a3f5efb50374decb62349..e74fff678681487b251c280aa2fce00e64e2e60c 100644
 --- a/src/main/java/net/minecraft/world/entity/Entity.java
 +++ b/src/main/java/net/minecraft/world/entity/Entity.java
-@@ -3171,7 +3171,7 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
+@@ -3166,7 +3166,7 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
      }
  
      public Stream<Entity> getSelfAndPassengers() {

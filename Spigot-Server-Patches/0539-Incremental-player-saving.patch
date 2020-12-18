@@ -47,7 +47,7 @@ index b1de03d97162769219a448b24efdf87ccc143ccb..f64183008c44bf124970a0b234f0b487
              // Paper start
              for (ServerLevel world : getAllLevels()) {
 diff --git a/src/main/java/net/minecraft/server/level/ServerPlayer.java b/src/main/java/net/minecraft/server/level/ServerPlayer.java
-index db2bf92e65cda955ebc7fb096262c6db52dddf2b..d973dab9db0c6f27d53418aba3640841314efa66 100644
+index 3b65a195d772bd7c6b63aecea618d2baaff3ad27..8e9a40cbfa58e001f7d7c694ae0bf04e5b50b88d 100644
 --- a/src/main/java/net/minecraft/server/level/ServerPlayer.java
 +++ b/src/main/java/net/minecraft/server/level/ServerPlayer.java
 @@ -171,6 +171,7 @@ import org.bukkit.inventory.MainHand;
@@ -59,7 +59,7 @@ index db2bf92e65cda955ebc7fb096262c6db52dddf2b..d973dab9db0c6f27d53418aba3640841
      public Connection networkManager; // Paper
      public final MinecraftServer server;
 diff --git a/src/main/java/net/minecraft/server/players/PlayerList.java b/src/main/java/net/minecraft/server/players/PlayerList.java
-index 704b79b232fdcb7f5fc4ce05134e300bc374b039..67f58d66079f928b846c5a5758980c838d989317 100644
+index b7b026d44c9371dce6e2a91078e6495499cfdb5e..b576c7306d1103b1b676268b4a53b1c8b41748cd 100644
 --- a/src/main/java/net/minecraft/server/players/PlayerList.java
 +++ b/src/main/java/net/minecraft/server/players/PlayerList.java
 @@ -560,6 +560,7 @@ public abstract class PlayerList {

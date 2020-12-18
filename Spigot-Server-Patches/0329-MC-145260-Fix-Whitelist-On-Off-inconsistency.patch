@@ -11,7 +11,7 @@ everything to the Whitelist object.
 https://github.com/PaperMC/Paper/issues/1880
 
 diff --git a/src/main/java/net/minecraft/server/players/PlayerList.java b/src/main/java/net/minecraft/server/players/PlayerList.java
-index 0436136585a0dcb81253c4a8f600701884aa6ab6..a6176656c44a25aeb2a8af944423261b6bdf1159 100644
+index 97cc3908c1e6b8d282e6ed1ad7bfc7ba69db53e7..f3ab02f319e917be2ccb1570775e007c8c549cb2 100644
 --- a/src/main/java/net/minecraft/server/players/PlayerList.java
 +++ b/src/main/java/net/minecraft/server/players/PlayerList.java
 @@ -1016,9 +1016,9 @@ public abstract class PlayerList {

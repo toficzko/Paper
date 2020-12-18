@@ -7,7 +7,7 @@ Avoids a hashmap lookup by cacheing a reference to the CraftBlockData
 and cloning it when one is needed.
 
 diff --git a/src/main/java/net/minecraft/world/level/block/state/BlockBehaviour.java b/src/main/java/net/minecraft/world/level/block/state/BlockBehaviour.java
-index f4167600fd66b19d4633ed831c643f3b4f99d4fe..fcb95f7d3dd7ebe4dee36709aacbdd7d4d1dd78d 100644
+index caaf8c85daf27e1183d785e46f9d296e33a3e91e..fbcc44c258111607568657e52e366d6e6b76ef29 100644
 --- a/src/main/java/net/minecraft/world/level/block/state/BlockBehaviour.java
 +++ b/src/main/java/net/minecraft/world/level/block/state/BlockBehaviour.java
 @@ -374,6 +374,14 @@ public abstract class BlockBehaviour {

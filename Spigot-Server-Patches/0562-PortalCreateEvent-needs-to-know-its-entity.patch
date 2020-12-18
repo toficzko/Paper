@@ -87,7 +87,7 @@ index b2d31b24600ebd06bad88ab3976ae1826d7af69c..19b1f730e149da59b53730acec899f6a
  
      private static int getFireTickDelay(Random random) {
 diff --git a/src/main/java/net/minecraft/world/level/block/state/BlockBehaviour.java b/src/main/java/net/minecraft/world/level/block/state/BlockBehaviour.java
-index f5374c43ee04fb0f5469592fb9102e49f8f0bc19..e6fb60112c0a6242e464d331ed99ec0bfec29b3d 100644
+index 195b1bc0dd734e2327847b9c0639d7105aa174ca..785f86f8b471c5597a9032fa93d32b1137699f24 100644
 --- a/src/main/java/net/minecraft/world/level/block/state/BlockBehaviour.java
 +++ b/src/main/java/net/minecraft/world/level/block/state/BlockBehaviour.java
 @@ -31,6 +31,7 @@ import net.minecraft.world.item.DyeColor;

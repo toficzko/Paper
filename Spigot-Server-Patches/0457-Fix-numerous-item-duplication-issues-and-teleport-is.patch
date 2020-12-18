@@ -16,10 +16,10 @@ So even if something NEW comes up, it would be impossible to drop the
 same item twice because the source was destroyed.
 
 diff --git a/src/main/java/net/minecraft/world/entity/Entity.java b/src/main/java/net/minecraft/world/entity/Entity.java
-index d6bafe36b63feb55fe027acf5a0af264d8f7b354..f02394760c66813206f3759013241e4d503de75d 100644
+index 251b156366bac0e8ac077edd6c63433b6d171930..a0f27f61b17704a616f73b576bf8032b6c578e21 100644
 --- a/src/main/java/net/minecraft/world/entity/Entity.java
 +++ b/src/main/java/net/minecraft/world/entity/Entity.java
-@@ -1971,11 +1971,12 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
+@@ -1970,11 +1970,12 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
          } else {
              // CraftBukkit start - Capture drops for death event
              if (this instanceof net.minecraft.world.entity.LivingEntity && !((net.minecraft.world.entity.LivingEntity) this).forceDrops) {
@@ -34,7 +34,7 @@ index d6bafe36b63feb55fe027acf5a0af264d8f7b354..f02394760c66813206f3759013241e4d
  
              entityitem.setDefaultPickUpDelay();
              // CraftBukkit start
-@@ -2623,6 +2624,12 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
+@@ -2622,6 +2623,12 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
      @Nullable
      public Entity teleportTo(ServerLevel worldserver, BlockPos location) {
          // CraftBukkit end
@@ -47,7 +47,7 @@ index d6bafe36b63feb55fe027acf5a0af264d8f7b354..f02394760c66813206f3759013241e4d
          if (this.level instanceof ServerLevel && !this.removed) {
              this.level.getProfiler().push("changeDimension");
              // CraftBukkit start
-@@ -2658,7 +2665,7 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
+@@ -2657,7 +2664,7 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
                      entity.bukkitEntity = this.getBukkitEntity();
  
                      if (this instanceof Mob) {
@@ -56,7 +56,7 @@ index d6bafe36b63feb55fe027acf5a0af264d8f7b354..f02394760c66813206f3759013241e4d
                      }
                      // CraftBukkit end
                  }
-@@ -2778,7 +2785,7 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
+@@ -2777,7 +2784,7 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
      }
  
      public boolean canChangeDimensions() {
@@ -88,7 +88,7 @@ index c0677d442b735b95a4599196a2a8a559bad4eb7f..6d3f5f59dbe294a2d577c172551ab397
              }
          }
 diff --git a/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java b/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java
-index 86f8cf19e48dbd24c37c9386620ff223f8db63c4..ee8c949e2299dc839ec02fdf6a405fb1e7e78848 100644
+index 056096890e35aea0adc4ff05fab04f2b89772732..f76291f380cfd0d4f292d09336d46e0c3e1e728d 100644
 --- a/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java
 +++ b/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java
 @@ -798,7 +798,8 @@ public class CraftEventFactory {

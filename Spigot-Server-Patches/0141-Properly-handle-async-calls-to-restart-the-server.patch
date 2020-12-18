@@ -73,7 +73,7 @@ index 7c07d0f64ffa7bcbba932f5cdf73afec5504c91a..ea3514899053eca4bb3ff87dc5533a9e
      // Spigot Start
      private static double calcTps(double avg, double exp, double tps)
 diff --git a/src/main/java/net/minecraft/server/players/PlayerList.java b/src/main/java/net/minecraft/server/players/PlayerList.java
-index b5f2b0a498dd1d8f03d06492d817b0b93f5b01bc..a2077ba20bf88bb470c2705b2627e3bdc1104039 100644
+index dfd5a4c174f6bfb09f64b961af02f930d39adece..35a3ab5b5480eb869436c8adbd6606ba9a55b933 100644
 --- a/src/main/java/net/minecraft/server/players/PlayerList.java
 +++ b/src/main/java/net/minecraft/server/players/PlayerList.java
 @@ -1158,10 +1158,15 @@ public abstract class PlayerList {

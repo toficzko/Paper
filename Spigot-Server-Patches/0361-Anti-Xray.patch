@@ -1098,7 +1098,7 @@ index 01386a08ce2130db44357c01cbf3e7c406ddf44c..c54e242d755a6fb05fa5db4975cecef1
          }
  
 diff --git a/src/main/java/net/minecraft/server/level/ChunkMap.java b/src/main/java/net/minecraft/server/level/ChunkMap.java
-index 998be8a8e9e92314f9ac8d1d7134827e16022f3b..fc668c35a1564c996e4781dbd8a51663e4abd9ee 100644
+index 37773173aff6724bf1e2f1007319f284ac3276a8..bba992bbefe4159e1ac11ef5cc8ad479c4506276 100644
 --- a/src/main/java/net/minecraft/server/level/ChunkMap.java
 +++ b/src/main/java/net/minecraft/server/level/ChunkMap.java
 @@ -655,7 +655,7 @@ public class ChunkMap extends ChunkStorage implements ChunkHolder.PlayerProvider
@@ -1111,7 +1111,7 @@ index 998be8a8e9e92314f9ac8d1d7134827e16022f3b..fc668c35a1564c996e4781dbd8a51663
      }
  
 diff --git a/src/main/java/net/minecraft/server/level/ServerLevel.java b/src/main/java/net/minecraft/server/level/ServerLevel.java
-index 23054b819a5e334f8a2fef48abf4e54043f8847d..1bcc9d9a034df90d4acc32e29f36b65ea73d2cb5 100644
+index 4ebd00b85bf35e4c814f8020bf5ba881ea26a882..2fac1a5f0f695c59df292758562c9e187eb4f271 100644
 --- a/src/main/java/net/minecraft/server/level/ServerLevel.java
 +++ b/src/main/java/net/minecraft/server/level/ServerLevel.java
 @@ -204,7 +204,7 @@ public class ServerLevel extends net.minecraft.world.level.Level implements Worl
@@ -1212,7 +1212,7 @@ index a1ccc4a93a24ddf5d27f48dd6dd8f8420c3a687c..915ab8237afcf89d7801b62f2a9f7831
      }
  
 diff --git a/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java b/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java
-index 4595e6915edbbad20c5944d8c9e15b33d1b403a0..692b336ca6f611336c7d99104660a5a4e19beea6 100644
+index 961bc58fde8b8ba0057c972e8c2d01166225e42f..6b13f893e68481d4a38d0c403e7f85a8d018c385 100644
 --- a/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java
 +++ b/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java
 @@ -460,7 +460,7 @@ public class LevelChunk implements ChunkAccess {

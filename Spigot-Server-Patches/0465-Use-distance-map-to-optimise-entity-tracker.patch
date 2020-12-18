@@ -18,7 +18,7 @@ index 2f9d905c3f0fa81e92f28fd6af65e98f1fac2cc9..4e517adabe98183a7cb99e023a443081
          return initialDistance;
      }
 diff --git a/src/main/java/net/minecraft/server/level/ChunkMap.java b/src/main/java/net/minecraft/server/level/ChunkMap.java
-index 3fa48703429cfabd1b77e1a4f2d90a1b2ba676a2..3bf2f3dcb6e203b8c936c11565f96a89262081e3 100644
+index 59ae499dff00fdd23c2000fc90734a7b36edcc86..191311f0f1be9105b4a886114a0bb34ae5874a94 100644
 --- a/src/main/java/net/minecraft/server/level/ChunkMap.java
 +++ b/src/main/java/net/minecraft/server/level/ChunkMap.java
 @@ -61,6 +61,7 @@ import net.minecraft.network.protocol.game.ClientboundSetEntityLinkPacket;
@@ -40,7 +40,7 @@ index 3fa48703429cfabd1b77e1a4f2d90a1b2ba676a2..3bf2f3dcb6e203b8c936c11565f96a89
 +
 +    // inlined EnumMap, TrackingRange.TrackingRangeType
 +    static final org.spigotmc.TrackingRange.TrackingRangeType[] TRACKING_RANGE_TYPES = org.spigotmc.TrackingRange.TrackingRangeType.values();
-+    final com.destroystokyo.paper.util.misc.PlayerAreaMap[] playerEntityTrackerTrackMaps;
++    public final com.destroystokyo.paper.util.misc.PlayerAreaMap[] playerEntityTrackerTrackMaps;
 +    final int[] entityTrackerTrackRanges;
 +
 +    private int convertSpigotRangeToVanilla(final int vanilla) {
@@ -316,7 +316,7 @@ index d88a20286a961132cd877c7bd84c9890babca801..5cba5a7152e189d820405fb1d1a76461
          List<Entity> list = this.entity.getPassengers();
  
 diff --git a/src/main/java/net/minecraft/world/entity/Entity.java b/src/main/java/net/minecraft/world/entity/Entity.java
-index f02394760c66813206f3759013241e4d503de75d..6490cc03b72e141a0bc290b4ef6acc98d1118c1a 100644
+index a0f27f61b17704a616f73b576bf8032b6c578e21..db673e00bd8729db0198b1e7f25dbea607345deb 100644
 --- a/src/main/java/net/minecraft/world/entity/Entity.java
 +++ b/src/main/java/net/minecraft/world/entity/Entity.java
 @@ -47,6 +47,7 @@ import net.minecraft.network.syncher.SynchedEntityData;
@@ -334,13 +334,13 @@ index f02394760c66813206f3759013241e4d503de75d..6490cc03b72e141a0bc290b4ef6acc98
 +    // Paper start - optimise entity tracking
 +    final org.spigotmc.TrackingRange.TrackingRangeType trackingRangeType = org.spigotmc.TrackingRange.getTrackingRangeType(this);
 +
-+    boolean isLegacyTrackingEntity = false;
++    public boolean isLegacyTrackingEntity = false;
 +
 +    public final void setLegacyTrackingEntity(final boolean isLegacyTrackingEntity) {
 +        this.isLegacyTrackingEntity = isLegacyTrackingEntity;
 +    }
 +
-+    final com.destroystokyo.paper.util.misc.PooledLinkedHashSets.PooledObjectLinkedOpenHashSet<ServerPlayer> getPlayersInTrackRange() {
++    public final com.destroystokyo.paper.util.misc.PooledLinkedHashSets.PooledObjectLinkedOpenHashSet<ServerPlayer> getPlayersInTrackRange() {
 +        return ((ServerLevel)this.level).getChunkSource().chunkMap.playerEntityTrackerTrackMaps[this.trackingRangeType.ordinal()]
 +            .getObjectsInRange(MCUtil.getCoordinateKey(this));
 +    }

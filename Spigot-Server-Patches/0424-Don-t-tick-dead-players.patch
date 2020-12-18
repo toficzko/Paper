@@ -7,7 +7,7 @@ Causes sync chunk loads and who knows what all else.
 This is safe because Spectators are skipped in unloaded chunks too in vanilla.
 
 diff --git a/src/main/java/net/minecraft/server/level/ServerPlayer.java b/src/main/java/net/minecraft/server/level/ServerPlayer.java
-index 211e012b3db0f0f7a599838663b22e4b44edc000..96262e6421c716c092d6ae7b83686e09153a734d 100644
+index 5db157eadb41c6dcf104168f4f54c5d7dc6527df..82f459daae2d2579107cf84ad3d366880f04eca9 100644
 --- a/src/main/java/net/minecraft/server/level/ServerPlayer.java
 +++ b/src/main/java/net/minecraft/server/level/ServerPlayer.java
 @@ -602,7 +602,7 @@ public class ServerPlayer extends Player implements ContainerListener {

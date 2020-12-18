@@ -94,7 +94,7 @@ index fcbe04613782dd0d98f2342b22e8e4e88917d7ea..09e50a780a0579455573423f724cb625
                  chunkData.addProperty("queued-for-unload", chunkMap.toDrop.contains(playerChunk.pos.toLong()));
                  chunkData.addProperty("status", status == null ? "unloaded" : status.toString());
 diff --git a/src/main/java/net/minecraft/server/level/ChunkHolder.java b/src/main/java/net/minecraft/server/level/ChunkHolder.java
-index 732a742875aff9a3efb6fa16466b1607ac2259b2..cb4a1a78dfd3416f2081b8de4a68465e76cf3dcc 100644
+index 3c9526b403e06228628b5e49e5ab8337f00f6a48..18001a379e2a80409f539bcda238c3cbbad15a8b 100644
 --- a/src/main/java/net/minecraft/server/level/ChunkHolder.java
 +++ b/src/main/java/net/minecraft/server/level/ChunkHolder.java
 @@ -1,6 +1,7 @@
@@ -264,7 +264,7 @@ index 732a742875aff9a3efb6fa16466b1607ac2259b2..cb4a1a78dfd3416f2081b8de4a68465e
      // Paper end
  
      public CompletableFuture<Either<ChunkAccess, ChunkHolder.ChunkLoadingFailure>> getFutureIfPresentUnchecked(ChunkStatus leastStatus) {
-@@ -435,6 +563,7 @@ public class ChunkHolder {
+@@ -434,6 +562,7 @@ public class ChunkHolder {
          return this.queueLevel;
      }
  
@@ -272,7 +272,7 @@ index 732a742875aff9a3efb6fa16466b1607ac2259b2..cb4a1a78dfd3416f2081b8de4a68465e
      private void setQueueLevel(int level) {
          this.queueLevel = level;
      }
-@@ -453,7 +582,7 @@ public class ChunkHolder {
+@@ -452,7 +581,7 @@ public class ChunkHolder {
          // CraftBukkit start
          // ChunkUnloadEvent: Called before the chunk is unloaded: isChunkLoaded is still true and chunk can still be modified by plugins.
          if (playerchunk_state.isOrAfter(ChunkHolder.FullChunkStatus.BORDER) && !playerchunk_state1.isOrAfter(ChunkHolder.FullChunkStatus.BORDER)) {
@@ -281,7 +281,7 @@ index 732a742875aff9a3efb6fa16466b1607ac2259b2..cb4a1a78dfd3416f2081b8de4a68465e
                  LevelChunk chunk = (LevelChunk)either.left().orElse(null);
                  if (chunk != null) {
                      chunkStorage.callbackExecutor.execute(() -> {
-@@ -518,12 +647,13 @@ public class ChunkHolder {
+@@ -517,12 +646,13 @@ public class ChunkHolder {
          if (!flag2 && flag3) {
              // Paper start - cache ticking ready status
              int expectCreateCount = ++this.fullChunkCreateCount;
@@ -296,7 +296,7 @@ index 732a742875aff9a3efb6fa16466b1607ac2259b2..cb4a1a78dfd3416f2081b8de4a68465e
  
  
                  }
-@@ -548,7 +678,7 @@ public class ChunkHolder {
+@@ -547,7 +677,7 @@ public class ChunkHolder {
  
          if (!flag4 && flag5) {
              // Paper start - cache ticking ready status
@@ -305,7 +305,7 @@ index 732a742875aff9a3efb6fa16466b1607ac2259b2..cb4a1a78dfd3416f2081b8de4a68465e
                  if (either.left().isPresent()) {
                      // note: Here is a very good place to add callbacks to logic waiting on this.
                      LevelChunk tickingChunk = either.left().get();
-@@ -579,7 +709,7 @@ public class ChunkHolder {
+@@ -578,7 +708,7 @@ public class ChunkHolder {
              }
  
              // Paper start - cache ticking ready status
@@ -314,7 +314,7 @@ index 732a742875aff9a3efb6fa16466b1607ac2259b2..cb4a1a78dfd3416f2081b8de4a68465e
                  if (either.left().isPresent()) {
                      // note: Here is a very good place to add callbacks to logic waiting on this.
                      LevelChunk entityTickingChunk = either.left().get();
-@@ -599,12 +729,29 @@ public class ChunkHolder {
+@@ -598,12 +728,29 @@ public class ChunkHolder {
              this.entityTickingChunkFuture = ChunkHolder.UNLOADED_LEVEL_CHUNK_FUTURE;
          }
  
@@ -346,7 +346,7 @@ index 732a742875aff9a3efb6fa16466b1607ac2259b2..cb4a1a78dfd3416f2081b8de4a68465e
                  LevelChunk chunk = (LevelChunk)either.left().orElse(null);
                  if (chunk != null) {
                      chunkStorage.callbackExecutor.execute(() -> {
-@@ -686,6 +833,7 @@ public class ChunkHolder {
+@@ -685,6 +832,7 @@ public class ChunkHolder {
  
      public interface LevelChangeListener {
  
@@ -355,7 +355,7 @@ index 732a742875aff9a3efb6fa16466b1607ac2259b2..cb4a1a78dfd3416f2081b8de4a68465e
      }
  
 diff --git a/src/main/java/net/minecraft/server/level/ChunkMap.java b/src/main/java/net/minecraft/server/level/ChunkMap.java
-index 5138876c5b9e9413e09f011967ebc8709ebf863c..1031730427d7400ee62bb64ce8a7c20d03eb2eca 100644
+index 0a11569e0beaf771f8de171de8c76c6092417bdf..a135d7f80041b9001ed0966ccd4fabe8a7052972 100644
 --- a/src/main/java/net/minecraft/server/level/ChunkMap.java
 +++ b/src/main/java/net/minecraft/server/level/ChunkMap.java
 @@ -14,6 +14,7 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -1024,7 +1024,7 @@ index 74adebf94546e2aa24d26e7dad8db77bbcb83e72..b39736a6f202034aa656b1098a870e0f
          protected int getLevel(long i) {
              return this.chunks.get(i);
 diff --git a/src/main/java/net/minecraft/server/level/ServerChunkCache.java b/src/main/java/net/minecraft/server/level/ServerChunkCache.java
-index 284c891c890b7d1e6b49ba07aca000bf31963819..96af98fa9a5081dc420ec8353da279687c1ced9e 100644
+index 2c5861c7daacbd8f44a54b0f03530f21c1d06f83..285958284d110cdd5c9220bc361f8bc469419856 100644
 --- a/src/main/java/net/minecraft/server/level/ServerChunkCache.java
 +++ b/src/main/java/net/minecraft/server/level/ServerChunkCache.java
 @@ -471,6 +471,26 @@ public class ServerChunkCache extends ChunkSource {
@@ -1110,7 +1110,7 @@ index 284c891c890b7d1e6b49ba07aca000bf31963819..96af98fa9a5081dc420ec8353da27968
          boolean flag1 = this.chunkMap.promoteChunkMap();
  
 diff --git a/src/main/java/net/minecraft/server/level/ServerPlayer.java b/src/main/java/net/minecraft/server/level/ServerPlayer.java
-index 89812f7a1235c23b7accf2635f4ae24eb7a50322..db2bf92e65cda955ebc7fb096262c6db52dddf2b 100644
+index 6b946295b3075850de0e4e7d17e20bd6ab7c2836..3b65a195d772bd7c6b63aecea618d2baaff3ad27 100644
 --- a/src/main/java/net/minecraft/server/level/ServerPlayer.java
 +++ b/src/main/java/net/minecraft/server/level/ServerPlayer.java
 @@ -73,6 +73,7 @@ import net.minecraft.network.protocol.game.ClientboundUpdateMobEffectPacket;
@@ -1165,7 +1165,7 @@ index 89812f7a1235c23b7accf2635f4ae24eb7a50322..db2bf92e65cda955ebc7fb096262c6db
              for (int i = 0; i < this.inventory.getContainerSize(); ++i) {
                  ItemStack itemstack = this.inventory.getItem(i);
 diff --git a/src/main/java/net/minecraft/server/level/Ticket.java b/src/main/java/net/minecraft/server/level/Ticket.java
-index c2bd25c62febbfe948ff32f96434acb4e29fe5c1..fc69fe80b35eaa418a11b4df0eecfc64cede9bf0 100644
+index 7726b27fd7c603c69de30662d2b8056d0603d646..d83ef01bc0c953c5853fdd7b02af74efb3f36645 100644
 --- a/src/main/java/net/minecraft/server/level/Ticket.java
 +++ b/src/main/java/net/minecraft/server/level/Ticket.java
 @@ -7,6 +7,7 @@ public final class Ticket<T> implements Comparable<Ticket<?>> {
@@ -1176,7 +1176,7 @@ index c2bd25c62febbfe948ff32f96434acb4e29fe5c1..fc69fe80b35eaa418a11b4df0eecfc64
  
      protected Ticket(TicketType<T> type, int level, T argument) {
          this.type = type;
-@@ -52,6 +53,7 @@ public final class Ticket<T> implements Comparable<Ticket<?>> {
+@@ -51,6 +52,7 @@ public final class Ticket<T> implements Comparable<Ticket<?>> {
          return this.ticketLevel;
      }
  
@@ -1198,7 +1198,7 @@ index 583587457790df826a8a3239a4bd1d0f1dcab1da..2444f6f676db543509b14e8c882491dc
      public static <T> TicketType<T> create(String name, Comparator<T> comparator) {
          return new TicketType<>(name, comparator, 0L);
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index ca403c9612a70f1138d62dc1fd03363b0e4ac4d2..a49e8be3fbf8c7ef4451568c7c601b88878eda8b 100644
+index 90e54183d3bb8a85f5a71bb51edd6b495355859a..497c343e7540c6a5c248dfab969b61d5c57b8f84 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 @@ -1513,6 +1513,7 @@ public class ServerGamePacketListenerImpl implements ServerGamePacketListener {
@@ -1210,7 +1210,7 @@ index ca403c9612a70f1138d62dc1fd03363b0e4ac4d2..a49e8be3fbf8c7ef4451568c7c601b88
      }
  
 diff --git a/src/main/java/net/minecraft/server/players/PlayerList.java b/src/main/java/net/minecraft/server/players/PlayerList.java
-index bee66d03e583e76cb60cff7bd9b470458b17c97b..053940b378ba4f4549b519ec2d854ebc3f58fd3d 100644
+index c959f2e167415c1711990c2cb6ea3e3b8f559946..cb1c37447f27dbdab462522b17d48899326f98b8 100644
 --- a/src/main/java/net/minecraft/server/players/PlayerList.java
 +++ b/src/main/java/net/minecraft/server/players/PlayerList.java
 @@ -273,8 +273,8 @@ public abstract class PlayerList {

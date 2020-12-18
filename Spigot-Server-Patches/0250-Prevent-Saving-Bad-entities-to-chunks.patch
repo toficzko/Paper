@@ -18,7 +18,7 @@ an invalid entity.
 This should reduce log occurrences of dupe uuid messages.
 
 diff --git a/src/main/java/net/minecraft/server/level/ServerLevel.java b/src/main/java/net/minecraft/server/level/ServerLevel.java
-index f10d5c6720add3dd41ef142e9e032daf74bbe25c..e038dc8b74cb441435c4e8257b40aafb6f96d101 100644
+index aa84d847435d9fdb2dfcf5e6950cf3169a18b9bd..eb4fbb87d1253855a1e407b6f541e3e9f2ec2c88 100644
 --- a/src/main/java/net/minecraft/server/level/ServerLevel.java
 +++ b/src/main/java/net/minecraft/server/level/ServerLevel.java
 @@ -1149,6 +1149,7 @@ public class ServerLevel extends net.minecraft.world.level.Level implements Worl

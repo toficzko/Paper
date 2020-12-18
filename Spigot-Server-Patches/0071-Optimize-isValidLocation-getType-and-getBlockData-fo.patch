@@ -13,12 +13,12 @@ Replace all calls to the new place to the unnecessary forward.
 Optimize getType and getBlockData to manually inline and optimize the calls
 
 diff --git a/src/main/java/net/minecraft/core/Vec3i.java b/src/main/java/net/minecraft/core/Vec3i.java
-index 2194661910d32167d635dfa63909fbd675dc90ca..b4c19cf88e19de74fd70e035d9eb811b62d48995 100644
+index a42cf2867ff945d1d607242f179086b435e0c958..a8f5041c210a03a21972374e15987f683ee4efb1 100644
 --- a/src/main/java/net/minecraft/core/Vec3i.java
 +++ b/src/main/java/net/minecraft/core/Vec3i.java
 @@ -21,6 +21,15 @@ public class Vec3i implements Comparable<Vec3i> {
-     private int y;public final void setY(final int y) { this.y = y; } // Paper - OBFHELPER
-     private int z;public final void setZ(final int z) { this.z = z; } // Paper - OBFHELPER
+     private int y;
+     private int z;
  
 +    // Paper start
 +    public boolean isValidLocation() {
@@ -93,7 +93,7 @@ index 029417fc099500e47f84265d629d500164698ddf..a1ccc4a93a24ddf5d27f48dd6dd8f842
      public FluidState getFluidState(BlockPos blockPos) {
          return this.wrapped.getFluidState(blockPos);
 diff --git a/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java b/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java
-index b8ce6eee78b8b1d3f3a0b51a20a401313751272a..9784bebddbca294eda8b8e4b302230cffaf25ee3 100644
+index fc9ca3f4c593714787b938173b8e0bae560966bb..60932b67d572b5fb4c80f579ca83fd7db9d314e1 100644
 --- a/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java
 +++ b/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java
 @@ -344,12 +344,27 @@ public class LevelChunk implements ChunkAccess {

@@ -8,7 +8,7 @@ faster on its own, however removing the try catch makes it
 easier to inline due to code size
 
 diff --git a/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java b/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java
-index 76815483270615b63c7246d27acf9c45b569d09b..baaf9f6aff3a6d75abb1ad2092217283dc4f696a 100644
+index ac294b500b09be2bf9749e04000cc242eaf03cf4..d737b114ec31c14ff34fdbf46ab05a08ac8ebb92 100644
 --- a/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java
 +++ b/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java
 @@ -426,25 +426,29 @@ public class LevelChunk implements ChunkAccess {
@@ -53,7 +53,7 @@ index 76815483270615b63c7246d27acf9c45b569d09b..baaf9f6aff3a6d75abb1ad2092217283
  
      // CraftBukkit start
 diff --git a/src/main/java/net/minecraft/world/level/chunk/LevelChunkSection.java b/src/main/java/net/minecraft/world/level/chunk/LevelChunkSection.java
-index 3d16111871c98ba9a3762f28fb2f8e7acc7e0734..c6f1b0c21aa04235e9e58d4e3606b5355f22570b 100644
+index 6e6f5c6a27f3f82e7dbb79fb9c0e3b1120a679bf..cf2df2cd04c28d1be6032f5b0d7616f422f669bf 100644
 --- a/src/main/java/net/minecraft/world/level/chunk/LevelChunkSection.java
 +++ b/src/main/java/net/minecraft/world/level/chunk/LevelChunkSection.java
 @@ -44,7 +44,7 @@ public class LevelChunkSection {

@@ -5,7 +5,7 @@ Subject: [PATCH] Validate PickItem Packet and kick for invalid
 
 
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index 1b88399c540e88d9e9cf5187201fe55af52140e9..ca403c9612a70f1138d62dc1fd03363b0e4ac4d2 100644
+index 4fc0ac8ec7facf2b3fdaa4a3dbdaffc472b1bd8a..90e54183d3bb8a85f5a71bb51edd6b495355859a 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 @@ -877,7 +877,14 @@ public class ServerGamePacketListenerImpl implements ServerGamePacketListener {

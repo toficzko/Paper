@@ -5,7 +5,7 @@ Subject: [PATCH] Add API for quit reason
 
 
 diff --git a/src/main/java/net/minecraft/network/Connection.java b/src/main/java/net/minecraft/network/Connection.java
-index 4dff47c3408b12e8f04048669ab4c81235e9c527..b0fa0ee2daa288308a436936d32576b77ae1f3ce 100644
+index 674e5f9eeed31b7aa530e08e78c3341b748e8176..1f8676f3e82de3da6181cbf55b3b46320c415824 100644
 --- a/src/main/java/net/minecraft/network/Connection.java
 +++ b/src/main/java/net/minecraft/network/Connection.java
 @@ -135,12 +135,15 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
@@ -25,7 +25,7 @@ index 4dff47c3408b12e8f04048669ab4c81235e9c527..b0fa0ee2daa288308a436936d32576b7
                          Connection.LOGGER.debug("Failed to sent packet", throwable);
                          this.send(new ClientboundDisconnectPacket(chatmessage), (future) -> {
 diff --git a/src/main/java/net/minecraft/server/level/ServerPlayer.java b/src/main/java/net/minecraft/server/level/ServerPlayer.java
-index d973dab9db0c6f27d53418aba3640841314efa66..9a7d88062b44ecfa4e90c96ea5a08f31f5572ec6 100644
+index 8e9a40cbfa58e001f7d7c694ae0bf04e5b50b88d..23140e975f670da473eebd0e2de063554a2e86a5 100644
 --- a/src/main/java/net/minecraft/server/level/ServerPlayer.java
 +++ b/src/main/java/net/minecraft/server/level/ServerPlayer.java
 @@ -255,6 +255,7 @@ public class ServerPlayer extends Player implements ContainerListener {
@@ -37,7 +37,7 @@ index d973dab9db0c6f27d53418aba3640841314efa66..9a7d88062b44ecfa4e90c96ea5a08f31
      public ServerPlayer(MinecraftServer server, ServerLevel world, GameProfile profile, ServerPlayerGameMode interactionManager) {
          super(world, world.getSpawn(), world.getSharedSpawnAngle(), profile);
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index 54422e7bd2c300dbd71127103512d8e156ec88da..df62af2d339c2984ab2e645be5193d1b31fcd657 100644
+index 1b6d995ba0137d3bfb9214b96ed7f3f63b7e7f0a..d6c6ee671408f409c551e87002e1d4ea5b9d4346 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 @@ -443,6 +443,7 @@ public class ServerGamePacketListenerImpl implements ServerGamePacketListener {
@@ -49,7 +49,7 @@ index 54422e7bd2c300dbd71127103512d8e156ec88da..df62af2d339c2984ab2e645be5193d1b
              this.connection.disconnect(ichatbasecomponent);
          });
 diff --git a/src/main/java/net/minecraft/server/players/PlayerList.java b/src/main/java/net/minecraft/server/players/PlayerList.java
-index bcb507302f0fca11e45e827c1af80b7559fe8874..1cae5f49e7a92b5eb6d60db8cf9ec83689499574 100644
+index 657c29356f6f816333bc54753792e035532b3c0e..53be9bf75b28ea6489c63d601d1829e754d8f654 100644
 --- a/src/main/java/net/minecraft/server/players/PlayerList.java
 +++ b/src/main/java/net/minecraft/server/players/PlayerList.java
 @@ -587,7 +587,7 @@ public abstract class PlayerList {

@@ -6,7 +6,7 @@ Subject: [PATCH] Extend block drop capture to capture all items added to the
 
 
 diff --git a/src/main/java/net/minecraft/server/level/ServerLevel.java b/src/main/java/net/minecraft/server/level/ServerLevel.java
-index d1662961ed513bc9a0a656a637441f89034a3c75..476046fe8ac9398e15f40d8b9804fb0693e1ef26 100644
+index 5b03322dc15bcc8e492b18bd73f0b8cdce8ffbb6..0cc62c53b1b20a817518806f52b5a837cb5d60cc 100644
 --- a/src/main/java/net/minecraft/server/level/ServerLevel.java
 +++ b/src/main/java/net/minecraft/server/level/ServerLevel.java
 @@ -95,6 +95,7 @@ import net.minecraft.world.entity.ai.village.poi.PoiType;

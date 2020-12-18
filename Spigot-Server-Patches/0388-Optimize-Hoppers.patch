@@ -86,7 +86,7 @@ index 07af113a3d92b07ea857744ed14fc5e68fa39bfc..be4a8931a34faa20da1f1cfff32e6e30
          int i = Mth.floor((axisalignedbb.minX - 2.0D) / 16.0D);
          int j = Mth.ceil((axisalignedbb.maxX + 2.0D) / 16.0D);
 diff --git a/src/main/java/net/minecraft/world/level/block/entity/BlockEntity.java b/src/main/java/net/minecraft/world/level/block/entity/BlockEntity.java
-index f9de68db6f41c8c9c9b839a37f0e95a05755849c..dc839214df72adcd63dce819f5e1af5d77c329a4 100644
+index 9c4e7c02f9ee98d1519180330fcf004afddaf61d..1dfe2e0c8bf8012d225990c991668423443f7fd0 100644
 --- a/src/main/java/net/minecraft/world/level/block/entity/BlockEntity.java
 +++ b/src/main/java/net/minecraft/world/level/block/entity/BlockEntity.java
 @@ -76,6 +76,7 @@ public abstract class BlockEntity implements KeyedObject { // Paper
@@ -136,7 +136,7 @@ index 65bca344a1aa2c8461e603ad1955eb1fb48c06e5..b0641ab97ebf8b13a51022432c4a89ec
 +    double getLevelZ(); default double getZ() { return this.getLevelZ(); } // Paper - OBFHELPER
  }
 diff --git a/src/main/java/net/minecraft/world/level/block/entity/HopperBlockEntity.java b/src/main/java/net/minecraft/world/level/block/entity/HopperBlockEntity.java
-index 8e213bbb7eee49999a64c5fed7786d8d09f2d263..0c678ba2b015985576912d5ad74c403063fd80eb 100644
+index 8e213bbb7eee49999a64c5fed7786d8d09f2d263..170aa4d471d452b03dfe83945889e2322268a373 100644
 --- a/src/main/java/net/minecraft/world/level/block/entity/HopperBlockEntity.java
 +++ b/src/main/java/net/minecraft/world/level/block/entity/HopperBlockEntity.java
 @@ -194,6 +194,160 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
@@ -146,7 +146,7 @@ index 8e213bbb7eee49999a64c5fed7786d8d09f2d263..0c678ba2b015985576912d5ad74c4030
 +    // Paper start - Optimize Hoppers
 +    private static boolean skipPullModeEventFire = false;
 +    private static boolean skipPushModeEventFire = false;
-+    static boolean skipHopperEvents = false;
++    public static boolean skipHopperEvents = false;
 +
 +    private boolean hopperPush(Container iinventory, Direction enumdirection) {
 +        skipPushModeEventFire = skipHopperEvents;

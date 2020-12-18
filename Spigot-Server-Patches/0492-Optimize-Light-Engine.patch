@@ -25,10 +25,10 @@ Massive update to light to improve performance and chunk loading/generation.
 8) Fix NPE risk that crashes server in getting nibble data
 
 diff --git a/src/main/java/net/minecraft/server/level/ChunkHolder.java b/src/main/java/net/minecraft/server/level/ChunkHolder.java
-index ed728ba792ccb55bd1987f3bf32c7085420fbfb2..361df5329e184b4ce2b5ceb0bdc12f613d59c30e 100644
+index e900b2399a742f20e81fdc6d0d29cccf63730266..0c4c984617c22d65ca7bf14740d3b7eb149ba462 100644
 --- a/src/main/java/net/minecraft/server/level/ChunkHolder.java
 +++ b/src/main/java/net/minecraft/server/level/ChunkHolder.java
-@@ -747,6 +747,7 @@ public class ChunkHolder {
+@@ -746,6 +746,7 @@ public class ChunkHolder {
                  ioPriority = com.destroystokyo.paper.io.PrioritizedTaskQueue.HIGH_PRIORITY;
              }
              chunkMap.level.asyncChunkTaskManager.raisePriority(pos.x, pos.z, ioPriority);
@@ -37,7 +37,7 @@ index ed728ba792ccb55bd1987f3bf32c7085420fbfb2..361df5329e184b4ce2b5ceb0bdc12f61
          if (getCurrentPriority() != priority) {
              this.onLevelChange.onLevelChange(this.pos, this::getCurrentPriority, priority, this::setPriority); // use preferred priority
 diff --git a/src/main/java/net/minecraft/server/level/ChunkMap.java b/src/main/java/net/minecraft/server/level/ChunkMap.java
-index d727bb9f35ada7212eabc5f024fa26094715bba6..b671e3427a07a58ea9548e54fd24deae4113b926 100644
+index 9e8fe05405b09f3b4023c2b41a425b6f2c1426a7..fd3b4c9570e8ea5782fcbfb5984185ec002df455 100644
 --- a/src/main/java/net/minecraft/server/level/ChunkMap.java
 +++ b/src/main/java/net/minecraft/server/level/ChunkMap.java
 @@ -99,6 +99,7 @@ import net.minecraft.world.level.levelgen.structure.StructureStart;
@@ -143,7 +143,7 @@ index 76a487e3b1f0667d08d6487b8785dd056e9f4041..39d212f65cbb1dddd281fd7055878726
                          p = Long.MAX_VALUE;
                      }
 diff --git a/src/main/java/net/minecraft/server/level/ServerChunkCache.java b/src/main/java/net/minecraft/server/level/ServerChunkCache.java
-index 96af98fa9a5081dc420ec8353da279687c1ced9e..7376be9828aa292e2efa5f6c6066292c7f9882d6 100644
+index 285958284d110cdd5c9220bc361f8bc469419856..84fcb372fa4d4964fe579da1255fbf41aee63aee 100644
 --- a/src/main/java/net/minecraft/server/level/ServerChunkCache.java
 +++ b/src/main/java/net/minecraft/server/level/ServerChunkCache.java
 @@ -1071,7 +1071,7 @@ public class ServerChunkCache extends ChunkSource {
@@ -156,7 +156,7 @@ index 96af98fa9a5081dc420ec8353da279687c1ced9e..7376be9828aa292e2efa5f6c6066292c
              }
          } finally {
 diff --git a/src/main/java/net/minecraft/server/level/ServerLevel.java b/src/main/java/net/minecraft/server/level/ServerLevel.java
-index dea35f52a5ca83abc95b1fa41b843fc49a2167ae..dd8df0e78f6091c04e1925f7324fcb9c4f69ddbe 100644
+index a934813eb70b3321eea9fcf9d9b560447c9e9830..7610d4b81149957414ff2c14bdf63cd64e752894 100644
 --- a/src/main/java/net/minecraft/server/level/ServerLevel.java
 +++ b/src/main/java/net/minecraft/server/level/ServerLevel.java
 @@ -820,6 +820,7 @@ public class ServerLevel extends net.minecraft.world.level.Level implements Worl
@@ -478,7 +478,7 @@ index a0ac2929ebba243727dd586daacbc79cc1b35b78..229b5d1d38e36061de0925002f8e1c83
          this.queue.push(object);
          this.registerForExecution();
 diff --git a/src/main/java/net/minecraft/world/level/chunk/DataLayer.java b/src/main/java/net/minecraft/world/level/chunk/DataLayer.java
-index dc42e8bd1dd785cfe34e5fb02d959c5cffed4a6d..682e34fcd33eb1eebea46c988464a422c53fe5df 100644
+index c060b4283199e2e937841a12d3982d4241016f36..ccdbd832716cf18624cfea08188152f0c491eff7 100644
 --- a/src/main/java/net/minecraft/world/level/chunk/DataLayer.java
 +++ b/src/main/java/net/minecraft/world/level/chunk/DataLayer.java
 @@ -10,6 +10,13 @@ import net.minecraft.server.MCUtil;
@@ -612,7 +612,7 @@ index 975ddeb715c32359722d3fad1c37b33bb20d6770..49d166dfa447fa762ef47aafadc134b4
                          j = q;
                      }
 diff --git a/src/main/java/net/minecraft/world/level/lighting/BlockLightSectionStorage.java b/src/main/java/net/minecraft/world/level/lighting/BlockLightSectionStorage.java
-index 36aa43d29ab9b7d0337c18383134f36261f2f9a5..c63e726b34aa309824b4a68e37a3774eac70a672 100644
+index da64a65331a5bab4e2605975a2386a1455c12ced..f8f17c1eab583cb2ecec714d6cb6dd9e12768595 100644
 --- a/src/main/java/net/minecraft/world/level/lighting/BlockLightSectionStorage.java
 +++ b/src/main/java/net/minecraft/world/level/lighting/BlockLightSectionStorage.java
 @@ -1,8 +1,6 @@
@@ -769,7 +769,7 @@ index f0c04099e17fce699f32dfb2f8a20034ec0252b2..b619cb904832db69e2432a0b20d108a3
      }
  
 diff --git a/src/main/java/net/minecraft/world/level/lighting/LayerLightEngine.java b/src/main/java/net/minecraft/world/level/lighting/LayerLightEngine.java
-index 7ab70d28914ce83d5cb6b70dd97a180352128586..bb4a6a5c3d24013da552522fbbabb5f3e0d91b69 100644
+index 7ab70d28914ce83d5cb6b70dd97a180352128586..32e4e7cef475c4d7b7ff12397659a8c442d6e9c3 100644
 --- a/src/main/java/net/minecraft/world/level/lighting/LayerLightEngine.java
 +++ b/src/main/java/net/minecraft/world/level/lighting/LayerLightEngine.java
 @@ -10,6 +10,7 @@ import net.minecraft.world.level.ChunkPos;
@@ -780,12 +780,9 @@ index 7ab70d28914ce83d5cb6b70dd97a180352128586..bb4a6a5c3d24013da552522fbbabb5f3
  import net.minecraft.world.level.chunk.DataLayer;
  import net.minecraft.world.level.chunk.LightChunkGetter;
  import net.minecraft.world.phys.shapes.Shapes;
-@@ -22,10 +23,37 @@ public abstract class LayerLightEngine<M extends DataLayerStorageMap<M>, S exten
-     protected final LightLayer layer;
-     protected final S storage;
+@@ -24,8 +25,35 @@ public abstract class LayerLightEngine<M extends DataLayerStorageMap<M>, S exten
      private boolean runningLightUpdates;
--    protected final BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
-+    protected final BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos(); protected final BlockPos.MutableBlockPos pos = pos; // Paper
+     protected final BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
      private final long[] lastChunkPos = new long[2];
 -    private final BlockGetter[] lastChunk = new BlockGetter[2];
 +    private final ChunkAccess[] lastChunk = new ChunkAccess[2]; // Paper

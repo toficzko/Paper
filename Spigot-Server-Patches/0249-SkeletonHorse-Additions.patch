@@ -17,7 +17,7 @@ index b4181cfe5dbf354c4b6477b7d2b9d8202005aef0..5f4439d7204dd3aa164ed68f2fe31260
          return !entity.isSpectator();
      };
 diff --git a/src/main/java/net/minecraft/world/entity/animal/horse/SkeletonHorse.java b/src/main/java/net/minecraft/world/entity/animal/horse/SkeletonHorse.java
-index e81a4ce2225695a332692a94f934c29886a85686..04f9200241b9f5eea2da754bd0818658e07f0292 100644
+index e81a4ce2225695a332692a94f934c29886a85686..cb65b71c0ca5bb59db85306a63095e795548d95b 100644
 --- a/src/main/java/net/minecraft/world/entity/animal/horse/SkeletonHorse.java
 +++ b/src/main/java/net/minecraft/world/entity/animal/horse/SkeletonHorse.java
 @@ -22,7 +22,7 @@ import net.minecraft.world.level.Level;
@@ -29,19 +29,6 @@ index e81a4ce2225695a332692a94f934c29886a85686..04f9200241b9f5eea2da754bd0818658
  
      public SkeletonHorse(EntityType<? extends SkeletonHorse> entityType, Level level) {
          super(entityType, level);
-@@ -127,10 +127,12 @@ public class SkeletonHorse extends AbstractHorse {
-         return 0.96F;
-     }
- 
-+    public boolean isTrap() { return this.isTrap(); } // Paper - OBFHELPER
-     public boolean isTrap() {
-         return this.isTrap;
-     }
- 
-+    public void setTrap(boolean trap) { this.setTrap(trap); } // Paper - OBFHELPER
-     public void setTrap(boolean trapped) {
-         if (trapped != this.isTrap) {
-             this.isTrap = trapped;
 diff --git a/src/main/java/net/minecraft/world/entity/animal/horse/SkeletonTrapGoal.java b/src/main/java/net/minecraft/world/entity/animal/horse/SkeletonTrapGoal.java
 index 6c2cbaae2afe076c8b7bc53ffa91fe37e423d120..d31ad6cf64396de2f59d3d508960c9e5b148fd72 100644
 --- a/src/main/java/net/minecraft/world/entity/animal/horse/SkeletonTrapGoal.java

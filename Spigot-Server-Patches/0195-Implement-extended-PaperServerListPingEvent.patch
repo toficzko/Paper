@@ -176,31 +176,6 @@ index 0000000000000000000000000000000000000000..3ecbdde24b56893343e0f504617d2236
 +    }
 +
 +}
-diff --git a/src/main/java/net/minecraft/network/protocol/status/ServerStatus.java b/src/main/java/net/minecraft/network/protocol/status/ServerStatus.java
-index 5eb3afe2bc2e0827ded181fcde7a3e9756036036..e659955df27f39f9be6f69af7c172750abdd3813 100644
---- a/src/main/java/net/minecraft/network/protocol/status/ServerStatus.java
-+++ b/src/main/java/net/minecraft/network/protocol/status/ServerStatus.java
-@@ -28,6 +28,7 @@ public class ServerStatus {
-         this.description = description;
-     }
- 
-+    public Players getPlayers() { return getPlayers(); } // Paper - OBFHELPER
-     public ServerStatus.Players getPlayers() {
-         return this.players;
-     }
-@@ -70,10 +71,12 @@ public class ServerStatus {
-             return this.numPlayers;
-         }
- 
-+        public GameProfile[] getSample() { return getSample(); } // Paper - OBFHELPER
-         public GameProfile[] getSample() {
-             return this.sample;
-         }
- 
-+        public void setSample(GameProfile[] sample) { setSample(sample); } // Paper - OBFHELPER
-         public void setSample(GameProfile[] sample) {
-             this.sample = sample;
-         }
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
 index 73f7886ab043f80641d274ef8d277a9898487573..7f1a11f06eece762c4abbc587b7ab9c2eb8d5a9b 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java

@@ -425,7 +425,7 @@ index 781a985b7a8c9fea7e1d3e999e07a5ec0c4250fb..18ff6ab6bc35a0844ac9722d6ae063a4
 +    }
  }
 diff --git a/src/main/java/net/minecraft/server/level/ChunkHolder.java b/src/main/java/net/minecraft/server/level/ChunkHolder.java
-index 92357d3660446b49621a8520d15ebc712f3690a2..7db28062e80ae2ca39d2c2fc6863def0e1b578fb 100644
+index 87e9f91113a64641d7b9d23ebbacd3235ac36f39..79b6185b5222e960379cb3e4a529914b2646fb4b 100644
 --- a/src/main/java/net/minecraft/server/level/ChunkHolder.java
 +++ b/src/main/java/net/minecraft/server/level/ChunkHolder.java
 @@ -51,7 +51,7 @@ public class ChunkHolder {
@@ -438,7 +438,7 @@ index 92357d3660446b49621a8520d15ebc712f3690a2..7db28062e80ae2ca39d2c2fc6863def0
      private final ShortSet[] changedBlocksPerSection;
      private int blockChangedLightSectionFilter;
 diff --git a/src/main/java/net/minecraft/server/level/ChunkMap.java b/src/main/java/net/minecraft/server/level/ChunkMap.java
-index 6d63a57ac8dd916ae695aac37a2608119072668c..41975939f25eaec54b0e44cffa29d91d5ccbe1ba 100644
+index 6d63a57ac8dd916ae695aac37a2608119072668c..4f2fb275ed4b75805f959d6ae4ec416eb7b33252 100644
 --- a/src/main/java/net/minecraft/server/level/ChunkMap.java
 +++ b/src/main/java/net/minecraft/server/level/ChunkMap.java
 @@ -104,7 +104,7 @@ public class ChunkMap extends ChunkStorage implements ChunkHolder.PlayerProvider
@@ -446,12 +446,12 @@ index 6d63a57ac8dd916ae695aac37a2608119072668c..41975939f25eaec54b0e44cffa29d91d
      public volatile Long2ObjectLinkedOpenHashMap<ChunkHolder> visibleChunkMap;
      private final Long2ObjectLinkedOpenHashMap<ChunkHolder> pendingUnloads;
 -    private final LongSet entitiesInLevel;
-+    final LongSet entitiesInLevel; // Paper - private -> package
++    public final LongSet entitiesInLevel; // Paper - private -> public
      public final ServerLevel level;
      private final ThreadedLevelLightEngine lightEngine;
      private final BlockableEventLoop<Runnable> mainThreadExecutor;
 diff --git a/src/main/java/net/minecraft/server/level/ServerChunkCache.java b/src/main/java/net/minecraft/server/level/ServerChunkCache.java
-index 67e69456cbaf3e4744a0d8eaef5fc834ff7896e8..965a9bd659c44f973d03dc50cc9ec6cb6e89da2b 100644
+index 67e69456cbaf3e4744a0d8eaef5fc834ff7896e8..d391eae35c37a3a98c180b35c38d8198d67ecb67 100644
 --- a/src/main/java/net/minecraft/server/level/ServerChunkCache.java
 +++ b/src/main/java/net/minecraft/server/level/ServerChunkCache.java
 @@ -51,7 +51,7 @@ import org.apache.logging.log4j.Logger;
@@ -459,12 +459,12 @@ index 67e69456cbaf3e4744a0d8eaef5fc834ff7896e8..965a9bd659c44f973d03dc50cc9ec6cb
  public class ServerChunkCache extends ChunkSource {
  
 -    private static final List<ChunkStatus> CHUNK_STATUSES = ChunkStatus.getStatusList();
-+    private static final List<ChunkStatus> CHUNK_STATUSES = ChunkStatus.getStatusList(); static final List<ChunkStatus> getPossibleChunkStatuses() { return ServerChunkCache.CHUNK_STATUSES; } // Paper - OBFHELPER
++    private static final List<ChunkStatus> CHUNK_STATUSES = ChunkStatus.getStatusList(); public static final List<ChunkStatus> getPossibleChunkStatuses() { return ServerChunkCache.CHUNK_STATUSES; } // Paper - OBFHELPER
      private final DistanceManager distanceManager;
      public final ChunkGenerator generator;
      private final ServerLevel level;
 diff --git a/src/main/java/net/minecraft/server/level/Ticket.java b/src/main/java/net/minecraft/server/level/Ticket.java
-index 8a41ff68ceee77ad9a24ab37e738a3a835bad39d..c2bd25c62febbfe948ff32f96434acb4e29fe5c1 100644
+index 8a41ff68ceee77ad9a24ab37e738a3a835bad39d..7726b27fd7c603c69de30662d2b8056d0603d646 100644
 --- a/src/main/java/net/minecraft/server/level/Ticket.java
 +++ b/src/main/java/net/minecraft/server/level/Ticket.java
 @@ -5,8 +5,8 @@ import java.util.Objects;
@@ -478,11 +478,3 @@ index 8a41ff68ceee77ad9a24ab37e738a3a835bad39d..c2bd25c62febbfe948ff32f96434acb4
  
      protected Ticket(TicketType<T> type, int level, T argument) {
          this.type = type;
-@@ -47,6 +47,7 @@ public final class Ticket<T> implements Comparable<Ticket<?>> {
-         return this.type;
-     }
- 
-+    public final int getTicketLevel() { return this.getTicketLevel(); } // Paper - OBFHELPER
-     public int getTicketLevel() {
-         return this.ticketLevel;
-     }

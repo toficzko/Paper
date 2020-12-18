@@ -13,7 +13,7 @@ also Avoid NPE during CraftBlockEntityState load if could not get TE
 If Tile Entity was null, correct Sign to return empty lines instead of null
 
 diff --git a/src/main/java/net/minecraft/world/level/block/entity/BlockEntity.java b/src/main/java/net/minecraft/world/level/block/entity/BlockEntity.java
-index 7e0d024e46fc99e6459c5d5c2974628ee4fe7779..f9de68db6f41c8c9c9b839a37f0e95a05755849c 100644
+index 6aef0cf7682f7903615f69e59cc94962675ffdec..9c4e7c02f9ee98d1519180330fcf004afddaf61d 100644
 --- a/src/main/java/net/minecraft/world/level/block/entity/BlockEntity.java
 +++ b/src/main/java/net/minecraft/world/level/block/entity/BlockEntity.java
 @@ -46,6 +46,7 @@ public abstract class BlockEntity implements KeyedObject { // Paper

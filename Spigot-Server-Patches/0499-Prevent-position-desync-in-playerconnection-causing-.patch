@@ -14,7 +14,7 @@ behaviour, we need to move all of this dangerous logic outside
 of the move call and into an appropriate place in the tick method.
 
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index a49e8be3fbf8c7ef4451568c7c601b88878eda8b..a941c1491b5b5cd1de7d24cca1999390d3f226ea 100644
+index 497c343e7540c6a5c248dfab969b61d5c57b8f84..dacc00b7b4f4356653d9849b3f686f183b159597 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 @@ -1310,6 +1310,11 @@ public class ServerGamePacketListenerImpl implements ServerGamePacketListener {

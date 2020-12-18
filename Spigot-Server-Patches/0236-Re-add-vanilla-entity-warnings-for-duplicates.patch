@@ -8,10 +8,10 @@ These are a critical sign that somethin went wrong, and you've lost some data...
 We should kind of know about these things you know.
 
 diff --git a/src/main/java/net/minecraft/server/level/ServerLevel.java b/src/main/java/net/minecraft/server/level/ServerLevel.java
-index a5231678c6ee3c5b59b7fa8b1c12a1b873fa3159..64d0a641e470c3ca18b1f165209cc989caf47871 100644
+index d2247ce8c4c0dae5a093ea4161d5379014316935..0f4939f909e7de4225488e705b1319e1b84d9bf3 100644
 --- a/src/main/java/net/minecraft/server/level/ServerLevel.java
 +++ b/src/main/java/net/minecraft/server/level/ServerLevel.java
-@@ -1069,7 +1069,7 @@ public class ServerLevel extends net.minecraft.world.level.Level implements Worl
+@@ -1072,7 +1072,7 @@ public class ServerLevel extends net.minecraft.world.level.Level implements Worl
          if (entity1 == null) {
              return false;
          } else {

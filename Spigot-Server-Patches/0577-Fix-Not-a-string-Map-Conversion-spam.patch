@@ -10,7 +10,7 @@ This stops the spam by converting the old format to new before
 requesting the world.
 
 diff --git a/src/main/java/net/minecraft/world/level/saveddata/maps/MapItemSavedData.java b/src/main/java/net/minecraft/world/level/saveddata/maps/MapItemSavedData.java
-index 85d33e3bc7bf372ac6414a18f2f6fc3062a4897d..46863e90f6c290abb34183e4a4d51dde57297170 100644
+index 442a32b3634d045cecc584c7b6147485911fc0d4..e1cec02110784a6bf917ad63597865af2f44e868 100644
 --- a/src/main/java/net/minecraft/world/level/saveddata/maps/MapItemSavedData.java
 +++ b/src/main/java/net/minecraft/world/level/saveddata/maps/MapItemSavedData.java
 @@ -12,6 +12,8 @@ import net.minecraft.core.BlockPos;

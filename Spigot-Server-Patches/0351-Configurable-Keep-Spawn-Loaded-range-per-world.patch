@@ -91,7 +91,7 @@ index e631f0a47a0bb79a03d95342ea03a0b78526392f..41373e77e54c147330f3960f359f8deb
          if (true) {
              ServerLevel worldserver1 = worldserver;
 diff --git a/src/main/java/net/minecraft/server/level/ServerLevel.java b/src/main/java/net/minecraft/server/level/ServerLevel.java
-index f99a0ccd673edf1dc42d6bb083d11fdaecfab209..6f309a552711bdcd8fc3c469fd8979905e6f4689 100644
+index 9c24a879ffef0f4e77007518e30648c9a40bb771..3ff46ee0cd96cb340ed8dcdc9cbadefa21ce4fd4 100644
 --- a/src/main/java/net/minecraft/server/level/ServerLevel.java
 +++ b/src/main/java/net/minecraft/server/level/ServerLevel.java
 @@ -65,6 +65,7 @@ import net.minecraft.network.protocol.game.ClientboundSoundPacket;

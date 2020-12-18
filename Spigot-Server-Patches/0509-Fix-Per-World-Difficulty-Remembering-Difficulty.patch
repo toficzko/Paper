@@ -32,16 +32,10 @@ index 68344cfd1ed1296bbf4cbcfbcb07fe891a808827..b1de03d97162769219a448b24efdf87c
      }
  
 diff --git a/src/main/java/net/minecraft/server/commands/DifficultyCommand.java b/src/main/java/net/minecraft/server/commands/DifficultyCommand.java
-index 364e3e166e4b9cc14c967104d2ce6e2131c0ce22..fe41116d4716ba4bddb0761124c36c518ca943f3 100644
+index 364e3e166e4b9cc14c967104d2ce6e2131c0ce22..018a67c67900fb1d14e9c3ae105aca33b7d67c66 100644
 --- a/src/main/java/net/minecraft/server/commands/DifficultyCommand.java
 +++ b/src/main/java/net/minecraft/server/commands/DifficultyCommand.java
-@@ -1,4 +1,5 @@
- package net.minecraft.server.commands;
-+<<<<<<< found
- 
- import com.mojang.brigadier.CommandDispatcher;
- import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-@@ -8,6 +9,7 @@ import net.minecraft.commands.CommandSourceStack;
+@@ -8,6 +8,7 @@ import net.minecraft.commands.CommandSourceStack;
  import net.minecraft.commands.Commands;
  import net.minecraft.network.chat.TranslatableComponent;
  import net.minecraft.server.MinecraftServer;
@@ -49,7 +43,7 @@ index 364e3e166e4b9cc14c967104d2ce6e2131c0ce22..fe41116d4716ba4bddb0761124c36c51
  import net.minecraft.world.Difficulty;
  
  public class DifficultyCommand {
-@@ -35,10 +37,11 @@ public class DifficultyCommand {
+@@ -35,10 +36,11 @@ public class DifficultyCommand {
  
      public static int setDifficulty(CommandSourceStack source, Difficulty difficulty) throws CommandSyntaxException {
          MinecraftServer minecraftServer = source.getServer();
@@ -77,7 +71,7 @@ index 296e63d3710bf96b4e5798054327e9ee558e2297..58c9ee6d11b74902d01466a7410ff843
  
      @Override
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index ba43fc56aa8df4add8d8ed7c4d56a57da9c990ef..5fcca07d7536d3ab9081da214c8f3d3639f6842a 100644
+index bc3b4e1b760a196fda52b8bc2052d81bb6d382cc..d5a073890cd4362cb1b435e67980125978ea4320 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 @@ -3016,7 +3016,7 @@ public class ServerGamePacketListenerImpl implements ServerGamePacketListener {

@@ -51,7 +51,7 @@ index e8434130115b2d4c4abb0cbcef13af216e252ccd..fcbe04613782dd0d98f2342b22e8e4e8
              worldData.addProperty("keep-spawn-loaded-range", world.paperConfig.keepLoadedRange);
              worldData.addProperty("visible-chunk-count", visibleChunks.size());
 diff --git a/src/main/java/net/minecraft/server/level/ChunkHolder.java b/src/main/java/net/minecraft/server/level/ChunkHolder.java
-index 5fd9fdfdd2c10c25484f98218b825714a100c5cb..34e5a7c852945e675611abdd2ec2a9e63b559fcd 100644
+index 52565f1f5424db100f8131e4780e83b246df6754..427c8a0dbc6ba8c61541dc4bcd4f615cdf9f9083 100644
 --- a/src/main/java/net/minecraft/server/level/ChunkHolder.java
 +++ b/src/main/java/net/minecraft/server/level/ChunkHolder.java
 @@ -19,6 +19,7 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -81,7 +81,7 @@ index 5fd9fdfdd2c10c25484f98218b825714a100c5cb..34e5a7c852945e675611abdd2ec2a9e6
      public ChunkHolder(ChunkPos pos, int level, LevelLightEngine lightingProvider, ChunkHolder.LevelChangeListener levelUpdateListener, ChunkHolder.PlayerProvider playersWatchingChunkProvider) {
          this.futures = new AtomicReferenceArray(ChunkHolder.CHUNK_STATUSES.size());
          this.fullChunkFuture = ChunkHolder.UNLOADED_LEVEL_CHUNK_FUTURE;
-@@ -234,7 +247,7 @@ public class ChunkHolder {
+@@ -233,7 +246,7 @@ public class ChunkHolder {
      }
  
      public void blockChanged(BlockPos blockposition) {
@@ -90,7 +90,7 @@ index 5fd9fdfdd2c10c25484f98218b825714a100c5cb..34e5a7c852945e675611abdd2ec2a9e6
  
          if (chunk != null) {
              byte b0 = (byte) SectionPos.blockToSectionCoord(blockposition.getY());
-@@ -250,7 +263,7 @@ public class ChunkHolder {
+@@ -249,7 +262,7 @@ public class ChunkHolder {
      }
  
      public void sectionLightChanged(LightLayer type, int y) {
@@ -99,7 +99,7 @@ index 5fd9fdfdd2c10c25484f98218b825714a100c5cb..34e5a7c852945e675611abdd2ec2a9e6
  
          if (chunk != null) {
              chunk.setUnsaved(true);
-@@ -332,9 +345,48 @@ public class ChunkHolder {
+@@ -331,9 +344,48 @@ public class ChunkHolder {
      }
  
      private void broadcast(Packet<?> packet, boolean onlyOnWatchDistanceEdge) {
@@ -152,7 +152,7 @@ index 5fd9fdfdd2c10c25484f98218b825714a100c5cb..34e5a7c852945e675611abdd2ec2a9e6
  
      public CompletableFuture<Either<ChunkAccess, ChunkHolder.ChunkLoadingFailure>> getOrScheduleFuture(ChunkStatus targetStatus, ChunkMap chunkStorage) {
 diff --git a/src/main/java/net/minecraft/server/level/ChunkMap.java b/src/main/java/net/minecraft/server/level/ChunkMap.java
-index 2d8a9254304236fe6a971e74b38d00ba37d64ce8..0b0962036a6829c4c2192a06c053630077a1890b 100644
+index 4d4146ee2bcb9bd5dc6a76136ca42db98ce2ab4b..3954ea7d94fb4eeabfc92329408d7698d547b52f 100644
 --- a/src/main/java/net/minecraft/server/level/ChunkMap.java
 +++ b/src/main/java/net/minecraft/server/level/ChunkMap.java
 @@ -57,12 +57,14 @@ import net.minecraft.network.protocol.Packet;
@@ -518,7 +518,7 @@ index 2d8a9254304236fe6a971e74b38d00ba37d64ce8..0b0962036a6829c4c2192a06c0536300
 +        // Paper end - per player view distance
      }
  
-     protected void addEntity(Entity entity) {
+     public void addEntity(Entity entity) { // Paper - public
 @@ -1881,6 +2002,7 @@ public class ChunkMap extends ChunkStorage implements ChunkHolder.PlayerProvider
  
      }
@@ -561,7 +561,7 @@ index 5d2a41857e05823690b1da04c54eefc3b989febb..74adebf94546e2aa24d26e7dad8db77b
                  if (withinViewDistance) {
                      DistanceManager.this.ticketThrottlerInput.tell(ChunkTaskPriorityQueueSorter.message(() -> {
 diff --git a/src/main/java/net/minecraft/server/level/ServerPlayer.java b/src/main/java/net/minecraft/server/level/ServerPlayer.java
-index f963719783f176e89620e877ea17b441f90df692..89812f7a1235c23b7accf2635f4ae24eb7a50322 100644
+index 6af0cac4c2e8aa529d6e829bcd4c3061da066130..6b946295b3075850de0e4e7d17e20bd6ab7c2836 100644
 --- a/src/main/java/net/minecraft/server/level/ServerPlayer.java
 +++ b/src/main/java/net/minecraft/server/level/ServerPlayer.java
 @@ -246,6 +246,8 @@ public class ServerPlayer extends Player implements ContainerListener {
@@ -574,7 +574,7 @@ index f963719783f176e89620e877ea17b441f90df692..89812f7a1235c23b7accf2635f4ae24e
          super(world, world.getSpawn(), world.getSharedSpawnAngle(), profile);
          this.respawnDimension = Level.OVERWORLD;
 diff --git a/src/main/java/net/minecraft/server/players/PlayerList.java b/src/main/java/net/minecraft/server/players/PlayerList.java
-index 0b0a6bd205b3ca0eeed5381333d73ef9457d1271..bee66d03e583e76cb60cff7bd9b470458b17c97b 100644
+index 9bc41f660f8739b6c2745a8b2c4e80bb3359b8bc..c959f2e167415c1711990c2cb6ea3e3b8f559946 100644
 --- a/src/main/java/net/minecraft/server/players/PlayerList.java
 +++ b/src/main/java/net/minecraft/server/players/PlayerList.java
 @@ -252,7 +252,7 @@ public abstract class PlayerList {
@@ -624,7 +624,7 @@ index fe7529e12ff09dd7d4b0018fe6a8cb4ae3d45d87..8e7b6140ad62c510321233d0d9105b1e
  
              if ((i & 1) != 0) {
 diff --git a/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java b/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java
-index baaf9f6aff3a6d75abb1ad2092217283dc4f696a..402d630a0ddf2d186ad5b6307f18511afbce8c0f 100644
+index d737b114ec31c14ff34fdbf46ab05a08ac8ebb92..832e307f4067ab82b3f1183ea52dd9a9dcb4bc27 100644
 --- a/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java
 +++ b/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java
 @@ -26,11 +26,16 @@ import net.minecraft.ReportedException;
@@ -696,7 +696,7 @@ index baaf9f6aff3a6d75abb1ad2092217283dc4f696a..402d630a0ddf2d186ad5b6307f18511a
      }
  
      public final boolean isAnyNeighborsLoaded() {
-@@ -1120,7 +1169,7 @@ public class LevelChunk implements ChunkAccess {
+@@ -1119,7 +1168,7 @@ public class LevelChunk implements ChunkAccess {
                      BlockState iblockdata = this.getBlockState(blockposition);
                      BlockState iblockdata1 = Block.updateFromNeighbourShapes(iblockdata, (LevelAccessor) this.world, blockposition);
  

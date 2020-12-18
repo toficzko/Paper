@@ -5,7 +5,7 @@ Subject: [PATCH] Improve inlinig for some hot IBlockData methods
 
 
 diff --git a/src/main/java/net/minecraft/world/level/block/state/BlockBehaviour.java b/src/main/java/net/minecraft/world/level/block/state/BlockBehaviour.java
-index e6fb60112c0a6242e464d331ed99ec0bfec29b3d..0ae4f8bfda82a741d67802389c15d91a402f7d41 100644
+index 785f86f8b471c5597a9032fa93d32b1137699f24..cc4cb33b2132532a8b9c584e34fd76e209a0f210 100644
 --- a/src/main/java/net/minecraft/world/level/block/state/BlockBehaviour.java
 +++ b/src/main/java/net/minecraft/world/level/block/state/BlockBehaviour.java
 @@ -390,7 +390,14 @@ public abstract class BlockBehaviour {
@@ -56,7 +56,7 @@ index e6fb60112c0a6242e464d331ed99ec0bfec29b3d..0ae4f8bfda82a741d67802389c15d91a
              return this.canOcclude;
          }
  
-@@ -679,12 +686,12 @@ public abstract class BlockBehaviour {
+@@ -678,12 +685,12 @@ public abstract class BlockBehaviour {
              return this.getBlock().is(block);
          }
  

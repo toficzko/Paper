@@ -5,10 +5,10 @@ Subject: [PATCH] Entity Jump API
 
 
 diff --git a/src/main/java/net/minecraft/world/entity/LivingEntity.java b/src/main/java/net/minecraft/world/entity/LivingEntity.java
-index 4facc16e729caf57acd907b8e57b809f2c92670a..71e870bc42de14ec562fac75d456bdeb70524077 100644
+index 345cd0f65b7c885e2f362e94ed4609b253d9d2a1..5292d15dadadf8323b1269c5273da310368aa061 100644
 --- a/src/main/java/net/minecraft/world/entity/LivingEntity.java
 +++ b/src/main/java/net/minecraft/world/entity/LivingEntity.java
-@@ -2855,8 +2855,10 @@ public abstract class LivingEntity extends Entity {
+@@ -2852,8 +2852,10 @@ public abstract class LivingEntity extends Entity {
              } else if (this.isInLava() && (!this.onGround || d7 > d8)) {
                  this.jumpInLiquid((Tag) FluidTags.LAVA);
              } else if ((this.onGround || flag && d7 <= d8) && this.noJumpDelay == 0) {

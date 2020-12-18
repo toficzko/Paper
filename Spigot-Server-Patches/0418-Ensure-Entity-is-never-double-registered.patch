@@ -11,7 +11,7 @@ Vs behavior of non ticking of just overwriting state.
 We will now simply log a warning when this happens instead of crashing the server.
 
 diff --git a/src/main/java/net/minecraft/server/level/ServerLevel.java b/src/main/java/net/minecraft/server/level/ServerLevel.java
-index e8704619fbdea393170c5c79cd62e28d67382094..89147754848235ec5ed7581c0d126dc81c79bf1f 100644
+index bbe3f99c2d17aa5b67a34b7708756643b62f83b9..e7f207d08f8cec5ce565011bc4a7010be8a8b44c 100644
 --- a/src/main/java/net/minecraft/server/level/ServerLevel.java
 +++ b/src/main/java/net/minecraft/server/level/ServerLevel.java
 @@ -641,6 +641,7 @@ public class ServerLevel extends net.minecraft.world.level.Level implements Worl
@@ -65,15 +65,3 @@ index e8704619fbdea393170c5c79cd62e28d67382094..89147754848235ec5ed7581c0d126dc8
              this.entitiesById.put(entity.getId(), entity);
              if (entity instanceof EnderDragon) {
                  EnderDragonPart[] aentitycomplexpart = ((EnderDragon) entity).getSubEntities();
-diff --git a/src/main/java/net/minecraft/world/entity/Entity.java b/src/main/java/net/minecraft/world/entity/Entity.java
-index 0f211791f75ff9d056f1dfa5fc1eab6e638f1f03..73c4f198acd209e6db036165b53f181f3ae04aa7 100644
---- a/src/main/java/net/minecraft/world/entity/Entity.java
-+++ b/src/main/java/net/minecraft/world/entity/Entity.java
-@@ -150,6 +150,7 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
-     }
- 
-     // Paper start
-+    boolean isQueuedForRegister = false;
-     public static Random SHARED_RANDOM = new Random() {
-         private boolean locked = false;
-         @Override

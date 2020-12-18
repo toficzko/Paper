@@ -83,7 +83,7 @@ index 59dbd59b3d7414e447cf7d5306ff253fef8cd83b..95c10a6ef060fe026a5ee5520b1e53c3
              return this.set(pos.getX(), pos.getY(), pos.getZ());
          }
 diff --git a/src/main/java/net/minecraft/server/level/ServerLevel.java b/src/main/java/net/minecraft/server/level/ServerLevel.java
-index 49550c09f8d71a53fcad0d0d1a686bae20580239..e936b31b419f06bb4b9bfac711e60a8649ae79fb 100644
+index f1b88241ffafdf60a767990297979ebb08aa606a..c724d7ec66c1d315a3e038dc1c5c446188d255d8 100644
 --- a/src/main/java/net/minecraft/server/level/ServerLevel.java
 +++ b/src/main/java/net/minecraft/server/level/ServerLevel.java
 @@ -667,7 +667,12 @@ public class ServerLevel extends net.minecraft.world.level.Level implements Worl
@@ -222,7 +222,7 @@ index 49550c09f8d71a53fcad0d0d1a686bae20580239..e936b31b419f06bb4b9bfac711e60a86
  
      protected BlockPos findLightingTargetAround(BlockPos pos) {
 diff --git a/src/main/java/net/minecraft/util/BitStorage.java b/src/main/java/net/minecraft/util/BitStorage.java
-index fc70d3c9a2e9f87b19ec1f33017078a9077a76fe..7e469793bcbc3771f322f744237e4dc6bc71250b 100644
+index fc70d3c9a2e9f87b19ec1f33017078a9077a76fe..1d338107318c176eb707e3e29ba8d81fdf45773d 100644
 --- a/src/main/java/net/minecraft/util/BitStorage.java
 +++ b/src/main/java/net/minecraft/util/BitStorage.java
 @@ -101,4 +101,32 @@ public class BitStorage {
@@ -251,7 +251,7 @@ index fc70d3c9a2e9f87b19ec1f33017078a9077a76fe..7e469793bcbc3771f322f744237e4dc6
 +    }
 +
 +    @FunctionalInterface
-+    static interface DataBitConsumer {
++    public static interface DataBitConsumer {
 +
 +        void accept(int location, int data);
 +
@@ -259,7 +259,7 @@ index fc70d3c9a2e9f87b19ec1f33017078a9077a76fe..7e469793bcbc3771f322f744237e4dc6
 +    // Paper end
  }
 diff --git a/src/main/java/net/minecraft/world/entity/animal/Turtle.java b/src/main/java/net/minecraft/world/entity/animal/Turtle.java
-index 64a36cfc637b9ebc6bcad0f4e605dff50b48d079..3348480070475e7a80abb33c24a3f60265e81597 100644
+index a5f4d027b886a00767eff12b63a2f238b4104014..84be26adc2ede1c4474f737d3f01852144381e23 100644
 --- a/src/main/java/net/minecraft/world/entity/animal/Turtle.java
 +++ b/src/main/java/net/minecraft/world/entity/animal/Turtle.java
 @@ -91,7 +91,7 @@ public class Turtle extends Animal {
@@ -296,10 +296,10 @@ index d9fddea825171bc4046f24125e0c049116586473..aab6c3b4146db4d326e50755839c74ac
  
      public boolean noSave() {
 diff --git a/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java b/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java
-index 04c1433d016270828ccb17baaae140f9f75a475c..76815483270615b63c7246d27acf9c45b569d09b 100644
+index 1f6675a2f26c6262aa4c9c4beefe396129abcaf4..ac294b500b09be2bf9749e04000cc242eaf03cf4 100644
 --- a/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java
 +++ b/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java
-@@ -631,8 +631,8 @@ public class LevelChunk implements ChunkAccess {
+@@ -630,8 +630,8 @@ public class LevelChunk implements ChunkAccess {
          this.entities.remove(entity); // Paper
      }
  
@@ -311,7 +311,7 @@ index 04c1433d016270828ccb17baaae140f9f75a475c..76815483270615b63c7246d27acf9c45
      }
  
 diff --git a/src/main/java/net/minecraft/world/level/chunk/LevelChunkSection.java b/src/main/java/net/minecraft/world/level/chunk/LevelChunkSection.java
-index 3a7a52331bdd609d7001e9a07a91cfc1247290b4..3d16111871c98ba9a3762f28fb2f8e7acc7e0734 100644
+index 3a7a52331bdd609d7001e9a07a91cfc1247290b4..6e6f5c6a27f3f82e7dbb79fb9c0e3b1120a679bf 100644
 --- a/src/main/java/net/minecraft/world/level/chunk/LevelChunkSection.java
 +++ b/src/main/java/net/minecraft/world/level/chunk/LevelChunkSection.java
 @@ -13,12 +13,14 @@ import net.minecraft.world.level.material.FluidState;
@@ -326,7 +326,7 @@ index 3a7a52331bdd609d7001e9a07a91cfc1247290b4..3d16111871c98ba9a3762f28fb2f8e7a
      private short tickingFluidCount;
      final PalettedContainer<BlockState> states; // Paper - package-private
  
-+    final com.destroystokyo.paper.util.maplist.IBlockDataList tickingList = new com.destroystokyo.paper.util.maplist.IBlockDataList(); // Paper
++    public final com.destroystokyo.paper.util.maplist.IBlockDataList tickingList = new com.destroystokyo.paper.util.maplist.IBlockDataList(); // Paper
 +
      // Paper start - Anti-Xray - Add parameters
      @Deprecated public LevelChunkSection(int yOffset) { this(yOffset, null, null, true); } // Notice for updates: Please make sure this constructor isn't used anywhere

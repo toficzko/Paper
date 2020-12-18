@@ -4,18 +4,6 @@ Date: Sat, 21 Jul 2018 03:11:03 -0500
 Subject: [PATCH] PlayerLaunchProjectileEvent
 
 
-diff --git a/src/main/java/net/minecraft/world/InteractionResultHolder.java b/src/main/java/net/minecraft/world/InteractionResultHolder.java
-index 1cd57408fc9952a62aa12bbf103c1a0003bdac9b..bfcf906d7821bc65b61cc437ff824a090f5e7aa8 100644
---- a/src/main/java/net/minecraft/world/InteractionResultHolder.java
-+++ b/src/main/java/net/minecraft/world/InteractionResultHolder.java
-@@ -9,6 +9,7 @@ public class InteractionResultHolder<T> {
-         this.object = value;
-     }
- 
-+    public InteractionResult getResult() { return this.getResult(); } // Paper - OBFHELPER
-     public InteractionResult getResult() {
-         return this.result;
-     }
 diff --git a/src/main/java/net/minecraft/world/item/EggItem.java b/src/main/java/net/minecraft/world/item/EggItem.java
 index 597855d5148292b30b155128bb1e6a051be50b6b..0c804db6bdd45d968f872cef4743f717456c8a01 100644
 --- a/src/main/java/net/minecraft/world/item/EggItem.java

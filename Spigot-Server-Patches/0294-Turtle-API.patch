@@ -18,7 +18,7 @@ index 5082f2e3aaa033a55f98fc311cf719a09118b8ff..07ceea95d1112a2db788054ff4ba4f97
      private final int searchRange;
      private final int verticalSearchRange;
 diff --git a/src/main/java/net/minecraft/world/entity/animal/Turtle.java b/src/main/java/net/minecraft/world/entity/animal/Turtle.java
-index b6495979913d86d3b47e1c65f296347cf9d9b4cf..64a36cfc637b9ebc6bcad0f4e605dff50b48d079 100644
+index b6495979913d86d3b47e1c65f296347cf9d9b4cf..a5f4d027b886a00767eff12b63a2f238b4104014 100644
 --- a/src/main/java/net/minecraft/world/entity/animal/Turtle.java
 +++ b/src/main/java/net/minecraft/world/entity/animal/Turtle.java
 @@ -14,6 +14,7 @@ import net.minecraft.nbt.CompoundTag;
@@ -38,7 +38,7 @@ index b6495979913d86d3b47e1c65f296347cf9d9b4cf..64a36cfc637b9ebc6bcad0f4e605dff5
          return (BlockPos) this.entityData.get(Turtle.HOME_POS);
      }
  
-@@ -109,31 +110,37 @@ public class Turtle extends Animal {
+@@ -109,20 +110,22 @@ public class Turtle extends Animal {
          return (Boolean) this.entityData.get(Turtle.HAS_EGG);
      }
  
@@ -58,26 +58,12 @@ index b6495979913d86d3b47e1c65f296347cf9d9b4cf..64a36cfc637b9ebc6bcad0f4e605dff5
          this.entityData.set(Turtle.LAYING_EGG, diggingSand);
      }
  
-+    public final boolean isGoingHome() { return this.isGoingHome(); } // Paper - OBFHELPER
-     private boolean isGoingHome() {
+-    private boolean isGoingHome() {
++    public boolean isGoingHome() { // Paper - public
          return (Boolean) this.entityData.get(Turtle.GOING_HOME);
      }
  
-+    public final void setGoingHome(boolean goingHome) { this.setGoingHome(goingHome); } // Paper - OBFHELPER
-     private void setGoingHome(boolean landBound) {
-         this.entityData.set(Turtle.GOING_HOME, landBound);
-     }
- 
-+    public final boolean isTravelling() { return this.isTravelling(); } // Paper - OBFHELPER
-     private boolean isTravelling() {
-         return (Boolean) this.entityData.get(Turtle.TRAVELLING);
-     }
- 
-+    public final void setTravelling(boolean travelling) { this.setTravelling(travelling); } // Paper - OBFHELPER
-     private void setTravelling(boolean travelling) {
-         this.entityData.set(Turtle.TRAVELLING, travelling);
-     }
-@@ -500,14 +507,17 @@ public class Turtle extends Animal {
+@@ -500,14 +503,17 @@ public class Turtle extends Animal {
  
              if (!this.turtle.isInWater() && this.isReachedTarget()) {
                  if (this.turtle.layEggCounter < 1) {
@@ -98,7 +84,7 @@ index b6495979913d86d3b47e1c65f296347cf9d9b4cf..64a36cfc637b9ebc6bcad0f4e605dff5
                      }
                      // CraftBukkit end
                      this.turtle.setHasEgg(false);
-@@ -636,7 +646,7 @@ public class Turtle extends Animal {
+@@ -636,7 +642,7 @@ public class Turtle extends Animal {
  
          @Override
          public boolean canUse() {

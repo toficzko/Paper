@@ -8,10 +8,10 @@ World checks and the Chunk Add logic are inconsistent on how Y > 256, < 0, is tr
 Keep them consistent
 
 diff --git a/src/main/java/net/minecraft/server/level/ServerLevel.java b/src/main/java/net/minecraft/server/level/ServerLevel.java
-index aa4211571d94e996aa848bf707f43d94c381bdb2..afe2d996486f6dcdd4db5534c0f019a3207d6517 100644
+index 3f1d34c641e033e17d09b4c5749f97f982afd4ba..9153901b528fd7728c202bb8e97853c00f30eadc 100644
 --- a/src/main/java/net/minecraft/server/level/ServerLevel.java
 +++ b/src/main/java/net/minecraft/server/level/ServerLevel.java
-@@ -839,7 +839,7 @@ public class ServerLevel extends net.minecraft.world.level.Level implements Worl
+@@ -842,7 +842,7 @@ public class ServerLevel extends net.minecraft.world.level.Level implements Worl
          if (entity.checkAndResetUpdateChunkPos()) {
              this.getProfiler().push("chunkCheck");
              int i = Mth.floor(entity.getX() / 16.0D);

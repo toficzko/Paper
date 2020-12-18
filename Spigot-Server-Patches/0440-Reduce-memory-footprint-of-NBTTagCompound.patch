@@ -8,7 +8,7 @@ is important because we clone chunk data after reading it for safety.
 So, reduce the impact of the clone on GC.
 
 diff --git a/src/main/java/net/minecraft/nbt/CompoundTag.java b/src/main/java/net/minecraft/nbt/CompoundTag.java
-index 13bfb8e281380a2371ee9d40c07928d0e11c8135..c103d16380ad9f22278c929a66ed605c5e48fefa 100644
+index 0dd9264baa4813999e87162597e43ee37dd17ab8..2171efd74d0c802ed247ede21259dc2142b990ba 100644
 --- a/src/main/java/net/minecraft/nbt/CompoundTag.java
 +++ b/src/main/java/net/minecraft/nbt/CompoundTag.java
 @@ -25,6 +25,7 @@ import net.minecraft.ReportedException;
@@ -37,7 +37,7 @@ index 13bfb8e281380a2371ee9d40c07928d0e11c8135..c103d16380ad9f22278c929a66ed605c
      }
  
      public void write(DataOutput dataOutput) throws IOException {
-@@ -388,8 +389,16 @@ public class CompoundTag implements Tag {
+@@ -385,8 +386,16 @@ public class CompoundTag implements Tag {
      }
  
      public CompoundTag copy() {

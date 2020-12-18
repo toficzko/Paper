@@ -121,7 +121,7 @@ index 924569d4f85c48545d9713ae5181070112483043..b8257ba5d43d5fa56458b190354df920
                      this.blockYMask &= ~(1 << i);
                      if (dataLayer2 != null) {
 diff --git a/src/main/java/net/minecraft/world/level/chunk/DataLayer.java b/src/main/java/net/minecraft/world/level/chunk/DataLayer.java
-index 6a62b4be5ed321084381a2f1235a72fd612bfa33..dc42e8bd1dd785cfe34e5fb02d959c5cffed4a6d 100644
+index fae8b8dc2be5232276e3388a27be2a9f12a490e4..c060b4283199e2e937841a12d3982d4241016f36 100644
 --- a/src/main/java/net/minecraft/world/level/chunk/DataLayer.java
 +++ b/src/main/java/net/minecraft/world/level/chunk/DataLayer.java
 @@ -1,17 +1,77 @@
@@ -214,7 +214,7 @@ index 6a62b4be5ed321084381a2f1235a72fd612bfa33..dc42e8bd1dd785cfe34e5fb02d959c5c
          }
  
          int k = this.getPosition(index);
-@@ -67,14 +128,36 @@ public class DataLayer {
+@@ -67,13 +128,35 @@ public class DataLayer {
      public byte[] getData() {
          if (this.data == null) {
              this.data = new byte[2048];
@@ -245,7 +245,6 @@ index 6a62b4be5ed321084381a2f1235a72fd612bfa33..dc42e8bd1dd785cfe34e5fb02d959c5c
      }
 +    // Paper end
  
-     public DataLayer copy() { return this.copy(); } // Paper - OBFHELPER
      public DataLayer copy() {
 -        return this.data == null ? new DataLayer() : new DataLayer((byte[]) this.data.clone());
 +        return this.data == null ? new DataLayer() : new DataLayer(this.data); // Paper - clone in ctor

@@ -5,7 +5,7 @@ Subject: [PATCH] Implement an API for CanPlaceOn and CanDestroy NBT values
 
 
 diff --git a/src/main/java/net/minecraft/commands/arguments/blocks/BlockStateParser.java b/src/main/java/net/minecraft/commands/arguments/blocks/BlockStateParser.java
-index 97b5f9c4e8e447d06f48450c46f38a99d4c3f3f4..25437fdb178d1a6961395103c33fdf0c94b30e57 100644
+index 97b5f9c4e8e447d06f48450c46f38a99d4c3f3f4..815154c6be363bc14c43728540996692465e022c 100644
 --- a/src/main/java/net/minecraft/commands/arguments/blocks/BlockStateParser.java
 +++ b/src/main/java/net/minecraft/commands/arguments/blocks/BlockStateParser.java
 @@ -57,7 +57,7 @@ public class BlockStateParser {
@@ -17,7 +17,7 @@ index 97b5f9c4e8e447d06f48450c46f38a99d4c3f3f4..25437fdb178d1a6961395103c33fdf0c
      private StateDefinition<Block, BlockState> definition;
      private BlockState state;
      @Nullable
-@@ -86,11 +86,13 @@ public class BlockStateParser {
+@@ -86,6 +86,7 @@ public class BlockStateParser {
          return this.nbt;
      }
  
@@ -25,12 +25,6 @@ index 97b5f9c4e8e447d06f48450c46f38a99d4c3f3f4..25437fdb178d1a6961395103c33fdf0c
      @Nullable
      public ResourceLocation getTag() {
          return this.tag;
-     }
- 
-+    public final BlockStateParser parse(boolean parseTile) throws CommandSyntaxException { return this.parse(parseTile); } // Paper - OBFHELPER
-     public BlockStateParser parse(boolean allowNbt) throws CommandSyntaxException {
-         this.suggestions = this::suggestBlockIdOrTag;
-         if (this.reader.canRead() && this.reader.peek() == '#') {
 diff --git a/src/main/java/org/bukkit/craftbukkit/inventory/CraftMetaItem.java b/src/main/java/org/bukkit/craftbukkit/inventory/CraftMetaItem.java
 index a0612ffcacdf3ba76dc1025b579956971cb16a42..ec934594dc59431de4996e994d34f7c4cdb87b15 100644
 --- a/src/main/java/org/bukkit/craftbukkit/inventory/CraftMetaItem.java

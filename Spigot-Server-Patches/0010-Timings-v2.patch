@@ -1462,7 +1462,7 @@ index 12ceab48aaf86399d5ab8d369a97a4c064ba3af0..35bde15f76e75488dd371e7c32440ebc
  
      public UserWhiteList getWhiteList() {
 diff --git a/src/main/java/net/minecraft/world/entity/Entity.java b/src/main/java/net/minecraft/world/entity/Entity.java
-index 4e300c5fbe8d413ed7de55714b49816c39faecac..9cd0aff6ade8b6b51866cc63190b805dab642390 100644
+index 364ef3f474690d787a6ed14793a235260d44d640..abe29d9e7781978f1dfeb5ada4390532e46b705f 100644
 --- a/src/main/java/net/minecraft/world/entity/Entity.java
 +++ b/src/main/java/net/minecraft/world/entity/Entity.java
 @@ -118,7 +118,6 @@ import org.bukkit.craftbukkit.event.CraftPortalEvent;
@@ -1498,7 +1498,7 @@ index 4e300c5fbe8d413ed7de55714b49816c39faecac..9cd0aff6ade8b6b51866cc63190b805d
  
      protected BlockPos getOnPos() {
 diff --git a/src/main/java/net/minecraft/world/entity/EntityType.java b/src/main/java/net/minecraft/world/entity/EntityType.java
-index 461601f7d3145f67e6497047b358dccc00273560..b9a98938e4b92530f70636b22889c4be050bc7d9 100644
+index f88c9080bbe4f5179b657d8ff17b8fb07fe7f5e4..60b0444b549dcefc3dbf34ec2f94c705fefda0fb 100644
 --- a/src/main/java/net/minecraft/world/entity/EntityType.java
 +++ b/src/main/java/net/minecraft/world/entity/EntityType.java
 @@ -281,17 +281,27 @@ public class EntityType<T extends Entity> {
@@ -1536,7 +1536,7 @@ index 461601f7d3145f67e6497047b358dccc00273560..b9a98938e4b92530f70636b22889c4be
      }
  
      @Nullable
-@@ -512,6 +522,12 @@ public class EntityType<T extends Entity> {
+@@ -511,6 +521,12 @@ public class EntityType<T extends Entity> {
          return this.updateInterval;
      }
  
@@ -1549,7 +1549,7 @@ index 461601f7d3145f67e6497047b358dccc00273560..b9a98938e4b92530f70636b22889c4be
      public boolean trackDeltas() {
          return this != EntityType.PLAYER && this != EntityType.LLAMA_SPIT && this != EntityType.WITHER && this != EntityType.BAT && this != EntityType.ITEM_FRAME && this != EntityType.LEASH_KNOT && this != EntityType.PAINTING && this != EntityType.END_CRYSTAL && this != EntityType.EVOKER_FANGS;
      }
-@@ -599,7 +615,7 @@ public class EntityType<T extends Entity> {
+@@ -598,7 +614,7 @@ public class EntityType<T extends Entity> {
                  Util.fetchChoiceType(References.ENTITY_TREE, id);
              }
  
@@ -1775,10 +1775,10 @@ index 2131560ac78fbcfc7059660221b27031f416bd5c..b1f99c6cbadab0733aa9bd997557169b
      private static final CraftPersistentDataTypeRegistry DATA_TYPE_REGISTRY = new CraftPersistentDataTypeRegistry();
      public CraftPersistentDataContainer persistentDataContainer;
 diff --git a/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java b/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java
-index 05c4342721d6be744f69ca08356c0314a4af67fa..dd501797bb2a52e2434bb868e039327bf0b3a866 100644
+index 28e489dc792ec87f4c064eac21b75aa03bc2922e..6ffa1b979dcdcd77e1a8c0543c67026dc497bcf5 100644
 --- a/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java
 +++ b/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java
-@@ -725,6 +725,7 @@ public class LevelChunk implements ChunkAccess {
+@@ -724,6 +724,7 @@ public class LevelChunk implements ChunkAccess {
              server.getPluginManager().callEvent(new org.bukkit.event.world.ChunkLoadEvent(this.bukkitChunk, this.needsDecoration));
  
              if (this.needsDecoration) {
@@ -1786,7 +1786,7 @@ index 05c4342721d6be744f69ca08356c0314a4af67fa..dd501797bb2a52e2434bb868e039327b
                  this.needsDecoration = false;
                  java.util.Random random = new java.util.Random();
                  random.setSeed(world.getSeed());
-@@ -744,6 +745,7 @@ public class LevelChunk implements ChunkAccess {
+@@ -743,6 +744,7 @@ public class LevelChunk implements ChunkAccess {
                      }
                  }
                  server.getPluginManager().callEvent(new org.bukkit.event.world.ChunkPopulateEvent(bukkitChunk));

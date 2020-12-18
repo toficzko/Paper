@@ -18,14 +18,17 @@ index eabd553d828c6d0173e86ed1025a2ce67deb4418..fea31fb69380705bc4fec827373c3c2e
              this.profiler.push(() -> {
                  return worldserver + " " + worldserver.dimension().location();
 diff --git a/src/main/java/net/minecraft/server/level/ServerLevel.java b/src/main/java/net/minecraft/server/level/ServerLevel.java
-index 2696eacbac1df6b995847ed8ebc02f1cb21389ec..159f8cc005b63e45de435745d5f8d0484cec3640 100644
+index 2696eacbac1df6b995847ed8ebc02f1cb21389ec..de527f503822b85b560c66ea9afedd8b5dbb914a 100644
 --- a/src/main/java/net/minecraft/server/level/ServerLevel.java
 +++ b/src/main/java/net/minecraft/server/level/ServerLevel.java
-@@ -190,6 +190,7 @@ public class ServerLevel extends net.minecraft.world.level.Level implements Worl
+@@ -190,6 +190,10 @@ public class ServerLevel extends net.minecraft.world.level.Level implements Worl
      private int tickPosition;
      public final LevelStorageSource.LevelStorageAccess convertable;
      public final UUID uuid;
-+    boolean hasPhysicsEvent = true; // Paper
++    public boolean hasPhysicsEvent = true; // Paper
++    private static Throwable getAddToWorldStackTrace(Entity entity) {
++        return new Throwable(entity + " Added to world at " + new java.util.Date());
++    }
  
      @Override public LevelChunk getChunkIfLoaded(int x, int z) { // Paper - this was added in world too but keeping here for NMS ABI
          return this.chunkSource.getChunk(x, z, false);

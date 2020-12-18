@@ -5,7 +5,7 @@ Subject: [PATCH] Workaround for vehicle tracking issue on disconnect
 
 
 diff --git a/src/main/java/net/minecraft/server/level/ServerPlayer.java b/src/main/java/net/minecraft/server/level/ServerPlayer.java
-index 973236c3980f591f11d34223cf05ac4ed52a8240..fa536e66c7ea9f20b69a34cfadbeddae9a50ed55 100644
+index 81ed5024ae244d3ce212db838316a5b2409801bb..7522d12d46bb653b6023398aa156d3d471abed83 100644
 --- a/src/main/java/net/minecraft/server/level/ServerPlayer.java
 +++ b/src/main/java/net/minecraft/server/level/ServerPlayer.java
 @@ -1501,6 +1501,13 @@ public class ServerPlayer extends Player implements ContainerListener {

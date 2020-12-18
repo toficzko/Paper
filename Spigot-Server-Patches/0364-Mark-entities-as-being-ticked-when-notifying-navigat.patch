@@ -5,7 +5,7 @@ Subject: [PATCH] Mark entities as being ticked when notifying navigation
 
 
 diff --git a/src/main/java/net/minecraft/server/level/ServerLevel.java b/src/main/java/net/minecraft/server/level/ServerLevel.java
-index 1bcc9d9a034df90d4acc32e29f36b65ea73d2cb5..00e4f2e59465abf6839b0ecaed329f05107fdf43 100644
+index 2fac1a5f0f695c59df292758562c9e187eb4f271..0e05cb58dc458910576f38095d9a5d2d5fb71ed9 100644
 --- a/src/main/java/net/minecraft/server/level/ServerLevel.java
 +++ b/src/main/java/net/minecraft/server/level/ServerLevel.java
 @@ -1468,6 +1468,7 @@ public class ServerLevel extends net.minecraft.world.level.Level implements Worl

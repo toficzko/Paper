@@ -5,7 +5,7 @@ Subject: [PATCH] Add and implement PlayerRecipeBookClickEvent
 
 
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index a941c1491b5b5cd1de7d24cca1999390d3f226ea..9c4a6755f78010b40021310a8fad4e40a08ea4e2 100644
+index dacc00b7b4f4356653d9849b3f686f183b159597..9db5be7d6296be61585b0d5bff78927e62942952 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 @@ -2746,9 +2746,15 @@ public class ServerGamePacketListenerImpl implements ServerGamePacketListener {

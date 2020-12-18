@@ -18,6 +18,35 @@ Other changes:
   - Server starts 1-2 seconds faster thanks to optimizations in Log4j
     configuration
 
+diff --git a/build.gradle.kts b/build.gradle.kts
+index a8992a6697a6ef2241a2cec308e524d528332539..513f4ed541c1fc80031400b09ddbf2c82c8861e2 100644
+--- a/build.gradle.kts
++++ b/build.gradle.kts
+@@ -16,7 +16,15 @@ dependencies {
+     implementation(project(":Paper-API"))
+     implementation(project(":Paper-MojangAPI"))
+ 
+-    implementation("jline:jline:2.12.1")
++    // terminal stuff
++    implementation("net.minecrell:terminalconsoleappender:1.2.0")
++    implementation("org.jline:jline-terminal-jansi:3.12.1")
++    // Required to add the missing Log4j2Plugins.dat file from log4j-core
++    // which has been removed by Mojang. Without it, log4j has to classload
++    // all its classes to check if they are plugins.
++    // Scanning takes about 1-2 seconds so adding this speeds up the server start.
++    runtimeOnly("org.apache.logging.log4j:log4j-core:2.8.1")
++
+     implementation("org.apache.logging.log4j:log4j-iostreams:2.8.1")
+     implementation("org.ow2.asm:asm:8.0.1")
+     implementation("com.googlecode.json-simple:json-simple:1.1.1")
+@@ -63,6 +71,7 @@ tasks.shadowJar {
+     transform(AppendingTransformer::class.java) {
+         resource = "META-INF/services/java.sql.Driver"
+     }
++    // TODO add transformer com.github.edwgiz.maven_shade_plugin.log4j2_cache_transformer.PluginsCacheFileTransformer from com.github.edwgiz:maven-shade-plugin.log4j2-cachefile-transformer:2.13.1
+ }
+ 
+ tasks.test {
 diff --git a/src/main/java/com/destroystokyo/paper/console/PaperConsole.java b/src/main/java/com/destroystokyo/paper/console/PaperConsole.java
 new file mode 100644
 index 0000000000000000000000000000000000000000..a4070b59e261f0f1ac4beec47b11492f4724bf27
@@ -199,7 +228,7 @@ index d5a6ceeb7da5a74432c36e015ab391875fb61cc3..fe90e7922bfceb73877388c0e6583550
          System.setOut(IoBuilder.forLogger(logger).setLevel(Level.INFO).buildPrintStream());
          System.setErr(IoBuilder.forLogger(logger).setLevel(Level.WARN).buildPrintStream());
 diff --git a/src/main/java/net/minecraft/server/players/PlayerList.java b/src/main/java/net/minecraft/server/players/PlayerList.java
-index a2077ba20bf88bb470c2705b2627e3bdc1104039..dec4649a1f71d824bc7bdaa291cd75b6c228ea9b 100644
+index 35a3ab5b5480eb869436c8adbd6606ba9a55b933..edc80ac852429ccb82f0b8c1614028edac9cf329 100644
 --- a/src/main/java/net/minecraft/server/players/PlayerList.java
 +++ b/src/main/java/net/minecraft/server/players/PlayerList.java
 @@ -151,8 +151,7 @@ public abstract class PlayerList {

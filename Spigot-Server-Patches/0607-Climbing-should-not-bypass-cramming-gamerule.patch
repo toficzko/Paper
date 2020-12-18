@@ -19,10 +19,10 @@ index 80b0c08cef9a5326492b1faec020929fca59ff77..5596d9f42523dbcbad47d21a4b2fdba3
 +    }
  }
 diff --git a/src/main/java/net/minecraft/world/entity/Entity.java b/src/main/java/net/minecraft/world/entity/Entity.java
-index 5a76a76dfa7ff53fe700ef379969fefe7160e969..76fbd86c5507e93d9f71ea88151583ec2e5d3060 100644
+index e74fff678681487b251c280aa2fce00e64e2e60c..f25ff52710477108601f99bbdb42cea0fcc2228c 100644
 --- a/src/main/java/net/minecraft/world/entity/Entity.java
 +++ b/src/main/java/net/minecraft/world/entity/Entity.java
-@@ -1576,6 +1576,12 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
+@@ -1573,6 +1573,12 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
      }
  
      public boolean isPushable() {
@@ -59,7 +59,7 @@ index 8ce62148ebaeac9988e7c9d4b2f7ee57f58d883e..8d1e24c2fa844971908ae7ac918a8950
              } else if (entity.level.isClientSide && (!(entity1 instanceof Player) || !((Player) entity1).isLocalPlayer())) {
                  return false;
 diff --git a/src/main/java/net/minecraft/world/entity/LivingEntity.java b/src/main/java/net/minecraft/world/entity/LivingEntity.java
-index d4eee2fe83488088a1210cbe9cfbb90b4ece103b..ce783282a777e5190bf80fe4ece27e9e05689233 100644
+index 33647a46ce4626b341c2a3e9f50d4bc78be0c9cc..720aee99e4ef8be925a276923f4b60b3a2d68074 100644
 --- a/src/main/java/net/minecraft/world/entity/LivingEntity.java
 +++ b/src/main/java/net/minecraft/world/entity/LivingEntity.java
 @@ -134,7 +134,6 @@ import org.bukkit.event.entity.EntityTeleportEvent;
@@ -70,7 +70,7 @@ index d4eee2fe83488088a1210cbe9cfbb90b4ece103b..ce783282a777e5190bf80fe4ece27e9e
  
  public abstract class LivingEntity extends Entity {
  
-@@ -2938,7 +2937,7 @@ public abstract class LivingEntity extends Entity {
+@@ -2935,7 +2934,7 @@ public abstract class LivingEntity extends Entity {
              return;
          }
          // Paper - end don't run getEntities if we're not going to use its result
@@ -79,7 +79,7 @@ index d4eee2fe83488088a1210cbe9cfbb90b4ece103b..ce783282a777e5190bf80fe4ece27e9e
  
          if (!list.isEmpty()) {
              // Paper - move up
-@@ -3076,9 +3075,16 @@ public abstract class LivingEntity extends Entity {
+@@ -3073,9 +3072,16 @@ public abstract class LivingEntity extends Entity {
          return !this.removed && this.collides; // CraftBukkit
      }
  

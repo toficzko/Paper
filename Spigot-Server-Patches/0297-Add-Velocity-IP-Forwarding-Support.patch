@@ -129,26 +129,10 @@ index 0000000000000000000000000000000000000000..5490ddb9f2ff1fc3e6088e703c246a06
 +    }
 +}
 diff --git a/src/main/java/net/minecraft/network/FriendlyByteBuf.java b/src/main/java/net/minecraft/network/FriendlyByteBuf.java
-index 2e313091f643026be2524fefabfdb84ca27efa66..e5e34f793827e212074be604ffff6bd49ee1a81c 100644
+index 2e313091f643026be2524fefabfdb84ca27efa66..c56e14a50c34cdefbd609546476a9b485540b5c7 100644
 --- a/src/main/java/net/minecraft/network/FriendlyByteBuf.java
 +++ b/src/main/java/net/minecraft/network/FriendlyByteBuf.java
-@@ -177,6 +177,7 @@ public class FriendlyByteBuf extends ByteBuf {
-         return this.writeVarInt(oenum.ordinal());
-     }
- 
-+    public int readVarInt() { return readVarInt(); } // Paper - OBFHELPER
-     public int readVarInt() {
-         int i = 0;
-         int j = 0;
-@@ -217,6 +218,7 @@ public class FriendlyByteBuf extends ByteBuf {
-         return this;
-     }
- 
-+    public UUID readUUID() { return readUUID(); } // Paper - OBFHELPER
-     public UUID readUUID() {
-         return new UUID(this.readLong(), this.readLong());
-     }
-@@ -344,6 +346,7 @@ public class FriendlyByteBuf extends ByteBuf {
+@@ -344,6 +344,7 @@ public class FriendlyByteBuf extends ByteBuf {
          }
      }
  

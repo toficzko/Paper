@@ -6,10 +6,10 @@ Subject: [PATCH] Implement EntityKnockbackByEntityEvent
 This event is called when an entity receives knockback by another entity.
 
 diff --git a/src/main/java/net/minecraft/world/entity/LivingEntity.java b/src/main/java/net/minecraft/world/entity/LivingEntity.java
-index 1947db2ad6bf1caf8b14014b3b4ddf2649c14e91..acc92cc3e04e1ca6c019067f08fa0b8a3d58b712 100644
+index 77efef8f966d16f8f3ade7017da82d47f031fc61..d0954408b206e4d2b5cecd564d9b6ac0e670d65b 100644
 --- a/src/main/java/net/minecraft/world/entity/LivingEntity.java
 +++ b/src/main/java/net/minecraft/world/entity/LivingEntity.java
-@@ -1330,7 +1330,7 @@ public abstract class LivingEntity extends Entity {
+@@ -1329,7 +1329,7 @@ public abstract class LivingEntity extends Entity {
                      }
  
                      this.hurtDir = (float) (Mth.atan2(d1, d0) * 57.2957763671875D - (double) this.yRot);
@@ -18,7 +18,7 @@ index 1947db2ad6bf1caf8b14014b3b4ddf2649c14e91..acc92cc3e04e1ca6c019067f08fa0b8a
                  } else {
                      this.hurtDir = (float) ((int) (Math.random() * 2.0D) * 180);
                  }
-@@ -1378,7 +1378,7 @@ public abstract class LivingEntity extends Entity {
+@@ -1377,7 +1377,7 @@ public abstract class LivingEntity extends Entity {
      }
  
      protected void blockedByShield(LivingEntity target) {
@@ -27,7 +27,7 @@ index 1947db2ad6bf1caf8b14014b3b4ddf2649c14e91..acc92cc3e04e1ca6c019067f08fa0b8a
      }
  
      private boolean checkTotemDeathProtection(DamageSource source) {
-@@ -1614,6 +1614,11 @@ public abstract class LivingEntity extends Entity {
+@@ -1613,6 +1613,11 @@ public abstract class LivingEntity extends Entity {
      }
  
      public void knockback(float f, double d0, double d1) {
@@ -39,7 +39,7 @@ index 1947db2ad6bf1caf8b14014b3b4ddf2649c14e91..acc92cc3e04e1ca6c019067f08fa0b8a
          f = (float) ((double) f * (1.0D - this.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE)));
          if (f > 0.0F) {
              this.hasImpulse = true;
-@@ -1621,6 +1626,16 @@ public abstract class LivingEntity extends Entity {
+@@ -1620,6 +1625,16 @@ public abstract class LivingEntity extends Entity {
              Vec3 vec3d1 = (new Vec3(d0, 0.0D, d1)).normalize().scale((double) f);
  
              this.setDeltaMovement(vec3d.x / 2.0D - vec3d1.x, this.onGround ? Math.min(0.4D, vec3d.y / 2.0D + (double) f) : vec3d.y, vec3d.z / 2.0D - vec3d1.z);

@@ -460,13 +460,13 @@ index 0000000000000000000000000000000000000000..b41a1b0b81960bd0119c59251870d4c6
 +}
 diff --git a/src/main/java/com/destroystokyo/paper/entity/ai/PaperCustomGoal.java b/src/main/java/com/destroystokyo/paper/entity/ai/PaperCustomGoal.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..14ddf844be10c04522aa3ec125fa7a0f540b10c2
+index 0000000000000000000000000000000000000000..906071ba7b54bdcb47f7bc370826f3b959f0d34c
 --- /dev/null
 +++ b/src/main/java/com/destroystokyo/paper/entity/ai/PaperCustomGoal.java
 @@ -0,0 +1,55 @@
 +package com.destroystokyo.paper.entity.ai;
 +
-+import GoalKey;
++
 +import net.minecraft.world.entity.ai.goal.Goal;
 +import org.bukkit.entity.Mob;
 +
@@ -475,9 +475,9 @@ index 0000000000000000000000000000000000000000..14ddf844be10c04522aa3ec125fa7a0f
 + */
 +public class PaperCustomGoal<T extends Mob> extends Goal {
 +
-+    private final Goal<T> handle;
++    private final com.destroystokyo.paper.entity.ai.Goal<T> handle;
 +
-+    public PaperCustomGoal(Goal<T> handle) {
++    public PaperCustomGoal(com.destroystokyo.paper.entity.ai.Goal<T> handle) {
 +        this.handle = handle;
 +
 +        this.setTypes(MobGoalHelper.paperToVanilla(handle.getTypes()));
@@ -511,7 +511,7 @@ index 0000000000000000000000000000000000000000..14ddf844be10c04522aa3ec125fa7a0f
 +        handle.tick();
 +    }
 +
-+    public Goal<T> getHandle() {
++    public com.destroystokyo.paper.entity.ai.Goal<T> getHandle() {
 +        return handle;
 +    }
 +
@@ -521,10 +521,10 @@ index 0000000000000000000000000000000000000000..14ddf844be10c04522aa3ec125fa7a0f
 +}
 diff --git a/src/main/java/com/destroystokyo/paper/entity/ai/PaperMobGoals.java b/src/main/java/com/destroystokyo/paper/entity/ai/PaperMobGoals.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..3fd753cb6ceb85176add39e228cd1a8565eaaf38
+index 0000000000000000000000000000000000000000..59967d694edf3e4a3a3b2e8945df19fe77474d07
 --- /dev/null
 +++ b/src/main/java/com/destroystokyo/paper/entity/ai/PaperMobGoals.java
-@@ -0,0 +1,222 @@
+@@ -0,0 +1,221 @@
 +package com.destroystokyo.paper.entity.ai;
 +
 +import java.util.Collection;
@@ -535,7 +535,6 @@ index 0000000000000000000000000000000000000000..3fd753cb6ceb85176add39e228cd1a85
 +import java.util.List;
 +import java.util.Map;
 +import java.util.Set;
-+import net.minecraft.world.entity.ai.goal.Goal;
 +import net.minecraft.world.entity.ai.goal.GoalSelector;
 +import net.minecraft.world.entity.ai.goal.WrappedGoal;
 +import org.bukkit.craftbukkit.entity.CraftMob;
@@ -543,7 +542,7 @@ index 0000000000000000000000000000000000000000..3fd753cb6ceb85176add39e228cd1a85
 +
 +public class PaperMobGoals implements MobGoals {
 +
-+    private final Map<Goal, PaperVanillaGoal<?>> instanceCache = new HashMap<>();
++    private final Map<net.minecraft.world.entity.ai.goal.Goal, PaperVanillaGoal<?>> instanceCache = new HashMap<>();
 +
 +    @Override
 +    public <T extends Mob> void addGoal(T mob, int priority, Goal<T> goal) {
@@ -555,11 +554,11 @@ index 0000000000000000000000000000000000000000..3fd753cb6ceb85176add39e228cd1a85
 +    public <T extends Mob> void removeGoal(T mob, Goal<T> goal) {
 +        CraftMob craftMob = (CraftMob) mob;
 +        if (goal instanceof PaperCustomGoal) {
-+            getHandle(craftMob, goal.getTypes()).removeGoal((Goal) goal);
++            getHandle(craftMob, goal.getTypes()).removeGoal((net.minecraft.world.entity.ai.goal.Goal) goal);
 +        } else if (goal instanceof PaperVanillaGoal) {
 +            getHandle(craftMob, goal.getTypes()).removeGoal(((PaperVanillaGoal<?>) goal).getHandle());
 +        } else {
-+            List<Goal> toRemove = new LinkedList<>();
++            List<net.minecraft.world.entity.ai.goal.Goal> toRemove = new LinkedList<>();
 +            for (WrappedGoal item : getHandle(craftMob, goal.getTypes()).getTasks()) {
 +                if (item.getGoal() instanceof PaperCustomGoal) {
 +                    //noinspection unchecked
@@ -569,7 +568,7 @@ index 0000000000000000000000000000000000000000..3fd753cb6ceb85176add39e228cd1a85
 +                }
 +            }
 +
-+            for (Goal g : toRemove) {
++            for (net.minecraft.world.entity.ai.goal.Goal g : toRemove) {
 +                getHandle(craftMob, goal.getTypes()).removeGoal(g);
 +            }
 +        }
@@ -749,13 +748,12 @@ index 0000000000000000000000000000000000000000..3fd753cb6ceb85176add39e228cd1a85
 +}
 diff --git a/src/main/java/com/destroystokyo/paper/entity/ai/PaperVanillaGoal.java b/src/main/java/com/destroystokyo/paper/entity/ai/PaperVanillaGoal.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..d4fe9d517a05f99c715ab73d5baf1deb6a732068
+index 0000000000000000000000000000000000000000..0d08fbc9419d0178f9a33bf2e7c0def02d86fc4e
 --- /dev/null
 +++ b/src/main/java/com/destroystokyo/paper/entity/ai/PaperVanillaGoal.java
-@@ -0,0 +1,62 @@
+@@ -0,0 +1,61 @@
 +package com.destroystokyo.paper.entity.ai;
 +
-+import GoalKey;
 +import java.util.EnumSet;
 +import net.minecraft.world.entity.ai.goal.Goal;
 +import org.bukkit.entity.Mob;
@@ -879,7 +877,7 @@ index e62b26bb876f10b61fd7359082b11606e848af47..76d5405523852f8c1c746f2c7f1b4e49
      }
  }
 diff --git a/src/main/java/net/minecraft/world/entity/ai/goal/GoalSelector.java b/src/main/java/net/minecraft/world/entity/ai/goal/GoalSelector.java
-index 4451718ca3499bb57992fdf113568f898f04f714..b1c1f6965a44f3f99f32487cab989072457572dd 100644
+index 4451718ca3499bb57992fdf113568f898f04f714..d87f15957ccb283a4865f61a18ea24fe1faad2f9 100644
 --- a/src/main/java/net/minecraft/world/entity/ai/goal/GoalSelector.java
 +++ b/src/main/java/net/minecraft/world/entity/ai/goal/GoalSelector.java
 @@ -25,7 +25,7 @@ public class GoalSelector {
@@ -891,24 +889,6 @@ index 4451718ca3499bb57992fdf113568f898f04f714..b1c1f6965a44f3f99f32487cab989072
      private final Supplier<ProfilerFiller> profiler;
      private final EnumSet<Goal.Flag> disabledFlags = EnumSet.noneOf(Goal.Flag.class); // Paper unused, but dummy to prevent plugins from crashing as hard. Theyll need to support paper in a special case if this is super important, but really doesn't seem like it would be.
      private final OptimizedSmallEnumSet<Goal.Flag> goalTypes = new OptimizedSmallEnumSet<>(Goal.Flag.class); // Paper - remove streams from pathfindergoalselector
-@@ -36,7 +36,7 @@ public class GoalSelector {
-         this.profiler = profiler;
-     }
- 
--    public void addGoal(int priority, Goal goal) {
-+    public void addGoal(int priority, Goal goal) {addGoal(priority, goal);} public void addGoal(int priority, Goal goal) { // Paper - OBFHELPER
-         this.availableGoals.add(new WrappedGoal(priority, goal));
-     }
- 
-@@ -59,7 +59,7 @@ public class GoalSelector {
-     }
-     // Paper end
- 
--    public void removeGoal(Goal goal) {
-+    public void removeGoal(Goal goal) {removeGoal(goal);} public void removeGoal(Goal goal) { // Paper - OBFHELPER
-         // Paper start - remove streams from pathfindergoalselector
-         for (Iterator<WrappedGoal> iterator = this.availableGoals.iterator(); iterator.hasNext();) {
-             WrappedGoal goalWrapped = iterator.next();
 @@ -154,6 +154,7 @@ public class GoalSelector {
          profilerFiller.pop();
      }
@@ -917,21 +897,6 @@ index 4451718ca3499bb57992fdf113568f898f04f714..b1c1f6965a44f3f99f32487cab989072
      public Stream<WrappedGoal> getRunningGoals() {
          return this.availableGoals.stream().filter(WrappedGoal::isRunning);
      }
-diff --git a/src/main/java/net/minecraft/world/entity/ai/goal/WrappedGoal.java b/src/main/java/net/minecraft/world/entity/ai/goal/WrappedGoal.java
-index d35ff3e6e9e4b50d53f7cef16bdb4e137cf9df1c..c650d51e632d280acd145b2a2d422ae5fa99830c 100644
---- a/src/main/java/net/minecraft/world/entity/ai/goal/WrappedGoal.java
-+++ b/src/main/java/net/minecraft/world/entity/ai/goal/WrappedGoal.java
-@@ -4,8 +4,8 @@ import java.util.EnumSet;
- import javax.annotation.Nullable;
- 
- public class WrappedGoal extends Goal {
--    private final Goal goal;
--    private final int priority;
-+    private final Goal goal; public Goal getGoal() {return goal;} // Paper - OBFHELPER
-+    private final int priority; public int getPriority() {return priority;} // Paper - OBFHELPER
-     private boolean isRunning;
- 
-     public WrappedGoal(int priority, Goal goal) {
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 index ea3bd4b6b357c9aea283681a00baceed916cea1f..5ebd9005596ebd1b7d8c9687d6f1ad7df66796a9 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java

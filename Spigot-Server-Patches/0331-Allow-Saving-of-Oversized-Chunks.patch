@@ -51,7 +51,7 @@ index 6602b4ac1e19c844b2a439262081f07f0a465fd6..a07ba5a5bb654ce7445f337a8b8d2adf
          writeUnnamedTag((Tag) tag, output);
      }
 diff --git a/src/main/java/net/minecraft/world/level/chunk/storage/RegionFile.java b/src/main/java/net/minecraft/world/level/chunk/storage/RegionFile.java
-index 067a53a686ddb8e25a9f76d54e6f19ea83171070..9c9b7c4ed93cacd840163716343410aad8be1726 100644
+index 067a53a686ddb8e25a9f76d54e6f19ea83171070..6604104ec2397baad1690b0098ea043aab28a061 100644
 --- a/src/main/java/net/minecraft/world/level/chunk/storage/RegionFile.java
 +++ b/src/main/java/net/minecraft/world/level/chunk/storage/RegionFile.java
 @@ -18,8 +18,12 @@ import java.nio.file.Files;
@@ -71,7 +71,7 @@ index 067a53a686ddb8e25a9f76d54e6f19ea83171070..9c9b7c4ed93cacd840163716343410aa
      private final IntBuffer timestamps;
      @VisibleForTesting
      protected final RegionBitmap usedSectors;
-+    public final File file; // Paper
++    public final File regionFile; // Paper
  
      public RegionFile(File file, File directory, boolean dsync) throws IOException {
          this(file.toPath(), directory.toPath(), RegionFileVersion.VERSION_DEFLATE, dsync);
@@ -79,7 +79,7 @@ index 067a53a686ddb8e25a9f76d54e6f19ea83171070..9c9b7c4ed93cacd840163716343410aa
  
      public RegionFile(java.nio.file.Path file, java.nio.file.Path directory, RegionFileVersion outputChunkStreamVersion, boolean dsync) throws IOException {
          this.header = ByteBuffer.allocateDirect(8192);
-+        this.file = file.toFile(); // Paper
++        this.regionFile = file.toFile(); // Paper
 +        initOversizedState(); // Paper
          this.usedSectors = new RegionBitmap();
          this.version = outputChunkStreamVersion;
@@ -141,11 +141,11 @@ index 067a53a686ddb8e25a9f76d54e6f19ea83171070..9c9b7c4ed93cacd840163716343410aa
 +    }
 +
 +    private File getOversizedMetaFile() {
-+        return new File(this.file.getParentFile(), this.file.getName().replaceAll("\\.mca$", "") + ".oversized.nbt");
++        return new File(this.regionFile.getParentFile(), this.regionFile.getName().replaceAll("\\.mca$", "") + ".oversized.nbt");
 +    }
 +
 +    private File getOversizedFile(int x, int z) {
-+        return new File(this.file.getParentFile(), this.file.getName().replaceAll("\\.mca$", "") + "_oversized_" + x + "_" + z + ".nbt");
++        return new File(this.regionFile.getParentFile(), this.regionFile.getName().replaceAll("\\.mca$", "") + "_oversized_" + x + "_" + z + ".nbt");
 +    }
 +
 +    synchronized CompoundTag getOversizedData(int x, int z) throws IOException {
@@ -160,7 +160,7 @@ index 067a53a686ddb8e25a9f76d54e6f19ea83171070..9c9b7c4ed93cacd840163716343410aa
  
          private final ChunkPos pos;
 diff --git a/src/main/java/net/minecraft/world/level/chunk/storage/RegionFileStorage.java b/src/main/java/net/minecraft/world/level/chunk/storage/RegionFileStorage.java
-index f33a5fc725d1d5e895f8878d82ebc4172237ad29..6d3e1bb20d1ab8ce5c9ea613322042d80550761a 100644
+index f33a5fc725d1d5e895f8878d82ebc4172237ad29..90b524c5e699ca8f9f4a8d805f71196a053a9521 100644
 --- a/src/main/java/net/minecraft/world/level/chunk/storage/RegionFileStorage.java
 +++ b/src/main/java/net/minecraft/world/level/chunk/storage/RegionFileStorage.java
 @@ -10,7 +10,9 @@ import java.io.File;
@@ -254,7 +254,7 @@ index f33a5fc725d1d5e895f8878d82ebc4172237ad29..6d3e1bb20d1ab8ce5c9ea613322042d8
          DataInputStream datainputstream = regionfile.getChunkDataInputStream(pos);
 +        // Paper start
 +        if (regionfile.isOversized(pos.x, pos.z)) {
-+            printOversizedLog("Loading Oversized Chunk!", regionfile.file, pos.x, pos.z);
++            printOversizedLog("Loading Oversized Chunk!", regionfile.regionFile, pos.x, pos.z);
 +            return readOversizedChunk(regionfile, pos);
 +        }
 +        // Paper end

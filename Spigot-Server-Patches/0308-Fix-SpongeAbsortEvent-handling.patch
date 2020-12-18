@@ -6,7 +6,7 @@ Subject: [PATCH] Fix SpongeAbsortEvent handling
 Only process drops when the block is actually going to be removed
 
 diff --git a/src/main/java/net/minecraft/world/level/block/Block.java b/src/main/java/net/minecraft/world/level/block/Block.java
-index acf80f4b32b70e8a01afb32526260be2b9f721c0..5b28bc4b674ac9ef3e236c955a819914cc070bf1 100644
+index f825a91ee18f216a4a63810e410bb91b02c05b3a..699266a9b616b961c5e205b875c455bc78e684bf 100644
 --- a/src/main/java/net/minecraft/world/level/block/Block.java
 +++ b/src/main/java/net/minecraft/world/level/block/Block.java
 @@ -229,6 +229,7 @@ public class Block extends BlockBehaviour implements ItemLike {

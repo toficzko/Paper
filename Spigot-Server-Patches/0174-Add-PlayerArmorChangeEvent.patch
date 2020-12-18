@@ -4,20 +4,8 @@ Date: Fri, 10 Nov 2017 23:46:34 -0500
 Subject: [PATCH] Add PlayerArmorChangeEvent
 
 
-diff --git a/src/main/java/net/minecraft/world/entity/EquipmentSlot.java b/src/main/java/net/minecraft/world/entity/EquipmentSlot.java
-index accce6a8eac2016ce4aa400304dae32be7145c73..8ce4c1600befcb7b1a2e811c0cd4661b7b55a1cc 100644
---- a/src/main/java/net/minecraft/world/entity/EquipmentSlot.java
-+++ b/src/main/java/net/minecraft/world/entity/EquipmentSlot.java
-@@ -20,6 +20,7 @@ public enum EquipmentSlot {
-         this.name = name;
-     }
- 
-+    public EquipmentSlot.Type getType() { return this.getType(); } // Paper - OBFHELPER
-     public EquipmentSlot.Type getType() {
-         return this.type;
-     }
 diff --git a/src/main/java/net/minecraft/world/entity/LivingEntity.java b/src/main/java/net/minecraft/world/entity/LivingEntity.java
-index 5b93a54811edf9552107a8d459437bdbdbd71284..0eb2ca5eeefe6bf5115fe19a3a579ee9c491b70b 100644
+index 859346c54b60564c06dadb5603f2d3618b608c88..0ed002bef88f9b991e244b02fed474a88f7b805e 100644
 --- a/src/main/java/net/minecraft/world/entity/LivingEntity.java
 +++ b/src/main/java/net/minecraft/world/entity/LivingEntity.java
 @@ -1,5 +1,6 @@
@@ -27,7 +15,7 @@ index 5b93a54811edf9552107a8d459437bdbdbd71284..0eb2ca5eeefe6bf5115fe19a3a579ee9
  import com.google.common.base.Objects;
  import com.google.common.collect.ImmutableList;
  import com.google.common.collect.ImmutableMap;
-@@ -2624,6 +2625,13 @@ public abstract class LivingEntity extends Entity {
+@@ -2623,6 +2624,13 @@ public abstract class LivingEntity extends Entity {
              ItemStack itemstack1 = this.getItemBySlot(enumitemslot);
  
              if (!ItemStack.matches(itemstack1, itemstack)) {

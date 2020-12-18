@@ -15,18 +15,10 @@ manually reload the advancement data for all players, which
 normally takes place as a part of the datapack reloading.
 
 diff --git a/src/main/java/net/minecraft/server/PlayerAdvancements.java b/src/main/java/net/minecraft/server/PlayerAdvancements.java
-index 8dd69ce58dca1dae87cb4f015acd2d0b0a42f587..3cced3f47ef8aefd7cd8a861c14aaa3574ffe9d9 100644
+index 8dd69ce58dca1dae87cb4f015acd2d0b0a42f587..13822eeac5b79e8e13a4f43a31eb21fc3dedc175 100644
 --- a/src/main/java/net/minecraft/server/PlayerAdvancements.java
 +++ b/src/main/java/net/minecraft/server/PlayerAdvancements.java
-@@ -97,6 +97,7 @@ public class PlayerAdvancements {
- 
-     }
- 
-+    public final void reload(ServerAdvancementManager advancementDataWorld) { this.reload(advancementDataWorld); } // Paper - OBFHELPER
-     public void reload(ServerAdvancementManager advancementLoader) {
-         this.stopListening();
-         this.advancements.clear();
-@@ -393,6 +394,7 @@ public class PlayerAdvancements {
+@@ -393,6 +393,7 @@ public class PlayerAdvancements {
  
      }
  

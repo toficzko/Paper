@@ -10,7 +10,7 @@ larger than the keep loaded range.
 By skipping this, we avoid potential for a large spike on server start.
 
 diff --git a/src/main/java/net/minecraft/server/level/ServerPlayer.java b/src/main/java/net/minecraft/server/level/ServerPlayer.java
-index 96262e6421c716c092d6ae7b83686e09153a734d..e8e84a5d61373023729f74c2355548bb285a253d 100644
+index 82f459daae2d2579107cf84ad3d366880f04eca9..b73f497ca1aff11c0d06069fe6bbdca91c949ec1 100644
 --- a/src/main/java/net/minecraft/server/level/ServerPlayer.java
 +++ b/src/main/java/net/minecraft/server/level/ServerPlayer.java
 @@ -248,7 +248,7 @@ public class ServerPlayer extends Player implements ContainerListener {
@@ -40,7 +40,7 @@ index 96262e6421c716c092d6ae7b83686e09153a734d..e8e84a5d61373023729f74c2355548bb
          this.gameMode.setLevel((ServerLevel) world);
      }
 diff --git a/src/main/java/net/minecraft/server/players/PlayerList.java b/src/main/java/net/minecraft/server/players/PlayerList.java
-index 07f8a89e4fa9236338c3145d423599618d14e24a..9573749e0fba1e2523086ca3539d0f8e515264b0 100644
+index 7d5c198059749a37807e209540f6c318b303cdf8..4e19fa4b6cd0907daf0c7718c2d4ef4c36f79192 100644
 --- a/src/main/java/net/minecraft/server/players/PlayerList.java
 +++ b/src/main/java/net/minecraft/server/players/PlayerList.java
 @@ -208,6 +208,8 @@ public abstract class PlayerList {

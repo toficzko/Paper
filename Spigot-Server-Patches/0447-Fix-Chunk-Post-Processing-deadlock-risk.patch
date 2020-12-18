@@ -25,7 +25,7 @@ This successfully fixed a reoccurring and highly reproduceable crash
 for heightmaps.
 
 diff --git a/src/main/java/net/minecraft/server/level/ChunkMap.java b/src/main/java/net/minecraft/server/level/ChunkMap.java
-index e3109297e83c1ac46a447d86fe69e72f760ad5ad..62bc1ceac912caa3e89b81a84c09823b103dad69 100644
+index 0a8f582194851df165e360e9ad62fdfc7732499c..0add1ed52a75eccf3ae78a5b639c6df64709a330 100644
 --- a/src/main/java/net/minecraft/server/level/ChunkMap.java
 +++ b/src/main/java/net/minecraft/server/level/ChunkMap.java
 @@ -181,6 +181,8 @@ public class ChunkMap extends ChunkStorage implements ChunkHolder.PlayerProvider
@@ -47,7 +47,7 @@ index e3109297e83c1ac46a447d86fe69e72f760ad5ad..62bc1ceac912caa3e89b81a84c09823b
  
          completablefuture1.thenAcceptAsync((either) -> {
 diff --git a/src/main/java/net/minecraft/server/level/ServerChunkCache.java b/src/main/java/net/minecraft/server/level/ServerChunkCache.java
-index 50176a1571ab9c61cb5ec6ac44c5cb0e4d76e31a..2bdec2e343d341b0a8e42b45fc9d50b2883c7ae7 100644
+index be6c0ed982e7cbe836d1248fd74b36ff90e45765..0e80735d216540d40c2637b1621abc82db79405b 100644
 --- a/src/main/java/net/minecraft/server/level/ServerChunkCache.java
 +++ b/src/main/java/net/minecraft/server/level/ServerChunkCache.java
 @@ -1020,6 +1020,7 @@ public class ServerChunkCache extends ChunkSource {

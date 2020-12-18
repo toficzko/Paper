@@ -5,7 +5,7 @@ Subject: [PATCH] Optimize WorldBorder collision checks and air
 
 
 diff --git a/src/main/java/net/minecraft/world/entity/Entity.java b/src/main/java/net/minecraft/world/entity/Entity.java
-index 58657dfa13b7aa02bcb52f065d8adf9fa8859ba9..d101fbb560f40db39cc95b3d171236de5ee04c67 100644
+index 067dffc4408f188dece4e6c9b7705b82ca6dc810..a20eefa08d239556bfd47bf15da2fa72d188cb58 100644
 --- a/src/main/java/net/minecraft/world/entity/Entity.java
 +++ b/src/main/java/net/minecraft/world/entity/Entity.java
 @@ -105,7 +105,6 @@ import net.minecraft.world.phys.AABB;
@@ -56,10 +56,10 @@ index f69a527ee095e8a09eea00e88fa31f10114b6bb8..8f000a499af2070cc1b4158fbee9c38d
          return box.maxX > this.getMinX() && box.minX < this.getMaxX() && box.maxZ > this.getMinZ() && box.minZ < this.getMaxZ();
      }
 diff --git a/src/main/java/net/minecraft/world/phys/shapes/Shapes.java b/src/main/java/net/minecraft/world/phys/shapes/Shapes.java
-index 99e1e234b24158a61011732e2f4ec17d4d3a6e34..ac3798aa7be1a90f3c8df85d9e2bf91db7955530 100644
+index 7cff896703c2453f34eacc24345cd0dc22642b12..3d66e8962eb53316f3383f8fcb6b9482d86f1fba 100644
 --- a/src/main/java/net/minecraft/world/phys/shapes/Shapes.java
 +++ b/src/main/java/net/minecraft/world/phys/shapes/Shapes.java
-@@ -238,7 +238,7 @@ public final class Shapes {
+@@ -237,7 +237,7 @@ public final class Shapes {
                                  mutableBlockPos.set(axisCycle, q, r, p);
                                  BlockState blockState = world.getTypeIfLoaded(mutableBlockPos); // Paper
                                  if (mutableBlockPos == null) return 0.0D; // Paper

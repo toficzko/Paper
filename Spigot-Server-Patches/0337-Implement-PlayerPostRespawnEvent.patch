@@ -5,7 +5,7 @@ Subject: [PATCH] Implement PlayerPostRespawnEvent
 
 
 diff --git a/src/main/java/net/minecraft/server/players/PlayerList.java b/src/main/java/net/minecraft/server/players/PlayerList.java
-index 41b501bacf6acc3d770ddaae73031c38a39965ed..8cbf0b32ac16b4fcafa5e77c1f21d43d976c8005 100644
+index 68db802f23c6604df10832b9d17ffda5d86a32fd..386317e5dc7bf6ff5e1ada4c7b7c17ef55b734e1 100644
 --- a/src/main/java/net/minecraft/server/players/PlayerList.java
 +++ b/src/main/java/net/minecraft/server/players/PlayerList.java
 @@ -740,9 +740,14 @@ public abstract class PlayerList {

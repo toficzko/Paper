@@ -25,7 +25,7 @@ The point of this is readability, but does have a side-benefit of a small microp
 Finally, added a couple obfhelpers for the modified code
 
 diff --git a/src/main/java/net/minecraft/server/players/PlayerList.java b/src/main/java/net/minecraft/server/players/PlayerList.java
-index 2d86fe1b7524d3b476f6c11599894c556b561856..3cab10ba22e04224cb5d7c4350ec4b31f2f81702 100644
+index 60dc8512c57316f39b5294edc0f66462a64cca23..8906dbe07d20a194ac18fe0990d0aa2729e58989 100644
 --- a/src/main/java/net/minecraft/server/players/PlayerList.java
 +++ b/src/main/java/net/minecraft/server/players/PlayerList.java
 @@ -618,7 +618,7 @@ public abstract class PlayerList {

@@ -20,7 +20,7 @@ this is going to be the best soultion all around.
 Improvements/suggestions welcome!
 
 diff --git a/src/main/java/net/minecraft/server/level/ServerPlayer.java b/src/main/java/net/minecraft/server/level/ServerPlayer.java
-index 7dd9750db3e79dfc4bad17c3fa7de2a28ac29f9d..5f02e5d4220130e8bf96a4006f1caa42da905209 100644
+index 0ea1d58a40c8aed8e2856f91b1cc295230b40475..b244ee9879b8d3eac92f271e7c4d5c32e33ddd40 100644
 --- a/src/main/java/net/minecraft/server/level/ServerPlayer.java
 +++ b/src/main/java/net/minecraft/server/level/ServerPlayer.java
 @@ -1235,11 +1235,13 @@ public class ServerPlayer extends Player implements ContainerListener {
@@ -41,10 +41,10 @@ index 7dd9750db3e79dfc4bad17c3fa7de2a28ac29f9d..5f02e5d4220130e8bf96a4006f1caa42
  
          if (entity1 != entity && this.connection != null) {
 diff --git a/src/main/java/net/minecraft/world/entity/Entity.java b/src/main/java/net/minecraft/world/entity/Entity.java
-index c75c9f2a19d55d4ee444041deeed5e91b82ae818..e7b5b27872689fdbb6d874be951806140a3055a5 100644
+index bab518440ac283f587e414d0d3bb0916338128d2..07b0283f55e4253591134ad40a61059629eebfb2 100644
 --- a/src/main/java/net/minecraft/world/entity/Entity.java
 +++ b/src/main/java/net/minecraft/world/entity/Entity.java
-@@ -2042,12 +2042,15 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
+@@ -2044,12 +2044,15 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
  
      }
  
@@ -62,7 +62,7 @@ index c75c9f2a19d55d4ee444041deeed5e91b82ae818..e7b5b27872689fdbb6d874be95180614
          }
  
      }
-@@ -2102,7 +2105,10 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
+@@ -2104,7 +2107,10 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
          return true; // CraftBukkit
      }
  
@@ -74,7 +74,7 @@ index c75c9f2a19d55d4ee444041deeed5e91b82ae818..e7b5b27872689fdbb6d874be95180614
          if (entity.getVehicle() == this) {
              throw new IllegalStateException("Use x.stopRiding(y), not y.removePassenger(x)");
          } else {
-@@ -2112,7 +2118,7 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
+@@ -2114,7 +2120,7 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
              if (getBukkitEntity() instanceof Vehicle && entity.getBukkitEntity() instanceof LivingEntity) {
                  VehicleExitEvent event = new VehicleExitEvent(
                          (Vehicle) getBukkitEntity(),
@@ -83,7 +83,7 @@ index c75c9f2a19d55d4ee444041deeed5e91b82ae818..e7b5b27872689fdbb6d874be95180614
                  );
                  // Suppress during worldgen
                  if (this.valid) {
-@@ -2126,7 +2132,7 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
+@@ -2128,7 +2134,7 @@ public abstract class Entity implements Nameable, CommandSource, KeyedObject { /
              }
              // CraftBukkit end
              // Spigot start
@@ -93,10 +93,10 @@ index c75c9f2a19d55d4ee444041deeed5e91b82ae818..e7b5b27872689fdbb6d874be95180614
              if (this.valid) {
                  Bukkit.getPluginManager().callEvent(event);
 diff --git a/src/main/java/net/minecraft/world/entity/LivingEntity.java b/src/main/java/net/minecraft/world/entity/LivingEntity.java
-index ed78e89b5976b97df4334c7324fa26af3ba667d5..b36701216688dd183d745750897c4ba0bb59484b 100644
+index 7e55e7469ee3c2f855e8524ee410891d34477db1..dec06a55a572d1977fe100897019e8262db8ac15 100644
 --- a/src/main/java/net/minecraft/world/entity/LivingEntity.java
 +++ b/src/main/java/net/minecraft/world/entity/LivingEntity.java
-@@ -2994,11 +2994,13 @@ public abstract class LivingEntity extends Entity {
+@@ -2992,11 +2992,13 @@ public abstract class LivingEntity extends Entity {
          return ((Byte) this.entityData.get(LivingEntity.DATA_LIVING_ENTITY_FLAGS) & 4) != 0;
      }
  
@@ -114,7 +114,7 @@ index ed78e89b5976b97df4334c7324fa26af3ba667d5..b36701216688dd183d745750897c4ba0
              this.dismountVehicle(entity);
          }
 diff --git a/src/main/java/net/minecraft/world/entity/player/Player.java b/src/main/java/net/minecraft/world/entity/player/Player.java
-index 5e67f68f1d72ef2f8171f574a8af8d6720e8d047..cb4f3709426f34d64152d0fde9e68be7e612c1a7 100644
+index bbe056839e2c999e1e5db5fec8db4a2fb169b73e..edcefc12df4b70271f7f3df2b641423fd2c07f0e 100644
 --- a/src/main/java/net/minecraft/world/entity/player/Player.java
 +++ b/src/main/java/net/minecraft/world/entity/player/Player.java
 @@ -1036,9 +1036,11 @@ public abstract class Player extends LivingEntity {

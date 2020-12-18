@@ -144,10 +144,10 @@ index 22b8bb4a2d337336450177b0b97168a375e051c4..b99eaf8579f50a54e1de4949ad2fe0bb
          if (!SyncLoadFinder.ENABLED) {
              sender.sendMessage(ChatColor.RED + "This command requires the server startup flag '-Dpaper.debug-sync-loads=true' to be set.");
 diff --git a/src/main/java/net/minecraft/server/level/ChunkHolder.java b/src/main/java/net/minecraft/server/level/ChunkHolder.java
-index 34e5a7c852945e675611abdd2ec2a9e63b559fcd..732a742875aff9a3efb6fa16466b1607ac2259b2 100644
+index 427c8a0dbc6ba8c61541dc4bcd4f615cdf9f9083..3c9526b403e06228628b5e49e5ab8337f00f6a48 100644
 --- a/src/main/java/net/minecraft/server/level/ChunkHolder.java
 +++ b/src/main/java/net/minecraft/server/level/ChunkHolder.java
-@@ -344,6 +344,7 @@ public class ChunkHolder {
+@@ -343,6 +343,7 @@ public class ChunkHolder {
  
      }
  
@@ -156,7 +156,7 @@ index 34e5a7c852945e675611abdd2ec2a9e63b559fcd..732a742875aff9a3efb6fa16466b1607
          // Paper start - per player view distance
          // there can be potential desync with player's last mapped section and the view distance map, so use the
 diff --git a/src/main/java/net/minecraft/server/level/ChunkMap.java b/src/main/java/net/minecraft/server/level/ChunkMap.java
-index 0b0962036a6829c4c2192a06c053630077a1890b..316d3ea98a3370a18b689669d2788a4e20dc70bf 100644
+index 3954ea7d94fb4eeabfc92329408d7698d547b52f..e8984c9f9136f6f0a951fda1853b98c991fb16ab 100644
 --- a/src/main/java/net/minecraft/server/level/ChunkMap.java
 +++ b/src/main/java/net/minecraft/server/level/ChunkMap.java
 @@ -147,6 +147,12 @@ public class ChunkMap extends ChunkStorage implements ChunkHolder.PlayerProvider
