@@ -6,10 +6,10 @@ Subject: [PATCH] Fix MC-197271
 This patch only fixes an issue for servers running OpenJ9.
 
 diff --git a/src/main/java/net/minecraft/data/BuiltinRegistries.java b/src/main/java/net/minecraft/data/BuiltinRegistries.java
-index 946cdfb3caf6a48d053341598a28c7405d936ad7..3fa3f9099e4db1fffb0ec3fe0cd9edab3c2ed7f3 100644
+index 32eb9d9c3ac6fbba681d19d12373515616537468..2d55a4ba8828a25e248af6c40dbc83290eaf63c0 100644
 --- a/src/main/java/net/minecraft/data/BuiltinRegistries.java
 +++ b/src/main/java/net/minecraft/data/BuiltinRegistries.java
-@@ -48,11 +48,11 @@ public class BuiltinRegistries {
+@@ -47,11 +47,11 @@ public class BuiltinRegistries {
      public static final Registry<StructureProcessorList> PROCESSOR_LIST = registerSimple(Registry.PROCESSOR_LIST_REGISTRY, () -> {
          return ProcessorLists.ZOMBIE_PLAINS;
      });
@@ -23,29 +23,28 @@ index 946cdfb3caf6a48d053341598a28c7405d936ad7..3fa3f9099e4db1fffb0ec3fe0cd9edab
  
      private static <T> Registry<T> registerSimple(ResourceKey<? extends Registry<T>> registryRef, Supplier<T> defaultValueSupplier) {
          return registerSimple(registryRef, Lifecycle.stable(), defaultValueSupplier);
-@@ -66,9 +66,9 @@ public class BuiltinRegistries {
-         ResourceLocation minecraftkey = registryRef.location();
- 
-         BuiltinRegistries.LOADERS.put(minecraftkey, defaultValueSupplier);
--        WritableRegistry<R> iregistrywritable = BuiltinRegistries.WRITABLE_REGISTRY;
-+        WritableRegistry<R> iregistrywritable = (WritableRegistry<R>) BuiltinRegistries.WRITABLE_REGISTRY; // Paper - decompile fix
- 
--        return (WritableRegistry) iregistrywritable.register(registryRef, (Object) registry, lifecycle);
-+        return (R) iregistrywritable.register((ResourceKey<R>) registryRef, registry, lifecycle); // Paper - decompile fix
+@@ -64,8 +64,8 @@ public class BuiltinRegistries {
+     private static <T, R extends WritableRegistry<T>> R internalRegister(ResourceKey<? extends Registry<T>> registryRef, R registry, Supplier<T> defaultValueSupplier, Lifecycle lifecycle) {
+         ResourceLocation resourceLocation = registryRef.location();
+         LOADERS.put(resourceLocation, defaultValueSupplier);
+-        WritableRegistry<R> writableRegistry = WRITABLE_REGISTRY;
+-        return writableRegistry.register(registryRef, registry, lifecycle);
++        WritableRegistry<R> writableRegistry = (WritableRegistry<R>) WRITABLE_REGISTRY; // Paper - decompile fix
++        return writableRegistry.register((ResourceKey<R>) registryRef, registry, lifecycle); // Paper - decompile fix
      }
  
      public static <T> T register(Registry<? super T> registry, String id, T object) {
-@@ -76,11 +76,11 @@ public class BuiltinRegistries {
+@@ -73,11 +73,11 @@ public class BuiltinRegistries {
      }
  
      public static <V, T extends V> T register(Registry<V> registry, ResourceLocation id, T object) {
--        return ((WritableRegistry) registry).register(ResourceKey.create(registry.key(), id), object, Lifecycle.stable());
-+        return (T) ((WritableRegistry) registry).register(ResourceKey.create(registry.key(), id), object, Lifecycle.stable()); // Paper - decompile fix
+-        return ((WritableRegistry)registry).register(ResourceKey.create(registry.key(), id), object, Lifecycle.stable());
++        return (T) ((WritableRegistry)registry).register(ResourceKey.create(registry.key(), id), object, Lifecycle.stable()); // Paper - decompile fix
      }
  
-     public static <V, T extends V> T registerMapping(Registry<V> iregistry, int rawId, ResourceKey<V> resourcekey, T object) {
--        return ((WritableRegistry) iregistry).registerMapping(rawId, resourcekey, object, Lifecycle.stable());
-+        return (T) ((WritableRegistry) iregistry).registerMapping(rawId, resourcekey, object, Lifecycle.stable()); // Paper - decompile fix
+     public static <V, T extends V> T registerMapping(Registry<V> registry, int rawId, ResourceKey<V> resourceKey, T object) {
+-        return ((WritableRegistry)registry).registerMapping(rawId, resourceKey, object, Lifecycle.stable());
++        return (T) ((WritableRegistry)registry).registerMapping(rawId, resourceKey, object, Lifecycle.stable()); // Paper - decompile fix
      }
  
-     public static void bootstrap() {}
+     public static void bootstrap() {

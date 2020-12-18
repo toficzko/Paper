@@ -6,7 +6,7 @@ Subject: [PATCH] Add a way to get translation keys for blocks, entities and
 
 
 diff --git a/src/main/java/net/minecraft/world/entity/EntityType.java b/src/main/java/net/minecraft/world/entity/EntityType.java
-index 4624c21faac6f9a63f1709192e357f646ee6714d..1814043451d2357329f93c4a285b0b2cfc0103d0 100644
+index 4624c21faac6f9a63f1709192e357f646ee6714d..494076bccf88b496421a2596cbb87d9bab474856 100644
 --- a/src/main/java/net/minecraft/world/entity/EntityType.java
 +++ b/src/main/java/net/minecraft/world/entity/EntityType.java
 @@ -277,6 +277,7 @@ public class EntityType<T extends Entity> {
@@ -17,47 +17,6 @@ index 4624c21faac6f9a63f1709192e357f646ee6714d..1814043451d2357329f93c4a285b0b2c
      public static Optional<EntityType<?>> byString(String id) {
          return Registry.ENTITY_TYPE.getOptional(ResourceLocation.tryParse(id));
      }
-@@ -416,6 +417,7 @@ public class EntityType<T extends Entity> {
-         return this.category;
-     }
- 
-+    public String getDescriptionId() { return getDescriptionId(); } // Paper - OBFHELPER
-     public String getDescriptionId() {
-         if (this.descriptionId == null) {
-             this.descriptionId = Util.makeDescriptionId("entity", Registry.ENTITY_TYPE.getKey(this));
-diff --git a/src/main/java/net/minecraft/world/item/Item.java b/src/main/java/net/minecraft/world/item/Item.java
-index 259c137d66da8405c66ed6c221d9b00b77cd5794..13198cb207c4e5a7d898017f4857a365a974de7e 100644
---- a/src/main/java/net/minecraft/world/item/Item.java
-+++ b/src/main/java/net/minecraft/world/item/Item.java
-@@ -56,7 +56,7 @@ public class Item implements ItemLike {
-     private final FoodProperties foodProperties;
- 
-     public static int getId(Item item) {
--        return item == null ? 0 : Registry.ITEM.getId((Object) item);
-+        return item == null ? 0 : Registry.ITEM.getId(item);  // Paper - Fix Decompiler Issue
-     }
- 
-     public static Item byId(int id) {
-@@ -152,6 +152,7 @@ public class Item implements ItemLike {
-         return Registry.ITEM.getKey(this).getPath();
-     }
- 
-+    public String getOrCreateDescriptionId() { return getOrCreateDescriptionId(); } // Paper - OBFHELPER
-     protected String getOrCreateDescriptionId() {
-         if (this.descriptionId == null) {
-             this.descriptionId = Util.makeDescriptionId("item", Registry.ITEM.getKey(this));
-diff --git a/src/main/java/net/minecraft/world/level/block/Block.java b/src/main/java/net/minecraft/world/level/block/Block.java
-index e5e7d0467ac17fa0e3166017b06ff1ef8db02a89..95c03775ac6ebc8e7553e1d4a935cf59bde9cdc0 100644
---- a/src/main/java/net/minecraft/world/level/block/Block.java
-+++ b/src/main/java/net/minecraft/world/level/block/Block.java
-@@ -319,6 +319,7 @@ public class Block extends BlockBehaviour implements ItemLike {
-         return !this.material.isSolid() && !this.material.isLiquid();
-     }
- 
-+    public String getDescriptionId() { return getDescriptionId(); } // Paper - OBFHELPER
-     public String getDescriptionId() {
-         if (this.descriptionId == null) {
-             this.descriptionId = Util.makeDescriptionId("block", Registry.BLOCK.getKey(this));
 diff --git a/src/main/java/org/bukkit/craftbukkit/block/CraftBlock.java b/src/main/java/org/bukkit/craftbukkit/block/CraftBlock.java
 index beff09fbfd8cd97613f783ed17dfb7573dbf1692..20de08eadec554657dfbc5cd6c73b1d96e0364fd 100644
 --- a/src/main/java/org/bukkit/craftbukkit/block/CraftBlock.java
@@ -74,7 +33,7 @@ index beff09fbfd8cd97613f783ed17dfb7573dbf1692..20de08eadec554657dfbc5cd6c73b1d9
      // Paper end
  }
 diff --git a/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java b/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
-index d4f2aea3e4d1e9a295ce494e709dbbb0b6d90efd..028319fc894b0d759d4311bfa688e149b0580779 100644
+index d4f2aea3e4d1e9a295ce494e709dbbb0b6d90efd..0bbdfe6617bfa2c2d120536850f81a5cad92dbab 100644
 --- a/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
 +++ b/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
 @@ -43,6 +43,7 @@ import org.bukkit.Registry;
@@ -92,7 +51,7 @@ index d4f2aea3e4d1e9a295ce494e709dbbb0b6d90efd..028319fc894b0d759d4311bfa688e149
 +
 +    @Override
 +    public String getTranslationKey(Material mat) {
-+        return getItem(mat).getOrCreateDescriptionId();
++        return getItem(mat).getDescriptionId();
 +    }
 +
 +    @Override

@@ -6,14 +6,13 @@ Subject: [PATCH] Optimise getType calls
 Remove the map lookup for converting from Block->Bukkit Material
 
 diff --git a/src/main/java/net/minecraft/world/level/block/state/BlockState.java b/src/main/java/net/minecraft/world/level/block/state/BlockState.java
-index 9958cdf55cef2177fafd0cdae48da9db064af9f1..4263ac345d57e36e010e3dd009130c02799b249c 100644
+index ecd5d1982d810b12938738a0b91d37ad63c00322..5a721262f088070f47c2b8d9af82d72c8bf5993f 100644
 --- a/src/main/java/net/minecraft/world/level/block/state/BlockState.java
 +++ b/src/main/java/net/minecraft/world/level/block/state/BlockState.java
-@@ -11,6 +11,19 @@ public class BlockState extends BlockBehaviour.BlockStateBase {
+@@ -10,6 +10,18 @@ import net.minecraft.world.level.block.state.properties.Property;
+ public class BlockState extends BlockBehaviour.BlockStateBase {
+     public static final Codec<BlockState> CODEC = codec(Registry.BLOCK, Block::defaultBlockState).stable();
  
-     public static final Codec<BlockState> CODEC = codec((Codec) Registry.BLOCK, Block::defaultBlockState).stable();
- 
-+
 +    // Paper start - optimise getType calls
 +    org.bukkit.Material cachedMaterial;
 +
@@ -26,8 +25,8 @@ index 9958cdf55cef2177fafd0cdae48da9db064af9f1..4263ac345d57e36e010e3dd009130c02
 +    }
 +    // Paper end - optimise getType calls
 +
-     public BlockState(Block block, ImmutableMap<Property<?>, Comparable<?>> propertyMap, MapCodec<BlockState> mapcodec) {
-         super(block, propertyMap, mapcodec);
+     public BlockState(Block block, ImmutableMap<Property<?>, Comparable<?>> immutableMap, MapCodec<BlockState> mapCodec) {
+         super(block, immutableMap, mapCodec);
      }
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftChunkSnapshot.java b/src/main/java/org/bukkit/craftbukkit/CraftChunkSnapshot.java
 index fe00c8fdacc28a68c732aac0b887ea107d87e979..227974a85a81c623311301e28e83e85424b05f3d 100644

@@ -74,23 +74,23 @@ index e6fb60112c0a6242e464d331ed99ec0bfec29b3d..0ae4f8bfda82a741d67802389c15d91a
  
          public SoundType getSoundType() {
 diff --git a/src/main/java/net/minecraft/world/level/material/FluidState.java b/src/main/java/net/minecraft/world/level/material/FluidState.java
-index c077e4a7ce6a484956206eaab9dfde057b7e429a..69cf9e149c207336c537a00f08251a2252752df6 100644
+index d3be1552558b3c374f9f39462051834de2dff370..123b3efc7325eea2c2ee71fbb276bc4c6d342995 100644
 --- a/src/main/java/net/minecraft/world/level/material/FluidState.java
 +++ b/src/main/java/net/minecraft/world/level/material/FluidState.java
-@@ -20,8 +20,12 @@ public final class FluidState extends StateHolder<Fluid, FluidState> {
- 
-     public static final Codec<FluidState> CODEC = codec((Codec) Registry.FLUID, Fluid::defaultFluidState).stable();
+@@ -19,8 +19,12 @@ import net.minecraft.world.phys.shapes.VoxelShape;
+ public final class FluidState extends StateHolder<Fluid, FluidState> {
+     public static final Codec<FluidState> CODEC = codec(Registry.FLUID, Fluid::defaultFluidState).stable();
  
 +    // Paper start
 +    protected final boolean isEmpty;
 +    // Paper end
-     public FluidState(Fluid fluid, ImmutableMap<Property<?>, Comparable<?>> propertiesMap, MapCodec<FluidState> mapcodec) {
-         super(fluid, propertiesMap, mapcodec);
+     public FluidState(Fluid fluid, ImmutableMap<Property<?>, Comparable<?>> propertiesMap, MapCodec<FluidState> mapCodec) {
+         super(fluid, propertiesMap, mapCodec);
 +        this.isEmpty = fluid.isEmpty(); // Paper - moved from isEmpty()
      }
  
      public Fluid getType() {
-@@ -33,7 +37,7 @@ public final class FluidState extends StateHolder<Fluid, FluidState> {
+@@ -32,7 +36,7 @@ public final class FluidState extends StateHolder<Fluid, FluidState> {
      }
  
      public boolean isEmpty() {

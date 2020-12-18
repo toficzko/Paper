@@ -1,0 +1,45 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: William Blake Galbreath <Blake.Galbreath@GMail.com>
+Date: Sat, 15 Aug 2020 08:04:49 -0500
+Subject: [PATCH] Fix MC-187716 Use configured height
+
+
+diff --git a/src/main/java/net/minecraft/world/level/levelgen/surfacebuilders/NetherCappedSurfaceBuilder.java b/src/main/java/net/minecraft/world/level/levelgen/surfacebuilders/NetherCappedSurfaceBuilder.java
+index 56a38f283c52e997ddc19c8d654270ee9a086fc7..7f80a99c04cd9107289aad1e38f6711ed0e4b1b8 100644
+--- a/src/main/java/net/minecraft/world/level/levelgen/surfacebuilders/NetherCappedSurfaceBuilder.java
++++ b/src/main/java/net/minecraft/world/level/levelgen/surfacebuilders/NetherCappedSurfaceBuilder.java
+@@ -41,7 +41,7 @@ public abstract class NetherCappedSurfaceBuilder extends SurfaceBuilder<SurfaceB
+         BlockPos.MutableBlockPos mutableBlockPos = new BlockPos.MutableBlockPos();
+         BlockState blockState5 = chunkAccess.getBlockState(mutableBlockPos.set(o, 128, p));
+ 
+-        for(int s = 127; s >= 0; --s) {
++        for(int s = k; s >= 0; --s) { // Paper - fix MC-187716 - use configured height
+             mutableBlockPos.set(o, s, p);
+             BlockState blockState6 = chunkAccess.getBlockState(mutableBlockPos);
+             if (blockState5.is(blockState.getBlock()) && (blockState6.isAir() || blockState6 == blockState2)) {
+diff --git a/src/main/java/net/minecraft/world/level/levelgen/surfacebuilders/NetherForestSurfaceBuilder.java b/src/main/java/net/minecraft/world/level/levelgen/surfacebuilders/NetherForestSurfaceBuilder.java
+index 6667e975a88e0c4c63a70d06a0f558e701083442..b9602072a70dc78a30312d8032b803642d0427aa 100644
+--- a/src/main/java/net/minecraft/world/level/levelgen/surfacebuilders/NetherForestSurfaceBuilder.java
++++ b/src/main/java/net/minecraft/world/level/levelgen/surfacebuilders/NetherForestSurfaceBuilder.java
+@@ -33,7 +33,7 @@ public class NetherForestSurfaceBuilder extends SurfaceBuilder<SurfaceBuilderBas
+         int r = -1;
+         BlockState blockState3 = surfaceBuilderBaseConfiguration.getUnderMaterial();
+ 
+-        for(int s = 127; s >= 0; --s) {
++        for(int s = k; s >= 0; --s) { // Paper - fix MC-187716 - use configured height
+             mutableBlockPos.set(o, s, p);
+             BlockState blockState4 = surfaceBuilderBaseConfiguration.getTopMaterial();
+             BlockState blockState5 = chunkAccess.getBlockState(mutableBlockPos);
+diff --git a/src/main/java/net/minecraft/world/level/levelgen/surfacebuilders/NetherSurfaceBuilder.java b/src/main/java/net/minecraft/world/level/levelgen/surfacebuilders/NetherSurfaceBuilder.java
+index 5c168d9dc40dadd7c685297748c4ede1b9ee342d..5b21fa6acc8d5d3d7f9bbd7e4fab4bde778a13fd 100644
+--- a/src/main/java/net/minecraft/world/level/levelgen/surfacebuilders/NetherSurfaceBuilder.java
++++ b/src/main/java/net/minecraft/world/level/levelgen/surfacebuilders/NetherSurfaceBuilder.java
+@@ -35,7 +35,7 @@ public class NetherSurfaceBuilder extends SurfaceBuilder<SurfaceBuilderBaseConfi
+         BlockState blockState3 = surfaceBuilderBaseConfiguration.getTopMaterial();
+         BlockState blockState4 = surfaceBuilderBaseConfiguration.getUnderMaterial();
+ 
+-        for(int s = 127; s >= 0; --s) {
++        for(int s = k; s >= 0; --s) { // Paper - fix MC-187716 - use configured height
+             mutableBlockPos.set(o, s, p);
+             BlockState blockState5 = chunkAccess.getBlockState(mutableBlockPos);
+             if (blockState5.isAir()) {

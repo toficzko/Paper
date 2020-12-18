@@ -5,27 +5,24 @@ Subject: [PATCH] Add more Evoker API
 
 
 diff --git a/src/main/java/net/minecraft/world/entity/monster/Evoker.java b/src/main/java/net/minecraft/world/entity/monster/Evoker.java
-index 2691e7a1aa1305811a1cc6e4fca70b6ca80b0320..2603935cf354575ed224abd1cfc1bc656f65b466 100644
+index 7455c0f598f80875de15373b49afd1c2d13506be..e0305b18de2d1c15318891e0333b3d782fc7214c 100644
 --- a/src/main/java/net/minecraft/world/entity/monster/Evoker.java
 +++ b/src/main/java/net/minecraft/world/entity/monster/Evoker.java
-@@ -40,7 +40,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
+@@ -115,12 +115,12 @@ public class Evoker extends SpellcasterIllager {
+         return SoundEvents.EVOKER_HURT;
+     }
  
- public class Evoker extends SpellcasterIllager {
+-    private void setWololoTarget(@Nullable Sheep sheep) {
++    public void setWololoTarget(@Nullable Sheep sheep) { // Paper - public
+         this.wololoTarget = sheep;
+     }
  
--    private Sheep wololoTarget;
-+    private Sheep wololoTarget; public final Sheep getWololoTarget() { return this.wololoTarget; } public final void setWololoTarget(Sheep sheep) { this.wololoTarget = sheep; } // Paper - OBFHELPER
+     @Nullable
+-    private Sheep getWololoTarget() {
++    public Sheep getWololoTarget() { // Paper - public
+         return this.wololoTarget;
+     }
  
-     public Evoker(EntityType<? extends Evoker> type, Level world) {
-         super(type, world);
-@@ -59,7 +59,7 @@ public class Evoker extends SpellcasterIllager {
-         this.goalSelector.addGoal(8, new RandomStrollGoal(this, 0.6D));
-         this.goalSelector.addGoal(9, new LookAtPlayerGoal(this, Player.class, 3.0F, 1.0F));
-         this.goalSelector.addGoal(10, new LookAtPlayerGoal(this, Mob.class, 8.0F));
--        this.targetSelector.addGoal(1, (new HurtByTargetGoal(this, new Class[]{Raider.class})).canUse());
-+        this.targetSelector.addGoal(1, (new HurtByTargetGoal(this, new Class[]{Raider.class})).setAlertOthers(new Class[0])); // Paper - decompile fix
-         this.targetSelector.addGoal(2, (new NearestAttackableTargetGoal<>(this, Player.class, true)).setUnseenMemoryTicks(300));
-         this.targetSelector.addGoal(3, (new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false)).setUnseenMemoryTicks(300));
-         this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, false));
 diff --git a/src/main/java/org/bukkit/craftbukkit/entity/CraftEvoker.java b/src/main/java/org/bukkit/craftbukkit/entity/CraftEvoker.java
 index 29fec87c938c4252cf5c9473ce9e5c1908ea9063..49f94c30f9f639e5806c04ede91f1d468edf7eb1 100644
 --- a/src/main/java/org/bukkit/craftbukkit/entity/CraftEvoker.java

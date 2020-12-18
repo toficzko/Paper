@@ -59,10 +59,10 @@ index 0000000000000000000000000000000000000000..c6ea429819c07e7f4bc257cad73463a0
 +    }
 +}
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index e0e7d2826944325fe64c5fd84f43133370186d67..0fc57583570dfeaa42de049e4d0a4053e0f06056 100644
+index cb3573d683637fb902459acb6ba9f7f610339aad..08ca42a5511aa7a2c66f388de7525ad62699654d 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
-@@ -173,6 +173,7 @@ import org.bukkit.craftbukkit.Main;
+@@ -172,6 +172,7 @@ import org.bukkit.craftbukkit.Main;
  import org.bukkit.event.server.ServerLoadEvent;
  // CraftBukkit end
  import co.aikar.timings.MinecraftTimings; // Paper
@@ -70,7 +70,7 @@ index e0e7d2826944325fe64c5fd84f43133370186d67..0fc57583570dfeaa42de049e4d0a4053
  import org.spigotmc.SlackActivityAccountant; // Spigot
  
  public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTask> implements SnooperPopulator, CommandSource, AutoCloseable {
-@@ -1054,6 +1055,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -1053,6 +1054,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
                  LOGGER.info("Done ({})! For help, type \"help\"", doneTime);
                  // Paper end
  

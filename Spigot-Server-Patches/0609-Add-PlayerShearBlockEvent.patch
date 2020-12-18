@@ -46,7 +46,7 @@ index 8d4c981b5f29a1b4a5b93ce59f2dce2eeb76b61f..13d8b91024da72a01988bf47c02b1396
                      entityhuman1.broadcastBreakEvent(hand);
                  });
 diff --git a/src/main/java/net/minecraft/world/level/block/Block.java b/src/main/java/net/minecraft/world/level/block/Block.java
-index 95c03775ac6ebc8e7553e1d4a935cf59bde9cdc0..88be447f682c16176c2e6cdda3123ba6fac36bc7 100644
+index e5e7d0467ac17fa0e3166017b06ff1ef8db02a89..552403a4da4469c5453f9a196216383735078167 100644
 --- a/src/main/java/net/minecraft/world/level/block/Block.java
 +++ b/src/main/java/net/minecraft/world/level/block/Block.java
 @@ -263,13 +263,13 @@ public class Block extends BlockBehaviour implements ItemLike {
@@ -67,7 +67,7 @@ index 95c03775ac6ebc8e7553e1d4a935cf59bde9cdc0..88be447f682c16176c2e6cdda3123ba6
              entityitem.setDefaultPickUpDelay();
              // CraftBukkit start
 diff --git a/src/main/java/net/minecraft/world/level/block/PumpkinBlock.java b/src/main/java/net/minecraft/world/level/block/PumpkinBlock.java
-index fe528f7dee693982285ce035abd9929cb4e0cbdf..fef0b33fedfff8ff387fb3e4b7b0c05a1775d669 100644
+index 32f75abe99a28fbedb80d4c62aafafe0dfee3b7d..b7786d5a6da913572ad0290c71cafdb0ae635fce 100644
 --- a/src/main/java/net/minecraft/world/level/block/PumpkinBlock.java
 +++ b/src/main/java/net/minecraft/world/level/block/PumpkinBlock.java
 @@ -1,7 +1,9 @@
@@ -80,31 +80,29 @@ index fe528f7dee693982285ce035abd9929cb4e0cbdf..fef0b33fedfff8ff387fb3e4b7b0c05a
  import net.minecraft.sounds.SoundEvents;
  import net.minecraft.sounds.SoundSource;
  import net.minecraft.world.InteractionHand;
-@@ -27,15 +29,26 @@ public class PumpkinBlock extends StemGrownBlock {
- 
-         if (itemstack.getItem() == Items.SHEARS) {
-             if (!world.isClientSide) {
+@@ -24,13 +26,24 @@ public class PumpkinBlock extends StemGrownBlock {
+         ItemStack itemStack = player.getItemInHand(interactionHand);
+         if (itemStack.getItem() == Items.SHEARS) {
+             if (!level.isClientSide) {
 +                // Paper start - Add PlayerShearBlockEvent
-+                PlayerShearBlockEvent event = new PlayerShearBlockEvent((org.bukkit.entity.Player) player.getBukkitEntity(), MCUtil.toBukkitBlock(world, pos), org.bukkit.craftbukkit.inventory.CraftItemStack.asCraftMirror(itemstack), (hand == InteractionHand.OFF_HAND ? org.bukkit.inventory.EquipmentSlot.OFF_HAND : org.bukkit.inventory.EquipmentSlot.HAND), new java.util.ArrayList<>());
++                PlayerShearBlockEvent event = new PlayerShearBlockEvent((org.bukkit.entity.Player) player.getBukkitEntity(), MCUtil.toBukkitBlock(level, blockPos), org.bukkit.craftbukkit.inventory.CraftItemStack.asCraftMirror(itemStack), (interactionHand == InteractionHand.OFF_HAND ? org.bukkit.inventory.EquipmentSlot.OFF_HAND : org.bukkit.inventory.EquipmentSlot.HAND), new java.util.ArrayList<>());
 +                event.getDrops().add(org.bukkit.craftbukkit.inventory.CraftItemStack.asCraftMirror(new ItemStack(Items.PUMPKIN_SEEDS, 4)));
 +                if (!event.callEvent()) {
 +                    return InteractionResult.PASS;
 +                }
 +                // Paper end
-                 Direction enumdirection = hit.getDirection();
-                 Direction enumdirection1 = enumdirection.getAxis() == Direction.Axis.Y ? player.getDirection().getOpposite() : enumdirection;
- 
-                 world.playSound((Player) null, pos, SoundEvents.PUMPKIN_CARVE, SoundSource.BLOCKS, 1.0F, 1.0F);
-                 world.setBlock(pos, (BlockState) Blocks.CARVED_PUMPKIN.defaultBlockState().setValue(CarvedPumpkinBlock.FACING, enumdirection1), 11);
--                ItemEntity entityitem = new ItemEntity(world, (double) pos.getX() + 0.5D + (double) enumdirection1.getStepX() * 0.65D, (double) pos.getY() + 0.1D, (double) pos.getZ() + 0.5D + (double) enumdirection1.getStepZ() * 0.65D, new ItemStack(Items.PUMPKIN_SEEDS, 4));
+                 Direction direction = blockHitResult.getDirection();
+                 Direction direction2 = direction.getAxis() == Direction.Axis.Y ? player.getDirection().getOpposite() : direction;
+                 level.playSound((Player)null, blockPos, SoundEvents.PUMPKIN_CARVE, SoundSource.BLOCKS, 1.0F, 1.0F);
+                 level.setBlock(blockPos, Blocks.CARVED_PUMPKIN.defaultBlockState().setValue(CarvedPumpkinBlock.FACING, direction2), 11);
+-                ItemEntity itemEntity = new ItemEntity(level, (double)blockPos.getX() + 0.5D + (double)direction2.getStepX() * 0.65D, (double)blockPos.getY() + 0.1D, (double)blockPos.getZ() + 0.5D + (double)direction2.getStepZ() * 0.65D, new ItemStack(Items.PUMPKIN_SEEDS, 4));
 +                // Paper start - Add PlayerShearBlockEvent
 +                for (org.bukkit.inventory.ItemStack item : event.getDrops()) {
-+                ItemEntity entityitem = new ItemEntity(world, (double) pos.getX() + 0.5D + (double) enumdirection1.getStepX() * 0.65D, (double) pos.getY() + 0.1D, (double) pos.getZ() + 0.5D + (double) enumdirection1.getStepZ() * 0.65D, org.bukkit.craftbukkit.inventory.CraftItemStack.asNMSCopy(item));
++                ItemEntity itemEntity = new ItemEntity(level, (double)blockPos.getX() + 0.5D + (double)direction2.getStepX() * 0.65D, (double)blockPos.getY() + 0.1D, (double)blockPos.getZ() + 0.5D + (double)direction2.getStepZ() * 0.65D, org.bukkit.craftbukkit.inventory.CraftItemStack.asNMSCopy(item));
 +                // Paper end
- 
-                 entityitem.setDeltaMovement(0.05D * (double) enumdirection1.getStepX() + world.random.nextDouble() * 0.02D, 0.05D, 0.05D * (double) enumdirection1.getStepZ() + world.random.nextDouble() * 0.02D);
-                 world.addFreshEntity(entityitem);
+                 itemEntity.setDeltaMovement(0.05D * (double)direction2.getStepX() + level.random.nextDouble() * 0.02D, 0.05D, 0.05D * (double)direction2.getStepZ() + level.random.nextDouble() * 0.02D);
+                 level.addFreshEntity(itemEntity);
 +                } // Paper - Add PlayerShearBlockEvent
-                 itemstack.hurtAndBreak(1, player, (entityhuman1) -> {
-                     entityhuman1.broadcastBreakEvent(hand);
+                 itemStack.hurtAndBreak(1, player, (playerx) -> {
+                     playerx.broadcastBreakEvent(interactionHand);
                  });

@@ -18,10 +18,10 @@ index 1cae5f49e7a92b5eb6d60db8cf9ec83689499574..aff21d3218ce88d1c0203b118a4ef921
  
              Player respawnPlayer = cserver.getPlayer(entityplayer1);
 diff --git a/src/main/java/net/minecraft/world/level/storage/LevelData.java b/src/main/java/net/minecraft/world/level/storage/LevelData.java
-index 12a2371b15588ae84824d7a2d36a6d4c37e77013..078cee770a77b77d9b4a777754599d7b0b31f54b 100644
+index a0b690ca0310aed41c69914aef371c322b931f26..947c0378abf6a10798d512874a5c25e98e818e01 100644
 --- a/src/main/java/net/minecraft/world/level/storage/LevelData.java
 +++ b/src/main/java/net/minecraft/world/level/storage/LevelData.java
-@@ -12,6 +12,7 @@ public interface LevelData {
+@@ -11,6 +11,7 @@ public interface LevelData {
  
      int getZSpawn();
  

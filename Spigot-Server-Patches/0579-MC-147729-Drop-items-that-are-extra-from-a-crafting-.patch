@@ -5,10 +5,10 @@ Subject: [PATCH] MC-147729: Drop items that are extra from a crafting recipe
 
 
 diff --git a/src/main/java/net/minecraft/recipebook/ServerPlaceRecipe.java b/src/main/java/net/minecraft/recipebook/ServerPlaceRecipe.java
-index 5455b8df39109545075fc22e21913fc6821473c5..0a30aa94a52ed5ae1b4a218a56603f0de815b80c 100644
+index e45f8bb0bbeb7bdbf3b4c75195f88e0c03b02a6c..0b3137c77c6acfb61b156c88862e2b2d61619759 100644
 --- a/src/main/java/net/minecraft/recipebook/ServerPlaceRecipe.java
 +++ b/src/main/java/net/minecraft/recipebook/ServerPlaceRecipe.java
-@@ -71,7 +71,12 @@ public class ServerPlaceRecipe<C extends Container> implements PlaceRecipe<Integ
+@@ -67,7 +67,12 @@ public class ServerPlaceRecipe<C extends Container> implements PlaceRecipe<Integ
                  if (j == -1) {
                      j = this.inventory.getFreeSlot();
                  }
@@ -19,6 +19,6 @@ index 5455b8df39109545075fc22e21913fc6821473c5..0a30aa94a52ed5ae1b4a218a56603f0d
 +                    break;
 +                }
 +                // Paper end
-                 ItemStack itemstack1 = itemstack.copy();
- 
-                 itemstack1.setCount(1);
+                 ItemStack itemStack2 = itemStack.copy();
+                 itemStack2.setCount(1);
+                 if (!this.inventory.add(j, itemStack2)) {

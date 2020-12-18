@@ -33,10 +33,10 @@ index 9a0ade5875c34487a65f82f9380f9d25b4432586..ff0e4447b6574e91bf8815de4e04ce88
      private void maxEntityCollision() {
          maxCollisionsPerEntity = getInt( "max-entity-collisions", this.spigotConfig.getInt("max-entity-collisions", 8) );
 diff --git a/src/main/java/net/minecraft/world/level/ChunkPos.java b/src/main/java/net/minecraft/world/level/ChunkPos.java
-index bb19bda478510fdc99cb970032bf968bb25d9171..cd4aec62b8535597e2417eb7afac9321cc6acb09 100644
+index f5db58f629a4a41eb568f9c9a6ee218dc8e56d15..fa14113945fb7351a845f8d3f333184cc0f8b5d5 100644
 --- a/src/main/java/net/minecraft/world/level/ChunkPos.java
 +++ b/src/main/java/net/minecraft/world/level/ChunkPos.java
-@@ -68,10 +68,12 @@ public class ChunkPos {
+@@ -65,10 +65,12 @@ public class ChunkPos {
          }
      }
  
@@ -65,10 +65,10 @@ index face881a71dc405bde4ed93e6ed03e9d760e3991..9cde9b06ea044808e7e797261811940f
      }
  
 diff --git a/src/main/java/net/minecraft/world/level/biome/BiomeManager.java b/src/main/java/net/minecraft/world/level/biome/BiomeManager.java
-index d22ac114440d807a6cf5f286961bc63935fa7823..3a1909c0b198d89539f4351d70a39d16cfd84987 100644
+index b08ac55e4aa99c52481e772931742811d264b5eb..4088d25adc4ae44292083d2c05e2c9714c4f4785 100644
 --- a/src/main/java/net/minecraft/world/level/biome/BiomeManager.java
 +++ b/src/main/java/net/minecraft/world/level/biome/BiomeManager.java
-@@ -23,6 +23,7 @@ public class BiomeManager {
+@@ -22,6 +22,7 @@ public class BiomeManager {
          return new BiomeManager(source, this.biomeZoomSeed, this.zoomer);
      }
  
@@ -77,21 +77,21 @@ index d22ac114440d807a6cf5f286961bc63935fa7823..3a1909c0b198d89539f4351d70a39d16
          return this.zoomer.getBiome(this.biomeZoomSeed, pos.getX(), pos.getY(), pos.getZ(), this.noiseBiomeSource);
      }
 diff --git a/src/main/java/net/minecraft/world/level/levelgen/feature/StructureFeature.java b/src/main/java/net/minecraft/world/level/levelgen/feature/StructureFeature.java
-index ed5add5b00b8e3ae66c195bf87eb8d42fc28a973..19f2df05e9f0194978eb2404e59b7a612b9fc8b9 100644
+index 457ed3c8a3233b381d791d7e20b3b0c376001647..fd0444cb524214c0ace6ecf7754f4eebfdfefe26 100644
 --- a/src/main/java/net/minecraft/world/level/levelgen/feature/StructureFeature.java
 +++ b/src/main/java/net/minecraft/world/level/levelgen/feature/StructureFeature.java
-@@ -176,6 +176,14 @@ public abstract class StructureFeature<C extends FeatureConfiguration> {
-                             int j2 = i1 + k * l1;
-                             ChunkPos chunkcoordintpair = this.getPotentialFeatureChunk(config, worldSeed, seededrandom, i2, j2);
-                             if (!world.getWorldBorder().isChunkInBounds(chunkcoordintpair.x, chunkcoordintpair.z)) { continue; } // Paper
-+                            // Paper start - seed based feature search
-+                            if (structureAccessor.getWorld().paperConfig.seedBasedFeatureSearch) {
-+                                Biome biomeBase = structureAccessor.getWorld().getBiomeManager().getBiome(new BlockPos(chunkcoordintpair.getBlockX() + 9, 0, chunkcoordintpair.getBlockZ() + 9));
-+                                if (!biomeBase.getGenerationSettings().isValidStart(this)) {
-+                                    continue;
-+                                }
+@@ -167,6 +167,14 @@ public abstract class StructureFeature<C extends FeatureConfiguration> {
+                         int p = k + i * n;
+                         ChunkPos chunkPos = this.getPotentialFeatureChunk(config, worldSeed, worldgenRandom, o, p);
+                         if (!world.getWorldBorder().isWithinBounds(chunkPos)) { continue; } // Paper
++                        // Paper start - seed based feature search
++                        if (structureAccessor.getWorld().paperConfig.seedBasedFeatureSearch) {
++                            Biome biomeBase = structureAccessor.getWorld().getBiomeManager().getBiome(new BlockPos(chunkPos.getBlockX() + 9, 0, chunkPos.getBlockZ() + 9));
++                            if (!biomeBase.getGenerationSettings().isValidStart(this)) {
++                                continue;
 +                            }
-+                            // Paper end
-                             ChunkAccess ichunkaccess = world.getChunk(chunkcoordintpair.x, chunkcoordintpair.z, ChunkStatus.STRUCTURE_STARTS);
-                             StructureStart<?> structurestart = structureAccessor.getStartForFeature(SectionPos.of(ichunkaccess.getPos(), 0), this, ichunkaccess);
- 
++                        }
++                        // Paper end
+                         ChunkAccess chunkAccess = world.getChunk(chunkPos.x, chunkPos.z, ChunkStatus.STRUCTURE_STARTS);
+                         StructureStart<?> structureStart = structureAccessor.getStartForFeature(SectionPos.of(chunkAccess.getPos(), 0), this, chunkAccess);
+                         if (structureStart != null && structureStart.isValid()) {

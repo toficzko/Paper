@@ -1,0 +1,28 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Spottedleaf <spottedleaf@spottedleaf.dev>
+Date: Sat, 25 Apr 2020 17:10:55 -0700
+Subject: [PATCH] Reduce blockpos allocation from pathfinding
+
+
+diff --git a/src/main/java/net/minecraft/world/level/pathfinder/WalkNodeEvaluator.java b/src/main/java/net/minecraft/world/level/pathfinder/WalkNodeEvaluator.java
+index 6c379c26bf228e384c5e30ade70f039a7dd6b6bf..fae8317cca438bda01aa5dff88c0a0c09e2ac5d0 100644
+--- a/src/main/java/net/minecraft/world/level/pathfinder/WalkNodeEvaluator.java
++++ b/src/main/java/net/minecraft/world/level/pathfinder/WalkNodeEvaluator.java
+@@ -456,7 +456,7 @@ public class WalkNodeEvaluator extends NodeEvaluator {
+                             return BlockPathTypes.DANGER_FIRE;
+                         }
+ 
+-                        if (blockGetter.getFluidState(mutableBlockPos).is(FluidTags.WATER)) {
++                        if (iblockdata.getFluidState().is(FluidTags.WATER)) { // Paper - remove another getType call
+                             return BlockPathTypes.WATER_BORDER;
+                         }
+                     }
+@@ -484,7 +484,7 @@ public class WalkNodeEvaluator extends NodeEvaluator {
+             } else if (blockState.is(Blocks.COCOA)) {
+                 return BlockPathTypes.COCOA;
+             } else {
+-                FluidState fluidState = blockGetter.getFluidState(blockPos);
++                FluidState fluidState = blockState.getFluidState(); // Paper - remove another get type call;
+                 if (fluidState.is(FluidTags.WATER)) {
+                     return BlockPathTypes.WATER;
+                 } else if (fluidState.is(FluidTags.LAVA)) {

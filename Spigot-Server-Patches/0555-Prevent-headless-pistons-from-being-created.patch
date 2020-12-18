@@ -60,10 +60,10 @@ index 8307abd0eed70d6fd1c4ae65ff558a7df5e2c58d..450fdf8d9f11542a8a0cc45068f30c9d
  
                              d4 += d0 * 0.30000001192092896D;
 diff --git a/src/main/java/net/minecraft/world/level/block/piston/PistonMovingBlockEntity.java b/src/main/java/net/minecraft/world/level/block/piston/PistonMovingBlockEntity.java
-index 001e90da8b09e16b6df4849a5bac4f4821000c94..81f3c6fb7bab9de364537d3f3b2ea0f32795e5f1 100644
+index 37957d93e1ba1105e18b8fe3cca2a781539c33b9..5b6b5c7a99b32c28a054ee912d84be70cf25cde1 100644
 --- a/src/main/java/net/minecraft/world/level/block/piston/PistonMovingBlockEntity.java
 +++ b/src/main/java/net/minecraft/world/level/block/piston/PistonMovingBlockEntity.java
-@@ -65,6 +65,8 @@ public class PistonMovingBlockEntity extends BlockEntity implements TickableBloc
+@@ -62,6 +62,8 @@ public class PistonMovingBlockEntity extends BlockEntity implements TickableBloc
          return this.direction;
      }
  

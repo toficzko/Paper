@@ -22,15 +22,15 @@ index 8923314d731dea5c2707dbb271b8b0819d826a2e..9a0ade5875c34487a65f82f9380f9d25
 +    }
  }
 diff --git a/src/main/java/net/minecraft/world/level/dimension/end/EndDragonFight.java b/src/main/java/net/minecraft/world/level/dimension/end/EndDragonFight.java
-index 0131e98e13ecec4efc43e62f4d4ee45380c7979f..9a878925fd1b042655afa1150db4f63b3a1f842b 100644
+index 076666abbe52e3cdee12b7ecb50678c80d1855cd..5c161782a65f752891af8fa22d9666538a02ac4f 100644
 --- a/src/main/java/net/minecraft/world/level/dimension/end/EndDragonFight.java
 +++ b/src/main/java/net/minecraft/world/level/dimension/end/EndDragonFight.java
-@@ -214,7 +214,7 @@ public class EndDragonFight {
-             this.dragonUUID = entityenderdragon.getUUID();
-             EndDragonFight.LOGGER.info("Found that there's a dragon still alive ({})", entityenderdragon);
+@@ -199,7 +199,7 @@ public class EndDragonFight {
+             this.dragonUUID = enderDragon.getUUID();
+             LOGGER.info("Found that there's a dragon still alive ({})", (Object)enderDragon);
              this.dragonKilled = false;
--            if (!flag) {
-+            if (!flag && this.level.paperConfig.shouldRemoveDragon) { // Paper
-                 EndDragonFight.LOGGER.info("But we didn't have a portal, let's remove it.");
-                 entityenderdragon.remove();
+-            if (!bl) {
++            if (!bl&& this.level.paperConfig.shouldRemoveDragon) { // Paper
+                 LOGGER.info("But we didn't have a portal, let's remove it.");
+                 enderDragon.remove();
                  this.dragonUUID = null;

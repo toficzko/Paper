@@ -1,0 +1,52 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Eearslya Sleiarion <eearslya@gmail.com>
+Date: Sun, 23 Aug 2020 13:04:02 +0200
+Subject: [PATCH] Add BellRingEvent
+
+Add a new event, BellRingEvent, to trigger whenever a player rings a
+village bell. Passes along the bell block and the player who rang it.
+
+diff --git a/src/main/java/net/minecraft/world/level/block/BellBlock.java b/src/main/java/net/minecraft/world/level/block/BellBlock.java
+index 539c3bf77f9ba6d4210ad7a86cc531630eb5fd28..03e4178d2cbe5175e3fb29a91c82ec7e1878fc9c 100644
+--- a/src/main/java/net/minecraft/world/level/block/BellBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/BellBlock.java
+@@ -1,8 +1,11 @@
+ package net.minecraft.world.level.block;
+ 
++import io.papermc.paper.event.block.BellRingEvent;
++
+ import javax.annotation.Nullable;
+ import net.minecraft.core.BlockPos;
+ import net.minecraft.core.Direction;
++import net.minecraft.server.MCUtil;
+ import net.minecraft.sounds.SoundEvents;
+ import net.minecraft.sounds.SoundSource;
+ import net.minecraft.stats.Stats;
+@@ -82,7 +85,7 @@ public class BellBlock extends BaseEntityBlock {
+         BlockPos blockPos = blockHitResult.getBlockPos();
+         boolean bl2 = !bl || this.isProperHit(state, direction, blockHitResult.getLocation().y - (double)blockPos.getY());
+         if (bl2) {
+-            boolean bl3 = this.attemptToRing(world, blockPos, direction);
++            boolean bl3 = this.attemptToRing(world, blockPos, direction, player); // Paper
+             if (bl3 && player != null) {
+                 player.awardStat(Stats.BELL_RING);
+             }
+@@ -114,12 +117,18 @@ public class BellBlock extends BaseEntityBlock {
+     }
+ 
+     public boolean attemptToRing(Level world, BlockPos pos, @Nullable Direction direction) {
++        // Paper start - add ringer param
++        return this.attemptToRing(world, pos, direction, null);
++    }
++    public boolean attemptToRing(Level world, BlockPos pos, @Nullable Direction direction, @Nullable Entity ringer) {
++        // Paper end
+         BlockEntity blockEntity = world.getBlockEntity(pos);
+         if (!world.isClientSide && blockEntity instanceof BellBlockEntity) {
+             if (direction == null) {
+                 direction = world.getBlockState(pos).getValue(FACING);
+             }
+ 
++            if (!new BellRingEvent(world.getWorld().getBlockAt(MCUtil.toLocation(world, pos)), ringer == null ? null : ringer.getBukkitEntity()).callEvent()) return false; // Paper - BellRingEvent
+             ((BellBlockEntity)blockEntity).onHit(direction);
+             world.playSound((Player)null, pos, SoundEvents.BELL_BLOCK, SoundSource.BLOCKS, 2.0F, 1.0F);
+             return true;

@@ -15,7 +15,7 @@ manually reload the advancement data for all players, which
 normally takes place as a part of the datapack reloading.
 
 diff --git a/src/main/java/net/minecraft/server/PlayerAdvancements.java b/src/main/java/net/minecraft/server/PlayerAdvancements.java
-index ee475be64a0738f700867714d62e67ca33b085d2..b45c0d1acc5095ad50964baad3cbacb353df9c8a 100644
+index 8dd69ce58dca1dae87cb4f015acd2d0b0a42f587..3cced3f47ef8aefd7cd8a861c14aaa3574ffe9d9 100644
 --- a/src/main/java/net/minecraft/server/PlayerAdvancements.java
 +++ b/src/main/java/net/minecraft/server/PlayerAdvancements.java
 @@ -97,6 +97,7 @@ public class PlayerAdvancements {
@@ -35,7 +35,7 @@ index ee475be64a0738f700867714d62e67ca33b085d2..b45c0d1acc5095ad50964baad3cbacb3
          if (this.isFirstPacket || !this.visibilityChanged.isEmpty() || !this.progressChanged.isEmpty()) {
              Map<ResourceLocation, AdvancementProgress> map = Maps.newHashMap();
 diff --git a/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java b/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
-index 94ba514d33351951342c57844e79aa6a0dd787f8..72381df98b8c31ad789b0f37334a2cdb238563eb 100644
+index 2009bf2598b5ce696cdfffab7fc1a8eaa174e7c6..fed4512f7ceaca2ea6a63a6d45af53181cbca323 100644
 --- a/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
 +++ b/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
 @@ -280,7 +280,13 @@ public final class CraftMagicNumbers implements UnsafeValues {
