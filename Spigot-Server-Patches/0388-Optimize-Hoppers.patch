@@ -578,11 +578,11 @@ index 8e213bbb7eee49999a64c5fed7786d8d09f2d263..170aa4d471d452b03dfe83945889e232
              if (!list.isEmpty()) {
                  object = (Container) list.get(world.random.nextInt(list.size()));
 diff --git a/src/main/java/net/minecraft/world/level/block/entity/RandomizableContainerBlockEntity.java b/src/main/java/net/minecraft/world/level/block/entity/RandomizableContainerBlockEntity.java
-index fe641e4a7e3a0455f89da75021b7fe895d3e12a7..e91694a5c935a02297b0e3a47b77cf1239854ba6 100644
+index c855e2e7c70c27ad8c483f33975532df8ee3f354..469b752101e69dfad1e5f5bd721a5f36fbe579a7 100644
 --- a/src/main/java/net/minecraft/world/level/block/entity/RandomizableContainerBlockEntity.java
 +++ b/src/main/java/net/minecraft/world/level/block/entity/RandomizableContainerBlockEntity.java
-@@ -90,11 +90,18 @@ public abstract class RandomizableContainerBlockEntity extends BaseContainerBloc
- 
+@@ -91,12 +91,19 @@ public abstract class RandomizableContainerBlockEntity extends BaseContainerBloc
+     @Override
      public boolean isEmpty() {
          this.unpackLootTable((Player)null);
 -        return this.getItems().stream().allMatch(ItemStack::isEmpty);
@@ -596,6 +596,7 @@ index fe641e4a7e3a0455f89da75021b7fe895d3e12a7..e91694a5c935a02297b0e3a47b77cf12
 +        return true;
      }
  
+     @Override
      public ItemStack getItem(int i) {
 -        this.unpackLootTable((Player)null);
 +        if (i == 0) this.unpackLootTable((Player) null); // Paper

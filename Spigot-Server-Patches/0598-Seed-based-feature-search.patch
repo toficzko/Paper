@@ -33,10 +33,10 @@ index 9a0ade5875c34487a65f82f9380f9d25b4432586..ff0e4447b6574e91bf8815de4e04ce88
      private void maxEntityCollision() {
          maxCollisionsPerEntity = getInt( "max-entity-collisions", this.spigotConfig.getInt("max-entity-collisions", 8) );
 diff --git a/src/main/java/net/minecraft/world/level/ChunkPos.java b/src/main/java/net/minecraft/world/level/ChunkPos.java
-index f5db58f629a4a41eb568f9c9a6ee218dc8e56d15..fa14113945fb7351a845f8d3f333184cc0f8b5d5 100644
+index 2ca1c65072099cc42414771cfc00bbeede85dad3..6bf00292f7135e1491006d54be7da8f9c303e8a6 100644
 --- a/src/main/java/net/minecraft/world/level/ChunkPos.java
 +++ b/src/main/java/net/minecraft/world/level/ChunkPos.java
-@@ -65,10 +65,12 @@ public class ChunkPos {
+@@ -67,10 +67,12 @@ public class ChunkPos {
          }
      }
  

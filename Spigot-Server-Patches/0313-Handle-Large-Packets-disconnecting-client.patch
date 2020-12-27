@@ -35,10 +35,10 @@ index 056fa0d7329785e8a16962a1c9e18582be1466d4..37b6fa4c7a9c9af17fb410f1e0c0036e
              Connection.LOGGER.debug("Skipping packet due to errors", throwable.getCause());
          } else {
 diff --git a/src/main/java/net/minecraft/network/PacketEncoder.java b/src/main/java/net/minecraft/network/PacketEncoder.java
-index 03c8381baaa2669db4e45ac66da85bb88d929f83..146e25307c90eaaf3be60e30f25c52d321e0991e 100644
+index e93d2b4dcb16252ffaf71dcc5bd50e62daae1503..a6b5f60501341953356a4d39525dacbfdd0ed5a5 100644
 --- a/src/main/java/net/minecraft/network/PacketEncoder.java
 +++ b/src/main/java/net/minecraft/network/PacketEncoder.java
-@@ -47,7 +47,31 @@ public class PacketEncoder extends MessageToByteEncoder<Packet<?>> {
+@@ -48,7 +48,31 @@ public class PacketEncoder extends MessageToByteEncoder<Packet<?>> {
                          throw var8;
                      }
                  }
@@ -96,7 +96,7 @@ index 0005d6f62c92eb96e75217a2fb36f698f00aedd9..79ab49796e9c5924b50f7cde97a74f0b
          return false;
      }
 diff --git a/src/main/java/net/minecraft/network/protocol/game/ClientboundContainerSetContentPacket.java b/src/main/java/net/minecraft/network/protocol/game/ClientboundContainerSetContentPacket.java
-index 896274d60488e579c8d33b57111a1677f54ae4b8..4c3953d3b8030dbc881e72c9d73d359f53a014d5 100644
+index 5665d2f138f814174ff90164bc2eaded5f8d28e2..124f45fed6643078aa8a22f96f1b245ccd537f5d 100644
 --- a/src/main/java/net/minecraft/network/protocol/game/ClientboundContainerSetContentPacket.java
 +++ b/src/main/java/net/minecraft/network/protocol/game/ClientboundContainerSetContentPacket.java
 @@ -3,6 +3,7 @@ package net.minecraft.network.protocol.game;
@@ -124,10 +124,10 @@ index 896274d60488e579c8d33b57111a1677f54ae4b8..4c3953d3b8030dbc881e72c9d73d359f
      }
  
 diff --git a/src/main/java/net/minecraft/network/protocol/game/ClientboundLevelChunkPacket.java b/src/main/java/net/minecraft/network/protocol/game/ClientboundLevelChunkPacket.java
-index 5ae6c999fac077c42e2ae4363575d01738eb4ce7..9e504a96937a0ad1937b851a1053e8ce85999318 100644
+index d1f9916102ad3c4e0b562d8c489e09c2666dcf49..b249437e9349dc7a205b25172eb9c4c082be354d 100644
 --- a/src/main/java/net/minecraft/network/protocol/game/ClientboundLevelChunkPacket.java
 +++ b/src/main/java/net/minecraft/network/protocol/game/ClientboundLevelChunkPacket.java
-@@ -79,7 +79,7 @@ public class ClientboundLevelChunkPacket implements Packet<ClientGamePacketListe
+@@ -80,7 +80,7 @@ public class ClientboundLevelChunkPacket implements Packet<ClientGamePacketListe
          }
  
          int i = friendlyByteBuf.readVarInt();

@@ -5,10 +5,10 @@ Subject: [PATCH] Prevent sync chunk loads when villagers try to find beds
 
 
 diff --git a/src/main/java/net/minecraft/world/entity/ai/behavior/SleepInBed.java b/src/main/java/net/minecraft/world/entity/ai/behavior/SleepInBed.java
-index aa84422e954cdf6b9ffdfca1a84041118c6b01b3..ebe12a8200d16765cb568e06087b915a31fb72d6 100644
+index 02240560a451605932a1236aa99ae594ae6e0420..b8cd7c1c9acfd79fca46bfc59e5d6a29056d9ca4 100644
 --- a/src/main/java/net/minecraft/world/entity/ai/behavior/SleepInBed.java
 +++ b/src/main/java/net/minecraft/world/entity/ai/behavior/SleepInBed.java
-@@ -39,7 +39,8 @@ public class SleepInBed extends Behavior<LivingEntity> {
+@@ -40,7 +40,8 @@ public class SleepInBed extends Behavior<LivingEntity> {
                      }
                  }
  

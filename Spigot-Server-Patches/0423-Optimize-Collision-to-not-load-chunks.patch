@@ -75,7 +75,7 @@ index 96165c2d308467c6e19703304e812d9069f12284..6f6219d871e625877e3b29d48909509b
  
      Stream<VoxelShape> getEntityCollisions(@Nullable Entity entity, AABB aABB, Predicate<Entity> predicate);
 diff --git a/src/main/java/net/minecraft/world/level/CollisionSpliterator.java b/src/main/java/net/minecraft/world/level/CollisionSpliterator.java
-index 56e7457787fff7b77f73a12740c2c15e6311d7fc..f6857326cdc56a6b6ff76d4ecd7c220ba2002547 100644
+index 4dd33de7a2e856c5b61b8ad31bcf50b8e544def2..72f33a2c6733b9df5c1e7ac8ceef54ca56a6bca1 100644
 --- a/src/main/java/net/minecraft/world/level/CollisionSpliterator.java
 +++ b/src/main/java/net/minecraft/world/level/CollisionSpliterator.java
 @@ -7,6 +7,9 @@ import java.util.function.Consumer;
@@ -105,7 +105,7 @@ index 56e7457787fff7b77f73a12740c2c15e6311d7fc..f6857326cdc56a6b6ff76d4ecd7c220b
      private boolean needsBorderCheck;
      private final BiPredicate<BlockState, BlockPos> predicate;
  
-@@ -62,21 +65,37 @@ public class CollisionSpliterator extends AbstractSpliterator<VoxelShape> {
+@@ -63,21 +66,37 @@ public class CollisionSpliterator extends AbstractSpliterator<VoxelShape> {
      boolean collisionCheck(Consumer<? super VoxelShape> consumer) {
          while(true) {
              if (this.cursor.advance()) {

@@ -5,7 +5,7 @@ Subject: [PATCH] Add PlayerItemCooldownEvent
 
 
 diff --git a/src/main/java/net/minecraft/world/item/ServerItemCooldowns.java b/src/main/java/net/minecraft/world/item/ServerItemCooldowns.java
-index 3e47a7d29e561fbe4f2c90e5674ca8a00ff0bd20..ace08f8a24b79695550a31eb0684e1ce9f78a095 100644
+index 47283d2a49209839002212e663a503a82ea86587..5b5d8b2970e0ad998eb578f67649478a5fb54171 100644
 --- a/src/main/java/net/minecraft/world/item/ServerItemCooldowns.java
 +++ b/src/main/java/net/minecraft/world/item/ServerItemCooldowns.java
 @@ -1,15 +1,26 @@
@@ -33,6 +33,6 @@ index 3e47a7d29e561fbe4f2c90e5674ca8a00ff0bd20..ace08f8a24b79695550a31eb0684e1ce
 +    }
 +    // Paper end
 +
+     @Override
      protected void onCooldownStarted(Item item, int duration) {
          super.onCooldownStarted(item, duration);
-         this.player.connection.send(new ClientboundCooldownPacket(item, duration));

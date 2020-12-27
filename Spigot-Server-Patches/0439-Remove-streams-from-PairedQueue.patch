@@ -7,10 +7,10 @@ We shouldn't be doing stream calls just to see if the queue is
 empty. This creates loads of garbage thanks to how often it's called.
 
 diff --git a/src/main/java/net/minecraft/util/thread/StrictQueue.java b/src/main/java/net/minecraft/util/thread/StrictQueue.java
-index f270fb87878b939e2ba331cb0e40aa2365c99b2d..a59460af51cd07e55b06374e8129d40e6962f857 100644
+index 4b5458b2ed69c8de994a3f26a8be630936ce1495..9dcd3f20a76b335e12eed2cc6f4b360409d5f354 100644
 --- a/src/main/java/net/minecraft/util/thread/StrictQueue.java
 +++ b/src/main/java/net/minecraft/util/thread/StrictQueue.java
-@@ -17,24 +17,29 @@ public interface StrictQueue<T, F> {
+@@ -17,25 +17,30 @@ public interface StrictQueue<T, F> {
      boolean isEmpty();
  
      public static final class FixedPriorityQueue implements StrictQueue<StrictQueue.IntRunnable, Runnable> {
@@ -30,6 +30,7 @@ index f270fb87878b939e2ba331cb0e40aa2365c99b2d..a59460af51cd07e55b06374e8129d40e
          }
  
          @Nullable
+         @Override
          public Runnable pop() {
 -            for(Queue<Runnable> queue : this.queueList) {
 -                Runnable runnable = queue.poll();
@@ -48,10 +49,10 @@ index f270fb87878b939e2ba331cb0e40aa2365c99b2d..a59460af51cd07e55b06374e8129d40e
 +            // Paper end - remove iterator creation
          }
  
-         public boolean push(StrictQueue.IntRunnable intRunnable) {
-@@ -44,7 +49,16 @@ public interface StrictQueue<T, F> {
-         }
+         @Override
+@@ -47,7 +52,16 @@ public interface StrictQueue<T, F> {
  
+         @Override
          public boolean isEmpty() {
 -            return this.queueList.stream().allMatch(Collection::isEmpty);
 +            // Paper start - remove streams

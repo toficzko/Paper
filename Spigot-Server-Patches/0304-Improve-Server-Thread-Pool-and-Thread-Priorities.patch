@@ -12,7 +12,7 @@ server threads
 Allow usage of a single thread executor by not using ForkJoin so single core CPU's.
 
 diff --git a/src/main/java/net/minecraft/Util.java b/src/main/java/net/minecraft/Util.java
-index 86ef12fcf5b28393f72793512d24f3661dabcd98..d2fbbaf014ee684bbe1960db559001735a54c71e 100644
+index 5ee3b3bec9bcbf8def5ca75871daf93b61181ed1..a885326d5bf244ede2617191d448ef61309bfeed 100644
 --- a/src/main/java/net/minecraft/Util.java
 +++ b/src/main/java/net/minecraft/Util.java
 @@ -44,6 +44,7 @@ import java.util.stream.Stream;
@@ -52,10 +52,10 @@ index 86ef12fcf5b28393f72793512d24f3661dabcd98..d2fbbaf014ee684bbe1960db55900173
 +            executorService = new java.util.concurrent.ThreadPoolExecutor(i, i, 0L, TimeUnit.MILLISECONDS, new java.util.concurrent.LinkedBlockingQueue<Runnable>(), target -> new ServerWorkerThread(target, name, priorityModifier));
 +        }
 +        /*
+                     @Override
                      protected void onTermination(Throwable throwable) {
                          if (throwable != null) {
-                             Util.LOGGER.warn("{} died", this.getName(), throwable);
-@@ -105,6 +109,7 @@ public class Util {
+@@ -106,6 +110,7 @@ public class Util {
                  return forkJoinWorkerThread;
              }, Util::onThreadException, true);
          }
@@ -63,7 +63,7 @@ index 86ef12fcf5b28393f72793512d24f3661dabcd98..d2fbbaf014ee684bbe1960db55900173
  
          return executorService;
      }
-@@ -151,6 +156,7 @@ public class Util {
+@@ -152,6 +157,7 @@ public class Util {
          });
      }
  

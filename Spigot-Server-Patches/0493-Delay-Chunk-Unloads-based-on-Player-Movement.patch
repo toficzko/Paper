@@ -67,7 +67,7 @@ index b39736a6f202034aa656b1098a870e0f9856d0b9..0944924a42c33986dcc88f93e4ec6236
  
          if (arraysetsorted.isEmpty()) {
 diff --git a/src/main/java/net/minecraft/server/level/Ticket.java b/src/main/java/net/minecraft/server/level/Ticket.java
-index d83ef01bc0c953c5853fdd7b02af74efb3f36645..1304c653142fbc29a29a143c4aefeba29d6ac3a8 100644
+index 9cd7aa8ea8eff8944c0faa8e1c826eed0584a1d6..de6a0dd77d7602f9c2500fd48f148ee3585a3c55 100644
 --- a/src/main/java/net/minecraft/server/level/Ticket.java
 +++ b/src/main/java/net/minecraft/server/level/Ticket.java
 @@ -8,11 +8,13 @@ public final class Ticket<T> implements Comparable<Ticket<?>> {
@@ -83,8 +83,8 @@ index d83ef01bc0c953c5853fdd7b02af74efb3f36645..1304c653142fbc29a29a143c4aefeba2
 +        this.delayUnloadBy = type.timeout; // Paper
      }
  
-     public int compareTo(Ticket<?> ticket) {
-@@ -58,7 +60,7 @@ public final class Ticket<T> implements Comparable<Ticket<?>> {
+     @Override
+@@ -62,7 +64,7 @@ public final class Ticket<T> implements Comparable<Ticket<?>> {
      }
  
      protected boolean timedOut(long currentTick) {

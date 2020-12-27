@@ -9,7 +9,7 @@ an object pool for these.
 Uses lots of advanced new capabilities of the Paper codebase :)
 
 diff --git a/src/main/java/net/minecraft/network/protocol/game/ClientboundLightUpdatePacket.java b/src/main/java/net/minecraft/network/protocol/game/ClientboundLightUpdatePacket.java
-index 924569d4f85c48545d9713ae5181070112483043..b8257ba5d43d5fa56458b190354df92022600c23 100644
+index 9d07b391c6303f4c608de2f853909c2726b4dfdb..11169a584747b5d161f61c7224666812f36c12a6 100644
 --- a/src/main/java/net/minecraft/network/protocol/game/ClientboundLightUpdatePacket.java
 +++ b/src/main/java/net/minecraft/network/protocol/game/ClientboundLightUpdatePacket.java
 @@ -1,11 +1,15 @@
@@ -293,7 +293,7 @@ index b91bd6a630af85be8f3fd57a50c4b894b21e9b0b..f0c04099e17fce699f32dfb2f8a20034
      }
  
 diff --git a/src/main/java/net/minecraft/world/level/lighting/FlatDataLayer.java b/src/main/java/net/minecraft/world/level/lighting/FlatDataLayer.java
-index b12cae2b1b051c1de3c3010692772bb875829bc0..02623141b642996f82a381ccbd406db7d9c04f14 100644
+index f59c2aab55f0eea6bc3dcf05d711a18d6cb7d5d9..2175a1f804fb1a00e3df8810e172c49f317f3989 100644
 --- a/src/main/java/net/minecraft/world/level/lighting/FlatDataLayer.java
 +++ b/src/main/java/net/minecraft/world/level/lighting/FlatDataLayer.java
 @@ -9,7 +9,7 @@ public class FlatDataLayer extends DataLayer {
@@ -304,10 +304,10 @@ index b12cae2b1b051c1de3c3010692772bb875829bc0..02623141b642996f82a381ccbd406db7
 +        System.arraycopy(dataLayer.getIfSet(), i * 128, this.data, 0, 128); // Paper
      }
  
-     protected int getIndex(int x, int y, int z) {
-@@ -17,7 +17,7 @@ public class FlatDataLayer extends DataLayer {
-     }
+     @Override
+@@ -19,7 +19,7 @@ public class FlatDataLayer extends DataLayer {
  
+     @Override
      public byte[] getData() {
 -        byte[] bs = new byte[2048];
 +        byte[] bs = BYTE_2048.acquire(); // Paper
@@ -315,10 +315,10 @@ index b12cae2b1b051c1de3c3010692772bb875829bc0..02623141b642996f82a381ccbd406db7
          for(int i = 0; i < 16; ++i) {
              System.arraycopy(this.data, 0, bs, i * 128, 128);
 diff --git a/src/main/java/net/minecraft/world/level/lighting/LayerLightSectionStorage.java b/src/main/java/net/minecraft/world/level/lighting/LayerLightSectionStorage.java
-index 961efc00f40b24be85734f39d1f032fed6982e84..029faf4fd8837344f3472268606b89288faf8e37 100644
+index de0e87538019ea23eb938835774558448cb779d4..cacf1050c6d790303bbf8b9312e64ffd7a2df008 100644
 --- a/src/main/java/net/minecraft/world/level/lighting/LayerLightSectionStorage.java
 +++ b/src/main/java/net/minecraft/world/level/lighting/LayerLightSectionStorage.java
-@@ -156,7 +156,7 @@ public abstract class LayerLightSectionStorage<M extends DataLayerStorageMap<M>>
+@@ -159,7 +159,7 @@ public abstract class LayerLightSectionStorage<M extends DataLayerStorageMap<M>>
  
      protected DataLayer createDataLayer(long sectionPos) {
          DataLayer dataLayer = this.queuedSections.get(sectionPos);
@@ -327,7 +327,7 @@ index 961efc00f40b24be85734f39d1f032fed6982e84..029faf4fd8837344f3472268606b8928
      }
  
      protected void clearQueuedSectionBlocks(LayerLightEngine<?, ?> storage, long sectionPos) {
-@@ -315,12 +315,12 @@ public abstract class LayerLightSectionStorage<M extends DataLayerStorageMap<M>>
+@@ -318,12 +318,12 @@ public abstract class LayerLightSectionStorage<M extends DataLayerStorageMap<M>>
  
      protected void queueSectionData(long sectionPos, @Nullable DataLayer array, boolean bl) {
          if (array != null) {
@@ -343,10 +343,10 @@ index 961efc00f40b24be85734f39d1f032fed6982e84..029faf4fd8837344f3472268606b8928
  
      }
 diff --git a/src/main/java/net/minecraft/world/level/lighting/SkyLightSectionStorage.java b/src/main/java/net/minecraft/world/level/lighting/SkyLightSectionStorage.java
-index 60acb305e7f9d074c6dce4368ef5e55b2a66abd5..ce163bc69a830e62b6459fb9e1c8eb462e00ac23 100644
+index 8f61ced23c4f33c427822e31210592a724ff337e..7e6c8e4f25880465186693c08a3bc4cc0f797d1f 100644
 --- a/src/main/java/net/minecraft/world/level/lighting/SkyLightSectionStorage.java
 +++ b/src/main/java/net/minecraft/world/level/lighting/SkyLightSectionStorage.java
-@@ -151,9 +151,9 @@ public class SkyLightSectionStorage extends LayerLightSectionStorage<SkyLightSec
+@@ -157,9 +157,9 @@ public class SkyLightSectionStorage extends LayerLightSectionStorage<SkyLightSec
                      l = SectionPos.offset(l, Direction.UP);
                  }
  
@@ -358,7 +358,7 @@ index 60acb305e7f9d074c6dce4368ef5e55b2a66abd5..ce163bc69a830e62b6459fb9e1c8eb46
              }
          }
      }
-@@ -171,7 +171,7 @@ public class SkyLightSectionStorage extends LayerLightSectionStorage<SkyLightSec
+@@ -178,7 +178,7 @@ public class SkyLightSectionStorage extends LayerLightSectionStorage<SkyLightSec
                                  this.updatingSectionData.copyDataLayer(l);
                              }
  

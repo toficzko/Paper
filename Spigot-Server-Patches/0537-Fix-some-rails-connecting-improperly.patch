@@ -5,10 +5,10 @@ Subject: [PATCH] Fix some rails connecting improperly
 
 
 diff --git a/src/main/java/net/minecraft/world/level/block/BaseRailBlock.java b/src/main/java/net/minecraft/world/level/block/BaseRailBlock.java
-index dde32335d631cb7957535d1559934bd7c8dc9229..efe18a6b497ef570f1a435ba9d7048650002ee68 100644
+index 3db6609fc28d0bf073198592dbe275f1232c252c..b5e02dfabf6f23ed4062d72462c09fec41e770bd 100644
 --- a/src/main/java/net/minecraft/world/level/block/BaseRailBlock.java
 +++ b/src/main/java/net/minecraft/world/level/block/BaseRailBlock.java
-@@ -56,6 +56,7 @@ public abstract class BaseRailBlock extends Block {
+@@ -59,6 +59,7 @@ public abstract class BaseRailBlock extends Block {
          state = this.updateDir(world, pos, state, true);
          if (this.isStraight) {
              state.neighborChanged(world, pos, this, pos, notify);

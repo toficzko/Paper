@@ -71,10 +71,10 @@ index 0000000000000000000000000000000000000000..3edc8e52e06a62ce9f8cc734fd7458b3
 +    }
 +}
 diff --git a/src/main/java/net/minecraft/core/BlockPos.java b/src/main/java/net/minecraft/core/BlockPos.java
-index 778c3b553f835ad8b1002b01ed5afc298abbfd88..b9822d9822805e93be87cbb03b8077b6cbab6f5b 100644
+index 5595398a1a435717a1f7c1cacf5fb04ebe1e5813..4b212381e1e7d292d3e8b17aaff0c05b72a466af 100644
 --- a/src/main/java/net/minecraft/core/BlockPos.java
 +++ b/src/main/java/net/minecraft/core/BlockPos.java
-@@ -439,6 +439,7 @@ public class BlockPos extends Vec3i {
+@@ -453,6 +453,7 @@ public class BlockPos extends Vec3i {
              return this.set(Mth.floor(x), Mth.floor(y), Mth.floor(z));
          }
  
@@ -372,10 +372,10 @@ index 3a7a52331bdd609d7001e9a07a91cfc1247290b4..6e6f5c6a27f3f82e7dbb79fb9c0e3b11
              }
  
 diff --git a/src/main/java/net/minecraft/world/level/chunk/PalettedContainer.java b/src/main/java/net/minecraft/world/level/chunk/PalettedContainer.java
-index f2467fb1fe5ae00fff742382473e5041a849351d..35ae06d4d5ba49672733192765016f9a5cd2d293 100644
+index 5658ea7e480b1d0f20629572e06da31acfa7964d..da582129055f6ef54334f86caa6d05fcfa757674 100644
 --- a/src/main/java/net/minecraft/world/level/chunk/PalettedContainer.java
 +++ b/src/main/java/net/minecraft/world/level/chunk/PalettedContainer.java
-@@ -267,6 +267,14 @@ public class PalettedContainer<T> implements PaletteResize<T> {
+@@ -268,6 +268,14 @@ public class PalettedContainer<T> implements PaletteResize<T> {
          });
      }
  

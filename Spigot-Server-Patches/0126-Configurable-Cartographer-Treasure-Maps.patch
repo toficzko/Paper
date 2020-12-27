@@ -28,10 +28,10 @@ index 64a34e48d55ef94507896982115be438e9632f6e..c221e9501998de14194bd91018efbc11
 +    }
  }
 diff --git a/src/main/java/net/minecraft/world/entity/npc/VillagerTrades.java b/src/main/java/net/minecraft/world/entity/npc/VillagerTrades.java
-index c02067e528f2d5e345bdbb9948b31aae08c0a527..fb57a46f113edd88ef2d03be18af054aac24094d 100644
+index c0cdf3e346a8d9a02d973ae550e7a5767e907ff1..ccbda08cf1f7221bd224d615b81ee6afee7cd298 100644
 --- a/src/main/java/net/minecraft/world/entity/npc/VillagerTrades.java
 +++ b/src/main/java/net/minecraft/world/entity/npc/VillagerTrades.java
-@@ -359,7 +359,8 @@ public class VillagerTrades {
+@@ -369,7 +369,8 @@ public class VillagerTrades {
                  return null;
              } else {
                  ServerLevel serverLevel = (ServerLevel)entity.level;
@@ -42,10 +42,10 @@ index c02067e528f2d5e345bdbb9948b31aae08c0a527..fb57a46f113edd88ef2d03be18af054a
                      ItemStack itemStack = MapItem.create(serverLevel, blockPos.getX(), blockPos.getZ(), (byte)2, true, true);
                      MapItem.renderBiomePreviewMap(serverLevel, itemStack);
 diff --git a/src/main/java/net/minecraft/world/level/storage/loot/functions/ExplorationMapFunction.java b/src/main/java/net/minecraft/world/level/storage/loot/functions/ExplorationMapFunction.java
-index bd0f1afc851cc1b677790a0cd8a50f3f8d987d31..11728158f2589f601cd65c7fd45c0b8c2d0ab773 100644
+index 28d38ef66f52a7076b55e91669c7293367d14cde..6314ea388616ab6c412d65e35e5fa16ed3f7da04 100644
 --- a/src/main/java/net/minecraft/world/level/storage/loot/functions/ExplorationMapFunction.java
 +++ b/src/main/java/net/minecraft/world/level/storage/loot/functions/ExplorationMapFunction.java
-@@ -59,6 +59,15 @@ public class ExplorationMapFunction extends LootItemConditionalFunction {
+@@ -62,6 +62,15 @@ public class ExplorationMapFunction extends LootItemConditionalFunction {
              if (vec3 != null) {
                  ServerLevel serverLevel = lootContext.getLevel();
                  BlockPos blockPos = serverLevel.findNearestMapFeature(this.destination, new BlockPos(vec3), this.searchRadius, this.skipKnownStructures);

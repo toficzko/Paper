@@ -206,7 +206,7 @@ index a1befa9971a4a1423d899769a745037349bec9f1..9a1e9c0de6be24fda37ff75631561b51
 +    void setChunkRadius(int radius); // Paper - allow changing chunk radius
  }
 diff --git a/src/main/java/net/minecraft/server/level/progress/LoggerChunkProgressListener.java b/src/main/java/net/minecraft/server/level/progress/LoggerChunkProgressListener.java
-index e0bb575c9fad502ab6601d33fd0de0985ea2be5b..d247b3be4658941cda1194d26f565c000921f849 100644
+index 62360fee30db873383fea922d7b62bfe1b3f1ee8..5b2172a5d428117ca9f17c9bcc9877629a76363f 100644
 --- a/src/main/java/net/minecraft/server/level/progress/LoggerChunkProgressListener.java
 +++ b/src/main/java/net/minecraft/server/level/progress/LoggerChunkProgressListener.java
 @@ -11,15 +11,24 @@ import org.apache.logging.log4j.Logger;
@@ -233,8 +233,8 @@ index e0bb575c9fad502ab6601d33fd0de0985ea2be5b..d247b3be4658941cda1194d26f565c00
      }
 +    // Paper end
  
+     @Override
      public void updateSpawnPos(ChunkPos chunkPos) {
-         this.nextTickTime = Util.getMillis();
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftWorld.java b/src/main/java/org/bukkit/craftbukkit/CraftWorld.java
 index f21cd28551ecf69c4d0e716beccf404595afb593..437bff2611fa3711e45b958704d7321829fee684 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftWorld.java

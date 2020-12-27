@@ -26,10 +26,10 @@ index 067dffc4408f188dece4e6c9b7705b82ca6dc810..a20eefa08d239556bfd47bf15da2fa72
              return true;
          });
 diff --git a/src/main/java/net/minecraft/world/level/CollisionSpliterator.java b/src/main/java/net/minecraft/world/level/CollisionSpliterator.java
-index f6857326cdc56a6b6ff76d4ecd7c220ba2002547..7cce35514173d781a6bec3362372eed04a734013 100644
+index 72f33a2c6733b9df5c1e7ac8ceef54ca56a6bca1..158444f2daceb82514873a53c7ac228a1a5f8f2e 100644
 --- a/src/main/java/net/minecraft/world/level/CollisionSpliterator.java
 +++ b/src/main/java/net/minecraft/world/level/CollisionSpliterator.java
-@@ -136,9 +136,10 @@ public class CollisionSpliterator extends AbstractSpliterator<VoxelShape> {
+@@ -137,9 +137,10 @@ public class CollisionSpliterator extends AbstractSpliterator<VoxelShape> {
          WorldBorder worldBorder = this.collisionGetter.getWorldBorder();
          AABB aABB = this.source.getBoundingBox();
          if (!isBoxFullyWithinWorldBorder(worldBorder, aABB)) {

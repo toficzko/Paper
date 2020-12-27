@@ -13,7 +13,7 @@ Replace all calls to the new place to the unnecessary forward.
 Optimize getType and getBlockData to manually inline and optimize the calls
 
 diff --git a/src/main/java/net/minecraft/core/Vec3i.java b/src/main/java/net/minecraft/core/Vec3i.java
-index a42cf2867ff945d1d607242f179086b435e0c958..a8f5041c210a03a21972374e15987f683ee4efb1 100644
+index 06dc8cbd0a2589944da638cfbafe85b5eb269682..21b672973285a0ff16b57c97bbe21ec4d0090ce4 100644
 --- a/src/main/java/net/minecraft/core/Vec3i.java
 +++ b/src/main/java/net/minecraft/core/Vec3i.java
 @@ -21,6 +21,15 @@ public class Vec3i implements Comparable<Vec3i> {
@@ -58,29 +58,29 @@ index 25b0a4dea11378828950cf04208601900e58900c..c6222bced0d2367d54264ad450cccdf1
      BlockState setBlockState(BlockPos pos, BlockState state, boolean moved);
  
 diff --git a/src/main/java/net/minecraft/world/level/chunk/EmptyLevelChunk.java b/src/main/java/net/minecraft/world/level/chunk/EmptyLevelChunk.java
-index 4d6fdb1fb3cd564855c3d913be7fc45770610cbc..d91fb222699c0c4f118850814b1362c00bc52c20 100644
+index 45b9d588f9b210f6d682ad79e9706efff9ccde68..60971aa58d8cb9ceedd537274e6689c9960a27c1 100644
 --- a/src/main/java/net/minecraft/world/level/chunk/EmptyLevelChunk.java
 +++ b/src/main/java/net/minecraft/world/level/chunk/EmptyLevelChunk.java
-@@ -30,7 +30,13 @@ public class EmptyLevelChunk extends LevelChunk {
+@@ -30,8 +30,13 @@ public class EmptyLevelChunk extends LevelChunk {
          super(world, pos, new ChunkBiomeContainer(world.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY), BIOMES));
      }
  
--    public BlockState getBlockState(BlockPos blockPos) {
 +    // Paper start
 +    @Override public BlockState getType(int x, int y, int z) {
 +        return Blocks.VOID_AIR.defaultBlockState();
 +    }
 +    // Paper end
-+    @Override
+     @Override
+-    public BlockState getBlockState(BlockPos blockPos) {
 +    public BlockState getBlockState(BlockPos pos) {
          return Blocks.VOID_AIR.defaultBlockState();
      }
  
 diff --git a/src/main/java/net/minecraft/world/level/chunk/ImposterProtoChunk.java b/src/main/java/net/minecraft/world/level/chunk/ImposterProtoChunk.java
-index 729f250626c1eb913e400fdb8ddafed332f4d5c7..5888d70e5a9cb19ab4c32654a4339669188b9fdd 100644
+index 786a21c12d513522bf3bac942324141eb6218a77..d06bfd50b216974757a213e31e1d791224b2e98f 100644
 --- a/src/main/java/net/minecraft/world/level/chunk/ImposterProtoChunk.java
 +++ b/src/main/java/net/minecraft/world/level/chunk/ImposterProtoChunk.java
-@@ -39,6 +39,11 @@ public class ImposterProtoChunk extends ProtoChunk {
+@@ -41,6 +41,11 @@ public class ImposterProtoChunk extends ProtoChunk {
      public BlockState getBlockState(BlockPos blockPos) {
          return this.wrapped.getBlockState(blockPos);
      }
@@ -90,8 +90,8 @@ index 729f250626c1eb913e400fdb8ddafed332f4d5c7..5888d70e5a9cb19ab4c32654a4339669
 +    }
 +    // Paper end
  
-     public FluidState getFluidState(BlockPos pos) {
-         return this.wrapped.getFluidState(pos);
+     @Override
+     public FluidState getFluidState(BlockPos blockPos) {
 diff --git a/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java b/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java
 index fc9ca3f4c593714787b938173b8e0bae560966bb..60932b67d572b5fb4c80f579ca83fd7db9d314e1 100644
 --- a/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java
@@ -157,10 +157,10 @@ index ccb43643ef830a2514c739b123d3931f7ee92bfa..f96036ce7d266ec55c77fdbe71342425
  
      public FluidState getFluidState(int x, int y, int z) {
 diff --git a/src/main/java/net/minecraft/world/level/chunk/PalettedContainer.java b/src/main/java/net/minecraft/world/level/chunk/PalettedContainer.java
-index 720d1e467c9dcf5a0e8da3b0ca7439f3895d76ae..fcc20e460ab522ca7bc61dec5af799c1077cd8ba 100644
+index 1c6083f7d2794203ecb1c886937eb158622ea6e8..8564e9621a027130e7275176bc3c47d69195bfad 100644
 --- a/src/main/java/net/minecraft/world/level/chunk/PalettedContainer.java
 +++ b/src/main/java/net/minecraft/world/level/chunk/PalettedContainer.java
-@@ -124,7 +124,7 @@ public class PalettedContainer<T> implements PaletteResize<T> {
+@@ -125,7 +125,7 @@ public class PalettedContainer<T> implements PaletteResize<T> {
      }
  
      public T get(int x, int y, int z) {
@@ -170,24 +170,24 @@ index 720d1e467c9dcf5a0e8da3b0ca7439f3895d76ae..fcc20e460ab522ca7bc61dec5af799c1
  
      protected T get(int index) {
 diff --git a/src/main/java/net/minecraft/world/level/chunk/ProtoChunk.java b/src/main/java/net/minecraft/world/level/chunk/ProtoChunk.java
-index 9f4de609d43fa6df79e8296f9d476f905b960152..c6694d726a47c1aae14cb1a1b594f22681bc5720 100644
+index 96d0eeb258608ddddfcfa8127b74c3af522c8b8c..bea6b87756e04d8330144597ed35967e73e34c41 100644
 --- a/src/main/java/net/minecraft/world/level/chunk/ProtoChunk.java
 +++ b/src/main/java/net/minecraft/world/level/chunk/ProtoChunk.java
-@@ -97,20 +97,19 @@ public class ProtoChunk implements ChunkAccess {
-     }
- 
-     @Override
--    public BlockState getTypeIfLoaded(BlockPos pos) {
--        return this.getBlockState(pos);
-+    public BlockState getBlockState(BlockPos pos) {
-+        return getType(pos.getX(), pos.getY(), pos.getZ());
+@@ -95,18 +95,22 @@ public class ProtoChunk implements ChunkAccess {
+     public BlockState getTypeIfLoaded(BlockPos pos) {
+         return this.getBlockState(pos);
      }
 -    // Paper end
--
+ 
+     @Override
 -    public BlockState getBlockState(BlockPos blockPos) {
 -        int i = blockPos.getY();
 -        if (Level.isOutsideBuildHeight(i)) {
-+    // Paper start
++    public BlockState getBlockState(BlockPos pos) {
++        return getType(pos.getX(), pos.getY(), pos.getZ());
++    }
++
++    @Override
 +    public BlockState getType(final int x, final int y, final int z) {
 +        if (y < 0 || y >= 256) {
              return Blocks.VOID_AIR.defaultBlockState();
@@ -200,5 +200,5 @@ index 9f4de609d43fa6df79e8296f9d476f905b960152..c6694d726a47c1aae14cb1a1b594f226
      }
 +    // Paper end
  
-     public FluidState getFluidState(BlockPos pos) {
-         int i = pos.getY();
+     @Override
+     public FluidState getFluidState(BlockPos blockPos) {

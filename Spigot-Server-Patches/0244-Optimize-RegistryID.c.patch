@@ -6,7 +6,7 @@ Subject: [PATCH] Optimize RegistryID.c()
 This is a frequent hotspot for world loading/saving.
 
 diff --git a/src/main/java/net/minecraft/util/CrudeIncrementalIntIdentityHashBiMap.java b/src/main/java/net/minecraft/util/CrudeIncrementalIntIdentityHashBiMap.java
-index 5b935c01c191956842dfcf6fd18c722f02ba2bdc..ddddefac5782d8e44f81ea7387223ba66348f34b 100644
+index b3fa7323c128e77c8c444a0e82ed4298f72aebcf..ca3182c422c882d2384d57391c53645cddae0dce 100644
 --- a/src/main/java/net/minecraft/util/CrudeIncrementalIntIdentityHashBiMap.java
 +++ b/src/main/java/net/minecraft/util/CrudeIncrementalIntIdentityHashBiMap.java
 @@ -14,12 +14,14 @@ public class CrudeIncrementalIntIdentityHashBiMap<K> implements IdMap<K> {
@@ -23,8 +23,8 @@ index 5b935c01c191956842dfcf6fd18c722f02ba2bdc..ddddefac5782d8e44f81ea7387223ba6
 +        this.usedIds = new java.util.BitSet(); // Paper
      }
  
-     public int getId(@Nullable K object) {
-@@ -42,9 +44,14 @@ public class CrudeIncrementalIntIdentityHashBiMap<K> implements IdMap<K> {
+     @Override
+@@ -44,9 +46,14 @@ public class CrudeIncrementalIntIdentityHashBiMap<K> implements IdMap<K> {
      }
  
      private int nextId() {
@@ -39,7 +39,7 @@ index 5b935c01c191956842dfcf6fd18c722f02ba2bdc..ddddefac5782d8e44f81ea7387223ba6
  
          return this.nextId;
      }
-@@ -57,6 +64,7 @@ public class CrudeIncrementalIntIdentityHashBiMap<K> implements IdMap<K> {
+@@ -59,6 +66,7 @@ public class CrudeIncrementalIntIdentityHashBiMap<K> implements IdMap<K> {
          this.byId = (K[])(new Object[newSize]);
          this.nextId = 0;
          this.size = 0;
@@ -47,7 +47,7 @@ index 5b935c01c191956842dfcf6fd18c722f02ba2bdc..ddddefac5782d8e44f81ea7387223ba6
  
          for(int i = 0; i < objects.length; ++i) {
              if (objects[i] != null) {
-@@ -80,6 +88,7 @@ public class CrudeIncrementalIntIdentityHashBiMap<K> implements IdMap<K> {
+@@ -82,6 +90,7 @@ public class CrudeIncrementalIntIdentityHashBiMap<K> implements IdMap<K> {
          this.keys[k] = value;
          this.values[k] = id;
          this.byId[id] = value;
@@ -55,7 +55,7 @@ index 5b935c01c191956842dfcf6fd18c722f02ba2bdc..ddddefac5782d8e44f81ea7387223ba6
          ++this.size;
          if (id == this.nextId) {
              ++this.nextId;
-@@ -140,6 +149,7 @@ public class CrudeIncrementalIntIdentityHashBiMap<K> implements IdMap<K> {
+@@ -143,6 +152,7 @@ public class CrudeIncrementalIntIdentityHashBiMap<K> implements IdMap<K> {
          Arrays.fill(this.byId, (Object)null);
          this.nextId = 0;
          this.size = 0;

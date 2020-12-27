@@ -6,7 +6,7 @@ Subject: [PATCH] Stop copy-on-write operations for updating light data
 Causes huge memory allocations + gc issues
 
 diff --git a/src/main/java/net/minecraft/world/level/lighting/BlockLightSectionStorage.java b/src/main/java/net/minecraft/world/level/lighting/BlockLightSectionStorage.java
-index d8abf43b135bd6cd66c7205658c78dbbffd204cb..da64a65331a5bab4e2605975a2386a1455c12ced 100644
+index c17f7700a52d6707d2043867f1281344ec57af33..34135771775b5dc91e9ad65e94fd14d57aab823e 100644
 --- a/src/main/java/net/minecraft/world/level/lighting/BlockLightSectionStorage.java
 +++ b/src/main/java/net/minecraft/world/level/lighting/BlockLightSectionStorage.java
 @@ -9,7 +9,7 @@ import net.minecraft.world.level.chunk.LightChunkGetter;
@@ -17,8 +17,8 @@ index d8abf43b135bd6cd66c7205658c78dbbffd204cb..da64a65331a5bab4e2605975a2386a14
 +        super(LightLayer.BLOCK, chunkProvider, new BlockLightSectionStorage.BlockDataLayerStorageMap(new com.destroystokyo.paper.util.map.QueuedChangesMapLong2Object<>(), false)); // Paper - avoid copying light data
      }
  
-     protected int getLightValue(long l) {
-@@ -19,12 +19,12 @@ public class BlockLightSectionStorage extends LayerLightSectionStorage<BlockLigh
+     @Override
+@@ -20,13 +20,13 @@ public class BlockLightSectionStorage extends LayerLightSectionStorage<BlockLigh
      }
  
      public static final class BlockDataLayerStorageMap extends DataLayerStorageMap<BlockLightSectionStorage.BlockDataLayerStorageMap> {
@@ -28,6 +28,7 @@ index d8abf43b135bd6cd66c7205658c78dbbffd204cb..da64a65331a5bab4e2605975a2386a14
 +            super(long2objectopenhashmap, isVisible); // Paper - avoid copying light data
          }
  
+         @Override
          public BlockLightSectionStorage.BlockDataLayerStorageMap copy() {
 -            return new BlockLightSectionStorage.BlockDataLayerStorageMap(this.map.clone());
 +            return new BlockDataLayerStorageMap(this.map, true); // Paper - avoid copying light data
@@ -120,7 +121,7 @@ index 7dd211cc895f7a231f65bbeb0b286db36ecd63ee..b91bd6a630af85be8f3fd57a50c4b894
  
      public void disableCache() {
 diff --git a/src/main/java/net/minecraft/world/level/lighting/LayerLightSectionStorage.java b/src/main/java/net/minecraft/world/level/lighting/LayerLightSectionStorage.java
-index 72b363392c982db5dfef1efec54216444d921d63..961efc00f40b24be85734f39d1f032fed6982e84 100644
+index e4e113eb1d07cdd72743b60472c918d5342fbced..de0e87538019ea23eb938835774558448cb779d4 100644
 --- a/src/main/java/net/minecraft/world/level/lighting/LayerLightSectionStorage.java
 +++ b/src/main/java/net/minecraft/world/level/lighting/LayerLightSectionStorage.java
 @@ -25,8 +25,8 @@ public abstract class LayerLightSectionStorage<M extends DataLayerStorageMap<M>>
@@ -162,7 +163,7 @@ index 72b363392c982db5dfef1efec54216444d921d63..961efc00f40b24be85734f39d1f032fe
      }
  
      @Nullable
-@@ -340,9 +348,11 @@ public abstract class LayerLightSectionStorage<M extends DataLayerStorageMap<M>>
+@@ -343,9 +351,11 @@ public abstract class LayerLightSectionStorage<M extends DataLayerStorageMap<M>>
  
      protected void swapSectionMap() {
          if (!this.changedSections.isEmpty()) {
@@ -176,10 +177,10 @@ index 72b363392c982db5dfef1efec54216444d921d63..961efc00f40b24be85734f39d1f032fe
          }
  
 diff --git a/src/main/java/net/minecraft/world/level/lighting/SkyLightSectionStorage.java b/src/main/java/net/minecraft/world/level/lighting/SkyLightSectionStorage.java
-index b756d68575d5bac458965be4170429f62024ca92..60acb305e7f9d074c6dce4368ef5e55b2a66abd5 100644
+index 9793e5aa673e7c309435743fd884b0d735caa6bb..8f61ced23c4f33c427822e31210592a724ff337e 100644
 --- a/src/main/java/net/minecraft/world/level/lighting/SkyLightSectionStorage.java
 +++ b/src/main/java/net/minecraft/world/level/lighting/SkyLightSectionStorage.java
-@@ -21,14 +21,15 @@ public class SkyLightSectionStorage extends LayerLightSectionStorage<SkyLightSec
+@@ -21,15 +21,16 @@ public class SkyLightSectionStorage extends LayerLightSectionStorage<SkyLightSec
      private volatile boolean hasSourceInconsistencies;
  
      protected SkyLightSectionStorage(LightChunkGetter chunkProvider) {
@@ -187,6 +188,7 @@ index b756d68575d5bac458965be4170429f62024ca92..60acb305e7f9d074c6dce4368ef5e55b
 +        super(LightLayer.SKY, chunkProvider, new SkyLightSectionStorage.SkyDataLayerStorageMap(new com.destroystokyo.paper.util.map.QueuedChangesMapLong2Object<>(), new com.destroystokyo.paper.util.map.QueuedChangesMapLong2Int(), Integer.MAX_VALUE, false)); // Paper - avoid copying light data
      }
  
+     @Override
      protected int getLightValue(long l) {
          long m = SectionPos.blockToSection(l);
          int i = SectionPos.y(m);
@@ -198,14 +200,15 @@ index b756d68575d5bac458965be4170429f62024ca92..60acb305e7f9d074c6dce4368ef5e55b
          if (j != skyDataLayerStorageMap.currentLowestY && i < j) {
              DataLayer dataLayer = this.getDataLayer(skyDataLayerStorageMap, m);
              if (dataLayer == null) {
-@@ -47,19 +48,20 @@ public class SkyLightSectionStorage extends LayerLightSectionStorage<SkyLightSec
+@@ -48,6 +49,7 @@ public class SkyLightSectionStorage extends LayerLightSectionStorage<SkyLightSec
          } else {
              return 15;
          }
 +        } // Paper - avoid copying light data
      }
  
-     protected void onNodeAdded(long l) {
+     @Override
+@@ -55,13 +57,13 @@ public class SkyLightSectionStorage extends LayerLightSectionStorage<SkyLightSec
          int i = SectionPos.y(l);
          if ((this.updatingSectionData).currentLowestY > i) {
              (this.updatingSectionData).currentLowestY = i;
@@ -222,7 +225,7 @@ index b756d68575d5bac458965be4170429f62024ca92..60acb305e7f9d074c6dce4368ef5e55b
              if (this.columnsWithSkySources.contains(m)) {
                  this.queueAddSource(l);
                  if (j > (this.updatingSectionData).currentLowestY) {
-@@ -95,19 +97,19 @@ public class SkyLightSectionStorage extends LayerLightSectionStorage<SkyLightSec
+@@ -98,19 +100,19 @@ public class SkyLightSectionStorage extends LayerLightSectionStorage<SkyLightSec
          }
  
          int i = SectionPos.y(l);
@@ -245,16 +248,16 @@ index b756d68575d5bac458965be4170429f62024ca92..60acb305e7f9d074c6dce4368ef5e55b
              }
          }
  
-@@ -120,7 +122,7 @@ public class SkyLightSectionStorage extends LayerLightSectionStorage<SkyLightSec
-     protected void enableLightSources(long columnPos, boolean enabled) {
+@@ -124,7 +126,7 @@ public class SkyLightSectionStorage extends LayerLightSectionStorage<SkyLightSec
+     protected void enableLightSources(long l, boolean bl) {
          this.runAllUpdates();
-         if (enabled && this.columnsWithSkySources.add(columnPos)) {
--            int i = (this.updatingSectionData).topSections.get(columnPos);
-+            int i = (this.updatingSectionData).otherData.getUpdating(columnPos); // Paper - avoid copying light data
+         if (bl && this.columnsWithSkySources.add(l)) {
+-            int i = (this.updatingSectionData).topSections.get(l);
++            int i = (this.updatingSectionData).otherData.getUpdating(l); // Paper - avoid copying light data
              if (i != (this.updatingSectionData).currentLowestY) {
-                 long l = SectionPos.asLong(SectionPos.x(columnPos), i - 1, SectionPos.z(columnPos));
-                 this.queueAddSource(l);
-@@ -142,7 +144,7 @@ public class SkyLightSectionStorage extends LayerLightSectionStorage<SkyLightSec
+                 long m = SectionPos.asLong(SectionPos.x(l), i - 1, SectionPos.z(l));
+                 this.queueAddSource(m);
+@@ -148,7 +150,7 @@ public class SkyLightSectionStorage extends LayerLightSectionStorage<SkyLightSec
              return dataLayer;
          } else {
              long l = SectionPos.offset(sectionPos, Direction.UP);
@@ -263,7 +266,7 @@ index b756d68575d5bac458965be4170429f62024ca92..60acb305e7f9d074c6dce4368ef5e55b
              if (i != (this.updatingSectionData).currentLowestY && SectionPos.y(l) < i) {
                  DataLayer dataLayer2;
                  while((dataLayer2 = this.getDataLayer(l, true)) == null) {
-@@ -257,7 +259,7 @@ public class SkyLightSectionStorage extends LayerLightSectionStorage<SkyLightSec
+@@ -264,7 +266,7 @@ public class SkyLightSectionStorage extends LayerLightSectionStorage<SkyLightSec
              if (!this.columnsWithSkySources.contains(m)) {
                  return false;
              } else {
@@ -272,7 +275,7 @@ index b756d68575d5bac458965be4170429f62024ca92..60acb305e7f9d074c6dce4368ef5e55b
                  return SectionPos.sectionToBlockCoord(j) == i + 16;
              }
          }
-@@ -265,7 +267,7 @@ public class SkyLightSectionStorage extends LayerLightSectionStorage<SkyLightSec
+@@ -272,7 +274,7 @@ public class SkyLightSectionStorage extends LayerLightSectionStorage<SkyLightSec
  
      protected boolean isAboveData(long sectionPos) {
          long l = SectionPos.getZeroNode(sectionPos);
@@ -281,7 +284,7 @@ index b756d68575d5bac458965be4170429f62024ca92..60acb305e7f9d074c6dce4368ef5e55b
          return i == (this.updatingSectionData).currentLowestY || SectionPos.y(sectionPos) >= i;
      }
  
-@@ -276,17 +278,20 @@ public class SkyLightSectionStorage extends LayerLightSectionStorage<SkyLightSec
+@@ -283,18 +285,21 @@ public class SkyLightSectionStorage extends LayerLightSectionStorage<SkyLightSec
  
      public static final class SkyDataLayerStorageMap extends DataLayerStorageMap<SkyLightSectionStorage.SkyDataLayerStorageMap> {
          private int currentLowestY;
@@ -303,6 +306,7 @@ index b756d68575d5bac458965be4170429f62024ca92..60acb305e7f9d074c6dce4368ef5e55b
 +            this.currentLowestY = i;
          }
  
+         @Override
          public SkyLightSectionStorage.SkyDataLayerStorageMap copy() {
 -            return new SkyLightSectionStorage.SkyDataLayerStorageMap(this.map.clone(), this.topSections.clone(), this.currentLowestY);
 +            this.otherData.performUpdatesLockMap(); // Paper - avoid copying light data

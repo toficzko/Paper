@@ -1,0 +1,41 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Kyle Wood <demonwav@gmail.com>
+Date: Sat, 26 Dec 2020 23:14:25 -0800
+Subject: [PATCH] Fix remapping error found due to the @Override annotations
+
+
+diff --git a/src/main/java/net/minecraft/world/entity/Mob.java b/src/main/java/net/minecraft/world/entity/Mob.java
+index 00fc653996eb43e1e0224aaae490e4c285ea7de9..8ba6ebf31d8a0f1d2bc45059dd9d6b57cec208fd 100644
+--- a/src/main/java/net/minecraft/world/entity/Mob.java
++++ b/src/main/java/net/minecraft/world/entity/Mob.java
+@@ -1252,7 +1252,7 @@ public abstract class Mob extends LivingEntity {
+                     Optional<Mob> optional = itemmonsteregg.spawnOffspringFromSpawnEgg(entityhuman, this, (EntityType<? extends Mob>) this.getType(), (ServerLevel) this.level, this.position(), itemstack); // CraftBukkit - decompile error
+ 
+                     optional.ifPresent((entityinsentient) -> {
+-                        this.a(entityhuman, entityinsentient);
++                        this.onOffspringSpawnedFromEgg(entityhuman, entityinsentient); // Paper remapping error
+                     });
+                     return optional.isPresent() ? InteractionResult.SUCCESS : InteractionResult.PASS;
+                 } else {
+@@ -1264,7 +1264,7 @@ public abstract class Mob extends LivingEntity {
+         }
+     }
+ 
+-    protected void a(Player entityhuman, Mob entityinsentient) {}
++    protected void onOffspringSpawnedFromEgg(Player entityhuman, Mob entityinsentient) {} // Paper remapping error
+ 
+     protected InteractionResult mobInteract(Player player, InteractionHand hand) {
+         return InteractionResult.PASS;
+diff --git a/src/main/java/net/minecraft/world/level/block/entity/EnderChestBlockEntity.java b/src/main/java/net/minecraft/world/level/block/entity/EnderChestBlockEntity.java
+index 3c61d21cb644fd92d5c993bbd913b23465277f2f..7207d9e0402cfd9df6952b12249f6c032eb7935c 100644
+--- a/src/main/java/net/minecraft/world/level/block/entity/EnderChestBlockEntity.java
++++ b/src/main/java/net/minecraft/world/level/block/entity/EnderChestBlockEntity.java
+@@ -16,7 +16,7 @@ public class EnderChestBlockEntity extends BlockEntity { // Paper - Remove ITick
+         super(BlockEntityType.ENDER_CHEST);
+     }
+ 
+-    @Override
++    // @Override // Paper - Remove ITickable
+     public void tick() {
+         if (++this.tickInterval % 20 * 4 == 0) {
+             this.level.blockEvent(this.worldPosition, Blocks.ENDER_CHEST, 1, this.openCount);

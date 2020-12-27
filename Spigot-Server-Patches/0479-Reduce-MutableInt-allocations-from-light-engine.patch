@@ -7,7 +7,7 @@ We can abuse the fact light is single threaded and share an instance
 per light engine instance
 
 diff --git a/src/main/java/net/minecraft/world/level/lighting/BlockLightEngine.java b/src/main/java/net/minecraft/world/level/lighting/BlockLightEngine.java
-index d1ee57950aa9dfde9dbfe47bb7c363321c47423e..975ddeb715c32359722d3fad1c37b33bb20d6770 100644
+index 83eb86b8a716d2184764a65cfefc58cce4e00638..84ed69a22435a45a4c060ab9991e71c31d7989d3 100644
 --- a/src/main/java/net/minecraft/world/level/lighting/BlockLightEngine.java
 +++ b/src/main/java/net/minecraft/world/level/lighting/BlockLightEngine.java
 @@ -15,6 +15,7 @@ import org.apache.commons.lang3.mutable.MutableInt;
@@ -18,7 +18,7 @@ index d1ee57950aa9dfde9dbfe47bb7c363321c47423e..975ddeb715c32359722d3fad1c37b33b
  
      public BlockLightEngine(LightChunkGetter chunkProvider) {
          super(chunkProvider, LightLayer.BLOCK, new BlockLightSectionStorage(chunkProvider));
-@@ -43,7 +44,7 @@ public final class BlockLightEngine extends LayerLightEngine<BlockLightSectionSt
+@@ -44,7 +45,7 @@ public final class BlockLightEngine extends LayerLightEngine<BlockLightSectionSt
              if (direction == null) {
                  return 15;
              } else {
@@ -28,7 +28,7 @@ index d1ee57950aa9dfde9dbfe47bb7c363321c47423e..975ddeb715c32359722d3fad1c37b33b
                  if (mutableInt.getValue() >= 15) {
                      return 15;
 diff --git a/src/main/java/net/minecraft/world/level/lighting/SkyLightEngine.java b/src/main/java/net/minecraft/world/level/lighting/SkyLightEngine.java
-index ba1d141fdd0bb21f48a8f84d0d0748a4032e2932..29f183c5c65a0751f36c20f5cee6fba9991e1f9c 100644
+index 11fe471082af40d47bfea723ebfcb4047852f067..a00fd5844fb19787a13841226a0cd7a17fae175d 100644
 --- a/src/main/java/net/minecraft/world/level/lighting/SkyLightEngine.java
 +++ b/src/main/java/net/minecraft/world/level/lighting/SkyLightEngine.java
 @@ -14,6 +14,7 @@ import org.apache.commons.lang3.mutable.MutableInt;
@@ -39,7 +39,7 @@ index ba1d141fdd0bb21f48a8f84d0d0748a4032e2932..29f183c5c65a0751f36c20f5cee6fba9
  
      public SkyLightEngine(LightChunkGetter chunkProvider) {
          super(chunkProvider, LightLayer.SKY, new SkyLightSectionStorage(chunkProvider));
-@@ -34,7 +35,7 @@ public final class SkyLightEngine extends LayerLightEngine<SkyLightSectionStorag
+@@ -35,7 +36,7 @@ public final class SkyLightEngine extends LayerLightEngine<SkyLightSectionStorag
              if (i >= 15) {
                  return i;
              } else {

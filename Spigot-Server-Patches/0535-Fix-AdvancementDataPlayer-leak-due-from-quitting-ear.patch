@@ -9,23 +9,25 @@ itself, so the criterion object stores no references - and thus
 needs no cleanup.
 
 diff --git a/src/main/java/net/minecraft/advancements/critereon/SimpleCriterionTrigger.java b/src/main/java/net/minecraft/advancements/critereon/SimpleCriterionTrigger.java
-index e13b206ecebcb27f6102d23845599a787b21e4a8..aef54086d000bcc4ed801e0f1819ef95773dd467 100644
+index 5a0063bfa13f1782b833f253dfd4475f606409e1..1d031f49542377d90859fc40fbb3ebfcbf003eda 100644
 --- a/src/main/java/net/minecraft/advancements/critereon/SimpleCriterionTrigger.java
 +++ b/src/main/java/net/minecraft/advancements/critereon/SimpleCriterionTrigger.java
-@@ -14,27 +14,27 @@ import net.minecraft.server.level.ServerPlayer;
+@@ -14,22 +14,22 @@ import net.minecraft.server.level.ServerPlayer;
  import net.minecraft.world.level.storage.loot.LootContext;
  
  public abstract class SimpleCriterionTrigger<T extends AbstractCriterionTriggerInstance> implements CriterionTrigger<T> {
 -    private final Map<PlayerAdvancements, Set<CriterionTrigger.Listener<T>>> players = Maps.newIdentityHashMap();
 +    //private final Map<PlayerAdvancements, Set<CriterionTrigger.Listener<T>>> players = Maps.newIdentityHashMap(); // Paper - moved into AdvancementDataPlayer to fix memory leak
  
-     public final void addPlayerListener(PlayerAdvancements manager, CriterionTrigger.Listener<T> listener) {
--        this.players.computeIfAbsent(manager, (playerAdvancements) -> {
-+        manager.criterionData.computeIfAbsent(this, (playerAdvancements) -> {
+     @Override
+     public final void addPlayerListener(PlayerAdvancements playerAdvancements, CriterionTrigger.Listener<T> listener) {
+-        this.players.computeIfAbsent(playerAdvancements, (playerAdvancementsx) -> {
++        playerAdvancements.criterionData.computeIfAbsent(this, (playerAdvancementsx) -> {
              return Sets.newHashSet();
          }).add(listener);
      }
  
+     @Override
      public final void removePlayerListener(PlayerAdvancements playerAdvancements, CriterionTrigger.Listener<T> listener) {
 -        Set<CriterionTrigger.Listener<T>> set = this.players.get(playerAdvancements);
 +        Set<CriterionTrigger.Listener<T>> set = (Set) playerAdvancements.criterionData.get(this); // Paper - fix AdvancementDataPlayer leak
@@ -37,15 +39,16 @@ index e13b206ecebcb27f6102d23845599a787b21e4a8..aef54086d000bcc4ed801e0f1819ef95
              }
          }
  
-     }
+@@ -37,7 +37,7 @@ public abstract class SimpleCriterionTrigger<T extends AbstractCriterionTriggerI
  
+     @Override
      public final void removePlayerListeners(PlayerAdvancements playerAdvancements) {
 -        this.players.remove(playerAdvancements);
 +            playerAdvancements.criterionData.remove(this); // Paper - fix AdvancementDataPlayer leak
      }
  
      protected abstract T createInstance(JsonObject obj, EntityPredicate.Composite playerPredicate, DeserializationContext predicateDeserializer);
-@@ -46,7 +46,7 @@ public abstract class SimpleCriterionTrigger<T extends AbstractCriterionTriggerI
+@@ -50,7 +50,7 @@ public abstract class SimpleCriterionTrigger<T extends AbstractCriterionTriggerI
  
      protected void trigger(ServerPlayer player, Predicate<T> tester) {
          PlayerAdvancements playerAdvancements = player.getAdvancements();

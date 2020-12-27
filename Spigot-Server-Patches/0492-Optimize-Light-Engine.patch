@@ -90,7 +90,7 @@ index 0a77bfa9abef6273549f769595960f18f9741efd..5425ae251bda55ea818ca99ed822a8bc
              this.level.asyncChunkTaskManager.close(true); // Paper - Required since we're closing regionfiles in the next line
              this.poiManager.close();
 diff --git a/src/main/java/net/minecraft/server/level/SectionTracker.java b/src/main/java/net/minecraft/server/level/SectionTracker.java
-index 76a487e3b1f0667d08d6487b8785dd056e9f4041..39d212f65cbb1dddd281fd7055878726f3b0f382 100644
+index 6b9d7968eb459901ab9b40e7e4d9d48d8587e263..0664cc77b43516fc9120e4d6cb47e4f73ebcfaca 100644
 --- a/src/main/java/net/minecraft/server/level/SectionTracker.java
 +++ b/src/main/java/net/minecraft/server/level/SectionTracker.java
 @@ -1,6 +1,5 @@
@@ -100,9 +100,9 @@ index 76a487e3b1f0667d08d6487b8785dd056e9f4041..39d212f65cbb1dddd281fd7055878726
  import net.minecraft.world.level.lighting.DynamicGraphMinFixedPoint;
  
  public abstract class SectionTracker extends DynamicGraphMinFixedPoint {
-@@ -13,26 +12,36 @@ public abstract class SectionTracker extends DynamicGraphMinFixedPoint {
-     }
+@@ -15,27 +14,37 @@ public abstract class SectionTracker extends DynamicGraphMinFixedPoint {
  
+     @Override
      protected void checkNeighborsAfterUpdate(long id, int level, boolean decrease) {
 +        // Paper start
 +        int x = (int) (id >> 42);
@@ -126,6 +126,7 @@ index 76a487e3b1f0667d08d6487b8785dd056e9f4041..39d212f65cbb1dddd281fd7055878726
 -
      }
  
+     @Override
      protected int getComputedLevel(long l, long m, int i) {
          int j = i;
  
@@ -168,7 +169,7 @@ index a934813eb70b3321eea9fcf9d9b560447c9e9830..7610d4b81149957414ff2c14bdf63cd6
          }
      }
 diff --git a/src/main/java/net/minecraft/server/level/ThreadedLevelLightEngine.java b/src/main/java/net/minecraft/server/level/ThreadedLevelLightEngine.java
-index 8c284a8c427331ca8819addf82cbb565b5d0163d..9deba138d945e93d000264aef364c014db74326d 100644
+index 2626807a9027992487943adb73b9f5693b621f49..5b31bf7c67bc0472cf95019eb101634ae6f82548 100644
 --- a/src/main/java/net/minecraft/server/level/ThreadedLevelLightEngine.java
 +++ b/src/main/java/net/minecraft/server/level/ThreadedLevelLightEngine.java
 @@ -1,6 +1,7 @@
@@ -340,7 +341,7 @@ index 8c284a8c427331ca8819addf82cbb565b5d0163d..9deba138d945e93d000264aef364c014
          this.sorterMailbox = executor;
          this.taskMailbox = processor;
      }
-@@ -113,13 +249,9 @@ public class ThreadedLevelLightEngine extends LevelLightEngine implements AutoCl
+@@ -120,13 +256,9 @@ public class ThreadedLevelLightEngine extends LevelLightEngine implements AutoCl
      }
  
      private void addTask(int x, int z, IntSupplier completedLevelSupplier, ThreadedLevelLightEngine.TaskType stage, Runnable task) {
@@ -356,8 +357,8 @@ index 8c284a8c427331ca8819addf82cbb565b5d0163d..9deba138d945e93d000264aef364c014
 +        // Paper end
      }
  
-     public void retainData(ChunkPos chunkPos, boolean bl) {
-@@ -134,8 +266,19 @@ public class ThreadedLevelLightEngine extends LevelLightEngine implements AutoCl
+     @Override
+@@ -142,8 +274,19 @@ public class ThreadedLevelLightEngine extends LevelLightEngine implements AutoCl
  
      public CompletableFuture<ChunkAccess> lightChunk(ChunkAccess chunk, boolean excludeBlocks) {
          ChunkPos chunkPos = chunk.getPos();
@@ -379,7 +380,7 @@ index 8c284a8c427331ca8819addf82cbb565b5d0163d..9deba138d945e93d000264aef364c014
              LevelChunkSection[] levelChunkSections = chunk.getSections();
  
              for(int i = 0; i < 16; ++i) {
-@@ -152,53 +295,48 @@ public class ThreadedLevelLightEngine extends LevelLightEngine implements AutoCl
+@@ -160,53 +303,48 @@ public class ThreadedLevelLightEngine extends LevelLightEngine implements AutoCl
                  });
              }
  
@@ -457,18 +458,6 @@ index 8c284a8c427331ca8819addf82cbb565b5d0163d..9deba138d945e93d000264aef364c014
      }
  
      public void setTaskPerBatch(int taskBatchSize) {
-diff --git a/src/main/java/net/minecraft/util/thread/ProcessorMailbox.java b/src/main/java/net/minecraft/util/thread/ProcessorMailbox.java
-index a0ac2929ebba243727dd586daacbc79cc1b35b78..dae4cd2e9ed36b733f75202ca52fdfc17697af4f 100644
---- a/src/main/java/net/minecraft/util/thread/ProcessorMailbox.java
-+++ b/src/main/java/net/minecraft/util/thread/ProcessorMailbox.java
-@@ -107,6 +107,7 @@ public class ProcessorMailbox<T> implements ProcessorHandle<T>, AutoCloseable, R
- 
-     }
- 
-+    public final void queue(T t0) { tell(t0); } @Override // Paper - OBFHELPER
-     public void tell(T object) {
-         this.queue.push(object);
-         this.registerForExecution();
 diff --git a/src/main/java/net/minecraft/world/level/chunk/DataLayer.java b/src/main/java/net/minecraft/world/level/chunk/DataLayer.java
 index c060b4283199e2e937841a12d3982d4241016f36..ccdbd832716cf18624cfea08188152f0c491eff7 100644
 --- a/src/main/java/net/minecraft/world/level/chunk/DataLayer.java
@@ -488,7 +477,7 @@ index c060b4283199e2e937841a12d3982d4241016f36..ccdbd832716cf18624cfea08188152f0
      private static final int nibbleBucketSizeMultiplier = Integer.getInteger("Paper.nibbleBucketSize", 3072);
      private static final int maxPoolSize = Integer.getInteger("Paper.maxNibblePoolSize", (int) Math.min(6, Math.max(1, Runtime.getRuntime().maxMemory() / 1024 / 1024 / 1024)) * (nibbleBucketSizeMultiplier * 8));
 diff --git a/src/main/java/net/minecraft/world/level/lighting/BlockLightEngine.java b/src/main/java/net/minecraft/world/level/lighting/BlockLightEngine.java
-index 975ddeb715c32359722d3fad1c37b33bb20d6770..49d166dfa447fa762ef47aafadc134b48ac58872 100644
+index 84ed69a22435a45a4c060ab9991e71c31d7989d3..e2dd5a6b65e839e235bff4e8f0b4f8170971c9d1 100644
 --- a/src/main/java/net/minecraft/world/level/lighting/BlockLightEngine.java
 +++ b/src/main/java/net/minecraft/world/level/lighting/BlockLightEngine.java
 @@ -22,9 +22,11 @@ public final class BlockLightEngine extends LayerLightEngine<BlockLightSectionSt
@@ -506,7 +495,7 @@ index 975ddeb715c32359722d3fad1c37b33bb20d6770..49d166dfa447fa762ef47aafadc134b4
          BlockGetter blockGetter = this.chunkSource.getChunkForLighting(i >> 4, k >> 4);
          return blockGetter != null ? blockGetter.getLightEmission(this.pos.set(i, j, k)) : 0;
      }
-@@ -37,33 +39,47 @@ public final class BlockLightEngine extends LayerLightEngine<BlockLightSectionSt
+@@ -38,22 +40,31 @@ public final class BlockLightEngine extends LayerLightEngine<BlockLightSectionSt
          } else if (i >= 15) {
              return i;
          } else {
@@ -545,8 +534,9 @@ index 975ddeb715c32359722d3fad1c37b33bb20d6770..49d166dfa447fa762ef47aafadc134b4
                  }
              }
          }
-     }
+@@ -61,11 +72,16 @@ public final class BlockLightEngine extends LayerLightEngine<BlockLightSectionSt
  
+     @Override
      protected void checkNeighborsAfterUpdate(long id, int level, boolean decrease) {
 -        long l = SectionPos.blockToSection(id);
 +        // Paper start - reuse unpacking, credit to JellySquid (Didn't do full optimization though)
@@ -564,7 +554,7 @@ index 975ddeb715c32359722d3fad1c37b33bb20d6770..49d166dfa447fa762ef47aafadc134b4
              if (l == n || this.storage.storingLightForSection(n)) {
                  this.checkNeighbor(id, m, level, decrease);
              }
-@@ -84,22 +100,32 @@ public final class BlockLightEngine extends LayerLightEngine<BlockLightSectionSt
+@@ -87,22 +103,32 @@ public final class BlockLightEngine extends LayerLightEngine<BlockLightSectionSt
              }
          }
  
@@ -604,7 +594,7 @@ index 975ddeb715c32359722d3fad1c37b33bb20d6770..49d166dfa447fa762ef47aafadc134b4
                          j = q;
                      }
 diff --git a/src/main/java/net/minecraft/world/level/lighting/BlockLightSectionStorage.java b/src/main/java/net/minecraft/world/level/lighting/BlockLightSectionStorage.java
-index da64a65331a5bab4e2605975a2386a1455c12ced..f8f17c1eab583cb2ecec714d6cb6dd9e12768595 100644
+index 34135771775b5dc91e9ad65e94fd14d57aab823e..06ee20aec7d85265eab4d8c2894ad92d236bb809 100644
 --- a/src/main/java/net/minecraft/world/level/lighting/BlockLightSectionStorage.java
 +++ b/src/main/java/net/minecraft/world/level/lighting/BlockLightSectionStorage.java
 @@ -1,8 +1,6 @@
@@ -616,9 +606,9 @@ index da64a65331a5bab4e2605975a2386a1455c12ced..f8f17c1eab583cb2ecec714d6cb6dd9e
  import net.minecraft.world.level.LightLayer;
  import net.minecraft.world.level.chunk.DataLayer;
  import net.minecraft.world.level.chunk.LightChunkGetter;
-@@ -13,9 +11,14 @@ public class BlockLightSectionStorage extends LayerLightSectionStorage<BlockLigh
-     }
+@@ -14,9 +12,14 @@ public class BlockLightSectionStorage extends LayerLightSectionStorage<BlockLigh
  
+     @Override
      protected int getLightValue(long l) {
 -        long m = SectionPos.blockToSection(l);
 -        DataLayer dataLayer = this.getDataLayer(m, false);
@@ -761,7 +751,7 @@ index f0c04099e17fce699f32dfb2f8a20034ec0252b2..b619cb904832db69e2432a0b20d108a3
      }
  
 diff --git a/src/main/java/net/minecraft/world/level/lighting/LayerLightEngine.java b/src/main/java/net/minecraft/world/level/lighting/LayerLightEngine.java
-index 7ab70d28914ce83d5cb6b70dd97a180352128586..32e4e7cef475c4d7b7ff12397659a8c442d6e9c3 100644
+index 3d1ca56b42571c066ef34983c403417a73f4b391..6d0f399ffde89c13e9d03f7b6b54aa1584f603fc 100644
 --- a/src/main/java/net/minecraft/world/level/lighting/LayerLightEngine.java
 +++ b/src/main/java/net/minecraft/world/level/lighting/LayerLightEngine.java
 @@ -10,6 +10,7 @@ import net.minecraft.world.level.ChunkPos;
@@ -809,7 +799,7 @@ index 7ab70d28914ce83d5cb6b70dd97a180352128586..32e4e7cef475c4d7b7ff12397659a8c4
      public LayerLightEngine(LightChunkGetter chunkProvider, LightLayer type, S lightStorage) {
          super(16, 256, 8192);
          this.chunkSource = chunkProvider;
-@@ -43,7 +71,7 @@ public abstract class LayerLightEngine<M extends DataLayerStorageMap<M>, S exten
+@@ -44,7 +72,7 @@ public abstract class LayerLightEngine<M extends DataLayerStorageMap<M>, S exten
      }
  
      @Nullable
@@ -818,7 +808,7 @@ index 7ab70d28914ce83d5cb6b70dd97a180352128586..32e4e7cef475c4d7b7ff12397659a8c4
          long l = ChunkPos.asLong(chunkX, chunkZ);
  
          for(int i = 0; i < 2; ++i) {
-@@ -52,7 +80,7 @@ public abstract class LayerLightEngine<M extends DataLayerStorageMap<M>, S exten
+@@ -53,7 +81,7 @@ public abstract class LayerLightEngine<M extends DataLayerStorageMap<M>, S exten
              }
          }
  
@@ -827,7 +817,7 @@ index 7ab70d28914ce83d5cb6b70dd97a180352128586..32e4e7cef475c4d7b7ff12397659a8c4
  
          for(int j = 1; j > 0; --j) {
              this.lastChunkPos[j] = this.lastChunkPos[j - 1];
-@@ -69,35 +97,39 @@ public abstract class LayerLightEngine<M extends DataLayerStorageMap<M>, S exten
+@@ -70,35 +98,39 @@ public abstract class LayerLightEngine<M extends DataLayerStorageMap<M>, S exten
          Arrays.fill(this.lastChunk, (Object)null);
      }
  
@@ -896,7 +886,7 @@ index 7ab70d28914ce83d5cb6b70dd97a180352128586..32e4e7cef475c4d7b7ff12397659a8c4
  
      protected VoxelShape getShape(BlockState world, long pos, Direction facing) {
          return world.canOcclude() ? world.getFaceOcclusionShape(this.chunkSource.getLevel(), this.pos.set(pos), facing) : Shapes.empty();
-@@ -127,8 +159,9 @@ public abstract class LayerLightEngine<M extends DataLayerStorageMap<M>, S exten
+@@ -131,8 +163,9 @@ public abstract class LayerLightEngine<M extends DataLayerStorageMap<M>, S exten
          return l == Long.MAX_VALUE ? 0 : 15 - this.storage.getStoredLevel(l);
      }
  
@@ -906,9 +896,9 @@ index 7ab70d28914ce83d5cb6b70dd97a180352128586..32e4e7cef475c4d7b7ff12397659a8c4
 +        return 15 - section.get((int) (blockPos >> 38) & 15, (int) ((blockPos << 52) >> 52) & 15, (int) ((blockPos << 26) >> 38) & 15); // Paper
      }
  
-     protected void setLevel(long id, int level) {
+     @Override
 diff --git a/src/main/java/net/minecraft/world/level/lighting/LayerLightSectionStorage.java b/src/main/java/net/minecraft/world/level/lighting/LayerLightSectionStorage.java
-index 029faf4fd8837344f3472268606b89288faf8e37..94b4dd9d1306908c95c3ec0dbcd720ad2d6937ec 100644
+index cacf1050c6d790303bbf8b9312e64ffd7a2df008..9752cdd6f1ae7f242c2a6db10cab80bd46808b66 100644
 --- a/src/main/java/net/minecraft/world/level/lighting/LayerLightSectionStorage.java
 +++ b/src/main/java/net/minecraft/world/level/lighting/LayerLightSectionStorage.java
 @@ -26,9 +26,9 @@ public abstract class LayerLightSectionStorage<M extends DataLayerStorageMap<M>>
@@ -1032,7 +1022,7 @@ index 029faf4fd8837344f3472268606b89288faf8e37..94b4dd9d1306908c95c3ec0dbcd720ad
                  }
              }
          }
-@@ -130,17 +164,23 @@ public abstract class LayerLightSectionStorage<M extends DataLayerStorageMap<M>>
+@@ -133,17 +167,23 @@ public abstract class LayerLightSectionStorage<M extends DataLayerStorageMap<M>>
          }
  
          if (i >= 2 && level != 2) {
@@ -1063,7 +1053,7 @@ index 029faf4fd8837344f3472268606b89288faf8e37..94b4dd9d1306908c95c3ec0dbcd720ad
                          }
                      }
                  }
-@@ -165,9 +205,9 @@ public abstract class LayerLightSectionStorage<M extends DataLayerStorageMap<M>>
+@@ -168,9 +208,9 @@ public abstract class LayerLightSectionStorage<M extends DataLayerStorageMap<M>>
                  return SectionPos.blockToSection(mx) == sectionPos;
              });
          } else {
@@ -1076,7 +1066,7 @@ index 029faf4fd8837344f3472268606b89288faf8e37..94b4dd9d1306908c95c3ec0dbcd720ad
  
              for(int l = 0; l < 16; ++l) {
                  for(int m = 0; m < 16; ++m) {
-@@ -209,11 +249,12 @@ public abstract class LayerLightSectionStorage<M extends DataLayerStorageMap<M>>
+@@ -212,11 +252,12 @@ public abstract class LayerLightSectionStorage<M extends DataLayerStorageMap<M>>
              this.toRemove.clear();
              this.hasToRemove = false;
  
@@ -1091,7 +1081,7 @@ index 029faf4fd8837344f3472268606b89288faf8e37..94b4dd9d1306908c95c3ec0dbcd720ad
                          this.clearQueuedSectionBlocks(lightProvider, n);
                          this.updatingSectionData.setLayer(n, dataLayer3);
                          this.changedSections.add(n);
-@@ -248,12 +289,17 @@ public abstract class LayerLightSectionStorage<M extends DataLayerStorageMap<M>>
+@@ -251,12 +292,17 @@ public abstract class LayerLightSectionStorage<M extends DataLayerStorageMap<M>>
  
      private void checkEdgesForSection(LayerLightEngine<M, ?> lightProvider, long sectionPos) {
          if (this.storingLightForSection(sectionPos)) {
@@ -1114,7 +1104,7 @@ index 029faf4fd8837344f3472268606b89288faf8e37..94b4dd9d1306908c95c3ec0dbcd720ad
                      for(int m = 0; m < 16; ++m) {
                          for(int n = 0; n < 16; ++n) {
 diff --git a/src/main/java/net/minecraft/world/level/lighting/SkyLightEngine.java b/src/main/java/net/minecraft/world/level/lighting/SkyLightEngine.java
-index 29f183c5c65a0751f36c20f5cee6fba9991e1f9c..160ef238d4a3b47c517be0083586c5bd5604fbbd 100644
+index a00fd5844fb19787a13841226a0cd7a17fae175d..89a4e447525c6bfd85f42b4ca696bada01fb22ea 100644
 --- a/src/main/java/net/minecraft/world/level/lighting/SkyLightEngine.java
 +++ b/src/main/java/net/minecraft/world/level/lighting/SkyLightEngine.java
 @@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
@@ -1125,7 +1115,7 @@ index 29f183c5c65a0751f36c20f5cee6fba9991e1f9c..160ef238d4a3b47c517be0083586c5bd
  import net.minecraft.world.level.block.state.BlockState;
  import net.minecraft.world.level.chunk.DataLayer;
  import net.minecraft.world.level.chunk.LightChunkGetter;
-@@ -35,21 +36,26 @@ public final class SkyLightEngine extends LayerLightEngine<SkyLightSectionStorag
+@@ -36,21 +37,26 @@ public final class SkyLightEngine extends LayerLightEngine<SkyLightSectionStorag
              if (i >= 15) {
                  return i;
              } else {
@@ -1165,7 +1155,7 @@ index 29f183c5c65a0751f36c20f5cee6fba9991e1f9c..160ef238d4a3b47c517be0083586c5bd
                      Direction direction;
                      if (l == Long.MAX_VALUE) {
                          direction = Direction.DOWN;
-@@ -57,7 +63,7 @@ public final class SkyLightEngine extends LayerLightEngine<SkyLightSectionStorag
+@@ -58,7 +64,7 @@ public final class SkyLightEngine extends LayerLightEngine<SkyLightSectionStorag
                          direction = Direction.fromNormal(r, s, t);
                      }
  
@@ -1174,7 +1164,7 @@ index 29f183c5c65a0751f36c20f5cee6fba9991e1f9c..160ef238d4a3b47c517be0083586c5bd
                      if (direction != null) {
                          VoxelShape voxelShape = this.getShape(blockState2, l, direction);
                          VoxelShape voxelShape2 = this.getShape(blockState, m, direction.getOpposite());
-@@ -82,18 +88,22 @@ public final class SkyLightEngine extends LayerLightEngine<SkyLightSectionStorag
+@@ -83,8 +89,8 @@ public final class SkyLightEngine extends LayerLightEngine<SkyLightSectionStorag
                          }
                      }
  
@@ -1185,8 +1175,9 @@ index 29f183c5c65a0751f36c20f5cee6fba9991e1f9c..160ef238d4a3b47c517be0083586c5bd
                  }
              }
          }
-     }
+@@ -92,10 +98,14 @@ public final class SkyLightEngine extends LayerLightEngine<SkyLightSectionStorag
  
+     @Override
      protected void checkNeighborsAfterUpdate(long id, int level, boolean decrease) {
 -        long l = SectionPos.blockToSection(id);
 -        int i = BlockPos.getY(id);
@@ -1203,7 +1194,7 @@ index 29f183c5c65a0751f36c20f5cee6fba9991e1f9c..160ef238d4a3b47c517be0083586c5bd
          int m;
          if (j != 0) {
              m = 0;
-@@ -105,14 +115,15 @@ public final class SkyLightEngine extends LayerLightEngine<SkyLightSectionStorag
+@@ -107,14 +117,15 @@ public final class SkyLightEngine extends LayerLightEngine<SkyLightSectionStorag
              m = n;
          }
  
@@ -1223,7 +1214,7 @@ index 29f183c5c65a0751f36c20f5cee6fba9991e1f9c..160ef238d4a3b47c517be0083586c5bd
          if (l == s || this.storage.storingLightForSection(s)) {
              this.checkNeighbor(id, r, level, decrease);
          }
-@@ -121,8 +132,8 @@ public final class SkyLightEngine extends LayerLightEngine<SkyLightSectionStorag
+@@ -123,8 +134,8 @@ public final class SkyLightEngine extends LayerLightEngine<SkyLightSectionStorag
              int t = 0;
  
              while(true) {
@@ -1234,7 +1225,7 @@ index 29f183c5c65a0751f36c20f5cee6fba9991e1f9c..160ef238d4a3b47c517be0083586c5bd
                  if (l == v) {
                      this.checkNeighbor(id, u, level, decrease);
                      break;
-@@ -140,6 +151,22 @@ public final class SkyLightEngine extends LayerLightEngine<SkyLightSectionStorag
+@@ -142,6 +153,22 @@ public final class SkyLightEngine extends LayerLightEngine<SkyLightSectionStorag
          }
  
      }
@@ -1255,9 +1246,9 @@ index 29f183c5c65a0751f36c20f5cee6fba9991e1f9c..160ef238d4a3b47c517be0083586c5bd
 +//        int k1 = aenumdirection.length;
 +//>>>>>>> replacement
  
+     @Override
      protected int getComputedLevel(long l, long m, int i) {
-         int j = i;
-@@ -154,22 +181,32 @@ public final class SkyLightEngine extends LayerLightEngine<SkyLightSectionStorag
+@@ -157,22 +184,32 @@ public final class SkyLightEngine extends LayerLightEngine<SkyLightSectionStorag
              }
          }
  
@@ -1296,7 +1287,7 @@ index 29f183c5c65a0751f36c20f5cee6fba9991e1f9c..160ef238d4a3b47c517be0083586c5bd
                      if (j > q) {
                          j = q;
                      }
-@@ -183,7 +220,7 @@ public final class SkyLightEngine extends LayerLightEngine<SkyLightSectionStorag
+@@ -186,7 +223,7 @@ public final class SkyLightEngine extends LayerLightEngine<SkyLightSectionStorag
                      p = SectionPos.offset(p, Direction.UP);
                  }
  
@@ -1306,12 +1297,12 @@ index 29f183c5c65a0751f36c20f5cee6fba9991e1f9c..160ef238d4a3b47c517be0083586c5bd
                      int r;
                      if (dataLayer4 != null) {
 diff --git a/src/main/java/net/minecraft/world/level/lighting/SkyLightSectionStorage.java b/src/main/java/net/minecraft/world/level/lighting/SkyLightSectionStorage.java
-index ce163bc69a830e62b6459fb9e1c8eb462e00ac23..20b56ca00c3a9ce3064d249523fc7a535ff0c1d9 100644
+index 7e6c8e4f25880465186693c08a3bc4cc0f797d1f..76e31ce5970fa443f616151e9a5751bc4d2c8a3b 100644
 --- a/src/main/java/net/minecraft/world/level/lighting/SkyLightSectionStorage.java
 +++ b/src/main/java/net/minecraft/world/level/lighting/SkyLightSectionStorage.java
-@@ -25,7 +25,12 @@ public class SkyLightSectionStorage extends LayerLightSectionStorage<SkyLightSec
-     }
+@@ -26,7 +26,12 @@ public class SkyLightSectionStorage extends LayerLightSectionStorage<SkyLightSec
  
+     @Override
      protected int getLightValue(long l) {
 -        long m = SectionPos.blockToSection(l);
 +        // Paper start
@@ -1323,7 +1314,7 @@ index ce163bc69a830e62b6459fb9e1c8eb462e00ac23..20b56ca00c3a9ce3064d249523fc7a53
          int i = SectionPos.y(m);
          synchronized (this.visibleUpdateLock) { // Paper - avoid copying light data
          SkyLightSectionStorage.SkyDataLayerStorageMap skyDataLayerStorageMap = this.visibleSectionData; // Paper - avoid copying light data - must be after lock acquire
-@@ -44,7 +49,7 @@ public class SkyLightSectionStorage extends LayerLightSectionStorage<SkyLightSec
+@@ -45,7 +50,7 @@ public class SkyLightSectionStorage extends LayerLightSectionStorage<SkyLightSec
                  }
              }
  
@@ -1332,7 +1323,7 @@ index ce163bc69a830e62b6459fb9e1c8eb462e00ac23..20b56ca00c3a9ce3064d249523fc7a53
          } else {
              return 15;
          }
-@@ -147,7 +152,7 @@ public class SkyLightSectionStorage extends LayerLightSectionStorage<SkyLightSec
+@@ -153,7 +158,7 @@ public class SkyLightSectionStorage extends LayerLightSectionStorage<SkyLightSec
              int i = (this.updatingSectionData).otherData.getUpdating(SectionPos.getZeroNode(sectionPos)); // Paper - avoid copying light data
              if (i != (this.updatingSectionData).currentLowestY && SectionPos.y(l) < i) {
                  DataLayer dataLayer2;
@@ -1341,7 +1332,7 @@ index ce163bc69a830e62b6459fb9e1c8eb462e00ac23..20b56ca00c3a9ce3064d249523fc7a53
                      l = SectionPos.offset(l, Direction.UP);
                  }
  
-@@ -163,6 +168,9 @@ public class SkyLightSectionStorage extends LayerLightSectionStorage<SkyLightSec
+@@ -170,6 +175,9 @@ public class SkyLightSectionStorage extends LayerLightSectionStorage<SkyLightSec
          if (doSkylight) {
              if (!this.sectionsToAddSourcesTo.isEmpty()) {
                  for(long l : this.sectionsToAddSourcesTo) {
@@ -1351,7 +1342,7 @@ index ce163bc69a830e62b6459fb9e1c8eb462e00ac23..20b56ca00c3a9ce3064d249523fc7a53
                      int i = this.getLevel(l);
                      if (i != 2 && !this.sectionsToRemoveSourcesFrom.contains(l) && this.sectionsWithSources.add(l)) {
                          if (i == 1) {
-@@ -171,13 +179,13 @@ public class SkyLightSectionStorage extends LayerLightSectionStorage<SkyLightSec
+@@ -178,13 +186,13 @@ public class SkyLightSectionStorage extends LayerLightSectionStorage<SkyLightSec
                                  this.updatingSectionData.copyDataLayer(l);
                              }
  
@@ -1370,7 +1361,7 @@ index ce163bc69a830e62b6459fb9e1c8eb462e00ac23..20b56ca00c3a9ce3064d249523fc7a53
                                  if ((this.sectionsToRemoveSourcesFrom.contains(n) || !this.sectionsWithSources.contains(n) && !this.sectionsToAddSourcesTo.contains(n)) && this.storingLightForSection(n)) {
                                      for(int o = 0; o < 16; ++o) {
                                          for(int p = 0; p < 16; ++p) {
-@@ -209,15 +217,15 @@ public class SkyLightSectionStorage extends LayerLightSectionStorage<SkyLightSec
+@@ -216,15 +224,15 @@ public class SkyLightSectionStorage extends LayerLightSectionStorage<SkyLightSec
  
                              for(int y = 0; y < 16; ++y) {
                                  for(int z = 0; z < 16; ++z) {
@@ -1389,7 +1380,7 @@ index ce163bc69a830e62b6459fb9e1c8eb462e00ac23..20b56ca00c3a9ce3064d249523fc7a53
                                      lightProvider.checkEdge(Long.MAX_VALUE, ae, 0, true);
                                  }
                              }
-@@ -229,11 +237,14 @@ public class SkyLightSectionStorage extends LayerLightSectionStorage<SkyLightSec
+@@ -236,11 +244,14 @@ public class SkyLightSectionStorage extends LayerLightSectionStorage<SkyLightSec
              this.sectionsToAddSourcesTo.clear();
              if (!this.sectionsToRemoveSourcesFrom.isEmpty()) {
                  for(long af : this.sectionsToRemoveSourcesFrom) {

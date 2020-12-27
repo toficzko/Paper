@@ -2260,7 +2260,7 @@ index 0000000000000000000000000000000000000000..9df0006c1a283f77c4d01d9fce9062fc
 +    }
 +}
 diff --git a/src/main/java/net/minecraft/Util.java b/src/main/java/net/minecraft/Util.java
-index 09d2da539b07c9b36af05d12845e91e3c80d83af..8b2090507304f54bacf292b13dd8b72f8dbb8c88 100644
+index 77073df9ee2755b99dfc50eeba46219ea7d9fa4c..f64ac766f5ad588e38db2c7b503904766aaf74f8 100644
 --- a/src/main/java/net/minecraft/Util.java
 +++ b/src/main/java/net/minecraft/Util.java
 @@ -76,7 +76,7 @@ public class Util {
@@ -2273,7 +2273,7 @@ index 09d2da539b07c9b36af05d12845e91e3c80d83af..8b2090507304f54bacf292b13dd8b72f
  
      public static long getEpochMillis() {
 diff --git a/src/main/java/net/minecraft/core/BlockPos.java b/src/main/java/net/minecraft/core/BlockPos.java
-index 299bfe1fc186dffa7e8e0ce7ee8763b34208753c..ee545bc19924e9be00c93c3ee2622c5803fc5494 100644
+index af34cd0e5c08e925def021ed9c79e9594c4504af..584dc7395210d7ddb328f9f9db2f957d783e2367 100644
 --- a/src/main/java/net/minecraft/core/BlockPos.java
 +++ b/src/main/java/net/minecraft/core/BlockPos.java
 @@ -102,6 +102,7 @@ public class BlockPos extends Vec3i {
@@ -2284,7 +2284,7 @@ index 299bfe1fc186dffa7e8e0ce7ee8763b34208753c..ee545bc19924e9be00c93c3ee2622c58
      public BlockPos offset(int x, int y, int z) {
          return x == 0 && y == 0 && z == 0 ? this : new BlockPos(this.getX() + x, this.getY() + y, this.getZ() + z);
      }
-@@ -407,6 +408,7 @@ public class BlockPos extends Vec3i {
+@@ -422,6 +423,7 @@ public class BlockPos extends Vec3i {
              return super.rotate(rotation).immutable();
          }
  
@@ -2292,7 +2292,7 @@ index 299bfe1fc186dffa7e8e0ce7ee8763b34208753c..ee545bc19924e9be00c93c3ee2622c58
          public BlockPos.MutableBlockPos set(int x, int y, int z) {
              this.setX(x);
              this.setY(y);
-@@ -414,6 +416,7 @@ public class BlockPos extends Vec3i {
+@@ -429,6 +431,7 @@ public class BlockPos extends Vec3i {
              return this;
          }
  
@@ -2301,10 +2301,10 @@ index 299bfe1fc186dffa7e8e0ce7ee8763b34208753c..ee545bc19924e9be00c93c3ee2622c58
              return this.set(Mth.floor(x), Mth.floor(y), Mth.floor(z));
          }
 diff --git a/src/main/java/net/minecraft/core/Vec3i.java b/src/main/java/net/minecraft/core/Vec3i.java
-index e73490bfa7b44b95037cb14d027802b2f91b16f2..a42cf2867ff945d1d607242f179086b435e0c958 100644
+index 345b14a22080392648146aaa48644ba87977f72b..06dc8cbd0a2589944da638cfbafe85b5eb269682 100644
 --- a/src/main/java/net/minecraft/core/Vec3i.java
 +++ b/src/main/java/net/minecraft/core/Vec3i.java
-@@ -72,15 +72,15 @@ public class Vec3i implements Comparable<Vec3i> {
+@@ -75,15 +75,15 @@ public class Vec3i implements Comparable<Vec3i> {
          return this.z;
      }
  
@@ -2323,7 +2323,7 @@ index e73490bfa7b44b95037cb14d027802b2f91b16f2..a42cf2867ff945d1d607242f179086b4
          this.z = z;
      }
  
-@@ -116,6 +116,7 @@ public class Vec3i implements Comparable<Vec3i> {
+@@ -119,6 +119,7 @@ public class Vec3i implements Comparable<Vec3i> {
          return this.distSqr(pos.x(), pos.y(), pos.z(), true) < distance * distance;
      }
  
@@ -2332,10 +2332,10 @@ index e73490bfa7b44b95037cb14d027802b2f91b16f2..a42cf2867ff945d1d607242f179086b4
          return this.distSqr((double)vec.getX(), (double)vec.getY(), (double)vec.getZ(), true);
      }
 diff --git a/src/main/java/net/minecraft/nbt/CompoundTag.java b/src/main/java/net/minecraft/nbt/CompoundTag.java
-index 67b461259c0e5f7c71f4f5061c03e13f807f0075..524ed3e85bb089baf62a11652b32f1745191fbcd 100644
+index d537cd3bda6bd72743d3ad2579ef637a86857466..a8a6901503ec48ac69861a6a365f8825f4bb5bd3 100644
 --- a/src/main/java/net/minecraft/nbt/CompoundTag.java
 +++ b/src/main/java/net/minecraft/nbt/CompoundTag.java
-@@ -67,7 +67,7 @@ public class CompoundTag implements Tag {
+@@ -70,7 +70,7 @@ public class CompoundTag implements Tag {
              return "TAG_Compound";
          }
      };
@@ -2344,7 +2344,7 @@ index 67b461259c0e5f7c71f4f5061c03e13f807f0075..524ed3e85bb089baf62a11652b32f174
  
      protected CompoundTag(Map<String, Tag> tags) {
          this.tags = tags;
-@@ -123,6 +123,7 @@ public class CompoundTag implements Tag {
+@@ -129,6 +129,7 @@ public class CompoundTag implements Tag {
          this.tags.put(key, LongTag.valueOf(value));
      }
  
@@ -2397,10 +2397,10 @@ index e0dc41a8f408b7fa0b8554833ea4d09e7e604913..50f14acb062c2f90266279dbd1945a32
          for (int j = 1; j < 5; ++j) {
              if ((i & -1 << j * 7) == 0) {
 diff --git a/src/main/java/net/minecraft/network/PacketEncoder.java b/src/main/java/net/minecraft/network/PacketEncoder.java
-index f0162b4828503a0ac79d137a5335b27728aa739f..03c8381baaa2669db4e45ac66da85bb88d929f83 100644
+index 99f0d3b8852e2de25f4b0d4832b72fff594456dc..e93d2b4dcb16252ffaf71dcc5bd50e62daae1503 100644
 --- a/src/main/java/net/minecraft/network/PacketEncoder.java
 +++ b/src/main/java/net/minecraft/network/PacketEncoder.java
-@@ -40,6 +40,7 @@ public class PacketEncoder extends MessageToByteEncoder<Packet<?>> {
+@@ -41,6 +41,7 @@ public class PacketEncoder extends MessageToByteEncoder<Packet<?>> {
                      packet.write(friendlyByteBuf);
                  } catch (Throwable var8) {
                      LOGGER.error(var8);
@@ -2409,7 +2409,7 @@ index f0162b4828503a0ac79d137a5335b27728aa739f..03c8381baaa2669db4e45ac66da85bb8
                          throw new SkipPacketException(var8);
                      } else {
 diff --git a/src/main/java/net/minecraft/network/protocol/game/ClientboundLevelChunkPacket.java b/src/main/java/net/minecraft/network/protocol/game/ClientboundLevelChunkPacket.java
-index 7b31a679e93c7e39edacc016e71aa0e2e4928e68..bb949e272802db2b5f9333f3c8cd5c021209e879 100644
+index 483a93412b91cec50d1494410706796ef46d11aa..e4666cb3df7b58347b4e152ad15020f943401754 100644
 --- a/src/main/java/net/minecraft/network/protocol/game/ClientboundLevelChunkPacket.java
 +++ b/src/main/java/net/minecraft/network/protocol/game/ClientboundLevelChunkPacket.java
 @@ -26,7 +26,7 @@ public class ClientboundLevelChunkPacket implements Packet<ClientGamePacketListe
@@ -2421,7 +2421,7 @@ index 7b31a679e93c7e39edacc016e71aa0e2e4928e68..bb949e272802db2b5f9333f3c8cd5c02
      private List<CompoundTag> blockEntitiesTags;
      private boolean fullChunk;
  
-@@ -122,6 +122,7 @@ public class ClientboundLevelChunkPacket implements Packet<ClientGamePacketListe
+@@ -125,6 +125,7 @@ public class ClientboundLevelChunkPacket implements Packet<ClientGamePacketListe
          return byteBuf;
      }
  
@@ -3644,10 +3644,10 @@ index f5ead5ea04ea867116ddee29450c4999edf1a5e9..8b7b2e29cf3acab788207e7f32506cf1
          return this.data;
      }
 diff --git a/src/main/java/net/minecraft/util/thread/BlockableEventLoop.java b/src/main/java/net/minecraft/util/thread/BlockableEventLoop.java
-index 128b884627bc07fd8070985926e0e30b0b1a4ef3..754c76e06adec767d61154ae064f119a1f341cf3 100644
+index 4f43c4563019312d1b6bc0fd941c5e2eee7963c3..a0ad52f363f45e4357bd5c1842f557d15d4522df 100644
 --- a/src/main/java/net/minecraft/util/thread/BlockableEventLoop.java
 +++ b/src/main/java/net/minecraft/util/thread/BlockableEventLoop.java
-@@ -66,6 +66,15 @@ public abstract class BlockableEventLoop<R extends Runnable> implements Processo
+@@ -67,6 +67,14 @@ public abstract class BlockableEventLoop<R extends Runnable> implements Processo
  
      }
  
@@ -3655,14 +3655,13 @@ index 128b884627bc07fd8070985926e0e30b0b1a4ef3..754c76e06adec767d61154ae064f119a
 +    public void scheduleOnMain(Runnable r0) {
 +        // postToMainThread does not work the same as older versions of mc
 +        // This method is actually used to create a TickTask, which can then be posted onto main
-+        this.addTask(this.wrapRunnable(r0));
++        this.tell(this.wrapRunnable(r0));
 +    }
 +    // Paper end
 +
-+    public final void addTask(R r0) { tell(r0); }; // Paper - OBFHELPER
+     @Override
      public void tell(R runnable) {
          this.pendingRunnables.add(runnable);
-         LockSupport.unpark(this.getRunningThread());
 diff --git a/src/main/java/net/minecraft/world/entity/EntityType.java b/src/main/java/net/minecraft/world/entity/EntityType.java
 index 9fcbb8dc0f80d9537a7d227ffb2c053d6f5927a8..9c7f4b3d544e0325a470aa081909c7d65315456f 100644
 --- a/src/main/java/net/minecraft/world/entity/EntityType.java
@@ -3698,7 +3697,7 @@ index 68006fb0f125a831883155628ac5960c6ff5d6da..af5db90c203f0802a64900cf8e2314df
      @Override
      public float getBukkitYaw() {
 diff --git a/src/main/java/net/minecraft/world/entity/Mob.java b/src/main/java/net/minecraft/world/entity/Mob.java
-index 0f5e4a0583b66d95d042f4f14ae0641a28df3dff..71529f141b2c71faf2ba29a129e025a6373c53e2 100644
+index 32da66385cbef09ab367cfe18d8ed38fe67db0db..a3c1f0fcc1785b1ba34855e27cee129798a2ac09 100644
 --- a/src/main/java/net/minecraft/world/entity/Mob.java
 +++ b/src/main/java/net/minecraft/world/entity/Mob.java
 @@ -224,6 +224,7 @@ public abstract class Mob extends LivingEntity {
@@ -3723,7 +3722,7 @@ index 616c86bbbd162a2ccc7632d8dd6a526b115d63e2..3eface0923e141d2ed5af3e5a48fc919
          super(type, world);
      }
 diff --git a/src/main/java/net/minecraft/world/entity/monster/Monster.java b/src/main/java/net/minecraft/world/entity/monster/Monster.java
-index 6b23575d1d0070b2422294635ee21461edab6d29..3de34b1c9c0fdbce3c98d3015f693bec3ad5ad19 100644
+index 8ddb603f7911f1a7c22d250bba425401fb2922aa..cdd503e357400661a2176d37d9b5e5e506dcb143 100644
 --- a/src/main/java/net/minecraft/world/entity/monster/Monster.java
 +++ b/src/main/java/net/minecraft/world/entity/monster/Monster.java
 @@ -25,6 +25,8 @@ import net.minecraft.world.level.LightLayer;
@@ -3851,7 +3850,7 @@ index 3bbee667743d9a249c1513ea426e7a51d9185c4c..2feb187f62be5cf5d354a1e806087417
      FluidState getFluidState(BlockPos pos);
  
 diff --git a/src/main/java/net/minecraft/world/level/ChunkPos.java b/src/main/java/net/minecraft/world/level/ChunkPos.java
-index 80223cf77d1e09203c3b30af1d192ba401280b5f..1953a23acddd2fa796b6d207810d84e16aa84f4f 100644
+index 41c480ef9bda6a77876a2def2e19e31022738aee..08187a63d1e08201adf99317f7602bd68022de37 100644
 --- a/src/main/java/net/minecraft/world/level/ChunkPos.java
 +++ b/src/main/java/net/minecraft/world/level/ChunkPos.java
 @@ -11,26 +11,31 @@ public class ChunkPos {
@@ -3888,10 +3887,10 @@ index 80223cf77d1e09203c3b30af1d192ba401280b5f..1953a23acddd2fa796b6d207810d84e1
          return (long)chunkX & 4294967295L | ((long)chunkZ & 4294967295L) << 32;
      }
 diff --git a/src/main/java/net/minecraft/world/level/EmptyBlockGetter.java b/src/main/java/net/minecraft/world/level/EmptyBlockGetter.java
-index 75ee0fc85084b9be5d9a83065d8d580d1b0a548c..65618a3cafcf4cd76fe1ca380ea39b0c743ff27a 100644
+index f23ac3ae7704794387387483a1bd8cd3018bab3e..28bf883ea6cac849ff4de9313f9102bb60f53b6a 100644
 --- a/src/main/java/net/minecraft/world/level/EmptyBlockGetter.java
 +++ b/src/main/java/net/minecraft/world/level/EmptyBlockGetter.java
-@@ -16,6 +16,18 @@ public enum EmptyBlockGetter implements BlockGetter {
+@@ -17,6 +17,18 @@ public enum EmptyBlockGetter implements BlockGetter {
          return null;
      }
  
@@ -3907,9 +3906,9 @@ index 75ee0fc85084b9be5d9a83065d8d580d1b0a548c..65618a3cafcf4cd76fe1ca380ea39b0c
 +    }
 +    // Paper end
 +
+     @Override
      public BlockState getBlockState(BlockPos blockPos) {
          return Blocks.AIR.defaultBlockState();
-     }
 diff --git a/src/main/java/net/minecraft/world/level/Level.java b/src/main/java/net/minecraft/world/level/Level.java
 index 8ea5697bba3e518c513dc9ea5340b5e19cfac196..d6ee6e6cf48c13a6a1a815ab1530e923913acb52 100644
 --- a/src/main/java/net/minecraft/world/level/Level.java
@@ -3999,19 +3998,19 @@ index 8ea5697bba3e518c513dc9ea5340b5e19cfac196..d6ee6e6cf48c13a6a1a815ab1530e923
  
          return this.setBlock(blockposition, fluid.createLegacyBlock(), 3 | (flag ? 64 : 0));
 diff --git a/src/main/java/net/minecraft/world/level/LevelReader.java b/src/main/java/net/minecraft/world/level/LevelReader.java
-index ace1ca056b71ee7b95527d820c9d31b4b72db5d9..a4e5ef16132a1f8d3432bfc6705fd47fdb6753e0 100644
+index 13db3160f81413c7d9fd680fa424f999b322214a..ae653af1b6e111312ef5bebe6e0864305c9a8676 100644
 --- a/src/main/java/net/minecraft/world/level/LevelReader.java
 +++ b/src/main/java/net/minecraft/world/level/LevelReader.java
-@@ -105,6 +105,7 @@ public interface LevelReader extends BlockAndTintGetter, CollisionGetter, BiomeM
+@@ -106,6 +106,7 @@ public interface LevelReader extends BlockAndTintGetter, CollisionGetter, BiomeM
          return this.getChunk(chunkX, chunkZ, status, true);
      }
  
 +    @Nullable ChunkAccess getChunkIfLoadedImmediately(int x, int z); // Paper - ifLoaded api (we need this since current impl blocks if the chunk is loading)
      @Nullable
-     default BlockGetter getChunkForCollisions(int chunkX, int chunkZ) {
-         return this.getChunk(chunkX, chunkZ, ChunkStatus.EMPTY, false);
+     @Override
+     default BlockGetter getChunkForCollisions(int i, int j) {
 diff --git a/src/main/java/net/minecraft/world/level/PathNavigationRegion.java b/src/main/java/net/minecraft/world/level/PathNavigationRegion.java
-index 7130c023f2b3ec68a5fb6995c026b8a8d5ae07bb..889f5d6f96cce07eb84d4a9b2b41c967589b712e 100644
+index 3961ed4762a2a94504bc064f17c2e8be0cdaa003..b2e364ff8a469f306e475de209223c2cead5bc87 100644
 --- a/src/main/java/net/minecraft/world/level/PathNavigationRegion.java
 +++ b/src/main/java/net/minecraft/world/level/PathNavigationRegion.java
 @@ -4,6 +4,7 @@ import java.util.function.Predicate;
@@ -4049,8 +4048,8 @@ index 7130c023f2b3ec68a5fb6995c026b8a8d5ae07bb..889f5d6f96cce07eb84d4a9b2b41c967
              ChunkAccess chunkAccess = this.chunks[k][l];
              return (ChunkAccess)(chunkAccess != null ? chunkAccess : new EmptyLevelChunk(this.level, new ChunkPos(i, j)));
          } else {
-@@ -75,6 +76,29 @@ public class PathNavigationRegion implements BlockGetter, CollisionGetter {
-         return this.getChunk(chunkX, chunkZ);
+@@ -77,6 +78,29 @@ public class PathNavigationRegion implements BlockGetter, CollisionGetter {
+         return this.getChunk(i, j);
      }
  
 +    // Paper start - if loaded util
@@ -4077,8 +4076,8 @@ index 7130c023f2b3ec68a5fb6995c026b8a8d5ae07bb..889f5d6f96cce07eb84d4a9b2b41c967
 +    // Paper end
 +
      @Nullable
+     @Override
      public BlockEntity getBlockEntity(BlockPos blockPos) {
-         ChunkAccess chunkAccess = this.getChunk(blockPos);
 diff --git a/src/main/java/net/minecraft/world/level/block/state/BlockBehaviour.java b/src/main/java/net/minecraft/world/level/block/state/BlockBehaviour.java
 index f51335359285df240f6ec5941cd63b7b47986ddc..caaf8c85daf27e1183d785e46f9d296e33a3e91e 100644
 --- a/src/main/java/net/minecraft/world/level/block/state/BlockBehaviour.java
@@ -4377,7 +4376,7 @@ index 02f30df95ae64584f39c2c08c922e350777bc887..c80d2b14679bce1703a66847f070b84a
      T valueFor(int index);
  
 diff --git a/src/main/java/net/minecraft/world/level/chunk/PalettedContainer.java b/src/main/java/net/minecraft/world/level/chunk/PalettedContainer.java
-index b8bbf016ecdf28ba46db651e48c86468765bcfda..720d1e467c9dcf5a0e8da3b0ca7439f3895d76ae 100644
+index 2f395f116b26f33c6b3649faceb97a11c12cfe65..1c6083f7d2794203ecb1c886937eb158622ea6e8 100644
 --- a/src/main/java/net/minecraft/world/level/chunk/PalettedContainer.java
 +++ b/src/main/java/net/minecraft/world/level/chunk/PalettedContainer.java
 @@ -19,7 +19,7 @@ import net.minecraft.util.BitStorage;
@@ -4410,7 +4409,7 @@ index b8bbf016ecdf28ba46db651e48c86468765bcfda..720d1e467c9dcf5a0e8da3b0ca7439f3
      private void setBits(int size) {
          if (size != this.bits) {
              this.bits = size;
-@@ -131,6 +132,7 @@ public class PalettedContainer<T> implements PaletteResize<T> {
+@@ -132,6 +133,7 @@ public class PalettedContainer<T> implements PaletteResize<T> {
          return (T)(object == null ? this.defaultValue : object);
      }
  
@@ -4419,10 +4418,10 @@ index b8bbf016ecdf28ba46db651e48c86468765bcfda..720d1e467c9dcf5a0e8da3b0ca7439f3
          this.acquire();
          buf.writeByte(this.bits);
 diff --git a/src/main/java/net/minecraft/world/level/chunk/ProtoChunk.java b/src/main/java/net/minecraft/world/level/chunk/ProtoChunk.java
-index 72425e4f72736b5da51edda5e2b72f0538ecde24..9f4de609d43fa6df79e8296f9d476f905b960152 100644
+index fc960a41c436b7c268d8e13cae4ab9b9cb823159..96d0eeb258608ddddfcfa8127b74c3af522c8b8c 100644
 --- a/src/main/java/net/minecraft/world/level/chunk/ProtoChunk.java
 +++ b/src/main/java/net/minecraft/world/level/chunk/ProtoChunk.java
-@@ -85,6 +85,23 @@ public class ProtoChunk implements ChunkAccess {
+@@ -85,6 +85,18 @@ public class ProtoChunk implements ChunkAccess {
  
      }
  
@@ -4434,20 +4433,15 @@ index 72425e4f72736b5da51edda5e2b72f0538ecde24..9f4de609d43fa6df79e8296f9d476f90
 +
 +    @Override
 +    public BlockState getTypeIfLoaded(BlockPos pos) {
-+        return getType(pos.getX(), pos.getY(), pos.getZ());
-+    }
-+
-+    @Override
-+    public BlockState getTypeIfLoaded(BlockPos pos) {
 +        return this.getBlockState(pos);
 +    }
 +    // Paper end
 +
+     @Override
      public BlockState getBlockState(BlockPos blockPos) {
          int i = blockPos.getY();
-         if (Level.isOutsideBuildHeight(i)) {
 diff --git a/src/main/java/net/minecraft/world/level/chunk/storage/IOWorker.java b/src/main/java/net/minecraft/world/level/chunk/storage/IOWorker.java
-index 0d5b97d40e21899aab8f2864a8bd06465ead4ab3..97a72b88acc53929188ab7ab9586aff176a78079 100644
+index fa1ba85bb52d790a9174bb5b1fa26e2097c1eb6f..68edd5176e0f81090aee48cf36426ffee1dc33ea 100644
 --- a/src/main/java/net/minecraft/world/level/chunk/storage/IOWorker.java
 +++ b/src/main/java/net/minecraft/world/level/chunk/storage/IOWorker.java
 @@ -26,7 +26,7 @@ public class IOWorker implements AutoCloseable {
@@ -4472,10 +4466,10 @@ index dfe6bd84246585de80278066dacd1bcff35fd2a3..2eef43088c9be1c54fa19f177c774bf1
      public synchronized DataInputStream getChunkDataInputStream(ChunkPos pos) throws IOException {
          int i = this.getOffset(pos);
 diff --git a/src/main/java/net/minecraft/world/phys/AABB.java b/src/main/java/net/minecraft/world/phys/AABB.java
-index d513226406fbc0c056865a1dfdc04f3f59816738..a301389fb516a6b4f078e8c1571f9bb93b0455bf 100644
+index 14904b00a1d4c205731155ccdd3c778c4ef875b2..b654c8f05bdf94b8fc7bc7c8d9663047c4d7caa0 100644
 --- a/src/main/java/net/minecraft/world/phys/AABB.java
 +++ b/src/main/java/net/minecraft/world/phys/AABB.java
-@@ -212,6 +212,7 @@ public class AABB {
+@@ -214,6 +214,7 @@ public class AABB {
          return x >= this.minX && x < this.maxX && y >= this.minY && y < this.maxY && z >= this.minZ && z < this.maxZ;
      }
  

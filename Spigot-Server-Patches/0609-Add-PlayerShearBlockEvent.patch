@@ -67,7 +67,7 @@ index 0ae9527f6b53b268d88a5aa44cf2ade2eedb623c..3a85b93fd7e40f54504d1b9e8d1c0bf4
              entityitem.setDefaultPickUpDelay();
              // CraftBukkit start
 diff --git a/src/main/java/net/minecraft/world/level/block/PumpkinBlock.java b/src/main/java/net/minecraft/world/level/block/PumpkinBlock.java
-index 32f75abe99a28fbedb80d4c62aafafe0dfee3b7d..b7786d5a6da913572ad0290c71cafdb0ae635fce 100644
+index c4d522452174b8fb5b66081016106a202dacdb0d..9f1297d7fb2f533f107124754bc923ba66d97649 100644
 --- a/src/main/java/net/minecraft/world/level/block/PumpkinBlock.java
 +++ b/src/main/java/net/minecraft/world/level/block/PumpkinBlock.java
 @@ -1,7 +1,9 @@
@@ -80,7 +80,7 @@ index 32f75abe99a28fbedb80d4c62aafafe0dfee3b7d..b7786d5a6da913572ad0290c71cafdb0
  import net.minecraft.sounds.SoundEvents;
  import net.minecraft.sounds.SoundSource;
  import net.minecraft.world.InteractionHand;
-@@ -24,13 +26,24 @@ public class PumpkinBlock extends StemGrownBlock {
+@@ -25,13 +27,24 @@ public class PumpkinBlock extends StemGrownBlock {
          ItemStack itemStack = player.getItemInHand(interactionHand);
          if (itemStack.getItem() == Items.SHEARS) {
              if (!level.isClientSide) {

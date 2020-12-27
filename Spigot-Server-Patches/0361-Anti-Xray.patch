@@ -1001,7 +1001,7 @@ index 0000000000000000000000000000000000000000..333763936897befda5bb6c077944d266
 +    }
 +}
 diff --git a/src/main/java/net/minecraft/network/protocol/game/ClientboundLevelChunkPacket.java b/src/main/java/net/minecraft/network/protocol/game/ClientboundLevelChunkPacket.java
-index 01386a08ce2130db44357c01cbf3e7c406ddf44c..c54e242d755a6fb05fa5db4975cecef1431d3308 100644
+index df1d8483898c07ab613b4965bf8f55f90e3c0ece..ef8892bd67bdbae11c20b7c9803ac943ddc5358a 100644
 --- a/src/main/java/net/minecraft/network/protocol/game/ClientboundLevelChunkPacket.java
 +++ b/src/main/java/net/minecraft/network/protocol/game/ClientboundLevelChunkPacket.java
 @@ -1,5 +1,6 @@
@@ -1071,9 +1071,9 @@ index 01386a08ce2130db44357c01cbf3e7c406ddf44c..c54e242d755a6fb05fa5db4975cecef1
      }
 +    // Paper end
  
+     @Override
      public void read(FriendlyByteBuf friendlyByteBuf) throws IOException {
-         this.x = friendlyByteBuf.readInt();
-@@ -142,8 +164,12 @@ public class ClientboundLevelChunkPacket implements Packet<ClientGamePacketListe
+@@ -145,8 +167,12 @@ public class ClientboundLevelChunkPacket implements Packet<ClientGamePacketListe
          return byteBuf;
      }
  
@@ -1088,7 +1088,7 @@ index 01386a08ce2130db44357c01cbf3e7c406ddf44c..c54e242d755a6fb05fa5db4975cecef1
          int i = 0;
          LevelChunkSection[] levelChunkSections = chunk.getSections();
          int j = 0;
-@@ -152,7 +178,7 @@ public class ClientboundLevelChunkPacket implements Packet<ClientGamePacketListe
+@@ -155,7 +181,7 @@ public class ClientboundLevelChunkPacket implements Packet<ClientGamePacketListe
              LevelChunkSection levelChunkSection = levelChunkSections[j];
              if (levelChunkSection != LevelChunk.EMPTY_SECTION && (!this.isFullChunk() || !levelChunkSection.isEmpty()) && (includedSectionsMask & 1 << j) != 0) {
                  i |= 1 << j;
@@ -1178,7 +1178,7 @@ index cbd10141512744ed853006fb52bac655a19112a0..1e69161c4597a7589bd67da633f4f4ef
              if (iblockdata1 == null) {
                  // CraftBukkit start - remove blockstate if failed (or the same)
 diff --git a/src/main/java/net/minecraft/world/level/chunk/EmptyLevelChunk.java b/src/main/java/net/minecraft/world/level/chunk/EmptyLevelChunk.java
-index d91fb222699c0c4f118850814b1362c00bc52c20..6b29ff71b25ce886d485dfeb2961d2a0167210b9 100644
+index 60971aa58d8cb9ceedd537274e6689c9960a27c1..98edaaf2ec8e1ce43baa9ad75daaf674bc2200a8 100644
 --- a/src/main/java/net/minecraft/world/level/chunk/EmptyLevelChunk.java
 +++ b/src/main/java/net/minecraft/world/level/chunk/EmptyLevelChunk.java
 @@ -8,6 +8,7 @@ import net.minecraft.Util;
@@ -1199,7 +1199,7 @@ index d91fb222699c0c4f118850814b1362c00bc52c20..6b29ff71b25ce886d485dfeb2961d2a0
  
      // Paper start
 diff --git a/src/main/java/net/minecraft/world/level/chunk/ImposterProtoChunk.java b/src/main/java/net/minecraft/world/level/chunk/ImposterProtoChunk.java
-index 5888d70e5a9cb19ab4c32654a4339669188b9fdd..e6175fa2ae44333bbea2c515ca9c019da5c24eb0 100644
+index d06bfd50b216974757a213e31e1d791224b2e98f..6ba707efdcca95eee726471eeb91fa456f6caa19 100644
 --- a/src/main/java/net/minecraft/world/level/chunk/ImposterProtoChunk.java
 +++ b/src/main/java/net/minecraft/world/level/chunk/ImposterProtoChunk.java
 @@ -26,7 +26,7 @@ public class ImposterProtoChunk extends ProtoChunk {
@@ -1291,7 +1291,7 @@ index f96036ce7d266ec55c77fdbe713424258b413941..3a7a52331bdd609d7001e9a07a91cfc1
  
      public int getSerializedSize() {
 diff --git a/src/main/java/net/minecraft/world/level/chunk/PalettedContainer.java b/src/main/java/net/minecraft/world/level/chunk/PalettedContainer.java
-index f82245e82d7e010b00840eda1f4393d0e26e8663..f2467fb1fe5ae00fff742382473e5041a849351d 100644
+index 669b52932ebe9a6f95f874c3e346ebd67b5f9e3e..5658ea7e480b1d0f20629572e06da31acfa7964d 100644
 --- a/src/main/java/net/minecraft/world/level/chunk/PalettedContainer.java
 +++ b/src/main/java/net/minecraft/world/level/chunk/PalettedContainer.java
 @@ -2,6 +2,7 @@ package net.minecraft.world.level.chunk;
@@ -1365,7 +1365,7 @@ index f82245e82d7e010b00840eda1f4393d0e26e8663..f2467fb1fe5ae00fff742382473e5041
  
      private static int getIndex(int x, int y, int z) {
          return y << 8 | z << 4 | x;
-@@ -85,6 +120,7 @@ public class PalettedContainer<T> implements PaletteResize<T> {
+@@ -86,6 +121,7 @@ public class PalettedContainer<T> implements PaletteResize<T> {
          Palette<T> palette = this.palette;
          this.setBits(i);
  
@@ -1373,7 +1373,7 @@ index f82245e82d7e010b00840eda1f4393d0e26e8663..f2467fb1fe5ae00fff742382473e5041
          for(int j = 0; j < bitStorage.getSize(); ++j) {
              T object2 = palette.valueFor(bitStorage.get(j));
              if (object2 != null) {
-@@ -129,23 +165,37 @@ public class PalettedContainer<T> implements PaletteResize<T> {
+@@ -130,23 +166,37 @@ public class PalettedContainer<T> implements PaletteResize<T> {
          return (T)(object == null ? this.defaultValue : object);
      }
  
@@ -1419,7 +1419,7 @@ index f82245e82d7e010b00840eda1f4393d0e26e8663..f2467fb1fe5ae00fff742382473e5041
          if (this.palette == this.globalPalette) {
              Palette<T> palette = new HashMapPalette<>(this.registry, i, this.dummyPaletteResize, this.reader, this.writer);
 diff --git a/src/main/java/net/minecraft/world/level/chunk/ProtoChunk.java b/src/main/java/net/minecraft/world/level/chunk/ProtoChunk.java
-index c6694d726a47c1aae14cb1a1b594f22681bc5720..00f2e271ea53c513c9e4642432a08c9cda0ba3ba 100644
+index bea6b87756e04d8330144597ed35967e73e34c41..fee074f14fe9268338144cf39368270652c7cdbd 100644
 --- a/src/main/java/net/minecraft/world/level/chunk/ProtoChunk.java
 +++ b/src/main/java/net/minecraft/world/level/chunk/ProtoChunk.java
 @@ -61,23 +61,31 @@ public class ProtoChunk implements ChunkAccess {
@@ -1467,7 +1467,7 @@ index c6694d726a47c1aae14cb1a1b594f22681bc5720..00f2e271ea53c513c9e4642432a08c9c
              } else {
                  LOGGER.warn("Could not set level chunk sections, array length is {} instead of {}", sections.length, this.sections.length);
              }
-@@ -194,7 +202,7 @@ public class ProtoChunk implements ChunkAccess {
+@@ -198,7 +206,7 @@ public class ProtoChunk implements ChunkAccess {
  
      public LevelChunkSection getOrCreateSection(int y) {
          if (this.sections[y] == LevelChunk.EMPTY_SECTION) {

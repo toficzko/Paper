@@ -19,10 +19,10 @@ index 21f75d3bbaf16e4970b5d11a223ff7eeca66d148..750508267982046d0c08cffdd57c2845
 +    }
  }
 diff --git a/src/main/java/net/minecraft/network/protocol/game/ClientboundSetPlayerTeamPacket.java b/src/main/java/net/minecraft/network/protocol/game/ClientboundSetPlayerTeamPacket.java
-index 2ca49a073c985625fe7469b5448144bdabcfcb40..302b460801c4d10e8aa6e43dc1faa0f1dee8f4a0 100644
+index d3e00c48590f3ebe51ee47a72f72950f01a99a02..d31de80db1c2aaca6e24aa52373093ed9217fac6 100644
 --- a/src/main/java/net/minecraft/network/protocol/game/ClientboundSetPlayerTeamPacket.java
 +++ b/src/main/java/net/minecraft/network/protocol/game/ClientboundSetPlayerTeamPacket.java
-@@ -87,7 +87,7 @@ public class ClientboundSetPlayerTeamPacket implements Packet<ClientGamePacketLi
+@@ -89,7 +89,7 @@ public class ClientboundSetPlayerTeamPacket implements Packet<ClientGamePacketLi
              friendlyByteBuf.writeComponent(this.displayName);
              friendlyByteBuf.writeByte(this.options);
              friendlyByteBuf.writeUtf(this.nametagVisibility);

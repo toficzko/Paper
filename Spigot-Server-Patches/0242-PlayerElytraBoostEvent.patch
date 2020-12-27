@@ -5,7 +5,7 @@ Subject: [PATCH] PlayerElytraBoostEvent
 
 
 diff --git a/src/main/java/net/minecraft/world/item/FireworkRocketItem.java b/src/main/java/net/minecraft/world/item/FireworkRocketItem.java
-index f2989c0e7fbf900366df13d0609c1a1bee9c681d..e122eba78c498eeacd0138fdee8ce5eb6464da55 100644
+index 075179df10d2e72a5699efa7c680ed6358a663e0..c245a3b75c0d937f7e69da4c698a56da78276620 100644
 --- a/src/main/java/net/minecraft/world/item/FireworkRocketItem.java
 +++ b/src/main/java/net/minecraft/world/item/FireworkRocketItem.java
 @@ -3,6 +3,7 @@ package net.minecraft.world.item;
@@ -16,7 +16,7 @@ index f2989c0e7fbf900366df13d0609c1a1bee9c681d..e122eba78c498eeacd0138fdee8ce5eb
  import net.minecraft.world.InteractionHand;
  import net.minecraft.world.InteractionResult;
  import net.minecraft.world.InteractionResultHolder;
-@@ -40,11 +41,16 @@ public class FireworkRocketItem extends Item {
+@@ -42,11 +43,16 @@ public class FireworkRocketItem extends Item {
                  // Paper start
                  final FireworkRocketEntity entityfireworks = new FireworkRocketEntity(level, itemStack, player);
                  entityfireworks.spawningEntity = player.getUUID();

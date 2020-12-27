@@ -13,7 +13,7 @@ contention situations.
 And this is extremely a low contention situation.
 
 diff --git a/src/main/java/net/minecraft/world/level/chunk/PalettedContainer.java b/src/main/java/net/minecraft/world/level/chunk/PalettedContainer.java
-index fcc20e460ab522ca7bc61dec5af799c1077cd8ba..f82245e82d7e010b00840eda1f4393d0e26e8663 100644
+index 8564e9621a027130e7275176bc3c47d69195bfad..669b52932ebe9a6f95f874c3e346ebd67b5f9e3e 100644
 --- a/src/main/java/net/minecraft/world/level/chunk/PalettedContainer.java
 +++ b/src/main/java/net/minecraft/world/level/chunk/PalettedContainer.java
 @@ -8,9 +8,6 @@ import java.util.concurrent.locks.ReentrantLock;
@@ -53,16 +53,16 @@ index fcc20e460ab522ca7bc61dec5af799c1077cd8ba..f82245e82d7e010b00840eda1f4393d0
      }
  
      public PalettedContainer(Palette<T> fallbackPalette, IdMapper<T> idList, Function<CompoundTag, T> elementDeserializer, Function<T, CompoundTag> elementSerializer, T defaultElement) {
-@@ -82,7 +79,7 @@ public class PalettedContainer<T> implements PaletteResize<T> {
-         }
+@@ -83,7 +80,7 @@ public class PalettedContainer<T> implements PaletteResize<T> {
      }
  
+     @Override
 -    public int onResize(int i, T object) {
 +    public synchronized int onResize(int i, T object) {
          this.acquire();
          BitStorage bitStorage = this.storage;
          Palette<T> palette = this.palette;
-@@ -101,17 +98,17 @@ public class PalettedContainer<T> implements PaletteResize<T> {
+@@ -102,17 +99,17 @@ public class PalettedContainer<T> implements PaletteResize<T> {
      }
  
      public T getAndSet(int x, int y, int z, T value) {
@@ -85,7 +85,7 @@ index fcc20e460ab522ca7bc61dec5af799c1077cd8ba..f82245e82d7e010b00840eda1f4393d0
          int i = this.palette.idFor(value);
          int j = this.storage.getAndSet(index, i);
          T object = this.palette.valueFor(j);
-@@ -133,7 +130,7 @@ public class PalettedContainer<T> implements PaletteResize<T> {
+@@ -134,7 +131,7 @@ public class PalettedContainer<T> implements PaletteResize<T> {
      }
  
      public void writeDataPaletteBlock(FriendlyByteBuf packetDataSerializer) { this.write(packetDataSerializer); } // Paper - OBFHELPER
@@ -94,7 +94,7 @@ index fcc20e460ab522ca7bc61dec5af799c1077cd8ba..f82245e82d7e010b00840eda1f4393d0
          this.acquire();
          buf.writeByte(this.bits);
          this.palette.write(buf);
-@@ -141,7 +138,7 @@ public class PalettedContainer<T> implements PaletteResize<T> {
+@@ -142,7 +139,7 @@ public class PalettedContainer<T> implements PaletteResize<T> {
          this.release();
      }
  
@@ -103,7 +103,7 @@ index fcc20e460ab522ca7bc61dec5af799c1077cd8ba..f82245e82d7e010b00840eda1f4393d0
          this.acquire();
          int i = Math.max(4, Mth.ceillog2(paletteTag.size()));
          if (i != this.bits) {
-@@ -171,7 +168,7 @@ public class PalettedContainer<T> implements PaletteResize<T> {
+@@ -172,7 +169,7 @@ public class PalettedContainer<T> implements PaletteResize<T> {
          this.release();
      }
  

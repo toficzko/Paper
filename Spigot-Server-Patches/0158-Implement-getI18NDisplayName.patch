@@ -8,10 +8,10 @@ Currently the server only supports the English language. To override this,
 You must replace the language file embedded in the server jar.
 
 diff --git a/src/main/java/net/minecraft/locale/Language.java b/src/main/java/net/minecraft/locale/Language.java
-index 731a02d29635e997d1471ee0606302edf0cd98ba..5b831e5fc414189778846e1a0a39f3e69eeffe55 100644
+index d6ab5a914596fd1316c3cc252d36da3fb22d30c8..ef513458d1e5139048b0bc55e26d0d7fd671dd9b 100644
 --- a/src/main/java/net/minecraft/locale/Language.java
 +++ b/src/main/java/net/minecraft/locale/Language.java
-@@ -60,6 +60,7 @@ public abstract class Language {
+@@ -62,6 +62,7 @@ public abstract class Language {
          return instance;
      }
  

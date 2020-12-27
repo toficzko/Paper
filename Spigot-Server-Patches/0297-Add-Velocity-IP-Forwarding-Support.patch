@@ -141,7 +141,7 @@ index 2e313091f643026be2524fefabfdb84ca27efa66..c56e14a50c34cdefbd609546476a9b48
          int j = this.readVarInt();
  
 diff --git a/src/main/java/net/minecraft/network/protocol/login/ClientboundCustomQueryPacket.java b/src/main/java/net/minecraft/network/protocol/login/ClientboundCustomQueryPacket.java
-index 77af81f726307f460f82bf8cad1cf7c299bc0775..9a86123328396e082f46ba26ccb212abf4b24510 100644
+index 06b65107e96b089743151489fbffb42904a143a1..85953d8c2abd9fcea798e8ce0f56af9f2a245635 100644
 --- a/src/main/java/net/minecraft/network/protocol/login/ClientboundCustomQueryPacket.java
 +++ b/src/main/java/net/minecraft/network/protocol/login/ClientboundCustomQueryPacket.java
 @@ -10,6 +10,17 @@ public class ClientboundCustomQueryPacket implements Packet<ClientLoginPacketLis
@@ -159,11 +159,11 @@ index 77af81f726307f460f82bf8cad1cf7c299bc0775..9a86123328396e082f46ba26ccb212ab
 +    }
 +    // Paper end
 +
+     @Override
      public void read(FriendlyByteBuf friendlyByteBuf) throws IOException {
          this.transactionId = friendlyByteBuf.readVarInt();
-         this.identifier = friendlyByteBuf.readResourceLocation();
 diff --git a/src/main/java/net/minecraft/network/protocol/login/ServerboundCustomQueryPacket.java b/src/main/java/net/minecraft/network/protocol/login/ServerboundCustomQueryPacket.java
-index 2e0f4c47773802964e0cf376a21f00fa5186f347..6a1c24716175207530b6e1db0b143b2b05d2fd5d 100644
+index a56cae792212a0a24c538d8e569daccc76685d5d..6c39c4bdd50bd267ab03cb14cdba6dc26216938d 100644
 --- a/src/main/java/net/minecraft/network/protocol/login/ServerboundCustomQueryPacket.java
 +++ b/src/main/java/net/minecraft/network/protocol/login/ServerboundCustomQueryPacket.java
 @@ -5,8 +5,8 @@ import net.minecraft.network.FriendlyByteBuf;
@@ -175,8 +175,8 @@ index 2e0f4c47773802964e0cf376a21f00fa5186f347..6a1c24716175207530b6e1db0b143b2b
 +    private int transactionId; public int getId() { return transactionId; } // Paper - OBFHELPER
 +    private FriendlyByteBuf data; public FriendlyByteBuf getBuf() { return data; } // Paper - OBFHELPER
  
+     @Override
      public void read(FriendlyByteBuf friendlyByteBuf) throws IOException {
-         this.transactionId = friendlyByteBuf.readVarInt();
 diff --git a/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
 index 56121c88a943e838d4f7cb6932975320499b4744..f5e5f322f61bc6a1fb038317c030466a538d3906 100644
 --- a/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java

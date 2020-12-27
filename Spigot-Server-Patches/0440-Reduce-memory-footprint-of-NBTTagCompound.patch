@@ -8,7 +8,7 @@ is important because we clone chunk data after reading it for safety.
 So, reduce the impact of the clone on GC.
 
 diff --git a/src/main/java/net/minecraft/nbt/CompoundTag.java b/src/main/java/net/minecraft/nbt/CompoundTag.java
-index 524ed3e85bb089baf62a11652b32f1745191fbcd..cd3c3f0b93e02e9508b4b8e403e296b10450c3ba 100644
+index a8a6901503ec48ac69861a6a365f8825f4bb5bd3..135f344974c259139ebebc5dc14efd37eda09d92 100644
 --- a/src/main/java/net/minecraft/nbt/CompoundTag.java
 +++ b/src/main/java/net/minecraft/nbt/CompoundTag.java
 @@ -25,6 +25,7 @@ import net.minecraft.ReportedException;
@@ -19,7 +19,7 @@ index 524ed3e85bb089baf62a11652b32f1745191fbcd..cd3c3f0b93e02e9508b4b8e403e296b1
  import org.apache.logging.log4j.LogManager;
  import org.apache.logging.log4j.Logger;
  
-@@ -43,7 +44,7 @@ public class CompoundTag implements Tag {
+@@ -44,7 +45,7 @@ public class CompoundTag implements Tag {
              if (i > 512) {
                  throw new RuntimeException("Tried to read NBT tag with too high complexity, depth > 512");
              } else {
@@ -28,7 +28,7 @@ index 524ed3e85bb089baf62a11652b32f1745191fbcd..cd3c3f0b93e02e9508b4b8e403e296b1
  
                  byte b;
                  while((b = CompoundTag.readNamedTagType(dataInput, nbtAccounter)) != 0) {
-@@ -74,7 +75,7 @@ public class CompoundTag implements Tag {
+@@ -77,7 +78,7 @@ public class CompoundTag implements Tag {
      }
  
      public CompoundTag() {
@@ -36,10 +36,10 @@ index 524ed3e85bb089baf62a11652b32f1745191fbcd..cd3c3f0b93e02e9508b4b8e403e296b1
 +        this(new Object2ObjectOpenHashMap<>(8, 0.8f)); // Paper - reduce memory footprint of NBTTagCompound
      }
  
-     public void write(DataOutput dataOutput) throws IOException {
-@@ -384,8 +385,16 @@ public class CompoundTag implements Tag {
-     }
+     @Override
+@@ -392,8 +393,16 @@ public class CompoundTag implements Tag {
  
+     @Override
      public CompoundTag copy() {
 -        Map<String, Tag> map = Maps.newHashMap(Maps.transformValues(this.tags, Tag::copy));
 -        return new CompoundTag(map);
@@ -55,4 +55,4 @@ index 524ed3e85bb089baf62a11652b32f1745191fbcd..cd3c3f0b93e02e9508b4b8e403e296b1
 +        // Paper end - reduce memory footprint of NBTTagCompound
      }
  
-     public boolean equals(Object o) {
+     @Override

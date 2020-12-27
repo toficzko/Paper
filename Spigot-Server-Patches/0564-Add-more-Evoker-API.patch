@@ -5,10 +5,10 @@ Subject: [PATCH] Add more Evoker API
 
 
 diff --git a/src/main/java/net/minecraft/world/entity/monster/Evoker.java b/src/main/java/net/minecraft/world/entity/monster/Evoker.java
-index fe4f18fb2eb251ddc1bbb87f4bb73a66c79b9918..7e621f8d5d1b56f79c6aeb3aa9d7c49960a5c748 100644
+index 46173e9e3b6f5652a86fc3ea097e0fbc8a3ad008..80644fe1787abd56f1f402fd34e50eb9c6b8c33b 100644
 --- a/src/main/java/net/minecraft/world/entity/monster/Evoker.java
 +++ b/src/main/java/net/minecraft/world/entity/monster/Evoker.java
-@@ -115,12 +115,12 @@ public class Evoker extends SpellcasterIllager {
+@@ -125,12 +125,12 @@ public class Evoker extends SpellcasterIllager {
          return SoundEvents.EVOKER_HURT;
      }
  

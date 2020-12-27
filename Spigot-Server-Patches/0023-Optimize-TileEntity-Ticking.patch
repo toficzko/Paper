@@ -153,7 +153,7 @@ index ac4635b76a9d09eba142af464d388373d33f4e02..260cf6ddc77638bbfda3438ed4066be9
                  int newPower = Math.max(0, Math.min(15, this.openCount));
  
 diff --git a/src/main/java/net/minecraft/world/level/block/entity/EnderChestBlockEntity.java b/src/main/java/net/minecraft/world/level/block/entity/EnderChestBlockEntity.java
-index 303a5c172b80d9f6d6c80cb0c1f1739dd077f277..18d3c66f7024f9c7f9ea6298d548a95cdfa4029a 100644
+index 73f613bad26c61e1323bce0453f4353024f44891..3c61d21cb644fd92d5c993bbd913b23465277f2f 100644
 --- a/src/main/java/net/minecraft/world/level/block/entity/EnderChestBlockEntity.java
 +++ b/src/main/java/net/minecraft/world/level/block/entity/EnderChestBlockEntity.java
 @@ -1,11 +1,12 @@
@@ -170,7 +170,7 @@ index 303a5c172b80d9f6d6c80cb0c1f1739dd077f277..18d3c66f7024f9c7f9ea6298d548a95c
      public float openness;
      public float oOpenness;
      public int openCount;
-@@ -21,34 +22,62 @@ public class EnderChestBlockEntity extends BlockEntity implements TickableBlockE
+@@ -22,34 +23,62 @@ public class EnderChestBlockEntity extends BlockEntity implements TickableBlockE
          }
  
          this.oOpenness = this.openness;
@@ -247,7 +247,7 @@ index 303a5c172b80d9f6d6c80cb0c1f1739dd077f277..18d3c66f7024f9c7f9ea6298d548a95c
  
              if (this.openness < 0.0F) {
                  this.openness = 0.0F;
-@@ -74,11 +103,13 @@ public class EnderChestBlockEntity extends BlockEntity implements TickableBlockE
+@@ -77,11 +106,13 @@ public class EnderChestBlockEntity extends BlockEntity implements TickableBlockE
      public void startOpen() {
          ++this.openCount;
          this.level.blockEvent(this.worldPosition, Blocks.ENDER_CHEST, 1, this.openCount);
@@ -262,10 +262,10 @@ index 303a5c172b80d9f6d6c80cb0c1f1739dd077f277..18d3c66f7024f9c7f9ea6298d548a95c
  
      public boolean stillValid(Player player) {
 diff --git a/src/main/java/net/minecraft/world/level/block/state/StateHolder.java b/src/main/java/net/minecraft/world/level/block/state/StateHolder.java
-index ba510b8b79304a053a9d965ced1815661949d1d4..3cb28b08a270cfb5c2f04896f33c61c1b6568801 100644
+index 0811bbeb5a1dfd41825b92c6b12fe7aef52d2e66..222cea29c78ca06091366a292a5324dcb682d9e6 100644
 --- a/src/main/java/net/minecraft/world/level/block/state/StateHolder.java
 +++ b/src/main/java/net/minecraft/world/level/block/state/StateHolder.java
-@@ -80,6 +80,7 @@ public abstract class StateHolder<O, S> {
+@@ -82,6 +82,7 @@ public abstract class StateHolder<O, S> {
          return Collections.unmodifiableCollection(this.values.keySet());
      }
  

@@ -7,7 +7,7 @@ Inline bit operations and reduce instruction count to make these hot
 operations faster
 
 diff --git a/src/main/java/net/minecraft/core/BlockPos.java b/src/main/java/net/minecraft/core/BlockPos.java
-index c72719f593bc4be3fe595c2049395fe5fbd22474..2ca0bff9069743cd407dd2ded682936f479df82a 100644
+index 52cad277440f4534c8018f666c665889d0931b90..08ce1679a6b524246854ae480c891a294a0643b9 100644
 --- a/src/main/java/net/minecraft/core/BlockPos.java
 +++ b/src/main/java/net/minecraft/core/BlockPos.java
 @@ -30,14 +30,16 @@ public class BlockPos extends Vec3i {
@@ -35,7 +35,7 @@ index c72719f593bc4be3fe595c2049395fe5fbd22474..2ca0bff9069743cd407dd2ded682936f
  
      public BlockPos(int i, int j, int k) {
          super(i, j, k);
-@@ -59,40 +61,37 @@ public class BlockPos extends Vec3i {
+@@ -59,28 +61,29 @@ public class BlockPos extends Vec3i {
          this(pos.getX(), pos.getY(), pos.getZ());
      }
  
@@ -70,10 +70,9 @@ index c72719f593bc4be3fe595c2049395fe5fbd22474..2ca0bff9069743cd407dd2ded682936f
      }
  
      public long asLong() {
-         return asLong(this.getX(), this.getY(), this.getZ());
+@@ -88,10 +91,7 @@ public class BlockPos extends Vec3i {
      }
  
--    public static long asLong(int x, int y, int z) { return asLong(x, y, z); } // Paper - OBFHELPER
      public static long asLong(int x, int y, int z) {
 -        long l = 0L;
 -        l = l | ((long)x & PACKED_X_MASK) << X_OFFSET;
@@ -84,7 +83,7 @@ index c72719f593bc4be3fe595c2049395fe5fbd22474..2ca0bff9069743cd407dd2ded682936f
  
      public static long getFlatIndex(long y) {
 diff --git a/src/main/java/net/minecraft/core/SectionPos.java b/src/main/java/net/minecraft/core/SectionPos.java
-index 0dc6f1f4ca2e87ab858752adfd7395f9efee7272..7742469b0a2d88d5d525e503efe466050e472149 100644
+index 04f207fa987d8184251f89c1548e5369ce3ad918..242628159f8d2b306f7b2a33aba3a40727a590a9 100644
 --- a/src/main/java/net/minecraft/core/SectionPos.java
 +++ b/src/main/java/net/minecraft/core/SectionPos.java
 @@ -18,7 +18,7 @@ public class SectionPos extends Vec3i {

@@ -324,10 +324,10 @@ index e5c844b74fe5e16d6f6bf628a9da858939592c66..90c2261938f5aeaf00c37e23b5bff0c8
      }
  
 diff --git a/src/main/java/net/minecraft/world/entity/animal/horse/AbstractChestedHorse.java b/src/main/java/net/minecraft/world/entity/animal/horse/AbstractChestedHorse.java
-index 18133b5c7c15f864e73ef8f02e48744b56b0d7c1..7475325f04cc8f514b5e35be0aa0a9451ed933ae 100644
+index ddd5ccdf56e58807005c76bc0f5d727eb7997108..59a32d0c2a62a042a7223557125bc294384b4104 100644
 --- a/src/main/java/net/minecraft/world/entity/animal/horse/AbstractChestedHorse.java
 +++ b/src/main/java/net/minecraft/world/entity/animal/horse/AbstractChestedHorse.java
-@@ -61,11 +61,19 @@ public abstract class AbstractChestedHorse extends AbstractHorse {
+@@ -66,11 +66,20 @@ public abstract class AbstractChestedHorse extends AbstractHorse {
                  this.spawnAtLocation(Blocks.CHEST);
              }
  
@@ -338,6 +338,7 @@ index 18133b5c7c15f864e73ef8f02e48744b56b0d7c1..7475325f04cc8f514b5e35be0aa0a945
      }
  
 +    // Paper start
++    @Override
 +    protected void postDeathDropItems(org.bukkit.event.entity.EntityDeathEvent event) {
 +        if (this.hasChest() && (event == null || !event.isCancelled())) {
 +            this.setChest(false);
@@ -345,9 +346,9 @@ index 18133b5c7c15f864e73ef8f02e48744b56b0d7c1..7475325f04cc8f514b5e35be0aa0a945
 +    }
 +    // Paper end
 +
+     @Override
      public void addAdditionalSaveData(CompoundTag compoundTag) {
          super.addAdditionalSaveData(compoundTag);
-         compoundTag.putBoolean("ChestedHorse", this.hasChest());
 diff --git a/src/main/java/net/minecraft/world/entity/decoration/ArmorStand.java b/src/main/java/net/minecraft/world/entity/decoration/ArmorStand.java
 index 13559473f4c232ca8a0a8d333c037568b7bcc205..c0677d442b735b95a4599196a2a8a559bad4eb7f 100644
 --- a/src/main/java/net/minecraft/world/entity/decoration/ArmorStand.java

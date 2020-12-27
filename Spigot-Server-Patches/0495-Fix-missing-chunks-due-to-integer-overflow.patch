@@ -13,10 +13,10 @@ The fix for the issue is quite simple, casting chunk coordinates to longs
 allows the distance calculation to avoid overflow and work as intended.
 
 diff --git a/src/main/java/net/minecraft/world/level/biome/TheEndBiomeSource.java b/src/main/java/net/minecraft/world/level/biome/TheEndBiomeSource.java
-index 12ba2adf5594172a081f1f1ccbc4bb27eae6ea48..90666d3bbc4538d7c8fc5c966eae6b4a8ddd3b7f 100644
+index 0ddd25a2a10d46aa1e43290328fb0c4c93d85674..88c95efc2b4fc1ee1cab5f10bfd34ccc9dc269d6 100644
 --- a/src/main/java/net/minecraft/world/level/biome/TheEndBiomeSource.java
 +++ b/src/main/java/net/minecraft/world/level/biome/TheEndBiomeSource.java
-@@ -74,7 +74,7 @@ public class TheEndBiomeSource extends BiomeSource {
+@@ -76,7 +76,7 @@ public class TheEndBiomeSource extends BiomeSource {
          int l = j / 2;
          int m = i % 2;
          int n = j % 2;

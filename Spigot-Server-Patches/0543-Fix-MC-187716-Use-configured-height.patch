@@ -5,10 +5,10 @@ Subject: [PATCH] Fix MC-187716 Use configured height
 
 
 diff --git a/src/main/java/net/minecraft/world/level/levelgen/surfacebuilders/NetherCappedSurfaceBuilder.java b/src/main/java/net/minecraft/world/level/levelgen/surfacebuilders/NetherCappedSurfaceBuilder.java
-index 56a38f283c52e997ddc19c8d654270ee9a086fc7..7f80a99c04cd9107289aad1e38f6711ed0e4b1b8 100644
+index 00c2da17e822dcbe6c7c65956ecb4a6cb7b8aae4..a8b813ad83941b7a6b954abd7ea89ff816711a0e 100644
 --- a/src/main/java/net/minecraft/world/level/levelgen/surfacebuilders/NetherCappedSurfaceBuilder.java
 +++ b/src/main/java/net/minecraft/world/level/levelgen/surfacebuilders/NetherCappedSurfaceBuilder.java
-@@ -41,7 +41,7 @@ public abstract class NetherCappedSurfaceBuilder extends SurfaceBuilder<SurfaceB
+@@ -42,7 +42,7 @@ public abstract class NetherCappedSurfaceBuilder extends SurfaceBuilder<SurfaceB
          BlockPos.MutableBlockPos mutableBlockPos = new BlockPos.MutableBlockPos();
          BlockState blockState5 = chunkAccess.getBlockState(mutableBlockPos.set(o, 128, p));
  
@@ -18,10 +18,10 @@ index 56a38f283c52e997ddc19c8d654270ee9a086fc7..7f80a99c04cd9107289aad1e38f6711e
              BlockState blockState6 = chunkAccess.getBlockState(mutableBlockPos);
              if (blockState5.is(blockState.getBlock()) && (blockState6.isAir() || blockState6 == blockState2)) {
 diff --git a/src/main/java/net/minecraft/world/level/levelgen/surfacebuilders/NetherForestSurfaceBuilder.java b/src/main/java/net/minecraft/world/level/levelgen/surfacebuilders/NetherForestSurfaceBuilder.java
-index 6667e975a88e0c4c63a70d06a0f558e701083442..b9602072a70dc78a30312d8032b803642d0427aa 100644
+index 48c49a47ca7164e91d56a302757085a215cdf10b..016cdfd296d188265f8e9f40a929fea2615200e2 100644
 --- a/src/main/java/net/minecraft/world/level/levelgen/surfacebuilders/NetherForestSurfaceBuilder.java
 +++ b/src/main/java/net/minecraft/world/level/levelgen/surfacebuilders/NetherForestSurfaceBuilder.java
-@@ -33,7 +33,7 @@ public class NetherForestSurfaceBuilder extends SurfaceBuilder<SurfaceBuilderBas
+@@ -34,7 +34,7 @@ public class NetherForestSurfaceBuilder extends SurfaceBuilder<SurfaceBuilderBas
          int r = -1;
          BlockState blockState3 = surfaceBuilderBaseConfiguration.getUnderMaterial();
  
@@ -31,10 +31,10 @@ index 6667e975a88e0c4c63a70d06a0f558e701083442..b9602072a70dc78a30312d8032b80364
              BlockState blockState4 = surfaceBuilderBaseConfiguration.getTopMaterial();
              BlockState blockState5 = chunkAccess.getBlockState(mutableBlockPos);
 diff --git a/src/main/java/net/minecraft/world/level/levelgen/surfacebuilders/NetherSurfaceBuilder.java b/src/main/java/net/minecraft/world/level/levelgen/surfacebuilders/NetherSurfaceBuilder.java
-index 5c168d9dc40dadd7c685297748c4ede1b9ee342d..5b21fa6acc8d5d3d7f9bbd7e4fab4bde778a13fd 100644
+index f3a2b12dc373e4469c2f70365e6db6c08cbe905c..464e0b7eca2bb9d2ed20bbbeb42f90669c1cd93a 100644
 --- a/src/main/java/net/minecraft/world/level/levelgen/surfacebuilders/NetherSurfaceBuilder.java
 +++ b/src/main/java/net/minecraft/world/level/levelgen/surfacebuilders/NetherSurfaceBuilder.java
-@@ -35,7 +35,7 @@ public class NetherSurfaceBuilder extends SurfaceBuilder<SurfaceBuilderBaseConfi
+@@ -36,7 +36,7 @@ public class NetherSurfaceBuilder extends SurfaceBuilder<SurfaceBuilderBaseConfi
          BlockState blockState3 = surfaceBuilderBaseConfiguration.getTopMaterial();
          BlockState blockState4 = surfaceBuilderBaseConfiguration.getUnderMaterial();
  

@@ -187,7 +187,7 @@ index 58c4b82725554e91ba1c394bfae3d926b622f9f0..345cd0f65b7c885e2f362e94ed4609b2
      public float yya;
      public float zza;
 diff --git a/src/main/java/net/minecraft/world/entity/Mob.java b/src/main/java/net/minecraft/world/entity/Mob.java
-index 0336b0e47aa11356e2190bdd3b953d58c507b4bd..94967ad60f7983b0bcbd8013cbccec5a6c134db9 100644
+index cbfcb7de6ba396f28cd49fbc171783666790daff..00fc653996eb43e1e0224aaae490e4c285ea7de9 100644
 --- a/src/main/java/net/minecraft/world/entity/Mob.java
 +++ b/src/main/java/net/minecraft/world/entity/Mob.java
 @@ -114,7 +114,7 @@ public abstract class Mob extends LivingEntity {
@@ -232,7 +232,7 @@ index 3eface0923e141d2ed5af3e5a48fc919104deb4e..851c72cad615b673dac6fda927878ef5
      protected PathfinderMob(EntityType<? extends PathfinderMob> type, Level world) {
          super(type, world);
 diff --git a/src/main/java/net/minecraft/world/entity/ai/goal/Goal.java b/src/main/java/net/minecraft/world/entity/ai/goal/Goal.java
-index 79327044f49c8541365cb684b2162721aaabdf58..efb0c5ff751e37d1103fc3208e547bedccc33949 100644
+index d92ddc8a4c0f5249b7ff4f97af1ea3db413b2983..114f2db118af89b07f354fd92c1c72812e7dcd89 100644
 --- a/src/main/java/net/minecraft/world/entity/ai/goal/Goal.java
 +++ b/src/main/java/net/minecraft/world/entity/ai/goal/Goal.java
 @@ -19,7 +19,9 @@ public abstract class Goal {
@@ -246,10 +246,10 @@ index 79327044f49c8541365cb684b2162721aaabdf58..efb0c5ff751e37d1103fc3208e547bed
      public void tick() {
      }
 diff --git a/src/main/java/net/minecraft/world/entity/ai/goal/GoalSelector.java b/src/main/java/net/minecraft/world/entity/ai/goal/GoalSelector.java
-index 95bfbe8a15ecad7e8868a1493cf22055e1857c20..d96e2319850f2783746c30ff63e7003ecb9bcbe1 100644
+index 8731091c5eb74ecace7cc8ce115ad2f98c9d352c..8100acdb9babf692e5c9d9a796cbc97fd3defab7 100644
 --- a/src/main/java/net/minecraft/world/entity/ai/goal/GoalSelector.java
 +++ b/src/main/java/net/minecraft/world/entity/ai/goal/GoalSelector.java
-@@ -23,10 +23,11 @@ public class GoalSelector {
+@@ -25,10 +25,11 @@ public class GoalSelector {
          }
      };
      private final Map<Goal.Flag, WrappedGoal> lockedFlags = new EnumMap<>(Goal.Flag.class);
@@ -263,7 +263,7 @@ index 95bfbe8a15ecad7e8868a1493cf22055e1857c20..d96e2319850f2783746c30ff63e7003e
  
      public GoalSelector(Supplier<ProfilerFiller> profiler) {
          this.profiler = profiler;
-@@ -36,6 +37,25 @@ public class GoalSelector {
+@@ -38,6 +39,25 @@ public class GoalSelector {
          this.availableGoals.add(new WrappedGoal(priority, goal));
      }
  
@@ -290,7 +290,7 @@ index 95bfbe8a15ecad7e8868a1493cf22055e1857c20..d96e2319850f2783746c30ff63e7003e
          this.availableGoals.stream().filter((wrappedGoal) -> {
              return wrappedGoal.getGoal() == goal;
 diff --git a/src/main/java/net/minecraft/world/entity/ai/goal/MoveToBlockGoal.java b/src/main/java/net/minecraft/world/entity/ai/goal/MoveToBlockGoal.java
-index 07ceea95d1112a2db788054ff4ba4f97712cdff1..7ad78a45834500773616b44e07a77bfdc2cfe2ff 100644
+index 8aa3256e0b87fd2af1b39ec9c2232e9c1fedadfa..88741c342561ff079d0ef2f73df2bd68f21e1378 100644
 --- a/src/main/java/net/minecraft/world/entity/ai/goal/MoveToBlockGoal.java
 +++ b/src/main/java/net/minecraft/world/entity/ai/goal/MoveToBlockGoal.java
 @@ -6,12 +6,12 @@ import net.minecraft.world.entity.PathfinderMob;
@@ -322,7 +322,7 @@ index 07ceea95d1112a2db788054ff4ba4f97712cdff1..7ad78a45834500773616b44e07a77bfd
  
      public MoveToBlockGoal(PathfinderMob mob, double speed, int range, int maxYDifference) {
          this.mob = mob;
-@@ -102,6 +109,7 @@ public abstract class MoveToBlockGoal extends Goal {
+@@ -106,6 +113,7 @@ public abstract class MoveToBlockGoal extends Goal {
                          mutableBlockPos.setWithOffset(blockPos, m, k - 1, n);
                          if (this.mob.isWithinRestriction(mutableBlockPos) && this.isValidTarget(this.mob.level, mutableBlockPos)) {
                              this.blockPos = mutableBlockPos;
@@ -331,10 +331,10 @@ index 07ceea95d1112a2db788054ff4ba4f97712cdff1..7ad78a45834500773616b44e07a77bfd
                          }
                      }
 diff --git a/src/main/java/net/minecraft/world/entity/ai/goal/WrappedGoal.java b/src/main/java/net/minecraft/world/entity/ai/goal/WrappedGoal.java
-index b26a0e31e46c92a4201a3e34b5ce2e4fe56c22e5..9d7ea91983753f7c15ff8d19d74511c03c09a5d6 100644
+index 65c07032c3a4df0103fcc016a76d6a7e918256ec..c0d235d13eab7a462141519a0bbfc24be2ce57ce 100644
 --- a/src/main/java/net/minecraft/world/entity/ai/goal/WrappedGoal.java
 +++ b/src/main/java/net/minecraft/world/entity/ai/goal/WrappedGoal.java
-@@ -55,6 +55,7 @@ public class WrappedGoal extends Goal {
+@@ -63,6 +63,7 @@ public class WrappedGoal extends Goal {
          return this.goal.getFlags();
      }
  

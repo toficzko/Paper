@@ -5,10 +5,10 @@ Subject: [PATCH] Update itemstack legacy name and lore
 
 
 diff --git a/src/main/java/net/minecraft/nbt/StringTag.java b/src/main/java/net/minecraft/nbt/StringTag.java
-index e13a615b410c3d702144b94b9ab921010cba4be6..f528b651a47f33ebf60a0affb942d03586d4fe44 100644
+index 6c43fa9fcc422f18a26d31722a39010836550430..d27a7d4df2af2bc4c2631aef66bc03348fee13b7 100644
 --- a/src/main/java/net/minecraft/nbt/StringTag.java
 +++ b/src/main/java/net/minecraft/nbt/StringTag.java
-@@ -36,6 +36,7 @@ public class StringTag implements Tag {
+@@ -40,6 +40,7 @@ public class StringTag implements Tag {
          this.data = value;
      }
  

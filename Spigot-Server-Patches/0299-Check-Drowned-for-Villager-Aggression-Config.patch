@@ -5,10 +5,10 @@ Subject: [PATCH] Check Drowned for Villager Aggression Config
 
 
 diff --git a/src/main/java/net/minecraft/world/entity/monster/Drowned.java b/src/main/java/net/minecraft/world/entity/monster/Drowned.java
-index 9c1663f16c505ad87c3232d7f57bf23d16a559fb..25f24e13b238b49c054f0160fb65faf45bfe8488 100644
+index 9d8eda4f993332367b81b4e629b8bef28ff20c76..54b248f9b2c49c4c9c42185e81a1e7d1868d7de7 100644
 --- a/src/main/java/net/minecraft/world/entity/monster/Drowned.java
 +++ b/src/main/java/net/minecraft/world/entity/monster/Drowned.java
-@@ -76,7 +76,7 @@ public class Drowned extends Zombie implements RangedAttackMob {
+@@ -77,7 +77,7 @@ public class Drowned extends Zombie implements RangedAttackMob {
          this.goalSelector.addGoal(7, new RandomStrollGoal(this, 1.0D));
          this.targetSelector.addGoal(1, (new HurtByTargetGoal(this, Drowned.class)).setAlertOthers(ZombifiedPiglin.class));
          this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false, this::okTarget));

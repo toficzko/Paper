@@ -67,10 +67,10 @@ index b95f676b0476741dbf613d975ba104c4c60348d8..74d819a7cf575152cdf3fdff200c132e
              cause = cause.getCause();
          }
 diff --git a/src/main/java/net/minecraft/Util.java b/src/main/java/net/minecraft/Util.java
-index d2fbbaf014ee684bbe1960db559001735a54c71e..8597d56ab98b012bbfebd4e5f04247a417859db2 100644
+index a885326d5bf244ede2617191d448ef61309bfeed..1ec3586762a2bded8294ef507d9e30d6bd49d82d 100644
 --- a/src/main/java/net/minecraft/Util.java
 +++ b/src/main/java/net/minecraft/Util.java
-@@ -126,6 +126,7 @@ public class Util {
+@@ -127,6 +127,7 @@ public class Util {
          return IO_POOL;
      }
  
@@ -292,10 +292,10 @@ index 4e19fa4b6cd0907daf0c7718c2d4ef4c36f79192..76db8a9f166c4f9da488edeeef08865d
  
          // Paper start - Remove from collideRule team if needed
 diff --git a/src/main/java/net/minecraft/util/thread/BlockableEventLoop.java b/src/main/java/net/minecraft/util/thread/BlockableEventLoop.java
-index 05ed91c4a9bd2cc1fdabc3517479524ee4e57127..b30ab4b2944ac6772a8ee01ad161794e39765b7d 100644
+index 5fbc4716b81b4f224048c4b5c58c1d5395e221f2..052a071d44a881476a632a7187dd578eb0c492d7 100644
 --- a/src/main/java/net/minecraft/util/thread/BlockableEventLoop.java
 +++ b/src/main/java/net/minecraft/util/thread/BlockableEventLoop.java
-@@ -131,6 +131,7 @@ public abstract class BlockableEventLoop<R extends Runnable> implements Processo
+@@ -133,6 +133,7 @@ public abstract class BlockableEventLoop<R extends Runnable> implements Processo
          try {
              task.run();
          } catch (Exception var3) {

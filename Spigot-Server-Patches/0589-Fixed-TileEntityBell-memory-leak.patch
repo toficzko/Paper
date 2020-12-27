@@ -6,7 +6,7 @@ Subject: [PATCH] Fixed TileEntityBell memory leak
 TileEntityBell has a list of entities (entitiesAtRing) that was not being cleared at the right time, causing leaks whenever a bell would be rung near a crowd of entities.
 
 diff --git a/src/main/java/net/minecraft/world/level/block/entity/BellBlockEntity.java b/src/main/java/net/minecraft/world/level/block/entity/BellBlockEntity.java
-index 42bf70a58e3c298c8b358a40143c4542bdfaca69..551acf0fba9103a5b556bc60b9c9aaa9ff066f40 100644
+index 113a9dcd2c1f13cee285db98590c7cb7db8512c7..ca50dcb23fc6e11ca00ac4ba445acd4471efd836 100644
 --- a/src/main/java/net/minecraft/world/level/block/entity/BellBlockEntity.java
 +++ b/src/main/java/net/minecraft/world/level/block/entity/BellBlockEntity.java
 @@ -23,8 +23,8 @@ public class BellBlockEntity extends BlockEntity implements TickableBlockEntity
@@ -20,7 +20,7 @@ index 42bf70a58e3c298c8b358a40143c4542bdfaca69..551acf0fba9103a5b556bc60b9c9aaa9
      private int resonationTicks;
  
      public BellBlockEntity() {
-@@ -51,6 +51,11 @@ public class BellBlockEntity extends BlockEntity implements TickableBlockEntity
+@@ -53,6 +53,11 @@ public class BellBlockEntity extends BlockEntity implements TickableBlockEntity
  
          if (this.ticks >= 50) {
              this.shaking = false;
@@ -32,7 +32,7 @@ index 42bf70a58e3c298c8b358a40143c4542bdfaca69..551acf0fba9103a5b556bc60b9c9aaa9
              this.ticks = 0;
          }
  
-@@ -65,6 +70,7 @@ public class BellBlockEntity extends BlockEntity implements TickableBlockEntity
+@@ -67,6 +72,7 @@ public class BellBlockEntity extends BlockEntity implements TickableBlockEntity
              } else {
                  this.makeRaidersGlow(this.level);
                  this.showBellParticles(this.level);
@@ -40,7 +40,7 @@ index 42bf70a58e3c298c8b358a40143c4542bdfaca69..551acf0fba9103a5b556bc60b9c9aaa9
                  this.resonating = false;
              }
          }
-@@ -103,6 +109,7 @@ public class BellBlockEntity extends BlockEntity implements TickableBlockEntity
+@@ -105,6 +111,7 @@ public class BellBlockEntity extends BlockEntity implements TickableBlockEntity
              }
          }
  

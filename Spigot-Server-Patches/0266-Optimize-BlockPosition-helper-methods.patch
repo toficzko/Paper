@@ -6,27 +6,38 @@ Subject: [PATCH] Optimize BlockPosition helper methods
 Resolves #1338
 
 diff --git a/src/main/java/net/minecraft/core/BlockPos.java b/src/main/java/net/minecraft/core/BlockPos.java
-index d4c1d039cff138f1800bbdf9c7be7c9ad80b1019..778c3b553f835ad8b1002b01ed5afc298abbfd88 100644
+index 7bc0f13855293223c8070db5bb69b8a4e234666d..5595398a1a435717a1f7c1cacf5fb04ebe1e5813 100644
 --- a/src/main/java/net/minecraft/core/BlockPos.java
 +++ b/src/main/java/net/minecraft/core/BlockPos.java
-@@ -117,55 +117,72 @@ public class BlockPos extends Vec3i {
+@@ -87,7 +87,6 @@ public class BlockPos extends Vec3i {
+         return asLong(this.getX(), this.getY(), this.getZ());
      }
  
+-    public static long asLong(int x, int y, int z) { return asLong(x, y, z); } // Paper - OBFHELPER
+     public static long asLong(int x, int y, int z) {
+         long l = 0L;
+         l = l | ((long)x & PACKED_X_MASK) << X_OFFSET;
+@@ -118,58 +117,75 @@ public class BlockPos extends Vec3i {
+ 
+     @Override
      public BlockPos above() {
 -        return this.relative(Direction.UP);
 +        return new BlockPos(this.getX(), this.getY() + 1, this.getZ()); // Paper - Optimize BlockPosition
      }
  
+     @Override
      public BlockPos above(int distance) {
 -        return this.relative(Direction.UP, distance);
 +        return distance == 0 ? this : new BlockPos(this.getX(), this.getY() + distance, this.getZ()); // Paper - Optimize BlockPosition
      }
  
+     @Override
      public BlockPos below() {
 -        return this.relative(Direction.DOWN);
 +        return new BlockPos(this.getX(), this.getY() - 1, this.getZ()); // Paper - Optimize BlockPosition
      }
  
+     @Override
 -    public BlockPos below(int i) {
 -        return this.relative(Direction.DOWN, i);
 +    public BlockPos below(int distance) { // paper remapping error?
@@ -95,8 +106,8 @@ index d4c1d039cff138f1800bbdf9c7be7c9ad80b1019..778c3b553f835ad8b1002b01ed5afc29
 +        // Paper End
      }
  
-     public BlockPos relative(Direction direction, int i) {
-@@ -315,8 +332,8 @@ public class BlockPos extends Vec3i {
+     @Override
+@@ -323,8 +339,8 @@ public class BlockPos extends Vec3i {
      }
  
      public static Iterable<BlockPos> betweenClosed(int startX, int startY, int startZ, int endX, int endY, int endZ) {
@@ -107,7 +118,7 @@ index d4c1d039cff138f1800bbdf9c7be7c9ad80b1019..778c3b553f835ad8b1002b01ed5afc29
          int k = endZ - startZ + 1;
          int l = i * j * k;
          return () -> {
-@@ -328,10 +345,10 @@ public class BlockPos extends Vec3i {
+@@ -337,10 +353,10 @@ public class BlockPos extends Vec3i {
                      if (this.index == l) {
                          return this.endOfData();
                      } else {

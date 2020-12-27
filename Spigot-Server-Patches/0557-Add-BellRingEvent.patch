@@ -7,7 +7,7 @@ Add a new event, BellRingEvent, to trigger whenever a player rings a
 village bell. Passes along the bell block and the player who rang it.
 
 diff --git a/src/main/java/net/minecraft/world/level/block/BellBlock.java b/src/main/java/net/minecraft/world/level/block/BellBlock.java
-index 539c3bf77f9ba6d4210ad7a86cc531630eb5fd28..03e4178d2cbe5175e3fb29a91c82ec7e1878fc9c 100644
+index c62471c5804aab041c96b4dd8e04930b41ed3e4d..a9492f4da9f5f1ac634eec5217fb8ac7dacbe92b 100644
 --- a/src/main/java/net/minecraft/world/level/block/BellBlock.java
 +++ b/src/main/java/net/minecraft/world/level/block/BellBlock.java
 @@ -1,8 +1,11 @@
@@ -22,7 +22,7 @@ index 539c3bf77f9ba6d4210ad7a86cc531630eb5fd28..03e4178d2cbe5175e3fb29a91c82ec7e
  import net.minecraft.sounds.SoundEvents;
  import net.minecraft.sounds.SoundSource;
  import net.minecraft.stats.Stats;
-@@ -82,7 +85,7 @@ public class BellBlock extends BaseEntityBlock {
+@@ -85,7 +88,7 @@ public class BellBlock extends BaseEntityBlock {
          BlockPos blockPos = blockHitResult.getBlockPos();
          boolean bl2 = !bl || this.isProperHit(state, direction, blockHitResult.getLocation().y - (double)blockPos.getY());
          if (bl2) {
@@ -31,7 +31,7 @@ index 539c3bf77f9ba6d4210ad7a86cc531630eb5fd28..03e4178d2cbe5175e3fb29a91c82ec7e
              if (bl3 && player != null) {
                  player.awardStat(Stats.BELL_RING);
              }
-@@ -114,12 +117,18 @@ public class BellBlock extends BaseEntityBlock {
+@@ -117,12 +120,18 @@ public class BellBlock extends BaseEntityBlock {
      }
  
      public boolean attemptToRing(Level world, BlockPos pos, @Nullable Direction direction) {

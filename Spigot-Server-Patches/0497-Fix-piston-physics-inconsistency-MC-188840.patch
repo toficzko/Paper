@@ -79,10 +79,10 @@ index 9c927bcaa4e864f4e33cd5a5ae2bd2cce5cd9769..ed8a714b0f274598a3dc3d9fe213987f
              }
  
 diff --git a/src/main/java/net/minecraft/world/level/block/piston/PistonMovingBlockEntity.java b/src/main/java/net/minecraft/world/level/block/piston/PistonMovingBlockEntity.java
-index f521073632dd9e00525d1aac5ae82fd8c181e13f..37957d93e1ba1105e18b8fe3cca2a781539c33b9 100644
+index 67b423fd436c51c48313009fdad60bf0deecf037..2ac6c609af8cdca8da66af10c5ed2db6b8e2b5c3 100644
 --- a/src/main/java/net/minecraft/world/level/block/piston/PistonMovingBlockEntity.java
 +++ b/src/main/java/net/minecraft/world/level/block/piston/PistonMovingBlockEntity.java
-@@ -265,7 +265,7 @@ public class PistonMovingBlockEntity extends BlockEntity implements TickableBloc
+@@ -267,7 +267,7 @@ public class PistonMovingBlockEntity extends BlockEntity implements TickableBloc
                  if (this.movedState != null && this.level.getBlockState(this.worldPosition).is(Blocks.MOVING_PISTON)) {
                      BlockState blockState = Block.updateFromNeighbourShapes(this.movedState, this.level, this.worldPosition);
                      if (blockState.isAir()) {

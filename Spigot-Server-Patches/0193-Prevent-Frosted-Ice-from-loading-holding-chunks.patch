@@ -5,10 +5,10 @@ Subject: [PATCH] Prevent Frosted Ice from loading/holding chunks
 
 
 diff --git a/src/main/java/net/minecraft/world/level/block/FrostedIceBlock.java b/src/main/java/net/minecraft/world/level/block/FrostedIceBlock.java
-index 526d622765d1b6d3b8bfbc64c6433c067d45fe06..064f8ccb923c006d25c5e465bb0cf23230ec31ed 100644
+index a7da196dfe5e261c096b7e18a3cf2780a39b219a..2757007438f583abde5299f4bb346854a0537e85 100644
 --- a/src/main/java/net/minecraft/world/level/block/FrostedIceBlock.java
 +++ b/src/main/java/net/minecraft/world/level/block/FrostedIceBlock.java
-@@ -32,7 +32,8 @@ public class FrostedIceBlock extends IceBlock {
+@@ -34,7 +34,8 @@ public class FrostedIceBlock extends IceBlock {
  
              for(Direction direction : Direction.values()) {
                  mutableBlockPos.setWithOffset(blockPos, direction);
@@ -18,7 +18,7 @@ index 526d622765d1b6d3b8bfbc64c6433c067d45fe06..064f8ccb923c006d25c5e465bb0cf232
                  if (blockState2.is(this) && !this.slightlyMelt(blockState2, serverLevel, mutableBlockPos)) {
                      serverLevel.getBlockTicks().scheduleTick(mutableBlockPos, this, Mth.nextInt(random, serverLevel.paperConfig.frostedIceDelayMin, serverLevel.paperConfig.frostedIceDelayMax)); // Paper - use configurable min/max delay
                  }
-@@ -68,7 +69,9 @@ public class FrostedIceBlock extends IceBlock {
+@@ -71,7 +72,9 @@ public class FrostedIceBlock extends IceBlock {
  
          for(Direction direction : Direction.values()) {
              mutableBlockPos.setWithOffset(pos, direction);

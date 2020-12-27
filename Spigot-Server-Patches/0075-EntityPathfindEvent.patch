@@ -6,25 +6,25 @@ Subject: [PATCH] EntityPathfindEvent
 Fires when an Entity decides to start moving to a location.
 
 diff --git a/src/main/java/net/minecraft/world/entity/ai/navigation/FlyingPathNavigation.java b/src/main/java/net/minecraft/world/entity/ai/navigation/FlyingPathNavigation.java
-index 2f56931f3559180cf3e132bd559446d0e641fc2d..0188b090820c83037f2d278b4e1034e61e566437 100644
+index 7d30cbaf1fdc4d58bf4298172089c84474335cb3..e6c18d468cebe7e914dd51a310319b3ee4efffc0 100644
 --- a/src/main/java/net/minecraft/world/entity/ai/navigation/FlyingPathNavigation.java
 +++ b/src/main/java/net/minecraft/world/entity/ai/navigation/FlyingPathNavigation.java
-@@ -31,7 +31,7 @@ public class FlyingPathNavigation extends PathNavigation {
-     }
+@@ -35,7 +35,7 @@ public class FlyingPathNavigation extends PathNavigation {
  
+     @Override
      public Path createPath(Entity entity, int distance) {
 -        return this.createPath(entity.blockPosition(), distance);
 +        return this.createPath(entity.blockPosition(), entity, distance); // Paper - Forward target entity
      }
  
-     public void tick() {
+     @Override
 diff --git a/src/main/java/net/minecraft/world/entity/ai/navigation/GroundPathNavigation.java b/src/main/java/net/minecraft/world/entity/ai/navigation/GroundPathNavigation.java
-index 094e29a50055936335f1be937aed57c17579b79b..9fcc4d85989d5956f5769c81b051c0f702990b31 100644
+index a761e48d35a0386415de5f9085138de57cd91392..3f212bfe10b14cc13981ed4eb665a722524d9092 100644
 --- a/src/main/java/net/minecraft/world/entity/ai/navigation/GroundPathNavigation.java
 +++ b/src/main/java/net/minecraft/world/entity/ai/navigation/GroundPathNavigation.java
-@@ -65,7 +65,7 @@ public class GroundPathNavigation extends PathNavigation {
-     }
+@@ -70,7 +70,7 @@ public class GroundPathNavigation extends PathNavigation {
  
+     @Override
      public Path createPath(Entity entity, int distance) {
 -        return this.createPath(entity.blockPosition(), distance);
 +        return this.createPath(entity.blockPosition(), entity, distance); // Paper - Forward target entity

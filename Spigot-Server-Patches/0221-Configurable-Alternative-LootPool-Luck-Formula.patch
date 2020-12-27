@@ -53,7 +53,7 @@ index 1b845eb88c0cb7ae5797c8c6f6acc2178afb09d1..ca90b768b758b9fc074daf592e2140e6
 +    }
  }
 diff --git a/src/main/java/net/minecraft/world/level/storage/loot/entries/LootPoolSingletonContainer.java b/src/main/java/net/minecraft/world/level/storage/loot/entries/LootPoolSingletonContainer.java
-index 942ee95a5341c7410de4845455148903254cd872..3f89d65c432f193215d15266f2e1581228c97eed 100644
+index 72fd838a34066990a44a96ab9d233d7390b5ecb5..d7fb9d4a6afb2eaa9006b8b312c9e66cd553810c 100644
 --- a/src/main/java/net/minecraft/world/level/storage/loot/entries/LootPoolSingletonContainer.java
 +++ b/src/main/java/net/minecraft/world/level/storage/loot/entries/LootPoolSingletonContainer.java
 @@ -8,7 +8,6 @@ import java.util.List;
@@ -75,11 +75,12 @@ index 942ee95a5341c7410de4845455148903254cd872..3f89d65c432f193215d15266f2e15812
      protected final LootItemFunction[] functions;
      private final BiFunction<ItemStack, LootContext, ItemStack> compositeFunction;
      private final LootPoolEntry entry = new LootPoolSingletonContainer.EntryBase() {
-@@ -105,10 +104,35 @@ public abstract class LootPoolSingletonContainer extends LootPoolEntryContainer
+@@ -111,11 +110,36 @@ public abstract class LootPoolSingletonContainer extends LootPoolEntryContainer
      public abstract class EntryBase implements LootPoolEntry {
          protected EntryBase() {
          }
 -
+         @Override
          public int getWeight(float luck) {
 -            return Math.max(Mth.floor((float)LootPoolSingletonContainer.this.weight + (float)LootPoolSingletonContainer.this.quality * luck), 0);
 +            // Paper start - Offer an alternative loot formula to refactor how luck bonus applies

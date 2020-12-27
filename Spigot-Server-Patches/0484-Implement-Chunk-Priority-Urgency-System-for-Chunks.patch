@@ -1165,7 +1165,7 @@ index 6b946295b3075850de0e4e7d17e20bd6ab7c2836..3b65a195d772bd7c6b63aecea618d2ba
              for (int i = 0; i < this.inventory.getContainerSize(); ++i) {
                  ItemStack itemstack = this.inventory.getItem(i);
 diff --git a/src/main/java/net/minecraft/server/level/Ticket.java b/src/main/java/net/minecraft/server/level/Ticket.java
-index 7726b27fd7c603c69de30662d2b8056d0603d646..d83ef01bc0c953c5853fdd7b02af74efb3f36645 100644
+index e08135507727dee99e5636c900d9c43419ecb91b..9cd7aa8ea8eff8944c0faa8e1c826eed0584a1d6 100644
 --- a/src/main/java/net/minecraft/server/level/Ticket.java
 +++ b/src/main/java/net/minecraft/server/level/Ticket.java
 @@ -7,6 +7,7 @@ public final class Ticket<T> implements Comparable<Ticket<?>> {
@@ -1176,7 +1176,7 @@ index 7726b27fd7c603c69de30662d2b8056d0603d646..d83ef01bc0c953c5853fdd7b02af74ef
  
      protected Ticket(TicketType<T> type, int level, T argument) {
          this.type = type;
-@@ -51,6 +52,7 @@ public final class Ticket<T> implements Comparable<Ticket<?>> {
+@@ -55,6 +56,7 @@ public final class Ticket<T> implements Comparable<Ticket<?>> {
          return this.ticketLevel;
      }
  
@@ -1241,10 +1241,10 @@ index c959f2e167415c1711990c2cb6ea3e3b8f559946..cb1c37447f27dbdab462522b17d48899
              entityplayer1.setPos(entityplayer1.getX(), entityplayer1.getY() + 1.0D, entityplayer1.getZ());
          }
 diff --git a/src/main/java/net/minecraft/world/level/ChunkPos.java b/src/main/java/net/minecraft/world/level/ChunkPos.java
-index 1953a23acddd2fa796b6d207810d84e16aa84f4f..f5db58f629a4a41eb568f9c9a6ee218dc8e56d15 100644
+index 08187a63d1e08201adf99317f7602bd68022de37..2ca1c65072099cc42414771cfc00bbeede85dad3 100644
 --- a/src/main/java/net/minecraft/world/level/ChunkPos.java
 +++ b/src/main/java/net/minecraft/world/level/ChunkPos.java
-@@ -101,6 +101,7 @@ public class ChunkPos {
+@@ -104,6 +104,7 @@ public class ChunkPos {
          return "[" + this.x + ", " + this.z + "]";
      }
  

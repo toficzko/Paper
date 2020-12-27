@@ -79,10 +79,10 @@ index dec06a55a572d1977fe100897019e8262db8ac15..c76f71e24119e74f045387fbeeda1167
  
      public int getShieldBlockingDelay() {
 diff --git a/src/main/java/net/minecraft/world/phys/AABB.java b/src/main/java/net/minecraft/world/phys/AABB.java
-index a301389fb516a6b4f078e8c1571f9bb93b0455bf..1f5ea0802af6821bea5a34a310ba5ecd80409a81 100644
+index b654c8f05bdf94b8fc7bc7c8d9663047c4d7caa0..4f2ed93a77cea57045ef3fc8acaabce0eaf9ac9b 100644
 --- a/src/main/java/net/minecraft/world/phys/AABB.java
 +++ b/src/main/java/net/minecraft/world/phys/AABB.java
-@@ -122,6 +122,7 @@ public class AABB {
+@@ -124,6 +124,7 @@ public class AABB {
          return this.expandTowards(scale.x, scale.y, scale.z);
      }
  
@@ -90,7 +90,7 @@ index a301389fb516a6b4f078e8c1571f9bb93b0455bf..1f5ea0802af6821bea5a34a310ba5ecd
      public AABB expandTowards(double x, double y, double z) {
          double d = this.minX;
          double e = this.minY;
-@@ -150,6 +151,12 @@ public class AABB {
+@@ -152,6 +153,12 @@ public class AABB {
          return new AABB(d, e, f, g, h, i);
      }
  
@@ -103,7 +103,7 @@ index a301389fb516a6b4f078e8c1571f9bb93b0455bf..1f5ea0802af6821bea5a34a310ba5ecd
      public AABB inflate(double x, double y, double z) {
          double d = this.minX - x;
          double e = this.minY - y;
-@@ -236,6 +243,7 @@ public class AABB {
+@@ -238,6 +245,7 @@ public class AABB {
          return this.inflate(-value);
      }
  

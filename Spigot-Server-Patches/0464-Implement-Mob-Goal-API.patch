@@ -827,7 +827,7 @@ index 9df0006c1a283f77c4d01d9fce9062fc1c9bbb1f..b3329c6fcd6758a781a51f5ba8f5052a
 +    }
  }
 diff --git a/src/main/java/net/minecraft/world/entity/ai/goal/Goal.java b/src/main/java/net/minecraft/world/entity/ai/goal/Goal.java
-index e62b26bb876f10b61fd7359082b11606e848af47..76d5405523852f8c1c746f2c7f1b4e49d2e25cf3 100644
+index b8ea50c730d432299ab79c7fabb89e477e3cf822..7170f5aa40be6cfa48bb7789391ae8ee82dad9d4 100644
 --- a/src/main/java/net/minecraft/world/entity/ai/goal/Goal.java
 +++ b/src/main/java/net/minecraft/world/entity/ai/goal/Goal.java
 @@ -7,9 +7,17 @@ public abstract class Goal {
@@ -867,7 +867,7 @@ index e62b26bb876f10b61fd7359082b11606e848af47..76d5405523852f8c1c746f2c7f1b4e49
          // Paper end - remove streams from pathfindergoalselector
      }
  
-@@ -49,6 +61,7 @@ public abstract class Goal {
+@@ -50,6 +62,7 @@ public abstract class Goal {
          MOVE,
          LOOK,
          JUMP,
@@ -877,10 +877,10 @@ index e62b26bb876f10b61fd7359082b11606e848af47..76d5405523852f8c1c746f2c7f1b4e49
      }
  }
 diff --git a/src/main/java/net/minecraft/world/entity/ai/goal/GoalSelector.java b/src/main/java/net/minecraft/world/entity/ai/goal/GoalSelector.java
-index 4451718ca3499bb57992fdf113568f898f04f714..d87f15957ccb283a4865f61a18ea24fe1faad2f9 100644
+index ea3e707a6b289d3024c266937430621984a9c966..7e6b9c2a05328dd10dcabe8e19378d40bd50bfdf 100644
 --- a/src/main/java/net/minecraft/world/entity/ai/goal/GoalSelector.java
 +++ b/src/main/java/net/minecraft/world/entity/ai/goal/GoalSelector.java
-@@ -25,7 +25,7 @@ public class GoalSelector {
+@@ -27,7 +27,7 @@ public class GoalSelector {
          }
      };
      private final Map<Goal.Flag, WrappedGoal> lockedFlags = new EnumMap<>(Goal.Flag.class);
@@ -889,7 +889,7 @@ index 4451718ca3499bb57992fdf113568f898f04f714..d87f15957ccb283a4865f61a18ea24fe
      private final Supplier<ProfilerFiller> profiler;
      private final EnumSet<Goal.Flag> disabledFlags = EnumSet.noneOf(Goal.Flag.class); // Paper unused, but dummy to prevent plugins from crashing as hard. Theyll need to support paper in a special case if this is super important, but really doesn't seem like it would be.
      private final OptimizedSmallEnumSet<Goal.Flag> goalTypes = new OptimizedSmallEnumSet<>(Goal.Flag.class); // Paper - remove streams from pathfindergoalselector
-@@ -154,6 +154,7 @@ public class GoalSelector {
+@@ -156,6 +156,7 @@ public class GoalSelector {
          profilerFiller.pop();
      }
  

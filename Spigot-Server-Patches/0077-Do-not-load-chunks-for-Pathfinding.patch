@@ -31,10 +31,10 @@ index 02767e75e41f30b89173db4efb20b9ea1b2eccd3..28050c733ec517fb667678d0d85f77d2
  
      public PathFinder(NodeEvaluator pathNodeMaker, int range) {
 diff --git a/src/main/java/net/minecraft/world/level/pathfinder/WalkNodeEvaluator.java b/src/main/java/net/minecraft/world/level/pathfinder/WalkNodeEvaluator.java
-index 69943830e735b15891317a9a62b4a97e50d6a3bb..6c379c26bf228e384c5e30ade70f039a7dd6b6bf 100644
+index 30b6ccd59a38269c7fb590a1c72e09757a5abf9e..39108cd576eadbc8faed3c3831625d1f53df96aa 100644
 --- a/src/main/java/net/minecraft/world/level/pathfinder/WalkNodeEvaluator.java
 +++ b/src/main/java/net/minecraft/world/level/pathfinder/WalkNodeEvaluator.java
-@@ -438,6 +438,12 @@ public class WalkNodeEvaluator extends NodeEvaluator {
+@@ -445,6 +445,12 @@ public class WalkNodeEvaluator extends NodeEvaluator {
                      if (l != 0 || n != 0) {
                          mutableBlockPos.set(i + l, j + m, k + n);
                          BlockState blockState = blockGetter.getBlockState(mutableBlockPos);
@@ -47,7 +47,7 @@ index 69943830e735b15891317a9a62b4a97e50d6a3bb..6c379c26bf228e384c5e30ade70f039a
                          if (blockState.is(Blocks.CACTUS)) {
                              return BlockPathTypes.DANGER_CACTUS;
                          }
-@@ -462,7 +468,8 @@ public class WalkNodeEvaluator extends NodeEvaluator {
+@@ -469,7 +475,8 @@ public class WalkNodeEvaluator extends NodeEvaluator {
      }
  
      protected static BlockPathTypes getBlockPathTypeRaw(BlockGetter blockGetter, BlockPos blockPos) {

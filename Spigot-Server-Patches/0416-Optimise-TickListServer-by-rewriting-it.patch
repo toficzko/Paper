@@ -889,10 +889,10 @@ index 0000000000000000000000000000000000000000..118988c39e58f28e8a2851792b9c014f
 +    }
 +}
 diff --git a/src/main/java/net/minecraft/core/BlockPos.java b/src/main/java/net/minecraft/core/BlockPos.java
-index b9822d9822805e93be87cbb03b8077b6cbab6f5b..c72719f593bc4be3fe595c2049395fe5fbd22474 100644
+index 4b212381e1e7d292d3e8b17aaff0c05b72a466af..52cad277440f4534c8018f666c665889d0931b90 100644
 --- a/src/main/java/net/minecraft/core/BlockPos.java
 +++ b/src/main/java/net/minecraft/core/BlockPos.java
-@@ -108,6 +108,7 @@ public class BlockPos extends Vec3i {
+@@ -107,6 +107,7 @@ public class BlockPos extends Vec3i {
          return x == 0 && y == 0 && z == 0 ? this : new BlockPos(this.getX() + x, this.getY() + y, this.getZ() + z);
      }
  
@@ -993,7 +993,7 @@ index c724d7ec66c1d315a3e038dc1c5c446188d255d8..bbe3f99c2d17aa5b67a34b7708756643
              if (this.levelData.getGameRules().getBoolean(GameRules.RULE_DAYLIGHT)) {
                  this.setDayTime(this.levelData.getDayTime() + 1L);
 diff --git a/src/main/java/net/minecraft/world/level/ChunkTickList.java b/src/main/java/net/minecraft/world/level/ChunkTickList.java
-index f5d4a167654fc0319f83a738e1f51530ddf40dea..5f42d6d3e243f5179e6949ec69eb49fce9a93cc5 100644
+index a9d1b9a129b8a5ce2475f703f32b02e266aded78..6932f1ca5c6015be452734aa107bd8b298cc4450 100644
 --- a/src/main/java/net/minecraft/world/level/ChunkTickList.java
 +++ b/src/main/java/net/minecraft/world/level/ChunkTickList.java
 @@ -8,6 +8,7 @@ import net.minecraft.core.BlockPos;
@@ -1013,7 +1013,7 @@ index f5d4a167654fc0319f83a738e1f51530ddf40dea..5f42d6d3e243f5179e6949ec69eb49fc
          }).collect(Collectors.toList()));
      }
  
-@@ -52,6 +53,7 @@ public class ChunkTickList<T> implements TickList<T> {
+@@ -55,6 +56,7 @@ public class ChunkTickList<T> implements TickList<T> {
  
          return listTag;
      }
@@ -1021,7 +1021,7 @@ index f5d4a167654fc0319f83a738e1f51530ddf40dea..5f42d6d3e243f5179e6949ec69eb49fc
  
      public static <T> ChunkTickList<T> create(ListTag ticks, Function<T, ResourceLocation> function, Function<ResourceLocation, T> function2) {
          List<ChunkTickList.ScheduledTick<T>> list = Lists.newArrayList();
-@@ -61,7 +63,14 @@ public class ChunkTickList<T> implements TickList<T> {
+@@ -64,7 +66,14 @@ public class ChunkTickList<T> implements TickList<T> {
              T object = function2.apply(new ResourceLocation(compoundTag.getString("i")));
              if (object != null) {
                  BlockPos blockPos = new BlockPos(compoundTag.getInt("x"), compoundTag.getInt("y"), compoundTag.getInt("z"));
@@ -1157,7 +1157,7 @@ index 0cca55ecb5189dac8f07cc37b7052c5d1a4a7dcb..f283464225f92ad816b72398bbc73e29
      }
  }
 diff --git a/src/main/java/net/minecraft/world/level/TickNextTickData.java b/src/main/java/net/minecraft/world/level/TickNextTickData.java
-index 071a5824f6489dbe79b37be9822182c5373e4189..77497c7163cf236e430afced78a26e406de02a15 100644
+index 7dfb96f8451daf4f456f5b7137b86e9ec3e11c0e..6b8f1e549fbb221c0984f9dd400e8fd81a17051d 100644
 --- a/src/main/java/net/minecraft/world/level/TickNextTickData.java
 +++ b/src/main/java/net/minecraft/world/level/TickNextTickData.java
 @@ -5,11 +5,13 @@ import net.minecraft.core.BlockPos;
@@ -1186,14 +1186,12 @@ index 071a5824f6489dbe79b37be9822182c5373e4189..77497c7163cf236e430afced78a26e40
 +        this.hash = this.computeHash(); // Paper
      }
  
-     public boolean equals(Object o) {
-@@ -32,19 +35,31 @@ public class TickNextTickData<T> {
-         }
-     }
+     @Override
+@@ -35,18 +38,29 @@ public class TickNextTickData<T> {
  
-+    // Paper start - optimize hashcode
-+    @Override
+     @Override
      public int hashCode() {
++        // Paper start - optimize hashcode
 +        return this.hash;
 +    }
 +    public final int computeHash() {
@@ -1225,10 +1223,10 @@ index 071a5824f6489dbe79b37be9822182c5373e4189..77497c7163cf236e430afced78a26e40
      }
 +    // Paper end - let's not use more functional code for no reason.
  
+     @Override
      public String toString() {
-         return this.type + ": " + this.pos + ", " + this.triggerTick + ", " + this.priority + ", " + this.c;
 diff --git a/src/main/java/net/minecraft/world/level/levelgen/structure/BoundingBox.java b/src/main/java/net/minecraft/world/level/levelgen/structure/BoundingBox.java
-index 6d3942fdd681b7c47b5a10b5c02cc94b0b02830c..fa74f797fccb0d8ff2f127f4ace5856aa1851be1 100644
+index 8b16ed21b471b3d849416188feacac3a121aa4ec..ae163f130e5a124bda95cd49a1653879921a2cca 100644
 --- a/src/main/java/net/minecraft/world/level/levelgen/structure/BoundingBox.java
 +++ b/src/main/java/net/minecraft/world/level/levelgen/structure/BoundingBox.java
 @@ -7,12 +7,12 @@ import net.minecraft.core.Vec3i;

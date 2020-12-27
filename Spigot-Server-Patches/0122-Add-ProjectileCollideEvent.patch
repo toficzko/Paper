@@ -57,7 +57,7 @@ index 09b1261ff46b56d7505f2a0f1ad70b1add7be151..d05eb8330b2dc1d60d17fe03ed006320
  
                  // CraftBukkit start - Fire ProjectileHitEvent
 diff --git a/src/main/java/net/minecraft/world/entity/projectile/ThrowableProjectile.java b/src/main/java/net/minecraft/world/entity/projectile/ThrowableProjectile.java
-index 66ef26459b1afb4280b35170dc7dda105431f9a0..64f087d53cd2ab84c57da86dd9f7d1da5dd6ecdb 100644
+index e2c5354c6b40a0956b2734bedef9471c67b05757..c744bd6fc846db62bf1cb1d0f6dec832e0e41825 100644
 --- a/src/main/java/net/minecraft/world/entity/projectile/ThrowableProjectile.java
 +++ b/src/main/java/net/minecraft/world/entity/projectile/ThrowableProjectile.java
 @@ -12,6 +12,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
@@ -68,7 +68,7 @@ index 66ef26459b1afb4280b35170dc7dda105431f9a0..64f087d53cd2ab84c57da86dd9f7d1da
  import net.minecraft.world.phys.HitResult;
  import net.minecraft.world.phys.Vec3;
  
-@@ -51,7 +52,17 @@ public abstract class ThrowableProjectile extends Projectile {
+@@ -52,7 +53,17 @@ public abstract class ThrowableProjectile extends Projectile {
          }
  
          if (hitResult.getType() != HitResult.Type.MISS && !bl) {

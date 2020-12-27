@@ -5,10 +5,10 @@ Subject: [PATCH] MC Dev fixes
 
 
 diff --git a/src/main/java/net/minecraft/Util.java b/src/main/java/net/minecraft/Util.java
-index 65aea563eb423acafdda06361ce431639a1be9e6..09d2da539b07c9b36af05d12845e91e3c80d83af 100644
+index 81a5f08a0a5170e5b204287a6728e12ccdd1dd2f..77073df9ee2755b99dfc50eeba46219ea7d9fa4c 100644
 --- a/src/main/java/net/minecraft/Util.java
 +++ b/src/main/java/net/minecraft/Util.java
-@@ -262,7 +262,7 @@ public class Util {
+@@ -263,7 +263,7 @@ public class Util {
      }
  
      public static <K> Strategy<K> identityStrategy() {
@@ -18,10 +18,10 @@ index 65aea563eb423acafdda06361ce431639a1be9e6..09d2da539b07c9b36af05d12845e91e3
  
      public static <V> CompletableFuture<List<V>> sequence(List<? extends CompletableFuture<? extends V>> futures) {
 diff --git a/src/main/java/net/minecraft/server/level/Ticket.java b/src/main/java/net/minecraft/server/level/Ticket.java
-index 66d0f92d2492dd25cc5ed13d98abda6ff449598b..8a41ff68ceee77ad9a24ab37e738a3a835bad39d 100644
+index a7f69e1c403151e6d2c021c0d1a979e312b7b3f1..057e59de135fca979e770fe4aa458d03dc13edc0 100644
 --- a/src/main/java/net/minecraft/server/level/Ticket.java
 +++ b/src/main/java/net/minecraft/server/level/Ticket.java
-@@ -20,7 +20,7 @@ public final class Ticket<T> implements Comparable<Ticket<?>> {
+@@ -21,7 +21,7 @@ public final class Ticket<T> implements Comparable<Ticket<?>> {
              return i;
          } else {
              int j = Integer.compare(System.identityHashCode(this.type), System.identityHashCode(ticket.type));
@@ -31,7 +31,7 @@ index 66d0f92d2492dd25cc5ed13d98abda6ff449598b..8a41ff68ceee77ad9a24ab37e738a3a8
      }
  
 diff --git a/src/main/java/net/minecraft/util/SortedArraySet.java b/src/main/java/net/minecraft/util/SortedArraySet.java
-index 0965063b049e14ed780747a562229b3a1ee307b0..8f7739ee06f5ca8e4804f2e66ee91ca2b50c6153 100644
+index d5fd509ed6aa509103a40bc37dd9241666edc1c3..346e5cb0aee92f3310a87ab83844347eabed0b5b 100644
 --- a/src/main/java/net/minecraft/util/SortedArraySet.java
 +++ b/src/main/java/net/minecraft/util/SortedArraySet.java
 @@ -22,7 +22,7 @@ public class SortedArraySet<T> extends AbstractSet<T> {
@@ -59,10 +59,10 @@ index 9733a2aa80c79cf11d2ef7c8c296b50b842b6769..4f04cf38b0c507decaabc1334bbd4d89
      }
  
 diff --git a/src/main/java/net/minecraft/world/level/TickNextTickData.java b/src/main/java/net/minecraft/world/level/TickNextTickData.java
-index 77f102b67e066c32e2c212626bcd46cc498bfd86..9cd82e1641947aa0a5efec1e8660e740b3f12fd5 100644
+index c6daebb8ec7f503301f6423789a4a31e5f947c1c..8c7844326146f3a973a740d6224c4e8eeb748ce4 100644
 --- a/src/main/java/net/minecraft/world/level/TickNextTickData.java
 +++ b/src/main/java/net/minecraft/world/level/TickNextTickData.java
-@@ -37,7 +37,7 @@ public class TickNextTickData<T> {
+@@ -39,7 +39,7 @@ public class TickNextTickData<T> {
      }
  
      public static <T> Comparator<TickNextTickData<T>> createTimeComparator() {
@@ -72,7 +72,7 @@ index 77f102b67e066c32e2c212626bcd46cc498bfd86..9cd82e1641947aa0a5efec1e8660e740
          }).thenComparing((tickNextTickData) -> {
              return tickNextTickData.priority;
 diff --git a/src/main/java/net/minecraft/world/level/storage/loot/entries/LootPoolEntryContainer.java b/src/main/java/net/minecraft/world/level/storage/loot/entries/LootPoolEntryContainer.java
-index 935b95bb9891f52c1b32299ed937ded17acef3e0..a1f490f700b072a424862ee5863209da54c59cc9 100644
+index 746bdd1cca7f3b257ebef10d2f0a17a1e146ed93..17717a10985a54b152959e0f2896078d3c11f4e5 100644
 --- a/src/main/java/net/minecraft/world/level/storage/loot/entries/LootPoolEntryContainer.java
 +++ b/src/main/java/net/minecraft/world/level/storage/loot/entries/LootPoolEntryContainer.java
 @@ -42,7 +42,7 @@ public abstract class LootPoolEntryContainer implements ComposableEntryContainer

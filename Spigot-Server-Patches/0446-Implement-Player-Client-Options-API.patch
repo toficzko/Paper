@@ -85,10 +85,10 @@ index 0000000000000000000000000000000000000000..b6f4400df3d8ec7e06a996de54f8cabb
 +    }
 +}
 diff --git a/src/main/java/net/minecraft/network/protocol/game/ServerboundClientInformationPacket.java b/src/main/java/net/minecraft/network/protocol/game/ServerboundClientInformationPacket.java
-index 9ad7022fa64c69612e75545faca86ccf12566b27..3db0adac3fedb3b7f39afc286c019adbe4794fc1 100644
+index 06b761ca528d8a26c05c1a13233f00a868e11771..30b1d0d7b04623c6ab47f7c9862ea3d9ee9ddf61 100644
 --- a/src/main/java/net/minecraft/network/protocol/game/ServerboundClientInformationPacket.java
 +++ b/src/main/java/net/minecraft/network/protocol/game/ServerboundClientInformationPacket.java
-@@ -40,10 +40,12 @@ public class ServerboundClientInformationPacket implements Packet<ServerGamePack
+@@ -43,10 +43,12 @@ public class ServerboundClientInformationPacket implements Packet<ServerGamePack
          return this.chatVisibility;
      }
  

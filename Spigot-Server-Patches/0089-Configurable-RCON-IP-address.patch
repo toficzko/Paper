@@ -45,10 +45,10 @@ index 4a7b631e770af2d0a46245552e0161ed847ae012..206b4867d2c452ca0a36e6132beda6ef
      }
  
 diff --git a/src/main/java/net/minecraft/server/rcon/thread/RconThread.java b/src/main/java/net/minecraft/server/rcon/thread/RconThread.java
-index 20579160e1f04333c6b2a5dabb61c57fad1bad66..1d15e423c0077d8d6d5398da74ee12bc02e9cbfe 100644
+index 50eed9f505110a85daad53f75b49d27f1c8896d6..35e96cc47b241553e4eab6bf2c7177ba72dbca85 100644
 --- a/src/main/java/net/minecraft/server/rcon/thread/RconThread.java
 +++ b/src/main/java/net/minecraft/server/rcon/thread/RconThread.java
-@@ -59,7 +59,7 @@ public class RconThread extends GenericThread {
+@@ -60,7 +60,7 @@ public class RconThread extends GenericThread {
      @Nullable
      public static RconThread create(ServerInterface server) {
          DedicatedServerProperties dedicatedServerProperties = server.getProperties();

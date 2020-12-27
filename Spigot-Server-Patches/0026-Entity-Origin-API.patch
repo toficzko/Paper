@@ -5,10 +5,10 @@ Subject: [PATCH] Entity Origin API
 
 
 diff --git a/src/main/java/net/minecraft/nbt/ListTag.java b/src/main/java/net/minecraft/nbt/ListTag.java
-index c1ae8274f3dfa12edee6299b1ddaf2c1b6beca23..a6ddfaee774d402b85a197bae423bce46c4f836d 100644
+index 8f7a9b6a6d58c75fe7327e7277e09c9b5a931280..2503eadd764ce613998c168e16af8c4b38518644 100644
 --- a/src/main/java/net/minecraft/nbt/ListTag.java
 +++ b/src/main/java/net/minecraft/nbt/ListTag.java
-@@ -171,6 +171,7 @@ public class ListTag extends CollectionTag<Tag> {
+@@ -180,6 +180,7 @@ public class ListTag extends CollectionTag<Tag> {
          return new int[0];
      }
  

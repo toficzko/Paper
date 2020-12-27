@@ -17,14 +17,15 @@ index aecfa3e28fb0052c2d09c4ea030f7bdcadb38515..3200fad97eeeab611c04775980f7eccc
              return supplier != null ? supplier.get() : null;
          }
 diff --git a/src/main/java/net/minecraft/network/Varint21FrameDecoder.java b/src/main/java/net/minecraft/network/Varint21FrameDecoder.java
-index 84679c1defcec1b172f49b6a5c63d8861c8989bd..592171016d9836d13ac2a75ebcb085e81c65802f 100644
+index 17a85f14e92ef17c9a60a64e339e3ae4978a117a..c5a6ba4064f26e01796b096cc0621af403584aee 100644
 --- a/src/main/java/net/minecraft/network/Varint21FrameDecoder.java
 +++ b/src/main/java/net/minecraft/network/Varint21FrameDecoder.java
-@@ -8,9 +8,19 @@ import io.netty.handler.codec.CorruptedFrameException;
+@@ -8,10 +8,20 @@ import io.netty.handler.codec.CorruptedFrameException;
  import java.util.List;
  
  public class Varint21FrameDecoder extends ByteToMessageDecoder {
 +    private final byte[] lenBuf = new byte[3]; // Paper
+     @Override
      protected void decode(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf, List<Object> list) throws Exception {
 +        // Paper start - if channel is not active just discard the packet
 +        if (!channelHandlerContext.channel().isActive()) {
