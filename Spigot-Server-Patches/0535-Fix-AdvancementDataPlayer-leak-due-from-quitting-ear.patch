@@ -9,7 +9,7 @@ itself, so the criterion object stores no references - and thus
 needs no cleanup.
 
 diff --git a/src/main/java/net/minecraft/advancements/critereon/SimpleCriterionTrigger.java b/src/main/java/net/minecraft/advancements/critereon/SimpleCriterionTrigger.java
-index 5a0063bfa13f1782b833f253dfd4475f606409e1..1d031f49542377d90859fc40fbb3ebfcbf003eda 100644
+index 9b5cc58f4ad8cdef8aa43181b8962940699f1e33..63756fd779a5243b386bc4c711fbda82db2f90ea 100644
 --- a/src/main/java/net/minecraft/advancements/critereon/SimpleCriterionTrigger.java
 +++ b/src/main/java/net/minecraft/advancements/critereon/SimpleCriterionTrigger.java
 @@ -14,22 +14,22 @@ import net.minecraft.server.level.ServerPlayer;
@@ -20,9 +20,9 @@ index 5a0063bfa13f1782b833f253dfd4475f606409e1..1d031f49542377d90859fc40fbb3ebfc
 +    //private final Map<PlayerAdvancements, Set<CriterionTrigger.Listener<T>>> players = Maps.newIdentityHashMap(); // Paper - moved into AdvancementDataPlayer to fix memory leak
  
      @Override
-     public final void addPlayerListener(PlayerAdvancements playerAdvancements, CriterionTrigger.Listener<T> listener) {
--        this.players.computeIfAbsent(playerAdvancements, (playerAdvancementsx) -> {
-+        playerAdvancements.criterionData.computeIfAbsent(this, (playerAdvancementsx) -> {
+     public final void addPlayerListener(PlayerAdvancements manager, CriterionTrigger.Listener<T> listener) {
+-        this.players.computeIfAbsent(manager, (playerAdvancements) -> {
++        manager.criterionData.computeIfAbsent(this, (playerAdvancements) -> {
              return Sets.newHashSet();
          }).add(listener);
      }

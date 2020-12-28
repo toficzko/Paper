@@ -79,3 +79,7 @@ c	net/minecraft/server/LootEntryAbstract$Serializer	net/minecraft/world/level/st
 		p	1		entry
 		p	2		context
 	m	(Lcom/google/gson/JsonObject;Lnet/minecraft/server/LootEntryAbstract;Lcom/google/gson/JsonSerializationContext;)V	serializeType	serializeCustom
+
+# TODO figure out what's going on here
+c	net/minecraft/server/EntityInsentient	net/minecraft/world/entity/Mob
+	m	(Lnet/minecraft/server/EntityHuman;Lnet/minecraft/server/EntityInsentient;)V	a	onOffspringSpawnedFromEgg

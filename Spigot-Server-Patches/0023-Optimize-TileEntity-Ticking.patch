@@ -153,7 +153,7 @@ index ac4635b76a9d09eba142af464d388373d33f4e02..260cf6ddc77638bbfda3438ed4066be9
                  int newPower = Math.max(0, Math.min(15, this.openCount));
  
 diff --git a/src/main/java/net/minecraft/world/level/block/entity/EnderChestBlockEntity.java b/src/main/java/net/minecraft/world/level/block/entity/EnderChestBlockEntity.java
-index 73f613bad26c61e1323bce0453f4353024f44891..3c61d21cb644fd92d5c993bbd913b23465277f2f 100644
+index 85f7c82fbce6209ef5ef151b096e371c6a4672a1..59f270f28cc08142e220ead8010a30a5e027a3f4 100644
 --- a/src/main/java/net/minecraft/world/level/block/entity/EnderChestBlockEntity.java
 +++ b/src/main/java/net/minecraft/world/level/block/entity/EnderChestBlockEntity.java
 @@ -1,11 +1,12 @@
@@ -170,7 +170,15 @@ index 73f613bad26c61e1323bce0453f4353024f44891..3c61d21cb644fd92d5c993bbd913b234
      public float openness;
      public float oOpenness;
      public int openCount;
-@@ -22,34 +23,62 @@ public class EnderChestBlockEntity extends BlockEntity implements TickableBlockE
+@@ -15,41 +16,69 @@ public class EnderChestBlockEntity extends BlockEntity implements TickableBlockE
+         super(BlockEntityType.ENDER_CHEST);
+     }
+ 
+-    @Override
++    // @Override // Paper - Remove ITickable
+     public void tick() {
+         if (++this.tickInterval % 20 * 4 == 0) {
+             this.level.blockEvent(this.worldPosition, Blocks.ENDER_CHEST, 1, this.openCount);
          }
  
          this.oOpenness = this.openness;
@@ -199,7 +207,11 @@ index 73f613bad26c61e1323bce0453f4353024f44891..3c61d21cb644fd92d5c993bbd913b234
          }
 +        // Paper start
 +    }
-+
+ 
+-        if (this.openCount == 0 && this.openness > 0.0F || this.openCount > 0 && this.openness < 1.0F) {
+-            float g = this.openness;
+-            if (this.openCount > 0) {
+-                this.openness += 0.1F;
 +    private void doCloseLogic() {
 +        int i = this.worldPosition.getX();
 +        int j = this.worldPosition.getY();
@@ -209,11 +221,7 @@ index 73f613bad26c61e1323bce0453f4353024f44891..3c61d21cb644fd92d5c993bbd913b234
 +        if (this.openCount == 0) { /* && this.a > 0.0F || this.c > 0 && this.a < 1.0F) {
 +        // Paper end
 +            float f1 = this.a;
- 
--        if (this.openCount == 0 && this.openness > 0.0F || this.openCount > 0 && this.openness < 1.0F) {
--            float g = this.openness;
--            if (this.openCount > 0) {
--                this.openness += 0.1F;
++
 +            if (this.c > 0) {
 +                this.a += 0.1F;
              } else {
