@@ -39,9 +39,13 @@ subprojects {
     }
 }
 
+repositories {
+    maven("https://repo.demonwav.com/snapshots/")
+}
+
 dependencies {
     paramMappings("net.fabricmc:yarn:1.16.4+build.7:mergedv2")
-    remapper("net.fabricmc:tiny-remapper:0.3.1.72:fat@jar")
+    remapper("net.fabricmc:tiny-remapper:0.3.1-PW-SNAPSHOT:fat@jar")
     decompiler("net.minecraftforge:forgeflower:1.5.478.18@jar")
 }
 
