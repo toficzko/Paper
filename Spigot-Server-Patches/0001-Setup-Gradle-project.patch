@@ -408,7 +408,7 @@ index 1fb7e40fbc36cf9e2b457e9bbd5a2d9b42e4c1f6..00000000000000000000000000000000
 -done
 diff --git a/build.gradle.kts b/build.gradle.kts
 new file mode 100644
-index 0000000000000000000000000000000000000000..1e7f4e33088aa8f98e992bf45861fdbe9840fd48
+index 0000000000000000000000000000000000000000..be967e673436e2ae22ae3585a7b85f5eb36f6a99
 --- /dev/null
 +++ b/build.gradle.kts
 @@ -0,0 +1,64 @@
@@ -418,7 +418,7 @@ index 0000000000000000000000000000000000000000..1e7f4e33088aa8f98e992bf45861fdbe
 +
 +plugins {
 +    java
-+    id("com.github.johnrengelman.shadow") version "6.0.0"
++    id("com.github.johnrengelman.shadow")
 +}
 +
 +val mcVersion = providers.gradleProperty("mcVersion").forUseAtConfigurationTime().get()
