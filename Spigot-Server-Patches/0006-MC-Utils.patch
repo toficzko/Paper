@@ -2273,7 +2273,7 @@ index 77073df9ee2755b99dfc50eeba46219ea7d9fa4c..f64ac766f5ad588e38db2c7b50390476
  
      public static long getEpochMillis() {
 diff --git a/src/main/java/net/minecraft/core/BlockPos.java b/src/main/java/net/minecraft/core/BlockPos.java
-index af34cd0e5c08e925def021ed9c79e9594c4504af..584dc7395210d7ddb328f9f9db2f957d783e2367 100644
+index 40441ac868a96c305d340eeacd46882ba71c69a4..0fad15716ea1ebc35f1b5b675f6fc90edd3a6cb0 100644
 --- a/src/main/java/net/minecraft/core/BlockPos.java
 +++ b/src/main/java/net/minecraft/core/BlockPos.java
 @@ -102,6 +102,7 @@ public class BlockPos extends Vec3i {
@@ -3722,17 +3722,16 @@ index 616c86bbbd162a2ccc7632d8dd6a526b115d63e2..3eface0923e141d2ed5af3e5a48fc919
          super(type, world);
      }
 diff --git a/src/main/java/net/minecraft/world/entity/monster/Monster.java b/src/main/java/net/minecraft/world/entity/monster/Monster.java
-index 8ddb603f7911f1a7c22d250bba425401fb2922aa..cdd503e357400661a2176d37d9b5e5e506dcb143 100644
+index d9a771dde1286664b4ba65fbeb8d15fd51357c10..b2914c28671c9ba34a6144d71839f981592b9a53 100644
 --- a/src/main/java/net/minecraft/world/entity/monster/Monster.java
 +++ b/src/main/java/net/minecraft/world/entity/monster/Monster.java
-@@ -25,6 +25,8 @@ import net.minecraft.world.level.LightLayer;
+@@ -25,6 +25,7 @@ import net.minecraft.world.level.LightLayer;
  import net.minecraft.world.level.ServerLevelAccessor;
  
  public abstract class Monster extends PathfinderMob implements Enemy {
-+
 +    public org.bukkit.craftbukkit.entity.CraftMonster getBukkitMonster() { return (org.bukkit.craftbukkit.entity.CraftMonster) super.getBukkitEntity(); } // Paper
-     protected Monster(EntityType<? extends Monster> entityType, Level level) {
-         super(entityType, level);
+     protected Monster(EntityType<? extends Monster> type, Level world) {
+         super(type, world);
          this.xpReward = 5;
 diff --git a/src/main/java/net/minecraft/world/entity/player/Inventory.java b/src/main/java/net/minecraft/world/entity/player/Inventory.java
 index e9932b8d616e791336f730df44fe2dead91191d5..21d6eed2d7b1a03d359aba4584a3b509ca603ce4 100644
@@ -4376,7 +4375,7 @@ index 02f30df95ae64584f39c2c08c922e350777bc887..c80d2b14679bce1703a66847f070b84a
      T valueFor(int index);
  
 diff --git a/src/main/java/net/minecraft/world/level/chunk/PalettedContainer.java b/src/main/java/net/minecraft/world/level/chunk/PalettedContainer.java
-index 2f395f116b26f33c6b3649faceb97a11c12cfe65..1c6083f7d2794203ecb1c886937eb158622ea6e8 100644
+index 57035b2b3b533148bec86a5517c63aec0915cbfb..55c8494dfbbaf9e661b69ebae2c76ee985cdc9c9 100644
 --- a/src/main/java/net/minecraft/world/level/chunk/PalettedContainer.java
 +++ b/src/main/java/net/minecraft/world/level/chunk/PalettedContainer.java
 @@ -19,7 +19,7 @@ import net.minecraft.util.BitStorage;

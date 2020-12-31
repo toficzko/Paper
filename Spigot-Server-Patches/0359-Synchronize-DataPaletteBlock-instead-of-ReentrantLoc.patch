@@ -13,7 +13,7 @@ contention situations.
 And this is extremely a low contention situation.
 
 diff --git a/src/main/java/net/minecraft/world/level/chunk/PalettedContainer.java b/src/main/java/net/minecraft/world/level/chunk/PalettedContainer.java
-index 8564e9621a027130e7275176bc3c47d69195bfad..669b52932ebe9a6f95f874c3e346ebd67b5f9e3e 100644
+index 52ad14313f127d47edf75b61edbe852c119cf9b3..9cdf3ca3e95f4c363408d707e1eef17010d1e2c9 100644
 --- a/src/main/java/net/minecraft/world/level/chunk/PalettedContainer.java
 +++ b/src/main/java/net/minecraft/world/level/chunk/PalettedContainer.java
 @@ -8,9 +8,6 @@ import java.util.concurrent.locks.ReentrantLock;
@@ -57,8 +57,8 @@ index 8564e9621a027130e7275176bc3c47d69195bfad..669b52932ebe9a6f95f874c3e346ebd6
      }
  
      @Override
--    public int onResize(int i, T object) {
-+    public synchronized int onResize(int i, T object) {
+-    public int onResize(int newSize, T objectAdded) {
++    public synchronized int onResize(int newSize, T objectAdded) {
          this.acquire();
          BitStorage bitStorage = this.storage;
          Palette<T> palette = this.palette;

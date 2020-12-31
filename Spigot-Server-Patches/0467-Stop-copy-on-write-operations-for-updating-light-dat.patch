@@ -6,7 +6,7 @@ Subject: [PATCH] Stop copy-on-write operations for updating light data
 Causes huge memory allocations + gc issues
 
 diff --git a/src/main/java/net/minecraft/world/level/lighting/BlockLightSectionStorage.java b/src/main/java/net/minecraft/world/level/lighting/BlockLightSectionStorage.java
-index c17f7700a52d6707d2043867f1281344ec57af33..34135771775b5dc91e9ad65e94fd14d57aab823e 100644
+index 248242c091cbdf8737841590d4ff9f059437dcd6..e4f2e125a6ea05d9faaceb1e0dc6fecc2cef4d04 100644
 --- a/src/main/java/net/minecraft/world/level/lighting/BlockLightSectionStorage.java
 +++ b/src/main/java/net/minecraft/world/level/lighting/BlockLightSectionStorage.java
 @@ -9,7 +9,7 @@ import net.minecraft.world.level.chunk.LightChunkGetter;
@@ -22,10 +22,10 @@ index c17f7700a52d6707d2043867f1281344ec57af33..34135771775b5dc91e9ad65e94fd14d5
      }
  
      public static final class BlockDataLayerStorageMap extends DataLayerStorageMap<BlockLightSectionStorage.BlockDataLayerStorageMap> {
--        public BlockDataLayerStorageMap(Long2ObjectOpenHashMap<DataLayer> long2ObjectOpenHashMap) {
--            super(long2ObjectOpenHashMap);
-+        public BlockDataLayerStorageMap(com.destroystokyo.paper.util.map.QueuedChangesMapLong2Object<DataLayer> long2objectopenhashmap, boolean isVisible) { // Paper - avoid copying light data
-+            super(long2objectopenhashmap, isVisible); // Paper - avoid copying light data
+-        public BlockDataLayerStorageMap(Long2ObjectOpenHashMap<DataLayer> arrays) {
+-            super(arrays);
++        public BlockDataLayerStorageMap(com.destroystokyo.paper.util.map.QueuedChangesMapLong2Object<DataLayer> arrays, boolean isVisible) { // Paper - avoid copying light data
++            super(arrays, isVisible); // Paper - avoid copying light data
          }
  
          @Override

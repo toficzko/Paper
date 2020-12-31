@@ -5,7 +5,7 @@ Subject: [PATCH] Here's Johnny!
 
 
 diff --git a/src/main/java/net/minecraft/world/entity/monster/Vindicator.java b/src/main/java/net/minecraft/world/entity/monster/Vindicator.java
-index c728f023d3f496959d9af065c06efa9ace442071..1d0a4b94c340ac4a04d12fbc09d3bc8f295e0d78 100644
+index cf0fce118f912962db798e6a64e70ec7ad6062f1..46c96a9af661ebbde3be9a50f7ec7ddfb7eaf036 100644
 --- a/src/main/java/net/minecraft/world/entity/monster/Vindicator.java
 +++ b/src/main/java/net/minecraft/world/entity/monster/Vindicator.java
 @@ -50,7 +50,7 @@ public class Vindicator extends AbstractIllager {
@@ -15,8 +15,8 @@ index c728f023d3f496959d9af065c06efa9ace442071..1d0a4b94c340ac4a04d12fbc09d3bc8f
 -    private boolean isJohnny;
 +    private boolean isJohnny; public boolean isJohnny() { return isJohnny; } public void setJohnny(boolean johnny) { isJohnny = johnny; } // Paper - OBFHELPER
  
-     public Vindicator(EntityType<? extends Vindicator> entityType, Level level) {
-         super(entityType, level);
+     public Vindicator(EntityType<? extends Vindicator> type, Level world) {
+         super(type, world);
 diff --git a/src/main/java/org/bukkit/craftbukkit/entity/CraftVindicator.java b/src/main/java/org/bukkit/craftbukkit/entity/CraftVindicator.java
 index 3c5994e9862e5caa257ee6a21f8fba2df39c98c5..6c1569340317f7bed39eaf6e858d602234993eb3 100644
 --- a/src/main/java/org/bukkit/craftbukkit/entity/CraftVindicator.java

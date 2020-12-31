@@ -6,7 +6,7 @@ Subject: [PATCH] Optimise getType calls
 Remove the map lookup for converting from Block->Bukkit Material
 
 diff --git a/src/main/java/net/minecraft/world/level/block/state/BlockState.java b/src/main/java/net/minecraft/world/level/block/state/BlockState.java
-index ecd5d1982d810b12938738a0b91d37ad63c00322..5a721262f088070f47c2b8d9af82d72c8bf5993f 100644
+index 08d375dfac45399b1b16b8a68453fcbf23ae1784..2f2603ae86521b564384b97991df3cf806a2ca6c 100644
 --- a/src/main/java/net/minecraft/world/level/block/state/BlockState.java
 +++ b/src/main/java/net/minecraft/world/level/block/state/BlockState.java
 @@ -10,6 +10,18 @@ import net.minecraft.world.level.block.state.properties.Property;
@@ -25,8 +25,8 @@ index ecd5d1982d810b12938738a0b91d37ad63c00322..5a721262f088070f47c2b8d9af82d72c
 +    }
 +    // Paper end - optimise getType calls
 +
-     public BlockState(Block block, ImmutableMap<Property<?>, Comparable<?>> immutableMap, MapCodec<BlockState> mapCodec) {
-         super(block, immutableMap, mapCodec);
+     public BlockState(Block block, ImmutableMap<Property<?>, Comparable<?>> propertyMap, MapCodec<BlockState> mapCodec) {
+         super(block, propertyMap, mapCodec);
      }
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftChunkSnapshot.java b/src/main/java/org/bukkit/craftbukkit/CraftChunkSnapshot.java
 index fe00c8fdacc28a68c732aac0b887ea107d87e979..227974a85a81c623311301e28e83e85424b05f3d 100644

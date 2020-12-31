@@ -588,7 +588,7 @@ index 5f72572dae73992f48d3ea5012d383ad04079263..9798bd38f7ce6c2399519d6ad57b7e93
  
              if (player != null) {
 diff --git a/src/main/java/net/minecraft/world/level/block/entity/RandomizableContainerBlockEntity.java b/src/main/java/net/minecraft/world/level/block/entity/RandomizableContainerBlockEntity.java
-index 409b5da609e655630666683847e60776b9a9f4ad..fe641e4a7e3a0455f89da75021b7fe895d3e12a7 100644
+index 2ab0b9c404910d7798e885f52708c4065db4f65a..e3ca963e2e3fcbe7888c88156f6c5aea41025e44 100644
 --- a/src/main/java/net/minecraft/world/level/block/entity/RandomizableContainerBlockEntity.java
 +++ b/src/main/java/net/minecraft/world/level/block/entity/RandomizableContainerBlockEntity.java
 @@ -25,6 +25,7 @@ public abstract class RandomizableContainerBlockEntity extends BaseContainerBloc
@@ -597,8 +597,8 @@ index 409b5da609e655630666683847e60776b9a9f4ad..fe641e4a7e3a0455f89da75021b7fe89
      public long lootTableSeed;
 +    public final com.destroystokyo.paper.loottable.PaperLootableInventoryData lootableData = new com.destroystokyo.paper.loottable.PaperLootableInventoryData(new com.destroystokyo.paper.loottable.PaperTileEntityLootableInventory(this)); // Paper
  
-     protected RandomizableContainerBlockEntity(BlockEntityType<?> blockEntityType) {
-         super(blockEntityType);
+     protected RandomizableContainerBlockEntity(BlockEntityType<?> type) {
+         super(type);
 @@ -41,14 +42,16 @@ public abstract class RandomizableContainerBlockEntity extends BaseContainerBloc
      protected boolean tryLoadLootTable(CompoundTag compoundTag) {
          if (compoundTag.contains("LootTable", 8)) {

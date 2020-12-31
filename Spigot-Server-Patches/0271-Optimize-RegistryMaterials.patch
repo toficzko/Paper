@@ -8,7 +8,7 @@ Use larger initial sizes to increase bucket capacity on the BiMap
 BiMap.get was seen to be using a good bit of CPU time.
 
 diff --git a/src/main/java/net/minecraft/core/MappedRegistry.java b/src/main/java/net/minecraft/core/MappedRegistry.java
-index aa9c039e28381ccada781b5f5b6f7cab1d515d3f..903442deb62ba454258446196f5f6ddbac9e0374 100644
+index 1826cd59c7906ca85ef2f7e94c5682c5d7fa7af1..5399c8c0863b1974a90d233b92c15ca2a1d9a5f5 100644
 --- a/src/main/java/net/minecraft/core/MappedRegistry.java
 +++ b/src/main/java/net/minecraft/core/MappedRegistry.java
 @@ -30,6 +30,7 @@ import net.minecraft.Util;
@@ -29,8 +29,8 @@ index aa9c039e28381ccada781b5f5b6f7cab1d515d3f..903442deb62ba454258446196f5f6ddb
      private final BiMap<ResourceKey<T>, T> keyStorage;
      private final Map<T, Lifecycle> lifecycles;
 @@ -48,9 +49,9 @@ public class MappedRegistry<T> extends WritableRegistry<T> {
-     public MappedRegistry(ResourceKey<? extends Registry<T>> resourceKey, Lifecycle lifecycle) {
-         super(resourceKey, lifecycle);
+     public MappedRegistry(ResourceKey<? extends Registry<T>> key, Lifecycle lifecycle) {
+         super(key, lifecycle);
          this.toId.defaultReturnValue(-1);
 -        this.storage = HashBiMap.create();
 -        this.keyStorage = HashBiMap.create();
