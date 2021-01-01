@@ -408,10 +408,10 @@ index 1fb7e40fbc36cf9e2b457e9bbd5a2d9b42e4c1f6..00000000000000000000000000000000
 -done
 diff --git a/build.gradle.kts b/build.gradle.kts
 new file mode 100644
-index 0000000000000000000000000000000000000000..be967e673436e2ae22ae3585a7b85f5eb36f6a99
+index 0000000000000000000000000000000000000000..813d7dca85093e70e0f1a0f50d05b1a10fa98f86
 --- /dev/null
 +++ b/build.gradle.kts
-@@ -0,0 +1,64 @@
+@@ -0,0 +1,63 @@
 +import com.github.jengelman.gradle.plugins.shadow.transformers.AppendingTransformer
 +import java.time.LocalDateTime
 +import java.time.format.DateTimeFormatter
@@ -421,7 +421,7 @@ index 0000000000000000000000000000000000000000..be967e673436e2ae22ae3585a7b85f5e
 +    id("com.github.johnrengelman.shadow")
 +}
 +
-+val mcVersion = providers.gradleProperty("mcVersion").forUseAtConfigurationTime().get()
++val packageVersion = providers.gradleProperty("packageVersion").forUseAtConfigurationTime().get()
 +
 +repositories {
 +    maven("https://libraries.minecraft.net/")
@@ -464,10 +464,9 @@ index 0000000000000000000000000000000000000000..be967e673436e2ae22ae3585a7b85f5e
 +    ).forEach {  pack ->
 +        relocate(pack, "org.bukkit.craftbukkit.libs.$pack")
 +    }
-+    relocate("org.bukkit.craftbukkit", "org.bukkit.craftbukkit.v$mcVersion") {
++    relocate("org.bukkit.craftbukkit", "org.bukkit.craftbukkit.v$packageVersion") {
 +        exclude("org.bukkit.craftbukkit.Main*")
 +    }
-+//    relocate("net.minecraft.server", "net.minecraft.server.v$mcVersion")
 +    transform(AppendingTransformer::class.java) {
 +        resource = "META-INF/services/java.sql.Driver"
 +    }

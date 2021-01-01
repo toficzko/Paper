@@ -5,9 +5,10 @@ plugins {
 }
 
 group = "com.destroystokyo.paper"
-version = "1.16.4-R0.1-SNAPSHOT"
+version = providers.gradleProperty("projectVersion")
 
 val mcVersion = providers.gradleProperty("mcVersion")
+val packageVersion = providers.gradleProperty("packageVersion")
 
 allprojects {
     apply(plugin = "java")
@@ -48,6 +49,7 @@ dependencies {
 
 paperweight {
     minecraftVersion.set(mcVersion)
+    versionPackage.set(packageVersion)
     serverProject.set(project(":Paper-Server"))
 
     paper {
