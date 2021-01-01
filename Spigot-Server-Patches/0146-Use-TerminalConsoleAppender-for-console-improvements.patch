@@ -19,7 +19,7 @@ Other changes:
     configuration
 
 diff --git a/build.gradle.kts b/build.gradle.kts
-index 27c72eeaf371389faf5abda0cd82d566bab280b0..07ed083e99141b033d949246514646aa865cee4d 100644
+index 95652a9187952820a23506e8ebf4f40af44161e8..0a668514af00efd91a68667ef7de95df8a62f3fc 100644
 --- a/build.gradle.kts
 +++ b/build.gradle.kts
 @@ -1,4 +1,5 @@
@@ -44,8 +44,8 @@ index 27c72eeaf371389faf5abda0cd82d566bab280b0..07ed083e99141b033d949246514646aa
 +
      implementation("org.apache.logging.log4j:log4j-iostreams:2.8.1")
      implementation("org.ow2.asm:asm:8.0.1")
-     implementation("com.googlecode.json-simple:json-simple:1.1.1")
-@@ -63,6 +72,7 @@ tasks.shadowJar {
+     implementation("com.googlecode.json-simple:json-simple:1.1.1") {
+@@ -66,6 +75,7 @@ tasks.shadowJar {
      transform(AppendingTransformer::class.java) {
          resource = "META-INF/services/java.sql.Driver"
      }

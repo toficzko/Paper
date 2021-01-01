@@ -408,10 +408,10 @@ index 1fb7e40fbc36cf9e2b457e9bbd5a2d9b42e4c1f6..00000000000000000000000000000000
 -done
 diff --git a/build.gradle.kts b/build.gradle.kts
 new file mode 100644
-index 0000000000000000000000000000000000000000..813d7dca85093e70e0f1a0f50d05b1a10fa98f86
+index 0000000000000000000000000000000000000000..150c69b8f5e6d3bb51b855efe7b433e7a2cdf3e6
 --- /dev/null
 +++ b/build.gradle.kts
-@@ -0,0 +1,63 @@
+@@ -0,0 +1,66 @@
 +import com.github.jengelman.gradle.plugins.shadow.transformers.AppendingTransformer
 +import java.time.LocalDateTime
 +import java.time.format.DateTimeFormatter
@@ -432,7 +432,10 @@ index 0000000000000000000000000000000000000000..813d7dca85093e70e0f1a0f50d05b1a1
 +    implementation("jline:jline:2.12.1")
 +    implementation("org.apache.logging.log4j:log4j-iostreams:2.8.1")
 +    implementation("org.ow2.asm:asm:8.0.1")
-+    implementation("com.googlecode.json-simple:json-simple:1.1.1")
++    implementation("com.googlecode.json-simple:json-simple:1.1.1") {
++        // This includes junit transitively for whatever reason
++        isTransitive = false
++    }
 +    runtimeOnly("org.xerial:sqlite-jdbc:3.32.3")
 +    runtimeOnly("mysql:mysql-connector-java:5.1.49")
 +    testImplementation("junit:junit:4.13.1")
@@ -461,7 +464,7 @@ index 0000000000000000000000000000000000000000..813d7dca85093e70e0f1a0f50d05b1a1
 +    listOf(
 +        "jline", "it.unimi", "org.apache.commons.codec", "org.apache.commons.io",
 +        "org.apache.commons.lang3", "org.objectweb.asm"
-+    ).forEach {  pack ->
++    ).forEach { pack ->
 +        relocate(pack, "org.bukkit.craftbukkit.libs.$pack")
 +    }
 +    relocate("org.bukkit.craftbukkit", "org.bukkit.craftbukkit.v$packageVersion") {

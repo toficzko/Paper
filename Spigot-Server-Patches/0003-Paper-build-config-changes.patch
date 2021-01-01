@@ -5,10 +5,10 @@ Subject: [PATCH] Paper build config changes
 
 
 diff --git a/build.gradle.kts b/build.gradle.kts
-index 1e7f4e33088aa8f98e992bf45861fdbe9840fd48..c5f3adcf41a33fb112e323e4ecd06f5ff4e62dba 100644
+index 150c69b8f5e6d3bb51b855efe7b433e7a2cdf3e6..95652a9187952820a23506e8ebf4f40af44161e8 100644
 --- a/build.gradle.kts
 +++ b/build.gradle.kts
-@@ -15,12 +15,19 @@ repositories {
+@@ -15,6 +15,8 @@ repositories {
  
  dependencies {
      implementation(project(":Paper-API"))
@@ -17,7 +17,10 @@ index 1e7f4e33088aa8f98e992bf45861fdbe9840fd48..c5f3adcf41a33fb112e323e4ecd06f5f
      implementation("jline:jline:2.12.1")
      implementation("org.apache.logging.log4j:log4j-iostreams:2.8.1")
      implementation("org.ow2.asm:asm:8.0.1")
-     implementation("com.googlecode.json-simple:json-simple:1.1.1")
+@@ -22,8 +24,13 @@ dependencies {
+         // This includes junit transitively for whatever reason
+         isTransitive = false
+     }
 +    // wrapper to use either java 8 sun cleaner or java9+ official cleaner
 +    implementation("co.aikar:cleaner:1.0-SNAPSHOT")
 +    implementation("io.netty:netty-all:4.1.50.Final")
@@ -28,14 +31,14 @@ index 1e7f4e33088aa8f98e992bf45861fdbe9840fd48..c5f3adcf41a33fb112e323e4ecd06f5f
      testImplementation("junit:junit:4.13.1")
      testImplementation("org.hamcrest:hamcrest-library:1.3")
  }
-@@ -45,7 +52,7 @@ tasks.jar {
+@@ -48,7 +55,7 @@ tasks.jar {
  
  tasks.shadowJar {
      listOf(
 -        "jline", "it.unimi", "org.apache.commons.codec", "org.apache.commons.io",
 +        "jline", "org.apache.commons.codec", "org.apache.commons.io",
          "org.apache.commons.lang3", "org.objectweb.asm"
-     ).forEach {  pack ->
+     ).forEach { pack ->
          relocate(pack, "org.bukkit.craftbukkit.libs.$pack")
 diff --git a/src/main/java/org/bukkit/craftbukkit/Main.java b/src/main/java/org/bukkit/craftbukkit/Main.java
 index 60ede7442b2d9a63fcd765aff29a96c9130aebac..3f52c19b6b797e26b3dcedcec2afd28c478e7091 100644

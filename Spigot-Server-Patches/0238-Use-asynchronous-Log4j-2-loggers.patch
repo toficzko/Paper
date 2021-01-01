@@ -5,10 +5,10 @@ Subject: [PATCH] Use asynchronous Log4j 2 loggers
 
 
 diff --git a/build.gradle.kts b/build.gradle.kts
-index 77690d190ee90762a6ea20d1405dbc010184a192..b751c94f0f8c1a32f2637a375ff1a08e1b6a9922 100644
+index 0a668514af00efd91a68667ef7de95df8a62f3fc..531f151a82a9fdebfcdd604b95a1651bcd9b25d8 100644
 --- a/build.gradle.kts
 +++ b/build.gradle.kts
-@@ -36,6 +36,8 @@ dependencies {
+@@ -39,6 +39,8 @@ dependencies {
  
      runtimeOnly("org.xerial:sqlite-jdbc:3.32.3")
      runtimeOnly("mysql:mysql-connector-java:5.1.49")
