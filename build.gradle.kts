@@ -1,6 +1,6 @@
 plugins {
     java
-    id("com.github.johnrengelman.shadow") version "6.0.0" apply false
+    id("com.github.johnrengelman.shadow") version "6.1.0" apply false
     id("io.papermc.paperweight") version "1.0.0-SNAPSHOT"
 }
 
@@ -41,10 +41,15 @@ subprojects {
     }
 }
 
+repositories {
+    maven("https://repo.demonwav.com/snapshots/")
+}
+
 dependencies {
     paramMappings("net.fabricmc:yarn:1.16.4+build.7:mergedv2")
     remapper("net.fabricmc:tiny-remapper:0.3.2:fat@jar")
     decompiler("net.minecraftforge:forgeflower:1.5.478.18@jar")
+    paperclip("io.papermc:paperclip:2.0.0-SNAPSHOT@jar")
 }
 
 paperweight {
